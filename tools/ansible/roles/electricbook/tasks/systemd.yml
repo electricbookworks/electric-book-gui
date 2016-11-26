@@ -1,0 +1,13 @@
+- name: configure systemd for electricbook
+  template: >
+    src=systemd.electricbook.conf.j2
+    dest=/lib/systemd/system/electricbook.service
+  become: yes
+  become_method: sudo
+  notify: 'restart electricbook systemd'
+
+- name: enable electricbook for systemd
+  systemd: 
+    name: electricbook
+    enabled: yes
+    masked: no

@@ -1,0 +1,33 @@
+{{template "_header.html" .}}
+{{template "_topbar_repo.html" .}}
+
+<div id="middlebar">
+
+<div id="repo-workspace">
+<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
+	<div id="repo-nav">
+		<div>Pull Request {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
+		<div id="repo-files" class="repo-menu">
+			<ul id="repo-file-list">
+			</ul>
+		</div>
+	</div>
+	<div id="mergely">
+		
+	</div>
+	</div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	new PullRequestDiffList(document.getElementById('repo-file-list'), {{.Diffs}}, {
+			"repo":{{.RepoName}},
+			"remoteURL" : {{.PullURL}},
+			"remoteSHA": {{.SHA}},
+		}, document.getElementById('mergely'));
+});
+</script>
+</div>
+
+{{template "_footer.html" .}}

@@ -1,0 +1,75 @@
+#repo-workspace {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: stretch;
+	flex-wrap: nowrap;
+	height: 100%;
+	width: 100%;
+
+	#repo-nav {
+		flex-grow: 0;
+		h1 {
+			font-size: 1.3em;
+			font-weight: bold;
+		}
+		.repo-menu {
+			padding: 0.4em 1em 0 1em;
+			margin-top: 1em;
+			border-style: solid;
+			border-color: #ccc;
+			border-width: 1px 0 0 0;
+			.edit-link {
+				cursor: pointer;
+				color: $color-link;
+				padding: 0.4em;
+				&:hover {
+					background-color: $color-link-hover-bg;
+				}
+			}
+			.menu-header {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: flex-start;
+				margin-bottom: 0.4em;
+				.menu-title {
+					flex-grow:1;
+				}
+				.menu-controls {
+					flex-grow: 0;
+					button {
+						font-size: 0.6em;
+					}
+					.spacer {
+						height: 0.6em;
+					}
+				}
+			}
+
+		}
+		#repo-files {
+			.file-dirty-tag {
+				display: inline-block;
+				width: 1em;
+				height: 1em;
+				margin-right: 0.4em;
+				border-radius: 20%;
+			}
+			.file-dirty {
+				.file-dirty-tag {
+					background-color: red;
+					color: white;
+				}
+			}
+		}
+		#pull-requests {
+
+		}
+	}
+	#editor {
+		flex-grow: 1;
+		padding: 0 0 0 1em;
+		height: 100%;
+	}
+}

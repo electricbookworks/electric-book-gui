@@ -1,0 +1,55 @@
+- name: Create electricbook user
+  user: >
+    name=electricbook
+    shell=/bin/bash
+  become: yes
+
+- name: Install electric-book-gui from GIT
+  git: >
+    repo=https://github.com/electricbookworks/electric-book-gui.git
+    dest=/opt/electricbook
+  become: yes
+
+- name: Create /opt/electricbook/bin
+  file: >
+    name=/opt/electricbook/bin
+    state=directory
+    mode=0755
+  become: yes
+
+- name: install electricbook server
+  copy: >
+    dest=/opt/electricbook/bin/electricbook
+    force=yes
+    src=electricbook
+    mode=0755
+  become: yes
+
+# - name: install electricbook configure
+#   copy: >
+#     dest=/opt/electricbook/electricbook.yml
+#     src=electricbook.yml
+#     mode=0755
+#   become: yes
+
+# - name: install webserver public directory
+#   copy: >
+#     dest=/opt/electricbook
+#     src=../../public
+#     owner=electricbook
+#     group=electricbook
+#   become: yes
+
+- name: configure upstart for electricbook
+  when: ansible_distribution_major_version < 16
+  template: >
+    src=upstart.electricbook.conf.j2
+    dest=/etc/init/electricbook.conf
+  become: yes
+  become_method: sudo
+  notify: 'restart electricbook upstart'
+
+- name: configure systemd for electricbook
+  when: ansible_distribution_major_version >= 16
+  include: systemd.yml
+  notify: 'restart electricbook systemd'

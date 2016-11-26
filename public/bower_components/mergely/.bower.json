@@ -1,0 +1,20 @@
+{
+  "name": "mergely",
+  "version": "3.3.6",
+  "main": "./mergely.js",
+  "dependencies": {
+    "jquery": "2.1.0",
+    "codemirror": "<=3.23.0"
+  },
+  "homepage": "https://github.com/erahhal/bower-mergely",
+  "_release": "3.3.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.3.6",
+    "commit": "4090aba2ab8d1e390d8b1f0fc3e325cc4b8208a9"
+  },
+  "_source": "https://github.com/erahhal/bower-mergely.git",
+  "_target": "^3.3.6",
+  "_originalSource": "mergely",
+  "_direct": true
+}

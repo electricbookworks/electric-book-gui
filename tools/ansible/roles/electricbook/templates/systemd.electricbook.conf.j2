@@ -1,0 +1,13 @@
+[Unit]
+Description=electricbook
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/electricbook/
+User=electricbook
+Group=electricbook
+ExecStart=/opt/electricbook/bin/electricbook -logtostderr web
+

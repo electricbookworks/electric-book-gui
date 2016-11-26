@@ -1,0 +1,29 @@
+{
+  "name": "CodeMirror",
+  "main": [
+    "lib/codemirror.js",
+    "lib/codemirror.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "bin",
+    "demo",
+    "doc",
+    "test",
+    "index.html",
+    "package.json"
+  ],
+  "homepage": "https://github.com/codemirror/bower",
+  "version": "3.23.0",
+  "_release": "3.23.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.23.0",
+    "commit": "e113da8bf2908687dc595ecc5b55c5ca5201a0e0"
+  },
+  "_source": "https://github.com/codemirror/bower.git",
+  "_target": "<=3.23.0",
+  "_originalSource": "codemirror"
+}

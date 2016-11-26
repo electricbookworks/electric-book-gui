@@ -1,0 +1,2 @@
+[servers]
+ebw.lxc ansible_user=ubuntu ansible_password=ubuntu fqdn=ebw.lxc webserver=nginx

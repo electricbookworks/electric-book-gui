@@ -1,0 +1,30 @@
+{{template "_header.html" .}}
+{{template "_topbar_repo.html" .}}
+
+<div id="middlebar">
+<div id="repo-workspace">
+<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
+<div id="repo-nav">
+<div id="repo-files" class="repo-menu">
+<div id="files">
+</div>
+</div>
+
+<div id="pull-requests" class="repo-menu">
+<h1>Pull Requests</h1>
+<div id="pull-request-list">
+</div>
+</div>
+</div>
+
+<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
+</div>
+</div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	new RepoEditorPage('{{.RepoName}}');
+});
+</script>
+
+{{template "_footer.html" .}}

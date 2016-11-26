@@ -1,0 +1,12 @@
+.toolbar-menu {
+	flex-grow: 0;
+	padding: 0.2em;
+	&>button {
+		display: block;
+		margin-bottom: 0.2em;
+	}
+	text-align: right;
+	.spacer {
+		height: 1em;
+	}
+}

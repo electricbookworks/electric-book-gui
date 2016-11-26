@@ -1,0 +1,44 @@
+/* main.scss */
+
+@import "font-awesome/scss/font-awesome.scss";
+@import "html5_reset";
+@import 'colors';
+@import "typography";
+
+@import "repo_file_editor";
+@import 'pages/pull_request_view';
+@import 'pages/repo_list';
+@import 'pages/repo_view';
+
+@import 'CodeMirror';
+
+@import 'widgets/toolbar_menu';
+
+#container {
+	width: 100vw;
+	height: 100vh;
+	background-color: $color-background;
+}
+
+#workspace {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
+	height: 100%;
+
+	#topbar {
+		flex-grow:0;
+	}
+	#middlebar {
+		flex-grow: 1;
+		overflow-y: scroll;
+	}
+	#bottombar {
+		flex-grow: 0;
+		padding-left: 1em;
+		
+		text-align: right;
+	}
+}
+

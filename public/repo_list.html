@@ -1,0 +1,28 @@
+{{template "_header.html" .}}
+<div id="topbar">
+<h1><a href="/">{{.UserName}}</a>/</h1>
+</div>
+<div id="middlebar">
+<div id="repo-list">
+<table class="repo-list-table">
+<tbody>
+{{range .Repos }}<tr><td class="ebw-link"><a href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></td><td class="github-link"><a href="{{.HTMLURL}}"><i class="fa fa-github" ></i></a></td><td class="description"> {{.Description}}</td></tr>
+{{end -}}
+</tbody></table>
+
+<div id="repo-fork-form">
+<h1>Fork a Repo</h1>
+<form method="post" action="/github/create-fork">
+<label for="repo_name">Repo
+<input type="text" name="repo_name" id="repo_name" value="electricbookworks/electric-book" size="30"/>
+</label>
+<!-- <label for="new_name">New Name
+<input type="text" name="new_name" id="new_name" value="new-book" />
+</label>
+ --><input type="submit" value="Fork Repo" />
+</form>
+</div>
+
+</div>
+</div>
+{{template "_footer.html" .}}

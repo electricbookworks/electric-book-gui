@@ -1,0 +1,13 @@
+{{template "_header.html" .}}
+<h1>Forking Repo</h1>
+<form method="post" action="/github/create-fork">
+<input type="hidden" name="action" value="fork" />
+<label for="repo_name">Repo
+<input type="text" name="repo_name" id="repo_name" value="{{.RepoName}}"/>
+</label>
+<label for="new_name">New Name
+<input type="text" name="new_name" id="new_name" value="{{.NewName}}" />
+</label>
+<input type="submit" value="Fork Repo" />
+</form>
+{{template "_footer.html" .}}

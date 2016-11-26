@@ -1,0 +1,7 @@
+- name: restart electricbook upstart
+  service: name=electricbook state=restarted
+  become: sudo
+
+- name: restart electricbook systemd
+  systemd: name=electricbook state=started
+  become: sudo

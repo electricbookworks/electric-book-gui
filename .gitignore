@@ -1,0 +1,8 @@
+.git
+.hg
+.cache
+bin/
+src/go/pkg
+tools/ansible/*.retry
+tools/ansible/hosts-lateral
+
