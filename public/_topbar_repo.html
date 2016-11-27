@@ -1,3 +1,15 @@
 <div id="topbar">
-<h1><a href="/">{{.UserName}}</a>/<a href="/repo/{{.RepoName}}">{{.RepoName}}</a>/<span ebw-current-filename=""> </span></h1>
+<div class="titles">
+<h1><a href="/">{{.UserName}}</a>/{{if .RepoName}}<a href="/repo/{{.RepoName}}">{{.RepoName}}</a>{{end}}/<span ebw-current-filename=""> </span></h1>
+</div>
+<div id="right-menu">
+	<ul>
+		<li class="menu">Menu <i class="fa fa-chevron-down"> </i>
+			<ul>
+				<li><a href="/logoff">Log off</a></li>
+				<li><a href="https://github.com/{{.UserName}}">To Github <i class="fa fa-github"> </i></a></li>
+			</ul>
+		</li>
+	</ul>
+</div>
 </div>

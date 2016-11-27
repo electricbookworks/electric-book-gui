@@ -923,7 +923,7 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 
 	this.editor = new RepoFileEditorCM(document.getElementById('editor'));
 	this.files = new RepoFileList(document.getElementById('files'), repo, this.editor);
-	new PullRequestList(document.getElementById('pull-requests'), repo);
+	new PullRequestList(document.getElementById('pull-request-list'), repo);
 	window.addEventListener('beforeunload', function (evt) {
 		// transfer editor to file text
 		_this.editor.setFile(null);

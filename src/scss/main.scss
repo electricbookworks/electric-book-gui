@@ -6,6 +6,7 @@
 @import "typography";
 
 @import "repo_file_editor";
+@import 'pages/pull_new';
 @import 'pages/pull_request_view';
 @import 'pages/repo_list';
 @import 'pages/repo_view';
@@ -13,6 +14,7 @@
 @import 'CodeMirror';
 
 @import 'widgets/toolbar_menu';
+@import 'widgets/topbar';
 
 #container {
 	width: 100vw;

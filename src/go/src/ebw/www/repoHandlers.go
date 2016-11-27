@@ -116,3 +116,29 @@ func pullRequestView(c *Context) error {
 
 	return c.Render(`pull_request_view.html`, nil)
 }
+
+func pullRequestCreate(c *Context) error {
+	client := GithubClient(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repo := c.Vars[`repo`]
+	user, err := git.Username(client)
+	if nil != err {
+		return err
+	}
+
+	c.D[`UserName`] = user
+	c.D[`RepoName`] = repo
+
+	if `POST` == c.R.Method {
+		if err := git.PullRequestCreate(client, user, repo,
+			c.P(`title`), c.P(`notes`)); nil != err {
+			return err
+		}
+		c.Redirect(`/repo/%s`, repo)
+		return nil
+	}
+
+	return c.Render(`pull_new.html`, nil)
+}

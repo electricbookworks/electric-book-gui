@@ -2,7 +2,7 @@ class RepoEditorPage {
 	constructor(repo) {
 		this.editor = new RepoFileEditorCM(document.getElementById('editor'));
 		this.files = new RepoFileList(document.getElementById('files'),repo, this.editor);
-		new PullRequestList(document.getElementById('pull-requests'), repo);
+		new PullRequestList(document.getElementById('pull-request-list'), repo);
 		window.addEventListener('beforeunload', evt=> {
 			// transfer editor to file text
 			this.editor.setFile(null);

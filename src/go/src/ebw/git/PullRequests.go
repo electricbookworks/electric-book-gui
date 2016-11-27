@@ -92,3 +92,12 @@ func PullRequestUpdate(client *github.Client, user, repo string, sha string, pat
 	}
 	return nil
 }
+
+func PullRequestCreate(client *github.Client, user, repo, title, notes string) error {
+	_, _, err := client.PullRequests.Create(user, repo,
+		&github.NewPullRequest{
+			Title: &title,
+			Body:  &notes,
+		})
+	return util.Error(err)
+}

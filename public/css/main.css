@@ -2576,6 +2576,14 @@ button, input[type='button'], input[type='submit'] {
       height: 100%;
       font-size: 1.4em; }
 
+.pull-request-workspace {
+  width: 100%;
+  padding: 1em; }
+  .pull-request-workspace textarea {
+    width: 100%;
+    height: 8em;
+    margin-bottom: 1em; }
+
 #mergely {
   -ms-flex-positive: 1;
   flex-grow: 1;
@@ -2664,6 +2672,8 @@ button, input[type='button'], input[type='submit'] {
     #repo-workspace #repo-nav #repo-files .file-dirty .file-dirty-tag {
       background-color: red;
       color: white; }
+    #repo-workspace #repo-nav #pull-requests #pull-request-list {
+      margin-bottom: 1em; }
   #repo-workspace #editor {
     -ms-flex-positive: 1;
     flex-grow: 1;
@@ -2687,6 +2697,24 @@ button, input[type='button'], input[type='submit'] {
     margin-bottom: 0.2em; }
   .toolbar-menu .spacer {
     height: 1em; }
+
+#topbar #right-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: left; }
+  #topbar #right-menu .menu {
+    padding: 1em;
+    position: relative; }
+    #topbar #right-menu .menu > ul {
+      display: none; }
+      #topbar #right-menu .menu > ul li {
+        background-color: rgba(100, 100, 100, 0.3);
+        padding: 1em 1em 0 1em; }
+        #topbar #right-menu .menu > ul li:last-child {
+          padding-bottom: 1em; }
+    #topbar #right-menu .menu:hover > ul {
+      display: block; }
 
 #container {
   width: 100vw;

@@ -50,6 +50,10 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repo}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repo}`, WebHandler(repoView))
 	r.Handle(`/repo/{repo}/pull/{number}`, WebHandler(pullRequestView))
+	r.Handle(`/repo/{repo}/pull_new`, WebHandler(pullRequestCreate))
+
+	r.Handle(`/logoff`, WebHandler(LogoffHandler))
+	r.Handle(`/to-github`, WebHandler(ToGithubHandler))
 
 	r.Handle(`/{p:.*}`, http.FileServer(http.Dir(`public`)))
 

@@ -19,7 +19,7 @@ var ErrNotLoggedIn = errors.New(`No github token cookie found`)
 // web request.
 func GithubClient(w http.ResponseWriter, r *http.Request) (*github.Client, error) {
 	cookie, err := r.Cookie(GithubTokenCookie)
-	if nil == cookie {
+	if nil == cookie || `` == cookie.Value {
 		return nil, ErrNotLoggedIn
 	}
 	if nil != err {

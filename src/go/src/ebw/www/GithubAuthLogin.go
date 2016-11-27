@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -70,6 +71,30 @@ func githubAuth(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 	})
 	http.Redirect(w, r, "/", http.StatusFound)
+}
+
+func LogoffHandler(c *Context) error {
+	client := GithubClient(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	user, err := git.Username(client)
+	if nil != err {
+		return err
+	}
+	http.SetCookie(c.W, &http.Cookie{
+		Name:    git.GithubTokenCookie,
+		Value:   ``,
+		Path:    `/`,
+		Expires: time.Time{},
+	})
+
+	c.Redirect(`/to-github?u=%s`, url.QueryEscape(user))
+	return nil
+}
+
+func ToGithubHandler(c *Context) error {
+	return c.Redirect(`https://github.com/%s`, c.P(`u`))
 }
 
 func GithubClient(w http.ResponseWriter, r *http.Request) *github.Client {
