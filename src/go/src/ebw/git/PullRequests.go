@@ -1,6 +1,7 @@
 package git
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -94,10 +95,34 @@ func PullRequestUpdate(client *github.Client, user, repo string, sha string, pat
 }
 
 func PullRequestCreate(client *github.Client, user, repo, title, notes string) error {
-	_, _, err := client.PullRequests.Create(user, repo,
+	// base := `master`
+	head := fmt.Sprintf(`%s:master`, user)
+	// head := `master`
+	base := `master`
+
+	upstream, _, err := client.Repositories.Get(user, repo)
+	if nil != err {
+		return err
+	}
+	upstreamUser := *upstream.Parent.Owner.Login
+	upstreamRepo := *upstream.Parent.Name
+
+	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
+		title, head, base, notes, upstreamUser, upstreamRepo)
+	_, _, err = client.PullRequests.Create(
+		upstreamUser, upstreamRepo,
 		&github.NewPullRequest{
 			Title: &title,
-			Body:  &notes,
+			Head:  &head,
+			Base:  &base,
+			// Body:  &notes,
 		})
-	return util.Error(err)
+	if nil != err {
+		return util.Error(err)
+	}
+	// _, _, err := client.PullRequests.CreateComment(user,
+	// 	repo, prNumber, &github.PullRequestComment{
+	// 		Comment: &notes,
+	// 	})
+	return nil
 }

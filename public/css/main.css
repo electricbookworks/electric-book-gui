@@ -2702,19 +2702,20 @@ button, input[type='button'], input[type='submit'] {
   position: absolute;
   top: 0;
   right: 0;
-  text-align: left; }
+  text-align: left;
+  z-index: 1; }
   #topbar #right-menu .menu {
     padding: 1em;
     position: relative; }
     #topbar #right-menu .menu > ul {
-      display: none; }
+      visibility: hidden; }
       #topbar #right-menu .menu > ul li {
-        background-color: rgba(100, 100, 100, 0.3);
+        background-color: #ccc;
         padding: 1em 1em 0 1em; }
         #topbar #right-menu .menu > ul li:last-child {
           padding-bottom: 1em; }
     #topbar #right-menu .menu:hover > ul {
-      display: block; }
+      visibility: visible; }
 
 #container {
   width: 100vw;

@@ -11,13 +11,14 @@
 		top: 0;
 		right: 0;
 		text-align: left;
+		z-index: 1;
 		.menu {
 			padding: 1em;
 			position: relative;
 			&>ul {
-				display: none;
+				visibility: hidden;
 				li {
-					background-color: rgba(100,100,100,0.3);
+					background-color: #ccc;
 					padding: 1em 1em 0 1em;
 					&:last-child{ 
 						padding-bottom: 1em;
@@ -26,7 +27,7 @@
 			}
 			&:hover {
 				&>ul {
-					display: block;
+					visibility: visible;
 				}
 			}
 		}

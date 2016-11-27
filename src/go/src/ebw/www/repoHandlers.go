@@ -39,11 +39,13 @@ func repoView(c *Context) error {
 		// GithubClient will have redirected us
 		return nil
 	}
+
 	repo := c.Vars[`repo`]
 	user, err := git.Username(client)
 	if nil != err {
 		return err
 	}
+
 	c.D[`UserName`] = user
 	c.D[`RepoName`] = repo
 	c.D[`Path`], err = git.RepoDir(user, repo)
