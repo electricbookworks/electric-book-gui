@@ -1,34 +1,24 @@
 #topbar {
-	// display: flex;
-	// flex-direction: row;
-	// justify-content: space-between;
-	// align-items: baseline;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: baseline;
 	.titles {
-		// flex-grow: 1;
+		flex-grow: 1;
 	}
 	#right-menu {
-		position: absolute;
-		top: 0;
-		right: 0;
-		text-align: left;
-		z-index: 1;
-		.menu {
-			padding: 1em;
-			position: relative;
-			&>ul {
-				visibility: hidden;
-				li {
-					background-color: #ccc;
-					padding: 1em 1em 0 1em;
-					&:last-child{ 
-						padding-bottom: 1em;
-					}
-				}
+		flex-grow: 0;
+		list-style: none;
+		margin-right: 1em;
+		li {
+			display: inline-block;
+			&:after {
+				content: "|";
+				padding: 0 1em;
 			}
-			&:hover {
-				&>ul {
-					visibility: visible;
-				}
+			&:last-child:after {
+				content: "";
+				padding: 0;
 			}
 		}
 	}

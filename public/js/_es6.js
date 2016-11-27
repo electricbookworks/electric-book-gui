@@ -538,7 +538,9 @@ var EditorCodeMirror = function () {
 		_classCallCheck(this, EditorCodeMirror);
 
 		this.cm = CodeMirror(parent, {
-			'mode': 'markdown'
+			'mode': 'markdown',
+			'lineNumbers': true,
+			'lineWrapping': true
 		});
 	}
 

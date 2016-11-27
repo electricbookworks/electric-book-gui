@@ -2698,24 +2698,31 @@ button, input[type='button'], input[type='submit'] {
   .toolbar-menu .spacer {
     height: 1em; }
 
-#topbar #right-menu {
-  position: absolute;
-  top: 0;
-  right: 0;
-  text-align: left;
-  z-index: 1; }
-  #topbar #right-menu .menu {
-    padding: 1em;
-    position: relative; }
-    #topbar #right-menu .menu > ul {
-      visibility: hidden; }
-      #topbar #right-menu .menu > ul li {
-        background-color: #ccc;
-        padding: 1em 1em 0 1em; }
-        #topbar #right-menu .menu > ul li:last-child {
-          padding-bottom: 1em; }
-    #topbar #right-menu .menu:hover > ul {
-      visibility: visible; }
+#topbar {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -ms-flex-align: baseline;
+  align-items: baseline; }
+  #topbar .titles {
+    -ms-flex-positive: 1;
+    flex-grow: 1; }
+  #topbar #right-menu {
+    -ms-flex-positive: 0;
+    flex-grow: 0;
+    list-style: none;
+    margin-right: 1em; }
+    #topbar #right-menu li {
+      display: inline-block; }
+      #topbar #right-menu li:after {
+        content: "|";
+        padding: 0 1em; }
+      #topbar #right-menu li:last-child:after {
+        content: "";
+        padding: 0; }
 
 #container {
   width: 100vw;

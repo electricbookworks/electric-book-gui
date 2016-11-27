@@ -2,6 +2,8 @@ class EditorCodeMirror {
 	constructor(parent) {
 		this.cm = CodeMirror(parent, {
 			'mode': 'markdown',
+			'lineNumbers':true,
+			'lineWrapping': true
 		});
 	}
 	static Template() {
