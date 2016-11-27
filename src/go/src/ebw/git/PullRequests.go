@@ -2,9 +2,9 @@ package git
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -83,12 +83,32 @@ func PullRequestDiffList(client *github.Client, user, repo string,
 	return diffs, err
 }
 
-func PullRequestUpdate(client *github.Client, user, repo string, sha string, path string, content []byte) error {
-	localPath, err := RepoDir(user, repo)
+// PullRequestUpdate just updates the file in the 'master' repo the
+// same as editing in the regular system.
+func PullRequestUpdate(client *github.Client, user, repo string,
+	sha string, path string, content []byte) error {
+	return UpdateFile(client, user, repo, path, content)
+	// localPath, err := RepoDir(user, repo)
+	// if nil != err {
+	// 	return err
+	// }
+	// if err := ioutil.WriteFile(filepath.Join(localPath, path), content, 0644); nil != err {
+	// 	return util.Error(err)
+	// }
+	// return nil
+}
+
+func PullRequestClose(client *github.Client, user, repo string, number int) error {
+	closedAt := time.Now()
+	merged := true
+	state := `closed`
+	_, _, err := client.PullRequests.Edit(user, repo, number, &github.PullRequest{
+		Number:   &number,
+		ClosedAt: &closedAt,
+		Merged:   &merged,
+		State:    &state,
+	})
 	if nil != err {
-		return err
-	}
-	if err := ioutil.WriteFile(filepath.Join(localPath, path), content, 0644); nil != err {
 		return util.Error(err)
 	}
 	return nil

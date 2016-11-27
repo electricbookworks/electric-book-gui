@@ -50,6 +50,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repo}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repo}`, WebHandler(repoView))
 	r.Handle(`/repo/{repo}/pull/{number}`, WebHandler(pullRequestView))
+	r.Handle(`/repo/{repo}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repo}/pull_new`, WebHandler(pullRequestCreate))
 
 	r.Handle(`/logoff`, WebHandler(LogoffHandler))

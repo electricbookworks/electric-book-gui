@@ -75,6 +75,23 @@ func repoUpdate(c *Context) error {
 	return c.Redirect(`/repo/%s`, repo)
 }
 
+func pullRequestClose(c *Context) error {
+	client := GithubClient(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repo := c.Vars[`repo`]
+	user, err := git.Username(client)
+	if nil != err {
+		return err
+	}
+	number := int(c.PI(`number`))
+	if err := git.PullRequestClose(client, user, repo, number); nil != err {
+		return err
+	}
+	return c.Redirect(`/repo/%s`, repo)
+}
+
 func pullRequestView(c *Context) error {
 	client := GithubClient(c.W, c.R)
 	if nil == client {
