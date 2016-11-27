@@ -1,0 +1,17 @@
+- name: 'restart nginx - systemctl'
+  become: yes
+  systemd: >
+    service=nginx
+    state=restarted
+  when: >
+    ansible_distribution_major_version|int >= 16 and webserver=='nginx'
+
+- name: 'restart nginx - upstart'
+  become: yes
+  service: >
+    name=nginx
+    state=restarted
+  when: >
+    ansible_distribution_major_version|int < 16 and webserver=='nginx'
+
+

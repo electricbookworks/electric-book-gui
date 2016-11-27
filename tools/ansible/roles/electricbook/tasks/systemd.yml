@@ -3,11 +3,14 @@
     src=systemd.electricbook.conf.j2
     dest=/lib/systemd/system/electricbook.service
   become: yes
-  become_method: sudo
-  notify: 'restart electricbook systemd'
+  notify: 'restart electricbook'
 
 - name: enable electricbook for systemd
+  become: yes
   systemd: 
     name: electricbook
+    daemon_reload: yes
     enabled: yes
+    state: started
     masked: no
+  notify: "restart electricbook"    

@@ -1,2 +1,14 @@
 [servers]
 ebw.lxc ansible_user=ubuntu ansible_password=ubuntu fqdn=ebw.lxc webserver=nginx
+
+[servers:vars]
+# GET THESE VALUES FROM GITHUB:
+# https://github.com/settings/developers
+# When you register the application on Github, your homepage will
+# be:
+#    http://{{fqdn}}/
+# and your callback URL will be
+#    http://{{fqdn}}/github/auth
+#
+github_client=
+github_secret=
