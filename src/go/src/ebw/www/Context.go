@@ -35,7 +35,7 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 	}
 	_, ok := c.D[`CMVersion`]
 	if !ok {
-		c.D[`CMVersion`] = `5.21.0`
+		c.D[`CMVersion`] = `5.12.0`
 	}
 
 	return Render(c.W, c.R, templ, c.D)

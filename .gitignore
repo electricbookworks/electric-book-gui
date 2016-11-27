@@ -5,4 +5,10 @@ bin/
 src/go/pkg
 tools/ansible/*.retry
 tools/ansible/hosts-lateral
+electricbook-*.yml
+git_cache/pr_requests/*
+git_cache/repos/*
+!git_cache/pr_requests/README.md
+!git_cache/repos/README.md
+
 

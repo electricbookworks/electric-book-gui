@@ -17,6 +17,14 @@
     dest=/opt/electricbook
   become: yes
 
+- name: Set permissions on git_cache
+  file: >
+    name=/opt/electricbook/git_cache
+    owner=electricbook
+    group=electricbook
+    recurse=yes
+  become: yes
+
 - name: Create /opt/electricbook/bin
   file: >
     name=/opt/electricbook/bin
