@@ -41,7 +41,7 @@
   become: yes 
   notify: 'restart electricbook'
 
-- name: install electricbook configuration from ./electricbook-0.yml
+- name: install electricbook configuration electricbook-0.yml
   template: >
     dest=/opt/electricbook/electricbook-0.yml
     src=electricbook-0.yml.j2
