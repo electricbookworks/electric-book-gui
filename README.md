@@ -15,6 +15,11 @@ Loads the ebw configuration from [filename]
 ### ebw cli users
 Lists all the users configured for the CLI (based on config file)
 
+### ebw cli user
+Find out which user we are currently working as. You can force this with -u, 
+or ebw will find it from the current repo-owner on github of the 
+working directory of the currently checked out repo.
+
 ## Github related commands
 
 ### ebw github username
@@ -39,5 +44,10 @@ Same as 'git clone' with appropriate github settings, creating a local copy of t
 
 ### ebw book pull-request [message]
 Sends a pull-request on the current directory to ? origin-master?
+
+### ebw book pull
+
+### ebw book push
+
 
 
