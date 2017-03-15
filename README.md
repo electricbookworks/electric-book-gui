@@ -1,5 +1,6 @@
-# electric-book-gui
-A web-based interface for managing the Electric Book workflow
+# The Electric Book Manager
+
+This is work in progress. The Electric Book Manager is a web-based interface for managing the [Electric Book workflow](http://electricbook.works/). It will enable non-technical publishing teams to edit book content, review contributions, and output PDF, web- and epub-ready files. See the features currently in development [here](https://github.com/electricbookworks/electric-book-gui/projects/1).
 
 # ebw CLI tool
 
@@ -28,6 +29,9 @@ Displays the github username of the current user
 ### ebw github repos
 Lists all the repos owned by the current user on github
 
+
+
+The command line tool ebw works like this:
 ### ebw github delete-repo [reponame]
 Deletes the named repo from your github account. USE WITH EXTREME CAUTION.
 
@@ -48,6 +52,5 @@ Sends a pull-request on the current directory to ? origin-master?
 ### ebw book pull
 
 ### ebw book push
-
 
 
