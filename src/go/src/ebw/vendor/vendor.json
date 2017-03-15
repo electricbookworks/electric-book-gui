@@ -49,10 +49,16 @@
 			"revisionTime": "2016-10-12T20:53:35Z"
 		},
 		{
-			"checksumSHA1": "OaLhCjgKm90nlVO0hiBwFvT+b3Q=",
+			"checksumSHA1": "QVDM1UMDa3OuzLB3OhNL6awA0Z4=",
+			"path": "github.com/google/go-github",
+			"revision": "69fd0adc8ab606780549a072f2e3b3f795d75832",
+			"revisionTime": "2017-03-11T16:14:41Z"
+		},
+		{
+			"checksumSHA1": "dvC1P8wno8lgP71pWVMQopGBY6U=",
 			"path": "github.com/google/go-github/github",
-			"revision": "1bc362c7737e51014af7299e016444b654095ad9",
-			"revisionTime": "2016-10-05T22:48:44Z"
+			"revision": "69fd0adc8ab606780549a072f2e3b3f795d75832",
+			"revisionTime": "2017-03-11T16:14:41Z"
 		},
 		{
 			"checksumSHA1": "yyAzHoiVLu+xywYI2BDyRq6sOqE=",

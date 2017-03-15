@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE file.
 
 // This file provides functions for validating payloads from GitHub Webhooks.
-// GitHub docs: https://developer.github.com/webhooks/securing/#validating-payloads-from-github
+// GitHub API docs: https://developer.github.com/webhooks/securing/#validating-payloads-from-github
 
 package github
 
@@ -31,7 +31,7 @@ const (
 	sha512Prefix = "sha512"
 	// signatureHeader is the GitHub header key used to pass the HMAC hexdigest.
 	signatureHeader = "X-Hub-Signature"
-	// eventTypeHeader is the Github header key used to pass the event type.
+	// eventTypeHeader is the GitHub header key used to pass the event type.
 	eventTypeHeader = "X-Github-Event"
 )
 
@@ -49,10 +49,18 @@ var (
 		"integration_installation_repositories": "IntegrationInstallationRepositoriesEvent",
 		"issue_comment":                         "IssueCommentEvent",
 		"issues":                                "IssuesEvent",
+		"label":                                 "LabelEvent",
 		"member":                                "MemberEvent",
 		"membership":                            "MembershipEvent",
+		"milestone":                             "MilestoneEvent",
+		"organization":                          "OrganizationEvent",
 		"page_build":                            "PageBuildEvent",
+		"ping":                                  "PingEvent",
+		"project":                               "ProjectEvent",
+		"project_card":                          "ProjectCardEvent",
+		"project_column":                        "ProjectColumnEvent",
 		"public":                                "PublicEvent",
+		"pull_request_review":                   "PullRequestReviewEvent",
 		"pull_request_review_comment":           "PullRequestReviewCommentEvent",
 		"pull_request":                          "PullRequestEvent",
 		"push":                                  "PushEvent",
@@ -138,7 +146,7 @@ func ValidatePayload(r *http.Request, secretKey []byte) (payload []byte, err err
 // payload is the JSON payload sent by GitHub Webhooks.
 // secretKey is the GitHub Webhook secret message.
 //
-// GitHub docs: https://developer.github.com/webhooks/securing/#validating-payloads-from-github
+// GitHub API docs: https://developer.github.com/webhooks/securing/#validating-payloads-from-github
 func validateSignature(signature string, payload, secretKey []byte) error {
 	messageMAC, hashFunc, err := messageMAC(signature)
 	if err != nil {
@@ -157,7 +165,7 @@ func WebHookType(r *http.Request) string {
 
 // ParseWebHook parses the event payload. For recognized event types, a
 // value of the corresponding struct type will be returned (as returned
-// by Event.Payload()). An error will be returned for unrecognized event
+// by Event.ParsePayload()). An error will be returned for unrecognized event
 // types.
 //
 // Example usage:
@@ -168,9 +176,9 @@ func WebHookType(r *http.Request) string {
 //       event, err := github.ParseWebHook(github.WebHookType(r), payload)
 //       if err != nil { ... }
 //       switch event := event.(type) {
-//       case CommitCommentEvent:
+//       case *github.CommitCommentEvent:
 //           processCommitCommentEvent(event)
-//       case CreateEvent:
+//       case *github.CreateEvent:
 //           processCreateEvent(event)
 //       ...
 //       }
@@ -186,5 +194,5 @@ func ParseWebHook(messageType string, payload []byte) (interface{}, error) {
 		Type:       &eventType,
 		RawPayload: (*json.RawMessage)(&payload),
 	}
-	return event.Payload(), nil
+	return event.ParsePayload()
 }

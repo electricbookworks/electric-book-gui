@@ -22,7 +22,7 @@ func githubCreateFork(c *Context) error {
 		return c.Render(`repo_fork.html`, nil)
 	}
 	parts := strings.Split(c.P(`repo_name`), `/`)
-	repo, response, err := client.Repositories.CreateFork(parts[0], parts[1], &github.RepositoryCreateForkOptions{})
+	repo, response, err := client.Repositories.CreateFork(c.R.Context(), parts[0], parts[1], &github.RepositoryCreateForkOptions{})
 	if nil != err {
 		return err
 	}

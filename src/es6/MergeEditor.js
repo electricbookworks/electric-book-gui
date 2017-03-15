@@ -48,5 +48,7 @@ class MergeEditor {
 				setValue(remote);
 			}
 		});
+		let right = m.mergely('cm', 'right');
+		console.log('right hand cm = ', right);
 	}	
 }

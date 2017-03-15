@@ -4,8 +4,10 @@ class PullRequestDiffList {
 		this.mergelyParent = mergelyParent;
 		[this.el, this.$] = DTemplate(`PullRequestDiffList`);
 		this.files = [];
+		console.log('DIFFERENCE LIST = ', diffs);
 		for (let d of diffs) {
 			let f = new PRDiffModel(d, prArgs);
+			console.log("DIFFERENCE: ", d);
 			this.files.push(f);
 			new RepoFileEditLink(this.el, f, (x, file)=>{
 				this.viewDiff(f);

@@ -36,6 +36,8 @@ func GetPathDiffList(localPath, remotePath string, pathRegexp string) ([]*PullRe
 		return nil, err
 	}
 
+	//glog.Infof(`GetPathDiffList: localPath = %s, remotePath = %s`, )
+
 	diffs := []*PullRequestDiff{}
 	locals := map[string]*PullRequestDiff{}
 

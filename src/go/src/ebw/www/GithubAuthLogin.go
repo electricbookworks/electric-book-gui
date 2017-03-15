@@ -78,7 +78,7 @@ func LogoffHandler(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
@@ -98,7 +98,7 @@ func ToGithubHandler(c *Context) error {
 }
 
 func GithubClient(w http.ResponseWriter, r *http.Request) *github.Client {
-	client, err := git.GithubClient(w, r)
+	client, err := git.GithubClientFromWebRequest(w, r)
 	if err == git.ErrNotLoggedIn {
 		http.Redirect(w, r, "/github/login", http.StatusFound)
 		return nil

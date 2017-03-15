@@ -2529,23 +2529,23 @@ h3 {
   font-size: 1.4em; }
 
 a {
-  color: #463;
+  color: #339;
   text-decoration: none; }
   a:hover {
     background-color: white; }
 
 input[type='text'] {
   font-family: "Quattrocento Sans", sans-serif;
-  border: 1px solid #333;
+  border: 1px solid #99c;
   padding: 0.5em; }
 
 button, input[type='button'], input[type='submit'] {
-  border: 1px solid #333;
-  color: #463;
+  border: 1px solid #99c;
+  color: #339;
   padding: 0.4em; }
   button:hover, input[type='button']:hover, input[type='submit']:hover {
     background-color: white;
-    color: #463; }
+    color: #339; }
   button:disabled, input[type='button']:disabled, input[type='submit']:disabled {
     cursor: inherit;
     border: 1px solid #eee;
@@ -2613,7 +2613,7 @@ button, input[type='button'], input[type='submit'] {
 #repo-list {
   padding: 0 1em; }
   #repo-list .repo-list-table tr:hover {
-    background-color: #e1e1e1; }
+    background-color: #e5e5ff; }
   #repo-list .repo-list-table td {
     padding: 0.4em; }
 
@@ -2640,11 +2640,11 @@ button, input[type='button'], input[type='submit'] {
       padding: 0.4em 1em 0 1em;
       margin-top: 1em;
       border-style: solid;
-      border-color: #ccc;
+      border-color: #99c;
       border-width: 1px 0 0 0; }
       #repo-workspace #repo-nav .repo-menu .edit-link {
         cursor: pointer;
-        color: #463;
+        color: #339;
         padding: 0.4em; }
         #repo-workspace #repo-nav .repo-menu .edit-link:hover {
           background-color: white; }
@@ -2732,7 +2732,7 @@ button, input[type='button'], input[type='submit'] {
 #container {
   width: 100vw;
   height: 100vh;
-  background-color: #eee; }
+  background-color: #fefeff; }
 
 #workspace {
   display: -ms-flexbox;

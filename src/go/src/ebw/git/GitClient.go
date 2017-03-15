@@ -17,7 +17,7 @@ var ErrNotLoggedIn = errors.New(`No github token cookie found`)
 
 // GithubClient returns a client for Github communcations from the given
 // web request.
-func GithubClient(w http.ResponseWriter, r *http.Request) (*github.Client, error) {
+func GithubClientFromWebRequest(w http.ResponseWriter, r *http.Request) (*github.Client, error) {
 	cookie, err := r.Cookie(GithubTokenCookie)
 	if nil == cookie || `` == cookie.Value {
 		return nil, ErrNotLoggedIn

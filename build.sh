@@ -8,3 +8,6 @@ if [[ ! -d bin ]]; then
   mkdir bin
 fi
 go build -o bin/electricbook src/go/src/ebw/electricbook.go
+go build -o bin/ebw src/go/src/ebw/ebw.go
+cp bin/ebw ~/go/bin
+

@@ -16,12 +16,12 @@ func repoList(c *Context) error {
 		// GithubClient will have redirected us
 		return nil
 	}
-	repos, _, err := client.Repositories.List("", nil)
+	repos, _, err := client.Repositories.List(c.R.Context(), "", nil)
 	if nil != err {
 		return err
 	}
 
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
@@ -41,7 +41,7 @@ func repoView(c *Context) error {
 	}
 
 	repo := c.Vars[`repo`]
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
@@ -62,7 +62,7 @@ func repoUpdate(c *Context) error {
 		return nil
 	}
 	repo := c.Vars[`repo`]
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
@@ -81,12 +81,12 @@ func pullRequestClose(c *Context) error {
 		return nil
 	}
 	repo := c.Vars[`repo`]
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
 	number := int(c.PI(`number`))
-	if err := git.PullRequestClose(client, user, repo, number); nil != err {
+	if err := git.PullRequestClose(c.R.Context(), client, user, repo, number); nil != err {
 		return err
 	}
 	return c.Redirect(`/repo/%s`, repo)
@@ -98,14 +98,14 @@ func pullRequestView(c *Context) error {
 		return nil
 	}
 	repo := c.Vars[`repo`]
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
 
 	c.D[`UserName`] = user
 	c.D[`RepoName`] = repo
-	pr, err := git.GetPullRequest(client, user, repo, int(c.PI(`number`)))
+	pr, err := git.GetPullRequest(c.R.Context(), client, user, repo, int(c.PI(`number`)))
 	if nil != err {
 		return err
 	}
@@ -125,7 +125,7 @@ func pullRequestView(c *Context) error {
 		return err
 	}
 
-	diffs, err := git.PullRequestDiffList(client, user, repo, *pr.Head.SHA, `^book/text/.*`)
+	diffs, err := git.PullRequestDiffList(c.R.Context(), client, user, repo, *pr.Head.SHA, `^book/text/.*`)
 	if nil != err {
 		return err
 	}
@@ -142,7 +142,7 @@ func pullRequestCreate(c *Context) error {
 		return nil
 	}
 	repo := c.Vars[`repo`]
-	user, err := git.Username(client)
+	user, err := git.Username(c.R.Context(), client)
 	if nil != err {
 		return err
 	}
@@ -151,7 +151,8 @@ func pullRequestCreate(c *Context) error {
 	c.D[`RepoName`] = repo
 
 	if `POST` == c.R.Method {
-		if err := git.PullRequestCreate(client, user, repo,
+		if err := git.PullRequestCreate(c.R.Context(),
+			client, user, repo,
 			c.P(`title`), c.P(`notes`)); nil != err {
 			return err
 		}

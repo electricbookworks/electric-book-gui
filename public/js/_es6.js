@@ -716,6 +716,8 @@ var MergeEditor = function () {
 					setValue(remote);
 				}
 			});
+			var right = m.mergely('cm', 'right');
+			console.log('right hand cm = ', right);
 		}
 	}]);
 
@@ -804,6 +806,7 @@ var PullRequestDiffList = function () {
 		this.$ = _DTemplate2[1];
 
 		this.files = [];
+		console.log('DIFFERENCE LIST = ', diffs);
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
 		var _iteratorError = undefined;
@@ -813,6 +816,7 @@ var PullRequestDiffList = function () {
 				var d = _step.value;
 
 				var f = new PRDiffModel(d, prArgs);
+				console.log("DIFFERENCE: ", d);
 				_this.files.push(f);
 				new RepoFileEditLink(_this.el, f, function (x, file) {
 					_this.viewDiff(f);
