@@ -220,11 +220,14 @@ func DuplicateRepo(cntxt context.Context, client *github.Client, githubPassword 
 		return util.Error(err)
 	}
 
+	glog.Infof(`Going to fork repo %s into %s/%s`, templateRepo, githubUsername, newRepo)
+
 	// 2. Checkout the templateRepo with --bare into a new directory called [repoName]
 	if err := runGitDir(workingDir, []string{
 		`clone`,
 		`--bare`,
-		`https://github.com/` + templateRepo + `.git`,
+		`--depth`, `1`,
+		`https://` + githubUsername + `:` + githubPassword + `@github.com/` + templateRepo + `.git`,
 		repoName,
 	}); nil != err {
 		return util.Error(err)

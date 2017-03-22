@@ -15,12 +15,17 @@ type github struct {
 	Client string `yaml:"client"`
 	Secret string `yaml:"secret"`
 }
+type printserver struct {
+	Server string `yaml:"server"`
+	Token  string `yaml:"token"`
+}
 
 type config struct {
-	Github   *github  `yaml:"github"`
-	Server   string   `yaml:"server"`
-	Database database `yaml:"database"`
-	GitCache string   `yaml:"git_cache"`
+	Github   *github     `yaml:"github"`
+	Server   string      `yaml:"server"`
+	Database database    `yaml:"database"`
+	GitCache string      `yaml:"git_cache"`
+	Print    printserver `yaml:"print"`
 }
 
 func (c config) String() string {

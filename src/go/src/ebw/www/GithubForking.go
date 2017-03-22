@@ -1,10 +1,12 @@
 package www
 
 import (
-	"strings"
+	// "strings"
 
 	"github.com/golang/glog"
-	"github.com/google/go-github/github"
+	// "github.com/google/go-github/github"
+
+	"ebw/git"
 )
 
 var _ = glog.Infof
@@ -15,18 +17,22 @@ func githubCreateFork(c *Context) error {
 		// GithubClient will have redirected us
 		return nil
 	}
+	token, err := git.GithubTokenFromWebRequest(c.R)
+	if nil != err {
+		return err
+	}
 	/** @TODO Need to add nonce to prevent issues */
 	c.D[`RepoName`] = c.P(`repo_name`)
 	c.D[`NewName`] = c.P(`new_name`)
 	if "fork" != c.P(`action`) {
 		return c.Render(`repo_fork.html`, nil)
 	}
-	parts := strings.Split(c.P(`repo_name`), `/`)
-	repo, response, err := client.Repositories.CreateFork(c.R.Context(), parts[0], parts[1], &github.RepositoryCreateForkOptions{})
-	if nil != err {
+
+	if err := git.DuplicateRepo(c.R.Context(),
+		client, token,
+		c.P(`repo_name`), c.P(`new_name`)); nil != err {
 		return err
 	}
-	glog.Infof("RESPONSE = %v", response)
-	glog.Infof("REPO = %v", repo)
+
 	return c.Redirect(`/`)
 }

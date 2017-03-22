@@ -18,15 +18,13 @@ var ErrNotLoggedIn = errors.New(`No github token cookie found`)
 // GithubClient returns a client for Github communcations from the given
 // web request.
 func GithubClientFromWebRequest(w http.ResponseWriter, r *http.Request) (*github.Client, error) {
-	cookie, err := r.Cookie(GithubTokenCookie)
-	if nil == cookie || `` == cookie.Value {
-		return nil, ErrNotLoggedIn
-	}
+	token, err := GithubTokenFromWebRequest(r)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, err
 	}
+
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: cookie.Value},
+		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
@@ -38,4 +36,16 @@ func GithubClientFromWebRequest(w http.ResponseWriter, r *http.Request) (*github
 	// 	return nil, ErrNotLoggedIn
 	// }
 	return client, nil
+}
+
+// GithubTokenFromWebRequest returns the github token set with the token.
+func GithubTokenFromWebRequest(r *http.Request) (string, error) {
+	cookie, err := r.Cookie(GithubTokenCookie)
+	if nil == cookie || `` == cookie.Value {
+		return ``, ErrNotLoggedIn
+	}
+	if nil != err {
+		return ``, util.Error(err)
+	}
+	return cookie.Value, nil
 }

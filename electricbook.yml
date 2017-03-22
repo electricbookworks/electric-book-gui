@@ -4,4 +4,6 @@ github:
 server: "http://localhost:16101"
 # git_cache is the local directory under which git checkouts will be cached
 git_cache: "git_cache"
-
+print:
+  server: "http://bookworks.lxc:8000/"
+  token: "very-secret-print-token"

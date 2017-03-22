@@ -5,7 +5,7 @@ import (
 	"os"
 	// "net/http"
 
-	// "github.com/google/go-github/github"
+	"github.com/google/go-github/github"
 
 	"ebw/git"
 )
@@ -16,7 +16,12 @@ func repoList(c *Context) error {
 		// GithubClient will have redirected us
 		return nil
 	}
-	repos, _, err := client.Repositories.List(c.R.Context(), "", nil)
+	repos, _, err := client.Repositories.List(c.R.Context(), "", &github.RepositoryListOptions{
+		ListOptions: github.ListOptions{
+			PerPage: 500,
+		},
+		Visibility: `all`,
+	})
 	if nil != err {
 		return err
 	}
