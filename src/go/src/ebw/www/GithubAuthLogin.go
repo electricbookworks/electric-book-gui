@@ -74,14 +74,6 @@ func githubAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoffHandler(c *Context) error {
-	client, err := git.ClientFromWebRequest(c.W, c.R)
-	if nil != err {
-		return err
-	}
-	if nil == client {
-		return nil
-	}
-
 	http.SetCookie(c.W, &http.Cookie{
 		Name:    git.GithubTokenCookie,
 		Value:   ``,
@@ -89,7 +81,7 @@ func LogoffHandler(c *Context) error {
 		Expires: time.Time{},
 	})
 
-	c.Redirect(`/to-github?u=%s`, url.QueryEscape(client.Username))
+	c.Redirect(`/`)
 	return nil
 }
 
