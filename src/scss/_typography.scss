@@ -4,28 +4,34 @@ $workFont: 'Quattrocento Sans', sans-serif;
 body {
 	font-family: $workFont;
 }
-h1 {
-	font-size: 2.2em;
+
+h1,
+h2,
+h3,
+h4 {
+	margin-top: 0;
 }
-h2 {
-	font-size: 1.8em;
+
+p {
+	margin-top: 0;
 }
-h3 {
-	font-size: 1.4em;
-}
+
 a {
 	color: $color-link;
-	text-decoration: none;
 	&:hover {
-		background-color: $color-link-hover-bg;
+		text-decoration: none;
 	}
 }
+
 input[type='text'] {
 	font-family: $workFont;
 	border: 1px solid $color-offset;
 	padding: 0.5em;
 }
-button, input[type='button'], input[type='submit'] {
+
+button,
+input[type='button'],
+input[type='submit'] {
 	border: 1px solid $color-offset;
 	color: $color-link;
 	padding: 0.4em;

@@ -1,9 +1,59 @@
-body {
-    padding: 1em;
+[role="banner"] {
+    background: #000;
+    color: #fff;
+    a {
+        color: #fff;
+    }
 }
 
 .nav-main {
+    padding: 1em;
+    list-style: none;
+    margin-top: 0;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1em;
+}
+
+main {
+    padding: 1em;
+}
+
+.repo-list {
+    padding-left: 0;
+    list-style: none;
+    margin-top: 0;
+    h2 {
+        margin-bottom: 0;
+    }
+}
+
+.cta {
+    background: $color-link;
+	color: white;
+	display: inline-block;
+    text-decoration: none;
+	padding: 0.5em 1em;
+	margin-bottom: 1em;
+	border-radius: 0.25em;
+    border-bottom: 0.25em solid darken($color-link, 20%);
+	&:hover {
+		background: lighten($color-link, 20%);
+        border-bottom: 0.25em solid transparent;
+	}
+}
+
+.repo {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    border-right: 1px solid $color-offset;
+    border-bottom: 1px solid $color-offset;
+    border-left: 1px solid $color-offset;
+    &:first-child {
+        border-top: 1px solid $color-offset;
+    }
+}
+
+.repo-manage {
+
 }
