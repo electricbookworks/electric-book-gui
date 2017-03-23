@@ -1,7 +1,13 @@
 {{template "_header.html" .}}
 
-<p>
-	<a href="{{.AuthURL}}">Click here to login on github</a>
-</p>
+<p>The Electric Book Manager uses your GitHub account to manage your books. If you don't have one already, go to <a href="https://github.com/">github.com</a> and <a href="https://github.com/join">sign up</a> for an account.</p>
+
+<p>On Step 2 choose the free plan and don't tick the box for "Help me set up an organization next."</p>
+
+<p>You'll need to tell GitHub that you grant permission for the Electric Book Manager to update the books that you keep on GitHub. They call this "authorizing an application". <strong>You only need to do this once</strong>.</p>
+
+<p>Go to GitHub and <a href="{{.AuthURL}}">authorize the Electric Book Manager</a></p>
+
+<p>Once you've done that you'll be automatically brought be back here, and see a list of all your books.</p>
 
 {{template "_footer.html" .}}
