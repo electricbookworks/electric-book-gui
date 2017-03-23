@@ -200,7 +200,7 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, n
 	if err := runGitDir(workingDir, []string{
 		`clone`,
 		`--bare`,
-		`--depth`, `1`,
+		// `--depth`, `1`,
 		`https://` + githubUsername + `:` + githubPassword + `@github.com/` + templateRepo + `.git`,
 		repoName,
 	}); nil != err {
