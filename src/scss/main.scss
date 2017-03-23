@@ -1,28 +1,21 @@
 /* main.scss */
 
 @import "font-awesome/scss/font-awesome.scss";
-@import "html5_reset";
+@import 'normalize';
+@import 'h5bp';
 @import 'colors';
 @import "typography";
-@import "layout";
+@import 'layout';
 
 @import "repo_file_editor";
 @import 'pages/pull_new';
 @import 'pages/pull_request_view';
-@import 'pages/repo_list';
 @import 'pages/repo_view';
 
 @import 'CodeMirror';
 
 @import 'widgets/toolbar_menu';
-@import 'widgets/topbar';
 @import 'widgets/Toast';
-
-#container {
-	width: 100vw;
-	height: 100vh;
-	background-color: $color-background;
-}
 
 #workspace {
 	display: flex;
@@ -31,18 +24,10 @@
 	align-items: stretch;
 	height: 100%;
 
-	#topbar {
-		flex-grow:0;
-	}
-	#middlebar {
-		flex-grow: 1;
-		overflow-y: scroll;
-	}
 	#bottombar {
 		flex-grow: 0;
 		padding-left: 1em;
-		
+
 		text-align: right;
 	}
 }
-
