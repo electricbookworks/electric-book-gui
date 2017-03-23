@@ -10,5 +10,4 @@ git_cache/pr_requests/*
 git_cache/repos/*
 !git_cache/pr_requests/README.md
 !git_cache/repos/README.md
-
-
+node_modules

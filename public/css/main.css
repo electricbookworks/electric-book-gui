@@ -2964,11 +2964,6 @@ a {
   a:hover {
     text-decoration: none; }
 
-input[type='text'] {
-  font-family: "Quattrocento Sans", sans-serif;
-  border: 1px solid #99c;
-  padding: 0.5em; }
-
 .cta {
   background: #339;
   color: white;
@@ -2984,6 +2979,11 @@ input[type='text'] {
   .cta:hover {
     background: #6666cc;
     border-bottom: 0.25em solid transparent; }
+
+input[type='text'] {
+  font-family: "Quattrocento Sans", sans-serif;
+  border: 1px solid #99c;
+  padding: 0.5em; }
 
 [role="banner"] {
   background: #000;
@@ -3027,6 +3027,9 @@ main {
 
 .form-fork [type="text"] {
   width: 30em; }
+
+.l-center {
+  text-align: center; }
 
 .repo-file-editor-workspace {
   display: flex;
