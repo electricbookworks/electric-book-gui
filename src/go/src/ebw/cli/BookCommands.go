@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"flag"
 	"os"
@@ -11,7 +10,6 @@ import (
 	"github.com/craigmj/commander"
 	"github.com/google/go-github/github"
 
-	"ebw/cli/config"
 	"ebw/git"
 	"ebw/util"
 )
@@ -41,36 +39,31 @@ func BookNewCommand() *commander.Command {
 			if 1 != len(args) {
 				return errors.New(`book new requires 1 parameter, the name of the new book repo`)
 			}
+			client, err := git.ClientFromCLIConfig()
+			if nil != err {
+				return err
+			}
 
-			return BookNew(*template, args[0])
+			return BookNew(client, *template, args[0])
 		})
 }
 
-func BookContribute(cntxt context.Context, repo string) error {
-	client, err := config.Config.GithubClient()
-	if nil != err {
-		return err
-	}
+func BookContribute(client *git.Client, repo string) error {
 	parts := strings.Split(repo, `/`)
 	if 2 != len(parts) {
 		return errors.New(`repo should be user/repo format`)
 	}
-	_, _, err = client.Repositories.CreateFork(
-		cntxt,
+	_, _, err := client.Repositories.CreateFork(
+		client.Context,
 		parts[0],
 		parts[1],
 		&github.RepositoryCreateForkOptions{})
 	if nil != err {
 		return err
 	}
-	// Then checkout the repo to our wd
-	user, err := config.Config.GetUser()
-	if nil != err {
-		return util.Error(err)
-	}
 
-	return git.GitCloneTo(cntxt, client, "", /* empty working dir will default to current dir */
-		user.Token, "", filepath.Base(repo))
+	return git.GitCloneTo(client, "", /* empty working dir will default to current dir */
+		client.Token, "", filepath.Base(repo))
 }
 
 func BookContributeCommand() *commander.Command {
@@ -81,7 +74,11 @@ func BookContributeCommand() *commander.Command {
 			if 1 != len(args) {
 				return errors.New(`book join requires 1 parameter, the username/repo of the book to join`)
 			}
-			return BookContribute(context.Background(), args[0])
+			client, err := git.ClientFromCLIConfig()
+			if nil != err {
+				return err
+			}
+			return BookContribute(client, args[0])
 		})
 }
 
@@ -93,7 +90,12 @@ func BookCloneCommand() *commander.Command {
 			if 1 != len(args) {
 				return errors.New(`book clone requires 1 parameter, the name of your github hosted book`)
 			}
-			return BookClone(context.Background(), args[0])
+
+			client, err := git.ClientFromCLIConfig()
+			if nil != err {
+				return err
+			}
+			return BookClone(client, args[0])
 		})
 }
 
@@ -112,18 +114,13 @@ func BookCreatePullRequestCommand() *commander.Command {
 			if nil != err {
 				return util.Error(err)
 			}
-			client, err := config.Config.GithubClient()
+
+			client, err := git.ClientFromCLIConfig()
 			if nil != err {
-				return util.Error(err)
-			}
-			user, err := config.Config.GetUser()
-			if nil != err {
-				return util.Error(err)
+				return err
 			}
 
-			return git.GithubCreatePullRequest(context.Background(),
-				client,
-				user.Token,      // github username
+			return git.GithubCreatePullRequest(client,
 				workingDir,      // This defines my repo and my current branch, and hence also my upstream
 				*remote,         // git 'remote' on which to make pr
 				*upstreamBranch, // The upstream branch I wish to PR against
@@ -133,38 +130,21 @@ func BookCreatePullRequestCommand() *commander.Command {
 		})
 }
 
-func BookClone(cntxt context.Context, repoName string) error {
-	client, err := config.Config.GithubClient()
-	if nil != err {
-		return err
-	}
-	user, err := config.Config.GetUser()
-	if nil != err {
-		return util.Error(err)
-	}
+func BookClone(client *git.Client, repoName string) error {
 	// Checkout our repo as ourselves.
-	return git.GitCloneTo(cntxt, client,
+	return git.GitCloneTo(client,
 		"", /* empty working dir will default to current dir */
-		user.Token, "", repoName)
+		client.Token, "", repoName)
 }
 
 // BookNew creates a new book with the newRepoName for the current client,
 // based on the templateRepo given.
-func BookNew(templateRepo, newRepoName string) error {
-	cntxt := context.Background()
-	client, err := config.Config.GithubClient()
-	if nil != err {
-		return err
-	}
-	user, err := config.Config.GetUser()
-	if nil != err {
-		return util.Error(err)
-	}
-	if err := git.DuplicateRepo(cntxt, client, user.Token, templateRepo, newRepoName); nil != err {
+func BookNew(client *git.Client, templateRepo, newRepoName string) error {
+	if err := git.DuplicateRepo(client, client.Token, templateRepo, newRepoName); nil != err {
 		return err
 	}
 
 	// Checkout our new repo as ourselves.
-	return git.GitCloneTo(cntxt, client, "", /* empty working dir will default to current dir */
-		user.Token, "", newRepoName)
+	return git.GitCloneTo(client, "", /* empty working dir will default to current dir */
+		client.Token, "", newRepoName)
 }

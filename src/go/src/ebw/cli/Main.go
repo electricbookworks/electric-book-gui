@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"flag"
 	"os"
 
@@ -30,7 +29,7 @@ func Main() {
 	} else {
 		rootDir, err := git.GitFindRepoRootDirectory(``)
 		if nil == err {
-			repoUser, _, err := git.GitRemoteRepo(context.Background(), rootDir, ``)
+			repoUser, _, err := git.GitRemoteRepo(rootDir, ``)
 			if nil == err {
 				if err := config.Config.SetUser(repoUser); nil != err {
 					glog.Error(err)

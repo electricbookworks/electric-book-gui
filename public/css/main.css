@@ -2636,6 +2636,8 @@ button, input[type='button'], input[type='submit'] {
     #repo-workspace #repo-nav h1 {
       font-size: 1.3em;
       font-weight: bold; }
+    #repo-workspace #repo-nav .repo-commands {
+      display: block; }
     #repo-workspace #repo-nav .repo-menu {
       padding: 0.4em 1em 0 1em;
       margin-top: 1em;
@@ -2728,6 +2730,23 @@ button, input[type='button'], input[type='submit'] {
       #topbar #right-menu li:last-child:after {
         content: "";
         padding: 0; }
+
+.Toast {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: 0; }
+  .Toast > div {
+    background-color: rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+    color: white;
+    border-radius: 0.6em;
+    border: 1px solid black;
+    margin: 1em auto;
+    padding: 1em;
+    box-shadow: 5px 5px 5px black;
+    width: 20em;
+    text-alignment: center; }
 
 #container {
   width: 100vw;

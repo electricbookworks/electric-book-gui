@@ -176,6 +176,16 @@ var API = function () {
 			return this._rpc("PullRequestUpdate", arguments);
 		}
 	}, {
+		key: "Commit",
+		value: function Commit(repo, message) {
+			return this._rpc("Commit", arguments);
+		}
+	}, {
+		key: "PrintPdf",
+		value: function PrintPdf(repo) {
+			return this._rpc("PrintPdf", arguments);
+		}
+	}, {
 		key: "flatten",
 		value: function flatten(callback) {
 			var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -386,6 +396,16 @@ var APIWs = function () {
 			return this._rpc("PullRequestUpdate", arguments);
 		}
 	}, {
+		key: "Commit",
+		value: function Commit(repo, message) {
+			return this._rpc("Commit", arguments);
+		}
+	}, {
+		key: "PrintPdf",
+		value: function PrintPdf(repo) {
+			return this._rpc("PrintPdf", arguments);
+		}
+	}, {
 		key: "flatten",
 		value: function flatten(callback) {
 			var context = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -412,7 +432,7 @@ if ("function" == typeof window.define && window.define.amd) {
 
 var DTemplate = function () {
 
-	var templates = { "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<span data-set=\"name\"> </span>\n\t</li>\n</ul>", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header\">\n\t\t<h1 class=\"menu-title\">Chapters</h1>\n\t\t<div class=\"menu-controls\">\n\t\t\t<button data-event='click:click-new'><i class=\"fa fa-plus\"> </i></button>\n\t\t</div>\n\t</div>\n\t<ul id=\"files\" data-set=\"fileList\">\n\t</ul>\n</div>" };
+	var templates = { "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<span data-set=\"name\"> </span>\n\t</li>\n</ul>", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\" title=\"Save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\" title=\"Revert\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\" title=\"Delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h1 class=\"menu-title\">Chapters</h1>\n\t\t<div class=\"menu-controls\">\n\t\t\t<button data-event='click:click-new'><i class=\"fa fa-plus\"> </i></button>\n\t\t</div>\n\t</div>\n\t<ul id=\"files\" data-set=\"fileList\">\n\t</ul>\n</div>" };
 
 	var mk = function mk(k, html) {
 		var el = document.createElement('div');
@@ -512,6 +532,21 @@ var EBW = function () {
 			console.error('ERROR: ', err);
 			alert(err);
 		}
+	}, {
+		key: 'Toast',
+		value: function (_Toast) {
+			function Toast(_x) {
+				return _Toast.apply(this, arguments);
+			}
+
+			Toast.toString = function () {
+				return _Toast.toString();
+			};
+
+			return Toast;
+		}(function (msg) {
+			Toast.Show(msg);
+		})
 	}, {
 		key: 'flatten',
 		value: function flatten(callback) {
@@ -922,11 +957,16 @@ window.PullRequestList = PullRequestList;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * RepoEditorPage is the JS controller for the page that allows
+ * editing of a repo.
+ */
 var RepoEditorPage = function RepoEditorPage(repo) {
 	var _this = this;
 
 	_classCallCheck(this, RepoEditorPage);
 
+	this.repo = repo;
 	this.editor = new RepoFileEditorCM(document.getElementById('editor'));
 	this.files = new RepoFileList(document.getElementById('files'), repo, this.editor);
 	new PullRequestList(document.getElementById('pull-request-list'), repo);
@@ -937,6 +977,23 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 			evt.returnValue = 'confirm';
 			evt.stopPropagation();
 		}
+	});
+	document.getElementById('repo-commit').addEventListener('click', function (evt) {
+		// @TODO Need to check that all files are saved - or at least prompt user...
+		evt.preventDefault();
+		evt.stopPropagation();
+		var msg = prompt('Enter the commit message');
+		if (msg) {
+			EBW.Toast('Committing ' + msg);
+			EBW.API().Commit(_this.repo, msg).then(function () {
+				EBW.Toast('Changes committed: ' + msg);
+			}).catch(EBW.Error);
+		}
+	});
+	document.getElementById('repo-print').addEventListener('click', function (evt) {
+		evt.preventDefault();evt.stopPropagation();
+		EBW.Toast('Pressed PRINT');
+		console.log('Pressed PRINT');
 	});
 };
 
@@ -1007,6 +1064,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/** @deprecated
+ * We are using RepoFileEditorCM instead
+ */
 var mySettings = {
 	onShiftEnter: { keepDefault: false, replaceWith: '<br />\n' },
 	onCtrlEnter: { keepDefault: false, openWith: '\n<p>', closeWith: '</p>' },
@@ -1016,12 +1076,19 @@ var mySettings = {
 		} }, { name: 'Preview', className: 'preview', call: 'preview' }]
 };
 
+/**
+ * @deprecated
+ * Use RepoFileEditorCM instead
+ */
+
 var RepoFileEditor = function () {
 	function RepoFileEditor(parent) {
 		var repo = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
 		_classCallCheck(this, RepoFileEditor);
 
+		alert('@deprecated: use RepoFileEditorCM instead');
+		debugger;
 		this.parent = parent;
 		this.repo = repo;
 		if (!repo) {
@@ -1521,6 +1588,50 @@ var RepoFileModel = function () {
 
 	return RepoFileModel;
 }();
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var toast_instance = null;
+
+var Toast = function () {
+	function Toast() {
+		var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+		_classCallCheck(this, Toast);
+
+		if (null == toast_instance) {
+			toast_instance = this;
+			if (!el) {
+				el = document.createElement("div");
+				document.body.appendChild(el);
+			}
+			toast_instance.parent = el;
+			toast_instance.parent.classList.add("Toast");
+		}
+		return toast_instance;
+	}
+
+	_createClass(Toast, null, [{
+		key: "Show",
+		value: function Show(msg) {
+			var T = new Toast();
+			var div = document.createElement("div");
+			div.textContent = msg;
+			T.parent.appendChild(div);
+			setTimeout(function () {
+				div.remove();
+			}, 2500);
+			return div;
+		}
+	}]);
+
+	return Toast;
+}();
+
+window.Toast = Toast;
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

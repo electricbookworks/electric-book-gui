@@ -1,3 +1,6 @@
+/** @deprecated
+ * We are using RepoFileEditorCM instead
+ */
 let mySettings = {
 	onShiftEnter:  	{keepDefault:false, replaceWith:'<br />\n'},
 	onCtrlEnter:  	{keepDefault:false, openWith:'\n<p>', closeWith:'</p>'},
@@ -18,8 +21,14 @@ let mySettings = {
 	]
 };
 
+/**
+ * @deprecated
+ * Use RepoFileEditorCM instead
+ */
 class RepoFileEditor {
 	constructor(parent, repo=false) {
+		alert('@deprecated: use RepoFileEditorCM instead');
+		debugger;
 		this.parent = parent;
 		this.repo = repo;
 		if (!repo) {

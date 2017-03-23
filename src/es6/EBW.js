@@ -16,6 +16,9 @@ class EBW {
 		console.error('ERROR: ', err);
 		alert(err);
 	}
+	static Toast(msg) {
+		Toast.Show(msg);	
+	}
 	static flatten(callback, context=null) {
 		return function(argsArray) {
 			callback.apply(context, argsArray);

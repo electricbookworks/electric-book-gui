@@ -1,8 +1,6 @@
 package git
 
 import (
-	"bytes"
-	"context"
 	"crypto/md5"
 	"errors"
 	"fmt"
@@ -30,9 +28,9 @@ var ErrNoGitDirectory = errors.New(`Not a GIT directory`)
 var ErrUnknownUser = errors.New(`UnknownUser: no recognized login or ID`)
 
 // Username returns the username of the currently logged in user on GitHub.
-func Username(cntxt context.Context, client *github.Client) (string, error) {
+func Username(client *Client) (string, error) {
 	// Empty username gives the currently logged-in user
-	user, _, err := client.Users.Get(cntxt, "")
+	user, _, err := client.Users.Get(client.Context, "")
 	if nil != err {
 		return ``, util.Error(err)
 	}
@@ -45,7 +43,7 @@ func Username(cntxt context.Context, client *github.Client) (string, error) {
 	return ``, ErrUnknownUser
 }
 
-// RepoDir returns the local git_cache repo location.
+// RepoDir returns the local git_cache repo working directory location.
 func RepoDir(user, repo string) (string, error) {
 	root, err := os.Getwd()
 	if nil != err {
@@ -58,54 +56,12 @@ func RepoDir(user, repo string) (string, error) {
 	return filepath.Join(root, repo), nil
 }
 
-// runGit runs git in the user/repo directory with the given args, returning error
-// on failure.
-func runGit(user, repo string, args []string) error {
-	root, err := RepoDir(user, repo)
-	if nil != err {
-		return err
-	}
-	return runGitDir(root, args)
-}
-
-func runGitDir(dir string, args []string) error {
-	glog.Infof(`git command dir=%s, args = [%v]`, dir, args)
-	cmd := exec.Command(`git`, args...)
-	cmd.Dir = dir
-
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	return cmd.Run()
-}
-
-// getGitOutput runs the git command in the given directory
-// and returns stdout as a string
-func getGitOutput(dir string, args []string) (string, error) {
-	if `` == dir {
-		var err error
-		dir, err = os.Getwd()
-		if nil != err {
-			return ``, util.Error(err)
-		}
-	}
-	glog.Infof(`git command dir=%s, args = [%v]`, dir, args)
-	cmd := exec.Command(`git`, args...)
-	cmd.Dir = dir
-
-	var stdOut bytes.Buffer
-	cmd.Stdout, cmd.Stderr = &stdOut, os.Stderr
-
-	if err := cmd.Run(); nil != err {
-		return ``, util.Error(err)
-	}
-	return stdOut.String(), nil
-}
-
 // Checkout checks out the github repo into the cached directory system,
 // and returns the path to the root of the repo. If the client is already
 // checked out, it updates from the origin server.
-func Checkout(client *github.Client, user, name, url string) (string, error) {
+func Checkout(client *Client, user, name, url string) (string, error) {
 	if `` == url {
-		url = fmt.Sprintf(`https://github.com/%s/%s`, user, name)
+		url = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`, client.Username, client.Token, user, name)
 	}
 	glog.Infof(`Cloning/updating %s/%s from %s`, user, name, url)
 	root, err := RepoDir(user, ``)
@@ -128,8 +84,22 @@ func Checkout(client *github.Client, user, name, url string) (string, error) {
 	return filepath.Join(root, name), cmd.Run()
 }
 
+func Commit(client *Client, user, repo, message string) error {
+	root, err := RepoDir(user, repo)
+	if nil != err {
+		return err
+	}
+	if err = runGitDir(root, []string{`commit`, `-am`, message}); nil != err {
+		return err
+	}
+	if err = runGitDir(root, []string{`push`, `origin`, `master`}); nil != err {
+		return err
+	}
+	return nil
+}
+
 // gitUpdate updates the files in the given repo root directory.
-func gitUpdate(client *github.Client, root string) (string, error) {
+func gitUpdate(client *Client, root string) (string, error) {
 	cmd := exec.Command(`git`, `pull`, `origin`, `master`)
 	cmd.Dir = root
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
@@ -143,7 +113,7 @@ func RemoteName(remoteUrl string) string {
 }
 
 // RemoteAdd adds a new Remote to the git remotes
-func RemoteAdd(client *github.Client, user, repo, remoteUrl string) (string, error) {
+func RemoteAdd(client *Client, user, repo, remoteUrl string) (string, error) {
 	remote := RemoteName(remoteUrl)
 	return remote, runGit(user, repo, []string{`remote`, `add`, remote, remoteUrl})
 }
@@ -157,8 +127,10 @@ func UrlUserRepo(remoteUrl string) (string, string, error) {
 	return ``, ``, fmt.Errorf(`repo %s is not a github repo`, remoteUrl)
 }
 
-// PullRequestVersions returns the local and remote version of the file named in filePath.
-func PullRequestVersions(cntxt context.Context, client *github.Client, user, repo, remoteUrl, remoteSha, filePath string) (string, string, error) {
+// PullRequestVersions returns the local and remote version of the file
+// named in filePath. This is used to match files for pull-request file
+// merging.
+func PullRequestVersions(client *Client, user, repo, remoteUrl, remoteSha, filePath string) (string, string, error) {
 	// We are sure this exists because of the point at which we call
 	// this from the JS front-end
 
@@ -195,15 +167,17 @@ func PullRequestVersions(cntxt context.Context, client *github.Client, user, rep
 	return string(localFileRaw), string(remoteFileRaw), nil
 }
 
-// DuplicateRepo duplicates the template repo into the user's github repos, and gives it
-// the name newRepo
-// This is used to start a new book, without being a fork of the EBW electric-book repo.
-// See https://help.github.com/articles/duplicating-a-repository/ for more infromation.
-func DuplicateRepo(cntxt context.Context, client *github.Client, githubPassword string, templateRepo string, newRepo string) error {
+// DuplicateRepo duplicates the template repo into the user's github repos,
+//  and gives it the name newRepo.
+// This is used to start a new book, without being a fork of
+// the EBW electric-book repo.
+// See https://help.github.com/articles/duplicating-a-repository/
+// for more information.
+func DuplicateRepo(client *Client, githubPassword string, templateRepo string, newRepo string) error {
 	repoName := filepath.Base(newRepo)
 	// 1. Check the user doesn't already have a newRepo, and if not, create
 	// a newRepo for the user
-	user, _, err := client.Users.Get(cntxt, "") // Get the current authenticated user
+	user, _, err := client.Users.Get(client.Context, "") // Get the current authenticated user
 	if nil != err {
 		return util.Error(err)
 	}
@@ -212,7 +186,7 @@ func DuplicateRepo(cntxt context.Context, client *github.Client, githubPassword 
 	workingDir := filepath.Join(os.TempDir(), githubUsername, newRepo)
 	os.MkdirAll(workingDir, 0755)
 
-	_, _, err = client.Repositories.Create(cntxt, "", &github.Repository{
+	_, _, err = client.Repositories.Create(client.Context, "", &github.Repository{
 		Name:  &newRepo,
 		Owner: user,
 	})
@@ -246,12 +220,12 @@ func DuplicateRepo(cntxt context.Context, client *github.Client, githubPassword 
 	return nil
 }
 
-func ContributeToRepo(cntxt context.Context, client *github.Client) error {
-	//func DuplicateRepo(cntxt context.Context, client *github.Client, githubPassword string, newRepo string) error {
+func ContributeToRepo(client *Client) error {
+	// See CLI BookContribute for model of how this should function.
 	return nil
 }
 
-func GitCloneTo(cntxt context.Context, client *github.Client, workingDir,
+func GitCloneTo(client *Client, workingDir,
 	githubPassword string, repoUsername, repoName string) error {
 	if "" == workingDir {
 		wd, err := os.Getwd()
@@ -262,7 +236,7 @@ func GitCloneTo(cntxt context.Context, client *github.Client, workingDir,
 	}
 	// 1. Check the user doesn't already have a newRepo, and if not, create
 	// a newRepo for the user
-	user, _, err := client.Users.Get(cntxt, "") // Get the current authenticated user
+	user, _, err := client.Users.Get(client.Context, "") // Get the current authenticated user
 	if nil != err {
 		return util.Error(err)
 	}
@@ -284,6 +258,8 @@ func GitCloneTo(cntxt context.Context, client *github.Client, workingDir,
 // GithubDeleteRepo deletes a repository on the
 // github systems.
 // See https://developer.github.com/v3/repos/#delete-a-repository
+// Note that this should be used with extreme caution, since this is a
+// total delete of the repo and all it contains, and cannot be undone.
 func GithubDeleteRepo(apiToken string, githubUsername string,
 	repoName string) error {
 	requestUrl := `https://api.github.com/repos/` + githubUsername + `/` + repoName
@@ -315,7 +291,7 @@ curl -v -X DELETE -H "Authorization: token %s" '%s'
 // [remotename] [remoteURL] ([fetch|push)])
 // so parses the results of `git remote get-url [remote]`
 // which is expected to be a URL, takes the path and strips .git
-func GitRemoteRepo(cntxt context.Context, workingDir, remote string) (remoteUser, remoteProject string, err error) {
+func GitRemoteRepo(workingDir, remote string) (remoteUser, remoteProject string, err error) {
 	if `` == remote {
 		remote = `origin`
 	}
@@ -349,9 +325,9 @@ func GitRemoteRepo(cntxt context.Context, workingDir, remote string) (remoteUser
 	return remoteUser, remoteProject, nil
 }
 
-// GitCurrentBranch returns the name of the currently checkedout
+// GitCurrentBranch returns the name of the currently checked-out
 // branch.
-func GitCurrentBranch(cntxt context.Context, workingDir string) (string, error) {
+func GitCurrentBranch(clinet *Client, workingDir string) (string, error) {
 	branchesOut, err := getGitOutput(workingDir, []string{
 		`branch`, `--list`,
 	})

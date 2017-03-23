@@ -1,7 +1,6 @@
 package git
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,16 +13,16 @@ import (
 	"ebw/util"
 )
 
-func ListPullRequests(cntxt context.Context, client *github.Client, user, repo string) ([]*github.PullRequest, error) {
-	requests, _, err := client.PullRequests.List(cntxt, user, repo, &github.PullRequestListOptions{})
+func ListPullRequests(client *Client, user, repo string) ([]*github.PullRequest, error) {
+	requests, _, err := client.PullRequests.List(client.Context, user, repo, &github.PullRequestListOptions{})
 	if nil != err {
 		return nil, util.Error(err)
 	}
 	return requests, nil
 }
 
-func GetPullRequest(cntxt context.Context, client *github.Client, user, repo string, number int) (*github.PullRequest, error) {
-	pr, _, err := client.PullRequests.Get(cntxt, user, repo, number)
+func GetPullRequest(client *Client, user, repo string, number int) (*github.PullRequest, error) {
+	pr, _, err := client.PullRequests.Get(client.Context, user, repo, number)
 	return pr, err
 }
 
@@ -70,7 +69,7 @@ func PullRequestCheckout(remoteUrl, sha string) (string, error) {
 	return prRoot, nil
 }
 
-func PullRequestDiffList(cntxt context.Context, client *github.Client, user, repo string,
+func PullRequestDiffList(client *Client, user, repo string,
 	sha string, pathRegexp string) ([]*PullRequestDiff, error) {
 	localPath, err := RepoDir(user, repo)
 	if nil != err {
@@ -86,9 +85,9 @@ func PullRequestDiffList(cntxt context.Context, client *github.Client, user, rep
 
 // PullRequestUpdate just updates the file in the 'master' repo the
 // same as editing in the regular system.
-func PullRequestUpdate(cntxt context.Context, client *github.Client, user, repo string,
+func PullRequestUpdate(client *Client, user, repo string,
 	sha string, path string, content []byte) error {
-	return UpdateFile(cntxt, client, user, repo, path, content)
+	return UpdateFile(client, user, repo, path, content)
 	// localPath, err := RepoDir(user, repo)
 	// if nil != err {
 	// 	return err
@@ -99,11 +98,11 @@ func PullRequestUpdate(cntxt context.Context, client *github.Client, user, repo 
 	// return nil
 }
 
-func PullRequestClose(cntxt context.Context, client *github.Client, user, repo string, number int) error {
+func PullRequestClose(client *Client, user, repo string, number int) error {
 	closedAt := time.Now()
 	merged := true
 	state := `closed`
-	_, _, err := client.PullRequests.Edit(cntxt, user, repo, number, &github.PullRequest{
+	_, _, err := client.PullRequests.Edit(client.Context, user, repo, number, &github.PullRequest{
 		Number:   &number,
 		ClosedAt: &closedAt,
 		Merged:   &merged,
@@ -115,13 +114,13 @@ func PullRequestClose(cntxt context.Context, client *github.Client, user, repo s
 	return nil
 }
 
-func PullRequestCreate(cntxt context.Context, client *github.Client, user, repo, title, notes string) error {
+func PullRequestCreate(client *Client, user, repo, title, notes string) error {
 	// base := `master`
 	head := fmt.Sprintf(`%s:master`, user)
 	// head := `master`
 	base := `master`
 
-	upstream, _, err := client.Repositories.Get(cntxt, user, repo)
+	upstream, _, err := client.Repositories.Get(client.Context, user, repo)
 	if nil != err {
 		return err
 	}
@@ -130,7 +129,7 @@ func PullRequestCreate(cntxt context.Context, client *github.Client, user, repo,
 
 	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
 		title, head, base, notes, upstreamUser, upstreamRepo)
-	_, _, err = client.PullRequests.Create(cntxt,
+	_, _, err = client.PullRequests.Create(client.Context,
 		upstreamUser, upstreamRepo,
 		&github.NewPullRequest{
 			Title: &title,
@@ -148,9 +147,8 @@ func PullRequestCreate(cntxt context.Context, client *github.Client, user, repo,
 	return nil
 }
 
-func GithubCreatePullRequest(cntxt context.Context,
-	client *github.Client,
-	githubPassword string,
+func GithubCreatePullRequest(
+	client *Client,
 	workingDir string,
 	remote string,
 	upstreamBranch string,
@@ -162,22 +160,19 @@ func GithubCreatePullRequest(cntxt context.Context,
 			return util.Error(err)
 		}
 	}
-	githubUsername, err := Username(cntxt, client)
-	if nil != err {
-		return util.Error(err)
-	}
-	localBranch, err := GitCurrentBranch(cntxt, workingDir)
+
+	localBranch, err := GitCurrentBranch(client, workingDir)
 	if nil != err {
 		return util.Error(err)
 	}
 
-	sourceHead := fmt.Sprintf(`%s:%s`, githubUsername, localBranch)
+	sourceHead := fmt.Sprintf(`%s:%s`, client.Username, localBranch)
 
 	// remote will default to 'origin'
-	_, remoteRepo, err := GitRemoteRepo(cntxt, workingDir, remote)
+	_, remoteRepo, err := GitRemoteRepo(workingDir, remote)
 
-	upstream, _, err := client.Repositories.Get(cntxt,
-		githubUsername, remoteRepo)
+	upstream, _, err := client.Repositories.Get(client.Context,
+		client.Username, remoteRepo)
 	if nil != err {
 		return err
 	}
@@ -186,7 +181,7 @@ func GithubCreatePullRequest(cntxt context.Context,
 
 	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
 		title, sourceHead, upstreamBranch, notes, upstreamUser, upstreamRepo)
-	pr, _, err := client.PullRequests.Create(cntxt,
+	pr, _, err := client.PullRequests.Create(client.Context,
 		upstreamUser, upstreamRepo,
 		&github.NewPullRequest{
 			Title: &title,

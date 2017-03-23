@@ -4,15 +4,13 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/google/go-github/github"
-
 	"ebw/git"
 )
 
 type Connection struct {
 	W      http.ResponseWriter
 	R      *http.Request
-	Client *github.Client
+	Client *git.Client
 	User   string
 }
 
@@ -25,15 +23,15 @@ type API struct {
 }
 
 func NewConnection(w http.ResponseWriter, r *http.Request, f func(*Connection) error) error {
-	client, err := git.GithubClientFromWebRequest(w, r)
+	client, err := git.ClientFromWebRequest(w, r)
 	if nil != err {
 		return err
 	}
-	user, err := git.Username(r.Context(), client)
+	username, err := git.Username(client)
 	if nil != err {
 		return err
 	}
-	conn := &Connection{w, r, client, user}
+	conn := &Connection{w, r, client, username}
 	return f(conn)
 }
 

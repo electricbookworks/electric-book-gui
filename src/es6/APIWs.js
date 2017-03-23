@@ -130,6 +130,14 @@ class APIWs {
 		return this._rpc("PullRequestUpdate",  arguments );
 	}
 	
+	Commit (repo,message) {
+		return this._rpc("Commit",  arguments );
+	}
+	
+	PrintPdf (repo) {
+		return this._rpc("PrintPdf",  arguments );
+	}
+	
 
 	flatten(callback, context=null) {
 		return function(argsArray) {

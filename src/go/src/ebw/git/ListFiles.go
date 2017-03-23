@@ -1,8 +1,6 @@
 package git
 
 import (
-	"context"
-	"crypto/sha1"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -29,9 +27,9 @@ func GitNotExistError(err error) bool {
 }
 
 // GetFile returns the contents of the file at path in users given repo
-func GetFile(cntxt context.Context, client *github.Client, user, repo, path string) ([]byte, error) {
-	if true {
-		fileContent, _, _, err := client.Repositories.GetContents(cntxt, user, repo, path,
+func GetFile(client *Client, user, repo, path string) ([]byte, error) {
+	if false {
+		fileContent, _, _, err := client.Repositories.GetContents(client.Context, user, repo, path,
 			&github.RepositoryContentGetOptions{})
 		if nil != err {
 			return nil, util.Error(err)
@@ -54,101 +52,142 @@ func GetFile(cntxt context.Context, client *github.Client, user, repo, path stri
 	}
 }
 
-func GetFileSHA(cntxt context.Context, client *github.Client, user, repo, path string) (*string, error) {
-	fileContent, _, _, err := client.Repositories.GetContents(cntxt, user, repo, path,
-		&github.RepositoryContentGetOptions{})
-	if nil != err {
-		return nil, util.Error(err)
-	}
+func GetFileSHA(client *Client, user, repo, path string) (*string, error) {
+	if false {
+		fileContent, _, _, err := client.Repositories.GetContents(client.Context, user, repo, path,
+			&github.RepositoryContentGetOptions{})
+		if nil != err {
+			return nil, util.Error(err)
+		}
 
-	if nil == fileContent.SHA {
-		return nil, fmt.Errorf("No SHA on existing file")
+		if nil == fileContent.SHA {
+			return nil, fmt.Errorf("No SHA on existing file")
+		}
+		return fileContent.SHA, nil
+	} else {
+		root, err := RepoDir(user, repo)
+		if nil != err {
+			return nil, err
+		}
+		return util.CalcFileSHA(filepath.Join(root, path))
 	}
-	return fileContent.SHA, nil
 }
 
-func calcSHA(in []byte) *string {
-	// The pattern for generating a hash is `sha1.New()`,
-	// `sha1.Write(bytes)`, then `sha1.Sum([]byte{})`.
-	// Here we start with a new hash.
-	h := sha1.New()
-
-	// `Write` expects bytes. If you have a string `s`,
-	// use `[]byte(s)` to coerce it to bytes.
-	h.Write(in)
-
-	// This gets the finalized hash result as a byte
-	// slice. The argument to `Sum` can be used to append
-	// to an existing byte slice: it usually isn't needed.
-	bs := h.Sum(nil)
-
-	s := fmt.Sprintf("%x", bs)
-	return &s
-}
-
-func CreateFile(cntxt context.Context, client *github.Client, user, repo, path string, content []byte) error {
-	message := `automatic message`
-	_, _, err := client.Repositories.CreateFile(cntxt,
-		user, repo, path, &github.RepositoryContentFileOptions{
-			Content: content,
-			Message: &message,
-			SHA:     calcSHA(content),
-		})
-	if nil != err {
-		return util.Error(err)
+func CreateFile(client *Client, user, repo, path string, content []byte) error {
+	if false {
+		message := `automatic message`
+		_, _, err := client.Repositories.CreateFile(client.Context,
+			user, repo, path, &github.RepositoryContentFileOptions{
+				Content: content,
+				Message: &message,
+				SHA:     util.CalcSHA(content),
+			})
+		if nil != err {
+			return util.Error(err)
+		}
+		return nil
+	} else {
+		root, err := RepoDir(user, repo)
+		if nil != err {
+			return err
+		}
+		if err := ioutil.WriteFile(filepath.Join(root, path), content, 0644); nil != err {
+			return err
+		}
+		return runGitDir(root, []string{`add`,
+			path,
+			`-m`,
+			fmt.Sprintf(`added %s`, path)})
 	}
-	return nil
 }
 
-func DeleteFile(cntxt context.Context, client *github.Client, user, repo, path string) error {
-	sha, err := GetFileSHA(cntxt, client, user, repo, path)
-	if GitNotExistError(err) {
-		// If the file doesn't exist, it's pre-deleted
+func DeleteFile(client *Client, user, repo, path string) error {
+	if false {
+		sha, err := GetFileSHA(client, user, repo, path)
+		if GitNotExistError(err) {
+			// If the file doesn't exist, it's pre-deleted
+			return nil
+		}
+		if nil != err {
+			return err
+		}
+		message := `automatic message`
+		_, _, err = client.Repositories.DeleteFile(client.Context, user, repo, path,
+			&github.RepositoryContentFileOptions{
+				Message: &message,
+				SHA:     sha,
+			})
+		if nil != err {
+			return util.Error(err)
+		}
+		return nil
+	} else {
+		root, err := RepoDir(user, repo)
+		if nil != err {
+			return err
+		}
+		filename := filepath.Join(root, path)
+		exists, err := util.FileExists(filename)
+		if nil != err {
+			return err
+		}
+		if !exists {
+			return nil // doesn't exist => already deleted!
+		}
+		if err := runGitDir(root, []string{`rm`, path}); nil != err {
+			return err
+		}
 		return nil
 	}
-	if nil != err {
-		return err
-	}
-	message := `automatic message`
-	_, _, err = client.Repositories.DeleteFile(cntxt, user, repo, path,
-		&github.RepositoryContentFileOptions{
-			Message: &message,
-			SHA:     sha,
-		})
-	if nil != err {
-		return util.Error(err)
-	}
-	return nil
 }
 
-func UpdateFile(cntxt context.Context, client *github.Client, user, repo, path string, content []byte) error {
-	glog.Infof("UpdateFile(%s)", path)
-	sha, err := GetFileSHA(cntxt, client, user, repo, path)
+// UpdateFile updates the given file with the given content, and adds it to the
+// git staging area, ready for the next commit.
+func UpdateFile(client *Client, user, repo, path string, content []byte) error {
+	if false {
+		glog.Infof("UpdateFile(%s)", path)
+		sha, err := GetFileSHA(client, user, repo, path)
 
-	if nil != err {
-		if GitNotExistError(err) {
-			glog.Infof(`UpdateFile %s does not exist: creating`, path)
-			return CreateFile(cntxt, client, user, repo, path, content)
+		if nil != err {
+			if GitNotExistError(err) {
+				glog.Infof(`UpdateFile %s does not exist: creating`, path)
+				return CreateFile(client, user, repo, path, content)
+			}
+			return util.Error(err)
 		}
-		return util.Error(err)
-	}
-	message := `automatic message`
-	_, _, err = client.Repositories.UpdateFile(cntxt, user, repo, path,
-		&github.RepositoryContentFileOptions{
-			Content: content,
-			SHA:     sha,
-			Message: &message,
-		})
+		message := `automatic message`
+		_, _, err = client.Repositories.UpdateFile(client.Context, user, repo, path,
+			&github.RepositoryContentFileOptions{
+				Content: content,
+				SHA:     sha,
+				Message: &message,
+			})
 
-	if nil != err {
-		return util.Error(err)
+		if nil != err {
+			return util.Error(err)
+		}
+		return nil
+	} else {
+		root, err := RepoDir(user, repo)
+		if nil != err {
+			return err
+		}
+		if err := ioutil.WriteFile(filepath.Join(root, path), content, 0644); nil != err {
+			return util.Error(err)
+		}
+		if err := runGitDir(root, []string{`add`, path}); nil != err {
+			return util.Error(err)
+		}
+		return nil
 	}
-	return nil
 }
 
 // ListFiles returns an array of all the files in the repo that match
-// the pathRegexp regular expression.
-func ListFiles(cntxt context.Context, client *github.Client, user, repo, pathRegexp string) ([]string, error) {
+// the pathRegexp regular expression. Note that this function
+// only works on the local checked out repo, not on the Github hosted
+// remote repo (which is ok, because that's the model that we are moving
+// towards).
+func ListFiles(client *Client, user, repo, pathRegexp string) ([]string, error) {
 	files := []string{}
 	root, err := RepoDir(user, repo)
 	if nil != err {

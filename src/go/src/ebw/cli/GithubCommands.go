@@ -1,14 +1,12 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"flag"
 	"fmt"
 
 	"github.com/craigmj/commander"
 
-	"ebw/cli/config"
 	"ebw/git"
 )
 
@@ -32,15 +30,13 @@ func UsernameCommand() *commander.Command {
 		"Show the current github username",
 		nil,
 		func([]string) error {
-			client, err := config.Config.GithubClient()
+
+			client, err := git.ClientFromCLIConfig()
 			if nil != err {
 				return err
 			}
-			username, err := git.Username(context.Background(), client)
-			if nil != err {
-				return err
-			}
-			fmt.Println(username)
+
+			fmt.Println(client.Username)
 			return nil
 		})
 }
@@ -50,11 +46,11 @@ func ReposCommand() *commander.Command {
 		"List all the user's repos on github",
 		nil,
 		func([]string) error {
-			client, err := config.Config.GithubClient()
+			client, err := git.ClientFromCLIConfig()
 			if nil != err {
 				return err
 			}
-			repos, _, err := client.Repositories.List(context.Background(), "", nil)
+			repos, _, err := client.Repositories.List(client.Context, "", nil)
 			if nil != err {
 				return err
 			}
@@ -74,22 +70,13 @@ func DeleteRepoCommand() *commander.Command {
 				return errors.New("You need to provide the name of the github repo you want to delete")
 			}
 
-			client, err := config.Config.GithubClient()
-			if nil != err {
-				return err
-			}
-			githubUser, err := git.Username(context.Background(), client)
+			client, err := git.ClientFromCLIConfig()
 			if nil != err {
 				return err
 			}
 
-			user, err := config.Config.GetUser()
-			if nil != err {
-				return err
-			}
-
-			return git.GithubDeleteRepo(user.Token,
-				githubUser, args[0])
+			return git.GithubDeleteRepo(client.Token,
+				client.Username, args[0])
 		})
 }
 
@@ -100,7 +87,7 @@ func RemoteCommand() *commander.Command {
 		`Display the url path of the remote repo`,
 		fs,
 		func([]string) error {
-			path, project, err := git.GitRemoteRepo(context.Background(), ``, *remote)
+			path, project, err := git.GitRemoteRepo(``, *remote)
 			if nil != err {
 				return err
 			}
@@ -124,7 +111,7 @@ func UserCommand() *commander.Command {
 }
 
 func GetGithubUser(workingDir string) (string, error) {
-	githubUser, _, err := git.GitRemoteRepo(context.Background(), workingDir, ``)
+	githubUser, _, err := git.GitRemoteRepo(workingDir, ``)
 	return githubUser, err
 }
 
@@ -134,7 +121,12 @@ func BranchNameCommand() *commander.Command {
 		`Return the name of the current git branch`,
 		nil,
 		func([]string) error {
-			name, err := git.GitCurrentBranch(context.Background(), ``)
+
+			client, err := git.ClientFromCLIConfig()
+			if nil != err {
+				return err
+			}
+			name, err := git.GitCurrentBranch(client, ``)
 			if nil != err {
 				return err
 			}

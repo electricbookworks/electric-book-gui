@@ -14,12 +14,22 @@
 			font-size: 1.3em;
 			font-weight: bold;
 		}
+		.repo-commands {
+			display: block;
+			// padding: 0.4em 1em 0 1em;
+			// margin-top: 1em;
+			// border-style: solid;
+			// border-color: $color-offset;
+			// border-width: 1px 0 0 0;
+
+		}
 		.repo-menu {
 			padding: 0.4em 1em 0 1em;
 			margin-top: 1em;
 			border-style: solid;
 			border-color: $color-offset;
 			border-width: 1px 0 0 0;
+
 			.edit-link {
 				cursor: pointer;
 				color: $color-link;
@@ -29,6 +39,8 @@
 				}
 			}
 			.menu-header {
+
+
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;

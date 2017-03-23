@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/go-github/github"
-	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
 )
 
@@ -55,28 +53,6 @@ func (c *conf) SetUser(user string) error {
 		}
 	}
 	return fmt.Errorf("Failed to set default Config user to '%s': no such user found", user)
-}
-
-// GithubClient returns a github.Client for the currently configured
-// user.
-func (c *conf) GithubClient() (*github.Client, error) {
-	user, err := c.GetUser()
-	if nil != err {
-		return nil, err
-	}
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: user.Token},
-	)
-	tc := oauth2.NewClient(oauth2.NoContext, ts)
-
-	client := github.NewClient(tc)
-	// // Because a cookie can be expired, we quickly check whether
-	// // it is working
-	// if _, _, err = client.Zen(); nil != err {
-	// 	glog.Errorf("Zen() failed: %s", err.Error())
-	// 	return nil, ErrNotLoggedIn
-	// }
-	return client, nil
 }
 
 func (c *conf) readFile(in string) error {

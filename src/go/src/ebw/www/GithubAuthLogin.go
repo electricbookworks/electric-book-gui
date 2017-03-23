@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/google/go-github/github"
 
 	"ebw/config"
 	"ebw/git"
@@ -74,14 +73,14 @@ func githubAuth(w http.ResponseWriter, r *http.Request) {
 }
 
 func LogoffHandler(c *Context) error {
-	client := GithubClient(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	user, err := git.Username(c.R.Context(), client)
+	client, err := git.ClientFromWebRequest(c.W, c.R)
 	if nil != err {
 		return err
 	}
+	if nil == client {
+		return nil
+	}
+
 	http.SetCookie(c.W, &http.Cookie{
 		Name:    git.GithubTokenCookie,
 		Value:   ``,
@@ -89,7 +88,7 @@ func LogoffHandler(c *Context) error {
 		Expires: time.Time{},
 	})
 
-	c.Redirect(`/to-github?u=%s`, url.QueryEscape(user))
+	c.Redirect(`/to-github?u=%s`, url.QueryEscape(client.Username))
 	return nil
 }
 
@@ -97,8 +96,8 @@ func ToGithubHandler(c *Context) error {
 	return c.Redirect(`https://github.com/%s`, c.P(`u`))
 }
 
-func GithubClient(w http.ResponseWriter, r *http.Request) *github.Client {
-	client, err := git.GithubClientFromWebRequest(w, r)
+func Client(w http.ResponseWriter, r *http.Request) *git.Client {
+	client, err := git.ClientFromWebRequest(w, r)
 	if err == git.ErrNotLoggedIn {
 		http.Redirect(w, r, "/github/login", http.StatusFound)
 		return nil
