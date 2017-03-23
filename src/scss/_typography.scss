@@ -20,6 +20,20 @@ a {
 		background-color: $color-link-hover-bg;
 	}
 }
+
+.cta {
+    background: $color-link;
+	color: white;
+	display: inline-block;
+	padding: 0.5em 1em;
+	margin-bottom: 1em;
+	border-radius: 0.25em;
+	&:hover {
+		background: lighten($color-link, 20%);
+		// color: white;
+	}
+}
+
 input[type='text'] {
 	font-family: $workFont;
 	border: 1px solid $color-offset;
