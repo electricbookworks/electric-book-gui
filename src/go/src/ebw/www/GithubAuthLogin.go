@@ -21,13 +21,14 @@ type githubToken struct {
 }
 
 // githubLogin forwards the user to login on Github
-func githubLogin(w http.ResponseWriter, r *http.Request) {
+func githubLogin(c *Context) error {
 	p := url.Values{}
 	p.Add(`client_id`, config.Config.Github.Client)
 	p.Add(`redirect_uri`, config.Config.Server+"/github/auth")
 	p.Add(`scope`, `repo`)
 	p.Add(`state`, `unguessable random string`)
-	http.Redirect(w, r, `https://github.com/login/oauth/authorize?`+p.Encode(), http.StatusFound)
+	return c.Render("landing.html", map[string]interface{}{
+		"AuthURL": `https://github.com/login/oauth/authorize?` + p.Encode()})
 }
 
 // githubAuth receives github's oauth2 authorization response

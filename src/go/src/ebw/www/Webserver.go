@@ -43,7 +43,7 @@ func RunWebServer(bind string) error {
 	webdavRoutes(r, `/webdav`)
 	r.HandleFunc(`/rpc/API/json`, jsonrpc.HttpHandlerFunc)
 	r.HandleFunc(`/rpc/API/json/ws`, jsonrpc.WsHandlerFunc)
-	r.HandleFunc(`/github/login`, githubLogin)
+	r.Handle(`/github/login`, WebHandler(githubLogin))
 	r.HandleFunc(`/github/auth`, githubAuth)
 
 	r.Handle(`/github/create-fork`, WebHandler(githubCreateFork))

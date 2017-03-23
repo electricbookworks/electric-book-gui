@@ -10,6 +10,10 @@ import (
 	"ebw/git"
 )
 
+func landingHandler(c *Context) error {
+	return c.Render("landing.html", map[string]interface{}{})
+}
+
 func repoList(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
