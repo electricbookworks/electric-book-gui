@@ -2534,6 +2534,16 @@ a {
   a:hover {
     background-color: white; }
 
+.cta {
+  background: #339;
+  color: white;
+  display: inline-block;
+  padding: 0.5em 1em;
+  margin-bottom: 1em;
+  border-radius: 0.25em; }
+  .cta:hover {
+    background: #6666cc; }
+
 input[type='text'] {
   font-family: "Quattrocento Sans", sans-serif;
   border: 1px solid #99c;
@@ -2554,6 +2564,9 @@ button, input[type='button'], input[type='submit'] {
     button:disabled:hover, input[type='button']:disabled:hover, input[type='submit']:disabled:hover {
       background-color: #ddd;
       color: #999; }
+
+.l-center {
+  text-align: center; }
 
 .repo-file-editor-workspace {
   display: -ms-flexbox;
