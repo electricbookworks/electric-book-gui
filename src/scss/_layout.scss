@@ -22,24 +22,10 @@ main {
     padding-left: 0;
     list-style: none;
     margin-top: 0;
+    margin-bottom: 3em;
     h2 {
         margin-bottom: 0;
     }
-}
-
-.cta {
-    background: $color-link;
-	color: white;
-	display: inline-block;
-    text-decoration: none;
-	padding: 0.5em 1em;
-	margin-bottom: 1em;
-	border-radius: 0.25em;
-    border-bottom: 0.25em solid darken($color-link, 20%);
-	&:hover {
-		background: lighten($color-link, 20%);
-        border-bottom: 0.25em solid transparent;
-	}
 }
 
 .repo {
@@ -54,6 +40,15 @@ main {
     }
 }
 
-.repo-manage {
+[role="contentinfo"] {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 1em;
+}
 
+.form-fork {
+    [type="text"] {
+        width: 30em;
+    }
 }
