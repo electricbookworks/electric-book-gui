@@ -90,39 +90,56 @@
   margin-left: .3em; }
 
 .fa-spin {
+  -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear; }
 
 .fa-pulse {
+  -webkit-animation: fa-spin 1s infinite steps(8);
   animation: fa-spin 1s infinite steps(8); }
+
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg); } }
 
 @keyframes fa-spin {
   0% {
+    -webkit-transform: rotate(0deg);
     transform: rotate(0deg); }
   100% {
+    -webkit-transform: rotate(359deg);
     transform: rotate(359deg); } }
 
 .fa-rotate-90 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=1)";
+  -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg); }
 
 .fa-rotate-180 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+  -webkit-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   transform: rotate(180deg); }
 
 .fa-rotate-270 {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)";
+  -webkit-transform: rotate(270deg);
   -ms-transform: rotate(270deg);
   transform: rotate(270deg); }
 
 .fa-flip-horizontal {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0, mirror=1)";
+  -webkit-transform: scale(-1, 1);
   -ms-transform: scale(-1, 1);
   transform: scale(-1, 1); }
 
 .fa-flip-vertical {
   -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2, mirror=1)";
+  -webkit-transform: scale(1, -1);
   -ms-transform: scale(1, -1);
   transform: scale(1, -1); }
 
@@ -131,7 +148,6 @@
 :root .fa-rotate-270,
 :root .fa-flip-horizontal,
 :root .fa-flip-vertical {
-  -webkit-filter: none;
   filter: none; }
 
 .fa-stack {
@@ -2555,20 +2571,22 @@ button, input[type='button'], input[type='submit'] {
       background-color: #ddd;
       color: #999; }
 
-.repo-file-editor-workspace {
-  display: -ms-flexbox;
+body {
+  padding: 1em; }
+
+.nav-main {
   display: flex;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-wrap: nowrap;
-  flex-wrap: nowrap;
-  -ms-flex-pack: justify;
   justify-content: space-between;
-  -ms-flex-align: stretch;
+  margin-bottom: 1em; }
+
+.repo-file-editor-workspace {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
   align-items: stretch;
   height: 100%; }
   .repo-file-editor-workspace .repo-file-editor {
-    -ms-flex-positive: 1;
     flex-grow: 1;
     height: 100%; }
     .repo-file-editor-workspace .repo-file-editor.repo-file-editor-ace {
@@ -2590,48 +2608,28 @@ button, input[type='button'], input[type='submit'] {
     display: block; }
 
 #mergely {
-  -ms-flex-positive: 1;
   flex-grow: 1;
   height: 100%; }
   #mergely .merge-editor {
     width: 100%;
     height: 100%;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-direction: row;
     flex-direction: row;
-    -ms-flex-pack: justify;
     justify-content: space-between;
-    -ms-flex-align: stretch;
     align-items: stretch;
-    -ms-flex-wrap: nowrap;
     flex-wrap: nowrap; }
   #mergely .merge-mergely {
-    -ms-flex-positive: 1;
     flex-grow: 1; }
 
-#repo-list {
-  padding: 0 1em; }
-  #repo-list .repo-list-table tr:hover {
-    background-color: #e5e5ff; }
-  #repo-list .repo-list-table td {
-    padding: 0.4em; }
-
 #repo-workspace {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -ms-flex-pack: justify;
   justify-content: space-between;
-  -ms-flex-align: stretch;
   align-items: stretch;
-  -ms-flex-wrap: nowrap;
   flex-wrap: nowrap;
   height: 100%;
   width: 100%; }
   #repo-workspace #repo-nav {
-    -ms-flex-positive: 0;
     flex-grow: 0; }
     #repo-workspace #repo-nav h1 {
       font-size: 1.3em;
@@ -2651,20 +2649,14 @@ button, input[type='button'], input[type='submit'] {
         #repo-workspace #repo-nav .repo-menu .edit-link:hover {
           background-color: white; }
       #repo-workspace #repo-nav .repo-menu .menu-header {
-        display: -ms-flexbox;
         display: flex;
-        -ms-flex-direction: row;
         flex-direction: row;
-        -ms-flex-pack: justify;
         justify-content: space-between;
-        -ms-flex-align: start;
         align-items: flex-start;
         margin-bottom: 0.4em; }
         #repo-workspace #repo-nav .repo-menu .menu-header .menu-title {
-          -ms-flex-positive: 1;
           flex-grow: 1; }
         #repo-workspace #repo-nav .repo-menu .menu-header .menu-controls {
-          -ms-flex-positive: 0;
           flex-grow: 0; }
           #repo-workspace #repo-nav .repo-menu .menu-header .menu-controls button {
             font-size: 0.6em; }
@@ -2682,7 +2674,6 @@ button, input[type='button'], input[type='submit'] {
     #repo-workspace #repo-nav #pull-requests #pull-request-list {
       margin-bottom: 1em; }
   #repo-workspace #editor {
-    -ms-flex-positive: 1;
     flex-grow: 1;
     padding: 0 0 0 1em;
     height: 100%; }
@@ -2695,7 +2686,6 @@ button, input[type='button'], input[type='submit'] {
   min-height: 100%; }
 
 .toolbar-menu {
-  -ms-flex-positive: 0;
   flex-grow: 0;
   padding: 0.2em;
   text-align: right; }
@@ -2704,32 +2694,6 @@ button, input[type='button'], input[type='submit'] {
     margin-bottom: 0.2em; }
   .toolbar-menu .spacer {
     height: 1em; }
-
-#topbar {
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  -ms-flex-align: baseline;
-  align-items: baseline; }
-  #topbar .titles {
-    -ms-flex-positive: 1;
-    flex-grow: 1; }
-  #topbar #right-menu {
-    -ms-flex-positive: 0;
-    flex-grow: 0;
-    list-style: none;
-    margin-right: 1em; }
-    #topbar #right-menu li {
-      display: inline-block; }
-      #topbar #right-menu li:after {
-        content: "|";
-        padding: 0 1em; }
-      #topbar #right-menu li:last-child:after {
-        content: "";
-        padding: 0; }
 
 .Toast {
   position: fixed;
@@ -2749,29 +2713,15 @@ button, input[type='button'], input[type='submit'] {
     text-alignment: center; }
 
 #container {
-  width: 100vw;
-  height: 100vh;
   background-color: #fefeff; }
 
 #workspace {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -ms-flex-pack: justify;
   justify-content: space-between;
-  -ms-flex-align: stretch;
   align-items: stretch;
   height: 100%; }
-  #workspace #topbar {
-    -ms-flex-positive: 0;
-    flex-grow: 0; }
-  #workspace #middlebar {
-    -ms-flex-positive: 1;
-    flex-grow: 1;
-    overflow-y: scroll; }
   #workspace #bottombar {
-    -ms-flex-positive: 0;
     flex-grow: 0;
     padding-left: 1em;
     text-align: right; }

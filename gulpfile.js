@@ -1,6 +1,5 @@
 var
 	gulp = require('gulp'),
-	autoprefixer = require('gulp-autoprefixer'),
 	concat = require('gulp-concat'),
 	nano = require('gulp-cssnano'),
 	uglify =require('gulp-uglify'),
@@ -93,10 +92,6 @@ gulp.task('scss', function() {
 	return gulp.src(paths.scss.src + '/main.scss')
 	.pipe(concat('main.css'))
 	.pipe(sass({includePaths:paths.scss.include}).on('error', sass.logError))
-	.pipe(autoprefixer({
-		browsers: ['last 2 versions', 'ie >= 9', 'and_chr >= 2.3'],
-		cascade: false
-	 }))
 	.pipe(gulp.dest(paths.scss.dest))
 	.pipe(rename({suffix:".min"}))
 	.pipe(nano())

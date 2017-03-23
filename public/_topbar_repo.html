@@ -1,11 +1,6 @@
-<div id="topbar">
-<div class="titles">
-<h1><a href="/">{{.UserName}}</a>/{{if .RepoName}}<a href="/repo/{{.RepoName}}">{{.RepoName}}</a>/{{end}}<span ebw-current-filename=""> </span></h1>
-</div>
-<div id="right-menu">
-	<ul>
-		<li><a href="https://github.com/{{.UserName}}">To Github <i class="fa fa-github"> </i></a></li>
-		<li><a href="/logoff">Log off</a></li>
+<nav>
+	<ul class="nav-main">
+		<li><a href="/">Electric Book Manager</a></li>
+		<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
 	</ul>
-</div>
-</div>
+</nav>

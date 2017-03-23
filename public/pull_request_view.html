@@ -1,8 +1,6 @@
 {{template "_header.html" .}}
 {{template "_topbar_repo.html" .}}
 
-<div id="middlebar">
-
 <div id="repo-workspace">
 <!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 	<div id="repo-nav">
@@ -13,10 +11,10 @@
 		</div>
 		<div>
 		<a href="{{.PullRequest.Number}}/close"><button>Close Changes</button></a>
-		</div>		
+		</div>
 	</div>
 	<div id="mergely">
-		
+
 	</div>
 	</div>
 </div>
@@ -31,6 +29,5 @@ document.addEventListener('DOMContentLoaded', function() {
 		}, document.getElementById('mergely'));
 });
 </script>
-</div>
 
 {{template "_footer.html" .}}

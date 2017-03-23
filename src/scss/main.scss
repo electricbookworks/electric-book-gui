@@ -4,6 +4,7 @@
 @import "html5_reset";
 @import 'colors';
 @import "typography";
+@import 'layout';
 
 @import "repo_file_editor";
 @import 'pages/pull_new';
@@ -14,12 +15,9 @@
 @import 'CodeMirror';
 
 @import 'widgets/toolbar_menu';
-@import 'widgets/topbar';
 @import 'widgets/Toast';
 
 #container {
-	width: 100vw;
-	height: 100vh;
 	background-color: $color-background;
 }
 
@@ -30,18 +28,10 @@
 	align-items: stretch;
 	height: 100%;
 
-	#topbar {
-		flex-grow:0;
-	}
-	#middlebar {
-		flex-grow: 1;
-		overflow-y: scroll;
-	}
 	#bottombar {
 		flex-grow: 0;
 		padding-left: 1em;
-		
+
 		text-align: right;
 	}
 }
-
