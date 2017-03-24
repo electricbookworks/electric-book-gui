@@ -2980,11 +2980,6 @@ a {
     background: #6666cc;
     border-bottom: 0.25em solid transparent; }
 
-input[type='text'] {
-  font-family: "Quattrocento Sans", sans-serif;
-  border: 1px solid #99c;
-  padding: 0.5em; }
-
 [role="banner"] {
   background: #000;
   color: #fff; }

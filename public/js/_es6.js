@@ -1170,7 +1170,7 @@ var RepoFileEditor = function () {
 			}
 			if (!file) {
 				// @TODO Need to catch New Files here... ?
-				this.setText('-- YOU NEED TO CHOOSE A FILE YOU WANT TO EDIT --');
+				this.setText('Please select a file to edit.');
 				return;
 			}
 			file.GetText().then(function (t) {
@@ -1308,7 +1308,7 @@ var RepoFileEditorCM = function () {
 			}
 			if (!file) {
 				// @TODO Need to catch New Files here... ?
-				this.setText('-- YOU NEED TO CHOOSE A FILE YOU WANT TO EDIT --');
+				this.setText('Please select a file to edit.');
 				return;
 			}
 			file.GetText().then(function (t) {
