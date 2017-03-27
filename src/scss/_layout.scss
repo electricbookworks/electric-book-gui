@@ -32,11 +32,11 @@ main {
     display: flex;
     justify-content: space-between;
     padding: 1em;
-    border-right: 1px solid $color-offset;
-    border-bottom: 1px solid $color-offset;
-    border-left: 1px solid $color-offset;
+    border-right: 1px solid $off-grey;
+    border-bottom: 1px solid $off-grey;
+    border-left: 1px solid $off-grey;
     &:first-child {
-        border-top: 1px solid $color-offset;
+        border-top: 1px solid $off-grey;
     }
 }
 

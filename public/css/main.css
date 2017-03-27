@@ -630,7 +630,8 @@ textarea {
     page-break-after: avoid; } }
 
 body {
-  font-family: 'Source Sans Pro', sans-serif; }
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #444; }
 
 h1,
 h2,
@@ -644,7 +645,7 @@ p {
   margin-top: 0; }
 
 a {
-  color: #339; }
+  color: #1eab8d; }
   a:hover {
     text-decoration: none; }
 
@@ -744,11 +745,11 @@ main {
   display: flex;
   justify-content: space-between;
   padding: 1em;
-  border-right: 1px solid #99c;
-  border-bottom: 1px solid #99c;
-  border-left: 1px solid #99c; }
+  border-right: 1px solid #bdb;
+  border-bottom: 1px solid #bdb;
+  border-left: 1px solid #bdb; }
   .repo:first-child {
-    border-top: 1px solid #99c; }
+    border-top: 1px solid #bdb; }
 
 [role="contentinfo"] {
   background: #1eab8d;

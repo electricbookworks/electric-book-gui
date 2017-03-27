@@ -1,5 +1,6 @@
 body {
 	font-family: 'Source Sans Pro', sans-serif;
+	color: #444;
 }
 
 h1,
@@ -16,7 +17,7 @@ p {
 }
 
 a {
-	color: $color-link;
+	color: $primary;
 	&:hover {
 		text-decoration: none;
 	}
