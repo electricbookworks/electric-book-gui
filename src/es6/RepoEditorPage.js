@@ -32,9 +32,9 @@ class RepoEditorPage {
 		});
 		document.getElementById(`repo-print`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
-			EBW.Toast(`Pressed PRINT`);
-			console.log(`Pressed PRINT`);
-		})
+			EBW.Toast(`Printing in progress...`);
+			new PrintListener(this.repo, `book`);
+		});
 	}
 
 }

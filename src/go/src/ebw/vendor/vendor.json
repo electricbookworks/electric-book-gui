@@ -85,6 +85,12 @@
 			"revisionTime": "2016-10-19T02:33:40Z"
 		},
 		{
+			"checksumSHA1": "CcNzUdLUb1aq6X3HGZteAMgltxY=",
+			"path": "github.com/julienschmidt/sse",
+			"revision": "dedc8dfa3d5dbf90d2c4d70dfc25e7f8d657b424",
+			"revisionTime": "2015-09-04T22:15:18Z"
+		},
+		{
 			"checksumSHA1": "bKMZjd2wPw13VwoE7mBeSv5djFA=",
 			"path": "github.com/matttproud/golang_protobuf_extensions/pbutil",
 			"revision": "c12348ce28de40eed0136aa2b644d0ee0650e56c",
@@ -127,6 +133,12 @@
 			"revisionTime": "2016-04-11T19:08:41Z"
 		},
 		{
+			"checksumSHA1": "zmC8/3V4ls53DJlNTKDZwPSC/dA=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "5bf94b69c6b68ee1b541973bb8e1144db23a194b",
+			"revisionTime": "2017-03-21T23:07:31Z"
+		},
+		{
 			"checksumSHA1": "9jjO5GjLa0XF/nfWihF02RoH4qc=",
 			"path": "golang.org/x/net/context",
 			"revision": "8b4af36cd21a1f85a7484b49feb7c79363106d8e",
@@ -161,6 +173,12 @@
 			"path": "gopkg.in/ibrt/go-xerror.v2/xerror",
 			"revision": "adf951dc99c55830359494e3410bfa970519fe20",
 			"revisionTime": "2016-10-09T01:44:59Z"
+		},
+		{
+			"checksumSHA1": "uTrfNV/aZJscnyrIG2EwtNoL3P4=",
+			"path": "gopkg.in/lxc/go-lxc.v2",
+			"revision": "8304875cc3423823032ec93556beee076c6ba687",
+			"revisionTime": "2017-03-11T17:55:44Z"
 		},
 		{
 			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",

@@ -129,8 +129,8 @@ class API {
 		return this._rpc("Commit",  arguments );
 	}
 	
-	PrintPdf(repo) {
-		return this._rpc("PrintPdf",  arguments );
+	PrintPdfEndpoint(repo,book) {
+		return this._rpc("PrintPdfEndpoint",  arguments );
 	}
 	
 

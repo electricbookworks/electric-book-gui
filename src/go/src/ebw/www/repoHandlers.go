@@ -2,12 +2,17 @@ package www
 
 import (
 	"encoding/json"
+	"net/http"
 	"os"
+	"path/filepath"
 	// "net/http"
 
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
+	"ebw/config"
 	"ebw/git"
+	"ebw/util"
 )
 
 func landingHandler(c *Context) error {
@@ -147,4 +152,19 @@ func pullRequestCreate(c *Context) error {
 	}
 
 	return c.Render(`pull_new.html`, nil)
+}
+
+// repoFileServer serves files from the current user's repos.
+func repoFileServer(c *Context) error {
+	client := Client(c.W, c.R)
+
+	root, err := os.Getwd()
+	if nil != err {
+		return util.Error(err)
+	}
+	root = filepath.Join(root, config.Config.GitCache, `repos`, client.Username)
+	glog.Infof(`Serving %s from %s`, c.R.RequestURI, root)
+	fs := http.StripPrefix(`/www/`, http.FileServer(http.Dir(root)))
+	fs.ServeHTTP(c.W, c.R)
+	return nil
 }

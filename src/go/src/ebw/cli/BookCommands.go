@@ -63,7 +63,7 @@ func BookContribute(client *git.Client, repo string) error {
 	}
 
 	return git.GitCloneTo(client, "", /* empty working dir will default to current dir */
-		client.Token, "", filepath.Base(repo))
+		"", filepath.Base(repo))
 }
 
 func BookContributeCommand() *commander.Command {
@@ -134,7 +134,7 @@ func BookClone(client *git.Client, repoName string) error {
 	// Checkout our repo as ourselves.
 	return git.GitCloneTo(client,
 		"", /* empty working dir will default to current dir */
-		client.Token, "", repoName)
+		"", repoName)
 }
 
 // BookNew creates a new book with the newRepoName for the current client,
@@ -146,5 +146,5 @@ func BookNew(client *git.Client, templateRepo, newRepoName string) error {
 
 	// Checkout our new repo as ourselves.
 	return git.GitCloneTo(client, "", /* empty working dir will default to current dir */
-		client.Token, "", newRepoName)
+		"", newRepoName)
 }

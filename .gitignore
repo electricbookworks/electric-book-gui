@@ -5,6 +5,7 @@ bin/
 src/go/pkg
 tools/ansible/*.retry
 tools/ansible/hosts-lateral
+tools/ansible/hosts-ebw
 electricbook-*.yml
 git_cache/pr_requests/*
 git_cache/repos/*

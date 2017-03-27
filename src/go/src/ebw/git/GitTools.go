@@ -225,8 +225,7 @@ func ContributeToRepo(client *Client) error {
 	return nil
 }
 
-func GitCloneTo(client *Client, workingDir,
-	githubPassword string, repoUsername, repoName string) error {
+func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string) error {
 	if "" == workingDir {
 		wd, err := os.Getwd()
 		if nil != err {
@@ -236,18 +235,13 @@ func GitCloneTo(client *Client, workingDir,
 	}
 	// 1. Check the user doesn't already have a newRepo, and if not, create
 	// a newRepo for the user
-	user, _, err := client.Users.Get(client.Context, "") // Get the current authenticated user
-	if nil != err {
-		return util.Error(err)
-	}
-	githubUsername := *user.Login
 	if "" == repoUsername {
-		repoUsername = githubUsername
+		repoUsername = client.Username
 	}
 
 	if err := runGitDir(workingDir, []string{
 		`clone`,
-		`https://` + githubUsername + ":" + githubPassword +
+		`https://` + client.Username + ":" + client.Token +
 			"@github.com/" + repoUsername + "/" + repoName + ".git",
 	}); nil != err {
 		return util.Error(err)

@@ -12,6 +12,7 @@ import (
 
 	"ebw/config"
 	// "ebw/database"
+	"ebw/print"
 	"ebw/www"
 )
 
@@ -20,7 +21,7 @@ func VersionCommand() *commander.Command {
 		"Return the version of the electricbook system",
 		nil,
 		func([]string) error {
-			fmt.Println("v 0.2 November 27, 2016")
+			fmt.Println("v 0.3 March 27, 2017")
 			return nil
 		})
 }
@@ -54,7 +55,8 @@ func main() {
 	// }
 	// defer database.Close()
 
-	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand); nil != err {
+	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand,
+		print.PrintCommand); nil != err {
 		panic(err)
 	}
 }

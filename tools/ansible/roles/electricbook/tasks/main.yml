@@ -2,7 +2,7 @@
   apt: >
     name={{item}}
     state=present
-  with_items: [ git, vim ]
+  with_items: [ git, vim, authbind ]
   become: yes
 
 - name: Create electricbook user

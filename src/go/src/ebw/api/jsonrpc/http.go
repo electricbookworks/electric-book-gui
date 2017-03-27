@@ -1136,19 +1136,21 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 		
 		
-		case "PrintPdf":
+		case "PrintPdfEndpoint":
 			
 			
 			args := struct {
 				
 				REPO string `json:"0"`
 				
+				BOOK string `json:"1"`
+				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=1 {
+			if len(request.Params)!=2 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 1, len(request.Params), "PrintPdf")
+					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "PrintPdfEndpoint")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
@@ -1157,6 +1159,13 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.BOOK);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1187,8 +1196,9 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 
 				
-					result[0],result[1] = context.PrintPdf(
+					result[0],result[1] = context.PrintPdfEndpoint(
 		args.REPO,
+		args.BOOK,
 		
 				)
 

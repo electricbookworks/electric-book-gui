@@ -16,6 +16,7 @@ import (
 	"golang.org/x/net/webdav"
 
 	"ebw/api/jsonrpc"
+	"ebw/print"
 )
 
 func webdavRoutes(r *mux.Router, prefix string) {
@@ -41,6 +42,7 @@ func RunWebServer(bind string) error {
 	r := mux.NewRouter()
 	r.Handle(`/`, WebHandler(repoList))
 	webdavRoutes(r, `/webdav`)
+	print.PrintRoutes(r)
 	r.HandleFunc(`/rpc/API/json`, jsonrpc.HttpHandlerFunc)
 	r.HandleFunc(`/rpc/API/json/ws`, jsonrpc.WsHandlerFunc)
 	r.Handle(`/github/login`, WebHandler(githubLogin))
@@ -52,6 +54,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repo}/pull/{number}`, WebHandler(pullRequestView))
 	r.Handle(`/repo/{repo}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repo}/pull_new`, WebHandler(pullRequestCreate))
+	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
 
 	r.Handle(`/logoff`, WebHandler(LogoffHandler))
 	r.Handle(`/to-github`, WebHandler(ToGithubHandler))

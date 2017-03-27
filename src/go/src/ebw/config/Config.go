@@ -15,22 +15,33 @@ type github struct {
 	Client string `yaml:"client"`
 	Secret string `yaml:"secret"`
 }
+
 type printserver struct {
 	Server string `yaml:"server"`
 	Token  string `yaml:"token"`
 }
 
 type config struct {
-	Github   *github     `yaml:"github"`
-	Server   string      `yaml:"server"`
-	Database database    `yaml:"database"`
-	GitCache string      `yaml:"git_cache"`
-	Print    printserver `yaml:"print"`
+	Github         *github     `yaml:"github"`
+	Server         string      `yaml:"server"`
+	Database       database    `yaml:"database"`
+	GitCache       string      `yaml:"git_cache"`
+	Print          printserver `yaml:"print"`
+	PrintContainer string      `yaml:"print_container"`
+	PrintUser      string      `yaml:"print_user"`
+	Bind           string      `yaml:"bind"`
 }
 
 func (c config) String() string {
 	raw, _ := yaml.Marshal(&c)
 	return string(raw)
+}
+
+func (c config) GetPrintContainer() string {
+	if `` != c.PrintContainer {
+		return c.PrintContainer
+	}
+	return `bookworks`
 }
 
 var Config config

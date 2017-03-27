@@ -6,9 +6,10 @@ package api
 //go:generate golait2 -logtostderr gen -out ../../../../es6/APIWs.js -type API -in ebw/api/JSONRpc.go -tem es6ws
 
 import (
-	"ebw/git"
-
 	"github.com/google/go-github/github"
+
+	"ebw/git"
+	"ebw/print"
 )
 
 /*====================== API METHODS FOLLOW ========================*/
@@ -60,6 +61,15 @@ func (rpc *API) Commit(repo, message string) error {
 	return git.Commit(rpc.Client, rpc.User, repo, message)
 }
 
-func (rpc *API) PrintPdf(repo string) (string, error) {
-	return git.PrintPdf(rpc.Client, rpc.User, repo)
+func (rpc *API) PrintPdfEndpoint(repo, book string) (string, error) {
+	if `` == book {
+		book = `book`
+	}
+	pr := &print.PrintRequest{
+		Book:     book,
+		Repo:     repo,
+		Username: rpc.Client.Username,
+		Token:    rpc.Client.Token,
+	}
+	return print.MakeEndpoint(pr), nil
 }

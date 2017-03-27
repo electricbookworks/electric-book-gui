@@ -7,3 +7,5 @@ git_cache: "git_cache"
 print:
   server: "http://bookworks.lxc:8000/"
   token: "very-secret-print-token"
+print_container: bookworks
+print_user: craig

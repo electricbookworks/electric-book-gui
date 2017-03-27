@@ -182,9 +182,9 @@ var API = function () {
 			return this._rpc("Commit", arguments);
 		}
 	}, {
-		key: "PrintPdf",
-		value: function PrintPdf(repo) {
-			return this._rpc("PrintPdf", arguments);
+		key: "PrintPdfEndpoint",
+		value: function PrintPdfEndpoint(repo, book) {
+			return this._rpc("PrintPdfEndpoint", arguments);
 		}
 	}, {
 		key: "flatten",
@@ -402,9 +402,9 @@ var APIWs = function () {
 			return this._rpc("Commit", arguments);
 		}
 	}, {
-		key: "PrintPdf",
-		value: function PrintPdf(repo) {
-			return this._rpc("PrintPdf", arguments);
+		key: "PrintPdfEndpoint",
+		value: function PrintPdfEndpoint(repo, book) {
+			return this._rpc("PrintPdfEndpoint", arguments);
 		}
 	}, {
 		key: "flatten",
@@ -817,6 +817,76 @@ var PRDiffModel = function () {
 
 	return PRDiffModel;
 }();
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PrintListener = function () {
+	function PrintListener(repo) {
+		var _this = this;
+
+		var book = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "book";
+
+		_classCallCheck(this, PrintListener);
+
+		this.repo = repo;
+		if ("" == book) {
+			book = "book";
+		}
+		this.book = book;
+		EBW.API().PrintPdfEndpoint(repo, book).then(function (args) {
+			_this.startListener(args[0]);
+		}).catch(EBW.Error);
+	}
+
+	_createClass(PrintListener, [{
+		key: "startListener",
+		value: function startListener(key) {
+			var _this2 = this;
+
+			var url = document.location.protocol + "//" + document.location.host + "/print/sse/" + key;
+			var sse = new EventSource(url);
+			sse.addEventListener("open", function () {});
+			sse.addEventListener('tick', function (e) {
+				// console.log(`tick received: `, e);
+			});
+			sse.addEventListener("info", function (e) {
+				// console.log(`INFO on printListener: `, e.data);
+				var data = JSON.parse(e.data);
+				Toast.Show("Printing: ", data);
+			});
+			sse.addEventListener("error", function (e) {
+				var err = JSON.parse(e.data);
+				EBW.Error(err);
+				sse.close();
+			});
+			sse.addEventListener("output", function (e) {
+				var data = JSON.parse(e.data);
+				var url = document.location.protocol + "//" + document.location.host + ("/www/" + _this2.repo + "/" + data);
+				Toast.Show("Your PDF is ready: opening in a new window.");
+				window.open(url, _this2.repo + "-output");
+			});
+			sse.addEventListener("done", function (e) {
+				sse.close();
+			});
+			sse.onmessage = function (e) {
+				_this2.onmessage(e);
+			};
+			sse.onerror = EBW.Error;
+		}
+	}, {
+		key: "onmessage",
+		value: function onmessage(e) {
+			console.log("PrintListener.onmessage: ", e);
+		}
+	}]);
+
+	return PrintListener;
+}();
+
+window.PrintListener = PrintListener;
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -993,8 +1063,8 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 	});
 	document.getElementById('repo-print').addEventListener('click', function (evt) {
 		evt.preventDefault();evt.stopPropagation();
-		EBW.Toast('Pressed PRINT');
-		console.log('Pressed PRINT');
+		EBW.Toast('Printing in progress...');
+		new PrintListener(_this.repo, 'book');
 	});
 };
 
