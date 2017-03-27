@@ -16,18 +16,3 @@
 
 @import 'widgets/toolbar_menu';
 @import 'widgets/Toast';
-
-#workspace {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: stretch;
-	height: 100%;
-
-	#bottombar {
-		flex-grow: 0;
-		padding-left: 1em;
-
-		text-align: right;
-	}
-}
