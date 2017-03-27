@@ -23,7 +23,9 @@ a {
 	}
 }
 
-.cta {
+.cta,
+.btn,
+button {
     background: $color-link;
 	color: white;
 	display: inline-block;
@@ -36,6 +38,7 @@ a {
 	border-left: 0;
     border-bottom: 0.25em solid darken($color-link, 20%);
 	&:hover {
+		cursor: pointer;
 		background: lighten($color-link, 20%);
         border-bottom: 0.25em solid transparent;
 	}

@@ -2964,7 +2964,9 @@ a {
   a:hover {
     text-decoration: none; }
 
-.cta {
+.cta,
+.btn,
+button {
   background: #339;
   color: white;
   display: inline-block;
@@ -2976,7 +2978,10 @@ a {
   border-right: 0;
   border-left: 0;
   border-bottom: 0.25em solid #1a1a4d; }
-  .cta:hover {
+  .cta:hover,
+  .btn:hover,
+  button:hover {
+    cursor: pointer;
     background: #6666cc;
     border-bottom: 0.25em solid transparent; }
 
@@ -2989,7 +2994,7 @@ a {
 .nav-main {
   padding: 1em;
   list-style: none;
-  margin-top: 0;
+  margin: 0;
   display: flex;
   justify-content: space-between; }
 
