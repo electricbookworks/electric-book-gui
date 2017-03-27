@@ -1,13 +1,4 @@
 #repo-workspace {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	align-items: stretch;
-	flex-wrap: nowrap;
-
-	height: 100%;
-	width: 100%;
-
 	#repo-nav {
 		flex-grow: 0;
 		h1 {
@@ -30,17 +21,7 @@
 			border-color: $color-offset;
 			border-width: 1px 0 0 0;
 
-			.edit-link {
-				cursor: pointer;
-				color: $color-link;
-				padding: 0.4em;
-				&:hover {
-					background-color: $color-link-hover-bg;
-				}
-			}
 			.menu-header {
-
-
 				display: flex;
 				flex-direction: row;
 				justify-content: space-between;

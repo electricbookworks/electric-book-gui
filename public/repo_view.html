@@ -16,13 +16,14 @@
 			</div>
 		</div>
 
-		{{template "_pull_requests.html" .}}
-
 	</div>
 
 	<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 	</div>
+
 </div>
+
+{{template "_pull_requests.html" .}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
