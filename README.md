@@ -11,7 +11,7 @@ Build the `bin/electricbook` binary:
     ./build.sh
 
 Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the following parameters:
-    
+
     github:
       client: "-clientID from github oauth application configuration-"
       secret: "-secret from github oauth application configuration-"
@@ -21,6 +21,12 @@ Start the local electricbook server:
     bin/electricbook -logtostderr web
 
 You should then have the UI running on http://localhost:16101/
+
+If you're going to make changes to the SCSS or JS in the `src` directory, also run gulp to watch for the changes:
+
+    gulp watch
+
+You'll need to run `npm install` first.
 
 
 # ebw CLI tool
@@ -38,8 +44,8 @@ Loads the ebw configuration from [filename]
 Lists all the users configured for the CLI (based on config file)
 
 ### ebw cli user
-Find out which user we are currently working as. You can force this with -u, 
-or ebw will find it from the current repo-owner on github of the 
+Find out which user we are currently working as. You can force this with -u,
+or ebw will find it from the current repo-owner on github of the
 working directory of the currently checked out repo.
 
 ## Github related commands
@@ -70,5 +76,3 @@ Sends a pull-request on the current directory to ? origin-master?
 ### ebw book pull
 
 ### ebw book push
-
-
