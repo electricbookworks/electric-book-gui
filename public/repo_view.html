@@ -16,14 +16,8 @@
 			</div>
 		</div>
 
-		<div id="pull-requests" class="repo-menu">
-			<h1>Changes for Review</h1>
-			<div id="pull-request-list">
-			</div>
-			<div>
-				<a href="{{.RepoName}}/pull_new"><button id="pull-request-create">Submit Changes for Review</button></a>
-			</div>
-		</div>
+		{{template "_pull_requests.html" .}}
+
 	</div>
 
 	<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
