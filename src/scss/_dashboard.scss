@@ -1,0 +1,33 @@
+.repo-list {
+    padding-left: 0;
+    list-style: none;
+    margin-top: 0;
+    margin-bottom: 3em;
+    h2 {
+        margin-bottom: 0;
+    }
+}
+
+.repo {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+    border-bottom: 1px solid $grey;
+    &:first-child {
+        border-top: 1px solid $grey;
+    }
+}
+
+.repo-list {
+    a:not(.btn) {
+        text-decoration: none;
+    }
+}
+
+.pull-requests {
+    padding-left: 4em;
+    ul {
+        padding-left: 0;
+        list-style: none;
+    }
+}

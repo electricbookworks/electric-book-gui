@@ -19,11 +19,10 @@
 
 <nav role="banner">
 	<ul class="nav-main">
-		<li><a href="#" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
+		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
 		<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
 	</ul>
 </nav>
-
 
 <!-- {{template "_topbar_repo.html" . }} -->
 
@@ -126,6 +125,86 @@
             <h3 class="sg-header">logo</h3>
             <a href="#" class="logo"><img src="/img/electricbookworks.png" alt="Electric Book Manager"></a>
         </div>
+	</section>
+
+	<section>
+		<h2 class="sg-section-header">Components</h2>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Book listing</h3>
+			<ul class="repo-list">
+				<li class="repo">
+			        <div class="repo-details">
+			            <h2><a href="#">Repo name</a></h2>
+
+			            <p>Description</p>
+
+						<p>Last update by <a href="#">Nice name (username)</a> 1 week ago</p>
+			        </div>
+			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+			    </li>
+				<li class="repo">
+			        <div class="repo-details">
+			            <h2><a href="#">Repo name</a></h2>
+
+			            <p>Description</p>
+
+						<p>Last updated by Nice name (username) 1 week ago. <a href="#">View updates</a></p>
+			        </div>
+			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+			    </li>
+			</ul>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">PRs for book listing</h3>
+
+			<div class="pull-requests">
+				<h3>Changes submitted for review</h3>
+				<ul>
+					<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a></li>
+					<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Book with PR</h3>
+			<ul class="repo-list">
+				<li class="repo">
+			        <div class="repo-details">
+			            <h2><a href="#">Repo name</a></h2>
+
+			            <p>Description</p>
+
+						<p>Last update by <a href="#">Nice name (username)</a> 1 week ago</p>
+
+						<div class="pull-requests">
+							<h3>Changes submitted for review</h3>
+							<ul>
+								<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a></li>
+								<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a></li>
+							</ul>
+						</div>
+			        </div>
+			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+			    </li>
+			</ul>
+		</div>
+
+		<div class="sg-item">
+            <h3 class="sg-header">Pagination</h3>
+			<nav class="pagination">
+				<ul>
+					<li><a href="#">Previous</a></li>
+					<li><a href="#">1</a></li>
+					<li><a href="#">2</a></li>
+					<li><a href="#">3</a></li>
+					<li><a href="#">Next</a></li>
+				</ul>
+			</nav>
+        </div>
+	</section>
 </main>
 
 <!-- {{template "_footer.html" .}} -->
