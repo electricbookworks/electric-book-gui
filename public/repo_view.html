@@ -1,7 +1,8 @@
 {{template "_header.html" .}}
 {{template "_topbar_repo.html" .}}
 
-<div id="repo-workspace">
+
+<section id="workspace">
 <!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 
 <h1>Editing {{.RepoName}}</h1>
@@ -24,7 +25,7 @@
 	<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 	</div>
 
-</div>
+</section>
 
 {{template "_pull_requests.html" .}}
 
