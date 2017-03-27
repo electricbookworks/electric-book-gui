@@ -1,8 +1,8 @@
 [role="banner"] {
-    background: #000;
-    color: #fff;
+    background: $primary;
+    color: $white;
     a {
-        color: #fff;
+        color: $white;
     }
 }
 
@@ -41,8 +41,8 @@ main {
 }
 
 [role="contentinfo"] {
-    background: #000;
-    color: #fff;
+    background: $primary;
+    color: $white;
     text-align: center;
     padding: 1em;
 }
@@ -55,4 +55,8 @@ main {
 
 .l-center {
     text-align: center;
+}
+
+section {
+    padding: 1em 0;
 }

@@ -1,33 +1,9 @@
-/* main.scss */
+// main.scss
 
-@import "font-awesome/scss/font-awesome.scss";
+@import 'colors';
+@import 'style-guide';
 @import 'normalize';
 @import 'h5bp';
-@import 'colors';
-@import "typography";
+@import 'typography';
+@import 'forms';
 @import 'layout';
-
-@import "repo_file_editor";
-@import 'pages/pull_new';
-@import 'pages/pull_request_view';
-@import 'pages/repo_view';
-
-@import 'CodeMirror';
-
-@import 'widgets/toolbar_menu';
-@import 'widgets/Toast';
-
-#workspace {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	align-items: stretch;
-	height: 100%;
-
-	#bottombar {
-		flex-grow: 0;
-		padding-left: 1em;
-
-		text-align: right;
-	}
-}
