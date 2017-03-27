@@ -1,13 +1,13 @@
 /* main.scss */
 
-@import "font-awesome/scss/font-awesome.scss";
+@import 'font-awesome/scss/font-awesome.scss';
 @import 'normalize';
 @import 'h5bp';
 @import 'colors';
-@import "typography";
+@import 'typography';
 @import 'layout';
 
-@import "repo_file_editor";
+@import 'repo_file_editor';
 @import 'pages/pull_new';
 @import 'pages/pull_request_view';
 @import 'pages/repo_view';
