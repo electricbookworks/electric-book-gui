@@ -13,3 +13,30 @@
 .sg-item {
     margin-bottom: 1em;
 }
+
+.swatch {
+  display: inline-block;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  border-radius: 0.25em;
+  text-align: center;
+  padding: 2em;
+  color: white;
+}
+
+.swatch-primary {
+  background-color: $primary;
+}
+
+.swatch-grey {
+  background-color: $grey;
+  color: #333;
+}
+
+.swatch-off-grey {
+  background-color: $off-grey;
+}
+
+.swatch-dark-grey {
+  background-color: $dark-grey;
+}
