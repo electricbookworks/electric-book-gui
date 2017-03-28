@@ -1,0 +1,86 @@
+input,
+textarea {
+    padding: 0.25em 0.5em;
+    font-family: 'Source Sans Pro', sans-serif;
+    border: solid 1px $off-grey;
+}
+
+[type="checkbox"],
+[type="radio"] {
+	margin-right: 0.5em;
+}
+
+select,
+input,
+textarea {
+    margin-left: 0.5em;
+}
+
+.cta,
+.btn,
+button,
+[type="submit"] {
+    background-color: $primary;
+	color: $white;
+	display: inline-block;
+    text-decoration: none;
+	padding: 0.5em 1em;
+	border-radius: 0.25em;
+	border-top: 0;
+	border-right: 0;
+	border-left: 0;
+    border-bottom: 0.15em solid darken($primary, 10%);
+	&:hover {
+		background-color: lighten($primary, 10%);
+        border-bottom: 0.15em solid transparent;
+		cursor: pointer;
+	}
+}
+
+.btn-wide,
+.input-wide,
+.label-wide {
+	display: block;
+}
+
+.input-wide {
+    width: calc(100% - 1em);
+    margin-left: 0;
+}
+
+.label-wide {
+    margin-bottom: 0.5em;
+    + input {
+        margin-left: 0;
+    }
+}
+
+.commit-message {
+    width: 40em;
+    max-width: 100%;
+}
+
+.btn-secondary {
+	background-color: $dark-grey;
+	border-bottom: 0.15em solid darken($dark-grey, 10%);
+	&:hover {
+		background: lighten($dark-grey, 20%);
+	}
+}
+
+.btn-alt {
+	background-color: $white;
+	color: $primary;
+	display: inline-block;
+    text-decoration: none;
+	padding: 0.5em 1em;
+	border-radius: 0.25em;
+	border-top: 0;
+	border-right: 0;
+	border-left: 0;
+    border-bottom: 0.15em solid darken($white, 20%);
+	&:hover {
+		background-color: darken($white, 10%);
+        border-bottom: 0.15em solid transparent;
+	}
+}

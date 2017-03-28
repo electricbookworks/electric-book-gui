@@ -1,14 +1,14 @@
-//$workFont: 'Work Sans', sans-serif;
-$workFont: 'Quattrocento Sans', sans-serif;
-
 body {
-	font-family: $workFont;
+	font-family: 'Source Sans Pro', sans-serif;
+	color: #444;
 }
 
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5,
+h6 {
 	margin-top: 0;
 }
 
@@ -17,26 +17,17 @@ p {
 }
 
 a {
-	color: $color-link;
+	color: $primary;
 	&:hover {
 		text-decoration: none;
 	}
 }
 
-.cta {
-    background: $color-link;
-	color: white;
-	display: inline-block;
-    text-decoration: none;
-	padding: 0.5em 1em;
-	margin-bottom: 1em;
-	border-radius: 0.25em;
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-    border-bottom: 0.25em solid darken($color-link, 20%);
-	&:hover {
-		background: lighten($color-link, 20%);
-        border-bottom: 0.25em solid transparent;
+.logo {
+	text-decoration: none;
+	img {
+		width: 2em;
+		height: 2em;
+		margin-right: 0.5em;
 	}
 }
