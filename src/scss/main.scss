@@ -1,5 +1,10 @@
 // main.scss
 
+$bp-s: "38em";
+$bp-m: "50em";
+$bp-l: "64em";
+$bp-xl: "80em";
+
 @import 'colors';
 @import 'style-guide';
 @import 'normalize';

@@ -10,8 +10,16 @@
     padding: 1em;
     list-style: none;
     margin-top: 0;
-    display: flex;
-    justify-content: space-between;
+    li:first-child {
+        margin-bottom: 1em;
+    }
+    @media (min-width: $bp-s) {
+        display: flex;
+        justify-content: space-between;
+        li:first-child {
+            margin-bottom: 0;
+        }
+    }
 }
 
 main {
@@ -52,4 +60,19 @@ section {
         padding: 0 0.25em;
         margin: 0 0.25em;
     }
+}
+
+article {
+  @media (min-width: $bp-s) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  @media (min-width: $bp-m) {
+    padding-left: 15%;
+    padding-right: 15%;
+  }
+  @media (min-width: $bp-l) {
+    padding-left: 20%;
+    padding-right: 20%;
+  }
 }
