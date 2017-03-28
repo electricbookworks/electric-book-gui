@@ -39,6 +39,14 @@ main {
     }
 }
 
+img {
+  border-width: 0;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+  max-width: 100%;
+  height: auto;
+}
+
 .l-center {
     text-align: center;
 }

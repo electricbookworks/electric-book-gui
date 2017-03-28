@@ -11,6 +11,28 @@
 .sg-item {
   margin-bottom: 1em; }
 
+.swatch {
+  display: inline-block;
+  margin-right: 1em;
+  margin-bottom: 1em;
+  border-radius: 0.25em;
+  text-align: center;
+  padding: 2em;
+  color: white; }
+
+.swatch-primary {
+  background-color: #009E7F; }
+
+.swatch-grey {
+  background-color: #ddd;
+  color: #333; }
+
+.swatch-off-grey {
+  background-color: #71B8AA; }
+
+.swatch-dark-grey {
+  background-color: #666; }
+
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Change the default font family in all browsers (opinionated).
@@ -817,6 +839,13 @@ main {
 
 .form-fork [type="text"] {
   width: 30em; }
+
+img {
+  border-width: 0;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+  max-width: 100%;
+  height: auto; }
 
 .l-center {
   text-align: center; }
