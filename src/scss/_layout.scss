@@ -61,6 +61,12 @@ img {
     li {
         display: inline-block;
         padding: 0.25em 0.5em;
+        &:first-child {
+            padding-left: 0;
+        }
+        &:last-child {
+            padding-right: 0;
+        }
     }
 }
 

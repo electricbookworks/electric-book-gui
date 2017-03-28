@@ -7,11 +7,13 @@
 	<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 
 
-	{{template "_editor_actions.html" .}}
+	<section class="section-editor" >
+		{{template "_editor_actions.html" .}}
 
-	<h2>Editor</h2>
-	<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
-	</div>
+		<h2>Editor</h2>
+		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
+		</div>
+	</section>
 
 	{{template "_outputs.html"}}
 

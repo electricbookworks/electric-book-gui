@@ -882,6 +882,10 @@ img {
 .action-group-inline li {
   display: inline-block;
   padding: 0.25em 0.5em; }
+  .action-group-inline li:first-child {
+    padding-left: 0; }
+  .action-group-inline li:last-child {
+    padding-right: 0; }
 
 .action-group-main {
   text-align: right; }
