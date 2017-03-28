@@ -1,5 +1,5 @@
 {{template "_header.html" .}}
-{{template "_topbar_repo.html" .}}
+{{template "_nav_main.html" .}}
 
 <main>
 
@@ -13,9 +13,10 @@
 		<h2>Editor</h2>
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
+
+		{{template "_outputs.html"}}
 	</section>
 
-	{{template "_outputs.html"}}
 
 	{{template "_files.html"}}
 
