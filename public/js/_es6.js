@@ -1315,12 +1315,15 @@ var RepoFileEditorCM = function () {
 
 		this.file = false;
 
-		Eventify(this.el, {
+		Eventify(document.getElementById('editor-actions'), {
 			'save': function save(evt) {
+				console.log('SAVE button pressed');
 				evt.preventDefault();
 				this.file.SetText(this.editor.getValue());
+
 				this.file.Save().then(function () {
 					// this.$.save.disabled = true;
+					console.log('Document saved');
 				}).catch(function (err) {
 					EBW.Error(err);
 				});

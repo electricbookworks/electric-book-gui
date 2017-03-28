@@ -982,14 +982,14 @@ section {
         line-height: 1.25; } }
   .repo-list .repo {
     width: 30%;
-    margin-left: 5%;
+    margin-right: 5%;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: space-between;
     padding: 1em; }
     .repo-list .repo:nth-child(3n) {
-      margin-left: 0; }
+      margin-right: 0; }
   @supports (display: grid) {
     .repo-list {
       display: grid;
@@ -999,7 +999,8 @@ section {
       .repo-list .repo {
         width: auto;
         border: 1px solid #333;
-        word-break: auto; } }
+        word-break: auto;
+        margin-right: 0; } }
 
 .pull-requests {
   padding-left: 4em; }

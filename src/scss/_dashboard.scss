@@ -13,7 +13,6 @@
         word-break: break-all;
         text-overflow: fade;
 
-
         max-width: 100%;
         text-decoration: none;
     }
@@ -29,9 +28,10 @@
 
     .repo {
         width: 30%;
-        margin-left: 5%;
+
+        margin-right: 5%;
         &:nth-child(3n) {
-            margin-left: 0;
+            margin-right: 0;
         }
 
         display: flex;
@@ -51,6 +51,7 @@
             width: auto;
             border: 1px solid #333;
             word-break: auto;
+            margin-right: 0;
         }
     }
 }

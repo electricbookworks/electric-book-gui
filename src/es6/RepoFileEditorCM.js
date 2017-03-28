@@ -9,14 +9,17 @@ class RepoFileEditorCM {
 		[this.el, this.$] = DTemplate(EditorCodeMirror.Template());
 		this.file = false;
 
-		Eventify(this.el, {
+		Eventify(document.getElementById('editor-actions'), {
 			'save': function(evt) {
+				console.log('SAVE button pressed');
 				evt.preventDefault();
 				this.file.SetText(this.editor.getValue());
+
 				this.file.Save()
 				.then(
 					()=>{						
 						// this.$.save.disabled = true;
+						console.log(`Document saved`);
 					})
 				.catch(
 					(err)=>{
