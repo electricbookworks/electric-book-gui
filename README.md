@@ -22,18 +22,17 @@ Get a personal access token from GitHub (Settings > Developer Settings > Persona
         - token:
         - name:
 
+## Running the app
+
 Start the local electricbook server:
 
     bin/electricbook -logtostderr web
 
 You should then have the UI running on http://localhost:16101/
 
-If you're going to make changes to the SCSS or JS in the `src` directory, also run gulp to watch for the changes:
+If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `npm install` to install the rest of the dependencies. Run gulp to watch for the changes:
 
     gulp watch
-
-You'll need to run `npm install` first.
-
 
 # ebw CLI tool
 
