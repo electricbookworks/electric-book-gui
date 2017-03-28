@@ -1,10 +1,11 @@
 {{template "_header.html" .}}
 {{template "_topbar_repo.html" .}}
 
-<div id="repo-workspace">
-<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
+<main>
 
 {{template "_editor_actions.html" .}}
+	<h1>Editing {{.RepoName}}</h1>
+	<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 
 	<div id="repo-nav">
 
@@ -13,6 +14,9 @@
 			<button id="repo-print" title="Print PDF"><i class="fa fa-file-pdf-o"></i></button>
 		</div>
 
+	<h2>Editor</h2>
+	<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
+	</div>
 
 		<div id="repo-files" class="repo-menu">
 			<div id="files">
@@ -28,14 +32,12 @@
 			</div>
 		</div>
 	</div>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		new RepoEditorPage('{{.RepoName}}');
+	});
+	</script>
 
-	<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
-	</div>
-</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-	new RepoEditorPage('{{.RepoName}}');
-});
-</script>
+</main>
 
 {{template "_footer.html" .}}
