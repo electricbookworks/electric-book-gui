@@ -3,41 +3,6 @@
 
 <main>
 
-<<<<<<< HEAD
-<h1>My books</h1>
-
-<ul class="repo-list">
-    {{range .Repos }}
-    <li class="repo">
-
-        <div class="repo-details">
-           <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a>
-
-            <!-- if {{.Description}} !== <nil> -->
-            <p>{{.Description}}</p>
-            <!-- endif -->
-
-            <!-- Grab latest commit -->
-            <p>Last updated by {TheirUserName} {RelativeTimeAgo}.</p>
-        </div>
-        <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage book</a></p>
-
-    </li>
-    {{end -}}
-</ul>
-
-<!-- Pagination --->
-<!-- Show the first 10 -->
-<!-- Then show Previous | 1 | 2 | 3 | Next -->
-
-<form class="form-fork" method="post" action="/github/create-fork">
-    <h2>Create an Adaptation</h2>
-    <label for="repo_name">The base book:
-        <input type="text" name="repo_name" id="repo_name" value="" placeholder="e.g. electricbookworks/electric-book" />
-    </label>
-    <input class="cta" type="submit" value="Create adaptation" />
-</form>
-=======
 <h1>Dashboard</h1>
 
 
@@ -48,7 +13,7 @@
         {{range .Repos }}
         <li class="repo">
             <div class="repo-details">
-                <h2><a href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+                <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
                 <h3><a href="#">UserName</a>'s version, from <a href="#">OrganizationName</a></h3>
                 <!-- if {{.Description}} !== <nil> -->
                 <p>{{.Description}}</p>
@@ -83,7 +48,7 @@
         <input class="cta" type="submit" value="Create adaptation" />
     </form>
 </section>
->>>>>>> 9ac973b73413221a47d5781f032e8e939badd7ee
+
 
 </main>
 
