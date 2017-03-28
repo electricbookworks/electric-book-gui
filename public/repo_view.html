@@ -1,35 +1,37 @@
 {{template "_header.html" .}}
 {{template "_topbar_repo.html" .}}
 
-<div id="repo-workspace">
+
+<section id="workspace">
 <!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 
-<div id="repo-nav">
+<h1>Editing {{.RepoName}}</h1>
+<!-- ^^^ This should  {{.Filename}} -->
 
-<div class="repo-commands repo-menu">
-	<button id="repo-commit" title="Commit"><i class="fa fa-cloud-upload"></i></button>
-	<button id="repo-print" title="Print PDF"><i class="fa fa-file-pdf-o"></i></button>
-</div>
+	<div id="repo-nav">
 
+		<div class="repo-commands repo-menu">
+			<button id="repo-commit" title="Commit"><i class="fa fa-cloud-upload"></i></button>
+			<button id="repo-print" title="Print PDF"><i class="fa fa-file-pdf-o"></i></button>
+			<button data-event="click:save" data-set="save" title="Save"><i class="fa fa-save"> </i></button>
+			<button data-event="click:undo" data-set="undo" title="Revert"><i class="fa fa-undo"> </i></button>
+			<button data-event="click:delete" title="Delete"><i class="fa fa-trash"> </i></button>
+		</div>
 
-<div id="repo-files" class="repo-menu">
-<div id="files">
-</div>
-</div>
+		<div id="repo-files" class="repo-menu">
+			<div id="files">
+			</div>
+		</div>
 
-<div id="pull-requests" class="repo-menu">
-<h1>Changes for Review</h1>
-<div id="pull-request-list">
-</div>
-<div>
-<a href="{{.RepoName}}/pull_new"><button id="pull-request-create">Submit Changes for Review</button></a>
-</div>
-</div>
-</div>
+	</div>
 
-<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
-</div>
-</div>
+	<div id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
+	</div>
+
+</section>
+
+{{template "_pull_requests.html" .}}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 	new RepoEditorPage('{{.RepoName}}');

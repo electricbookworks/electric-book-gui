@@ -2964,7 +2964,9 @@ a {
   a:hover {
     text-decoration: none; }
 
-.cta {
+.cta,
+.btn,
+button {
   background: #339;
   color: white;
   display: inline-block;
@@ -2976,7 +2978,10 @@ a {
   border-right: 0;
   border-left: 0;
   border-bottom: 0.25em solid #1a1a4d; }
-  .cta:hover {
+  .cta:hover,
+  .btn:hover,
+  button:hover {
+    cursor: pointer;
     background: #6666cc;
     border-bottom: 0.25em solid transparent; }
 
@@ -2989,7 +2994,7 @@ a {
 .nav-main {
   padding: 1em;
   list-style: none;
-  margin-top: 0;
+  margin: 0;
   display: flex;
   justify-content: space-between; }
 
@@ -3025,6 +3030,9 @@ main {
 
 .l-center {
   text-align: center; }
+
+section {
+  padding: 1em; }
 
 .repo-file-editor-workspace {
   display: flex;
@@ -3068,63 +3076,6 @@ main {
   #mergely .merge-mergely {
     flex-grow: 1; }
 
-#repo-workspace {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: stretch;
-  flex-wrap: nowrap;
-  height: 100%;
-  width: 100%; }
-  #repo-workspace #repo-nav {
-    flex-grow: 0; }
-    #repo-workspace #repo-nav h1 {
-      font-size: 1.3em;
-      font-weight: bold; }
-    #repo-workspace #repo-nav .repo-commands {
-      display: block; }
-    #repo-workspace #repo-nav .repo-menu {
-      padding: 0.4em 1em 0 1em;
-      margin-top: 1em;
-      border-style: solid;
-      border-color: #99c;
-      border-width: 1px 0 0 0; }
-      #repo-workspace #repo-nav .repo-menu .edit-link {
-        cursor: pointer;
-        color: #339;
-        padding: 0.4em; }
-        #repo-workspace #repo-nav .repo-menu .edit-link:hover {
-          background-color: white; }
-      #repo-workspace #repo-nav .repo-menu .menu-header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 0.4em; }
-        #repo-workspace #repo-nav .repo-menu .menu-header .menu-title {
-          flex-grow: 1; }
-        #repo-workspace #repo-nav .repo-menu .menu-header .menu-controls {
-          flex-grow: 0; }
-          #repo-workspace #repo-nav .repo-menu .menu-header .menu-controls button {
-            font-size: 0.6em; }
-          #repo-workspace #repo-nav .repo-menu .menu-header .menu-controls .spacer {
-            height: 0.6em; }
-    #repo-workspace #repo-nav #repo-files .file-dirty-tag {
-      display: inline-block;
-      width: 1em;
-      height: 1em;
-      margin-right: 0.4em;
-      border-radius: 20%; }
-    #repo-workspace #repo-nav #repo-files .file-dirty .file-dirty-tag {
-      background-color: red;
-      color: white; }
-    #repo-workspace #repo-nav #pull-requests #pull-request-list {
-      margin-bottom: 1em; }
-  #repo-workspace #editor {
-    flex-grow: 1;
-    padding: 0 0 0 1em;
-    height: 100%; }
-
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
@@ -3158,14 +3109,3 @@ main {
     box-shadow: 5px 5px 5px black;
     width: 20em;
     text-alignment: center; }
-
-#workspace {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: stretch;
-  height: 100%; }
-  #workspace #bottombar {
-    flex-grow: 0;
-    padding-left: 1em;
-    text-align: right; }
