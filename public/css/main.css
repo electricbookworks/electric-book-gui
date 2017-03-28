@@ -644,6 +644,61 @@ h6 {
 p {
   margin-top: 0; }
 
+@media (min-width: 43.75em) {
+  html {
+    line-height: 1.375; } }
+
+h1 {
+  font-size: 2em;
+  line-height: 1.25; }
+  @media (min-width: 43.75em) {
+    h1 {
+      font-size: 2.5em;
+      line-height: 1.125; } }
+  @media (min-width: 56.25em) {
+    h1 {
+      font-size: 3em;
+      line-height: 1.05; } }
+
+h2 {
+  font-size: 1.625em;
+  line-height: 1.15384615; }
+  @media (min-width: 43.75em) {
+    h2 {
+      font-size: 2em;
+      line-height: 1.25; } }
+  @media (min-width: 56.25em) {
+    h2 {
+      font-size: 2.25em;
+      line-height: 1.25; } }
+
+h3 {
+  font-size: 1.375em;
+  line-height: 1.13636364; }
+  @media (min-width: 43.75em) {
+    h3 {
+      font-size: 1.5em;
+      line-height: 1.25; } }
+  @media (min-width: 56.25em) {
+    h3 {
+      font-size: 1.75em;
+      line-height: 1.25; } }
+
+h4 {
+  font-size: 1.125em;
+  line-height: 1.11111111; }
+  @media (min-width: 43.75em) {
+    h4 {
+      line-height: 1.22222222; } }
+
+blockquote {
+  font-size: 1.25em;
+  line-height: 1.25; }
+  @media (min-width: 43.75em) {
+    blockquote {
+      font-size: 1.5em;
+      line-height: 1.45833333; } }
+
 a {
   color: #009E7F; }
   a:hover {
@@ -741,9 +796,15 @@ button,
 .nav-main {
   padding: 1em;
   list-style: none;
-  margin-top: 0;
-  display: flex;
-  justify-content: space-between; }
+  margin-top: 0; }
+  .nav-main li:first-child {
+    margin-bottom: 1em; }
+  @media (min-width: 38em) {
+    .nav-main {
+      display: flex;
+      justify-content: space-between; }
+      .nav-main li:first-child {
+        margin-bottom: 0; } }
 
 main {
   padding: 1em; }
@@ -773,6 +834,21 @@ section {
   .pagination a {
     padding: 0 0.25em;
     margin: 0 0.25em; }
+
+@media (min-width: 38em) {
+  article {
+    padding-left: 10%;
+    padding-right: 10%; } }
+
+@media (min-width: 50em) {
+  article {
+    padding-left: 15%;
+    padding-right: 15%; } }
+
+@media (min-width: 64em) {
+  article {
+    padding-left: 20%;
+    padding-right: 20%; } }
 
 .repo-list {
   padding-left: 0;
