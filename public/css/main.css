@@ -777,6 +777,13 @@ button,
     background-color: #00d1a8;
     border-bottom: 0.15em solid transparent;
     cursor: pointer; }
+  .cta[disabled],
+  .btn[disabled],
+  button[disabled],
+  [type="submit"][disabled] {
+    border: none;
+    background-color: #71B8AA;
+    cursor: default; }
 
 .btn-wide,
 .input-wide,
@@ -835,7 +842,7 @@ button,
 .nav-main {
   padding: 1em;
   list-style: none;
-  margin-top: 0; }
+  margin: 0; }
   .nav-main li:first-child {
     margin-bottom: 1em; }
   @media (min-width: 38em) {
@@ -869,11 +876,16 @@ img {
 
 .action-group {
   list-style: none;
-  padding-left: 0; }
+  padding-left: 0;
+  margin-top: 0; }
 
 .action-group-inline li {
   display: inline-block;
   padding: 0.25em 0.5em; }
+  .action-group-inline li:first-child {
+    padding-left: 0; }
+  .action-group-inline li:last-child {
+    padding-right: 0; }
 
 .action-group-main {
   text-align: right; }
@@ -886,6 +898,10 @@ img {
 
 section {
   padding: 1em 0; }
+
+.section-editor {
+  border-top: solid 3px #71B8AA;
+  margin-bottom: 1em; }
 
 .pagination a {
   padding: 0 0.25em;
@@ -908,6 +924,7 @@ section {
 
 .editor {
   padding: 0.25em 0.5em;
+  margin: 1em 0;
   border: solid 1px #71B8AA; }
   @media (min-width: 38em) {
     .editor {
