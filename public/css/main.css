@@ -713,11 +713,13 @@ h3 {
       font-size: 1.75em;
       line-height: 1.25; } }
 
-h4 {
+h4,
+.repo-details h3 {
   font-size: 1.125em;
   line-height: 1.11111111; }
   @media (min-width: 43.75em) {
-    h4 {
+    h4,
+    .repo-details h3 {
       line-height: 1.22222222; } }
 
 blockquote {
@@ -897,9 +899,7 @@ img {
   padding: 0.5em; }
 
 section {
-  padding: 1em 0; }
-
-.section-editor {
+  padding: 1em 0;
   border-top: solid 3px #71B8AA;
   margin-bottom: 1em; }
 
@@ -939,8 +939,7 @@ section {
 .repo-list {
   padding-left: 0;
   list-style: none;
-  margin-top: 0;
-  margin-bottom: 3em; }
+  margin-top: 0; }
   .repo-list h2 {
     margin-bottom: 0; }
 
