@@ -867,26 +867,25 @@ img {
 .l-center {
   text-align: center; }
 
-.action-group li {
-  display: inline-block;
-  margin-left: 1em; }
+.action-group {
+  list-style: none;
+  padding-left: 0; }
+  .action-group li {
+    display: inline-block;
+    margin-left: 1em; }
 
 .action-group-main {
   text-align: right; }
 
+.action-group-general {
+  text-align: center; }
+
 section {
   padding: 1em 0; }
 
-.pagination {
-  text-align: center; }
-  .pagination ul {
-    padding-left: 0;
-    list-style: none; }
-  .pagination li {
-    display: inline-block; }
-  .pagination a {
-    padding: 0 0.25em;
-    margin: 0 0.25em; }
+.pagination a {
+  padding: 0 0.25em;
+  margin: 0 0.25em; }
 
 @media (min-width: 38em) {
   article {
@@ -932,7 +931,7 @@ section {
   .repo:first-child {
     border-top: 1px solid #ddd; }
 
-.repo-list a:not(.btn) {
+.repo-list h2 a {
   text-decoration: none; }
 
 .pull-requests {
