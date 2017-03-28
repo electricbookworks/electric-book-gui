@@ -85,9 +85,11 @@ img {
 }
 
 section {
-    padding: 1em 0;
+    padding: 2em 0;
     border-top: solid 3px $off-grey;
-    margin-bottom: 1em;
+    :last-child {
+        margin-bottom: 0;
+    }
 }
 
 .pagination {
@@ -112,17 +114,34 @@ article {
   }
 }
 
+.section-editor {
+  @media (min-width: $bp-s) {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+  @media (min-width: $bp-m) {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  @media (min-width: $bp-l) {
+    padding-left: 15%;
+    padding-right: 15%;
+  }
+}
+
+
 .editor {
+    border: solid 1px $off-grey;
     padding: 0.25em 0.5em;
     margin: 1em 0;
-    border: solid 1px $off-grey;
+}
+
+.header-split {
     @media (min-width: $bp-s) {
-      margin-right: 20%;
-    }
-    @media (min-width: $bp-m) {
-      margin-right: 30%;
-    }
-    @media (min-width: $bp-l) {
-      margin-right: 40%;
+        h2 {
+            margin-bottom: 0;
+        }
+        display: flex;
+        justify-content: space-between;
     }
 }
