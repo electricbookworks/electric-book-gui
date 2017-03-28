@@ -8,8 +8,10 @@
 <ul class="repo-list">
     {{range .Repos }}
     <li class="repo">
+
         <div class="repo-details">
-            <h2><a href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+           <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a>
+
             <!-- if {{.Description}} !== <nil> -->
             <p>{{.Description}}</p>
             <!-- endif -->
