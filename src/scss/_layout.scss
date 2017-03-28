@@ -51,6 +51,17 @@ img {
     text-align: center;
 }
 
+.action-group {
+    li {
+        display: inline-block;
+        margin-left: 1em;
+    }
+}
+
+.action-group-main {
+    text-align: right;
+}
+
 section {
     padding: 1em 0;
 }
@@ -83,4 +94,18 @@ article {
     padding-left: 20%;
     padding-right: 20%;
   }
+}
+
+.editor {
+    padding: 0.25em 0.5em;
+    border: solid 1px $off-grey;
+    @media (min-width: $bp-s) {
+      margin-right: 20%;
+    }
+    @media (min-width: $bp-m) {
+      margin-right: 30%;
+    }
+    @media (min-width: $bp-l) {
+      margin-right: 40%;
+    }
 }

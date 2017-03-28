@@ -33,6 +33,13 @@
 .swatch-dark-grey {
   background-color: #666; }
 
+.sg-note {
+  padding: 0.25em 0.5em;
+  background: #ddd; }
+  .sg-note:before {
+    content: "Note: ";
+    font-weight: bold; }
+
 /*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */
 /**
  * 1. Change the default font family in all browsers (opinionated).
@@ -734,7 +741,8 @@ a {
     margin-right: 0.5em; }
 
 input,
-textarea {
+textarea,
+button {
   padding: 0.25em 0.5em;
   font-family: 'Source Sans Pro', sans-serif;
   border: solid 1px #71B8AA; }
@@ -809,6 +817,15 @@ button,
     background-color: #e6e6e6;
     border-bottom: 0.15em solid transparent; }
 
+@media (min-width: 38em) {
+  .pull-request {
+    display: flex;
+    justify-content: space-between; } }
+
+.pull-request .action {
+  flex-direction: column;
+  justify-content: flex-end; }
+
 [role="banner"] {
   background: #009E7F;
   color: white; }
@@ -850,6 +867,13 @@ img {
 .l-center {
   text-align: center; }
 
+.action-group li {
+  display: inline-block;
+  margin-left: 1em; }
+
+.action-group-main {
+  text-align: right; }
+
 section {
   padding: 1em 0; }
 
@@ -878,6 +902,19 @@ section {
   article {
     padding-left: 20%;
     padding-right: 20%; } }
+
+.editor {
+  padding: 0.25em 0.5em;
+  border: solid 1px #71B8AA; }
+  @media (min-width: 38em) {
+    .editor {
+      margin-right: 20%; } }
+  @media (min-width: 50em) {
+    .editor {
+      margin-right: 30%; } }
+  @media (min-width: 64em) {
+    .editor {
+      margin-right: 40%; } }
 
 .repo-list {
   padding-left: 0;

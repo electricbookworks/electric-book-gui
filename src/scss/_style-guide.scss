@@ -40,3 +40,12 @@
 .swatch-dark-grey {
   background-color: $dark-grey;
 }
+
+.sg-note {
+    padding: 0.25em 0.5em;
+    background: $grey;
+    &:before {
+        content: "Note: ";
+        font-weight: bold;
+    }
+}

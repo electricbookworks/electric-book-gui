@@ -1,5 +1,6 @@
 input,
-textarea {
+textarea,
+button {
     padding: 0.25em 0.5em;
     font-family: 'Source Sans Pro', sans-serif;
     border: solid 1px $off-grey;
@@ -83,4 +84,15 @@ button,
 		background-color: darken($white, 10%);
         border-bottom: 0.15em solid transparent;
 	}
+}
+
+.pull-request {
+    @media (min-width: $bp-s) {
+        display: flex;
+        justify-content: space-between;
+    }
+    .action {
+        flex-direction: column;
+        justify-content: flex-end;
+    }
 }

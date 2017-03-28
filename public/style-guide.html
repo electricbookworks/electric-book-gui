@@ -139,6 +139,16 @@
 		<h2 class="sg-section-header">Components</h2>
 
 		<div class="sg-item">
+			<h3 class="sg-header">Main nav</h3>
+
+			<ul class="nav-main">
+				<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
+				<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
+			</ul>
+
+		</div>
+
+		<div class="sg-item">
 			<h3 class="sg-header">Book listing</h3>
 			<ul class="repo-list">
 				<li class="repo">
@@ -170,8 +180,8 @@
 			<div class="pull-requests">
 				<h3>Changes submitted for review</h3>
 				<ul>
-					<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a></li>
-					<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a></li>
+					<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
+					<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
 				</ul>
 			</div>
 		</div>
@@ -190,8 +200,8 @@
 						<div class="pull-requests">
 							<h3>Changes submitted for review</h3>
 							<ul>
-								<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a></li>
-								<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a></li>
+								<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
+								<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
 							</ul>
 						</div>
 			        </div>
@@ -216,9 +226,72 @@
 		<div class="sg-item">
 			<h3 class="sg-header">Make a commit</h3>
 
-			<label class="label-wide" for="commit-message">Description of changes</label>
+			<ul class="action-group action-group-main">
+				<li><a href="#" class="btn">Save as a new version of the book</a></li>
+				<li><a href="#">Don't make a new version yet</a></li>
+			</ul>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Commit message</h3>
+
+			<label class="label-wide" for="commit-message">Short description of the changes you made</label>
             <input type="text" id="commit-message" name="commit-message" class="commit-message" placeholder="e.g. grammar and spelling fixes">
 		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Repo actions: output</h3>
+
+			<p class="sg-note">Lives at the bottom of the editor.</p>
+
+			<ul class="action-group">
+				<li>Output:</li>
+				<li><button>Web version</button></li>
+				<li><button id="repo-print">Screen PDF</button></li>
+				<li><button>Print PDF</button></li>
+				<li><button disabled>epub</button></li>
+			</ul>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Repo actions</h3>
+
+			<ul class="action-group action-group-main">
+				<li><button data-event="click:save" data-set="save">Save</button></li>
+				<li><button data-event="click:undo" data-set="undo">Undo</button></li>
+				<li><button data-event="click:delete">Delete</button></li>
+			</ul>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Editor container</h3>
+			<div class="editor">
+				{{ Editor contents }}
+			</div>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">Pull request</h3>
+			<p class="sg-note">Live at bottom of the page.</p>
+
+			<div class="pull-request">
+				<div class="commit-details">
+					<h3>Changes</h3>
+
+					<p>4 changes in 2 files</p>
+					<ul>
+						<li>Hello World (01.md)</li>
+						<li>Goodbye World (02.md)</li>
+					</ul>
+				</div>
+				<div class="action">
+					<button>Submit changes for review</button>
+				</div>
+
+			</div>
+
+		</div>
+
 	</section>
 </main>
 
