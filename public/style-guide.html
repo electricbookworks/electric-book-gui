@@ -212,7 +212,7 @@
 
 		<div class="sg-item">
             <h3 class="sg-header">Pagination</h3>
-			<nav class="action-group action-group-general">
+			<nav class="action-group action-group-inline action-group-general">
 				<ul>
 					<li><a href="#">Previous</a></li>
 					<li><a href="#">1</a></li>
@@ -226,7 +226,7 @@
 		<div class="sg-item">
 			<h3 class="sg-header">Make a commit</h3>
 
-			<ul class="action-group action-group-main">
+			<ul class="action-group action-group-inline action-group-main">
 				<li><a href="#" class="btn">Save as a new version of the book</a></li>
 				<li><a href="#">Don't make a new version yet</a></li>
 			</ul>
@@ -244,7 +244,7 @@
 
 			<p class="sg-note">Lives at the bottom of the editor.</p>
 
-			<ul class="action-group">
+			<ul class="action-group action-group-inline">
 				<li>Output:</li>
 				<li><button>Web version</button></li>
 				<li><button id="repo-print">Screen PDF</button></li>
@@ -256,7 +256,7 @@
 		<div class="sg-item">
 			<h3 class="sg-header">Repo actions</h3>
 
-			<ul class="action-group action-group-main">
+			<ul class="action-group action-group-inline action-group-main">
 				<li><button data-event="click:save" data-set="save">Save</button></li>
 				<li><button data-event="click:undo" data-set="undo">Undo</button></li>
 				<li><button data-event="click:delete">Delete</button></li>
@@ -287,10 +287,20 @@
 				<div class="action">
 					<button>Submit changes for review</button>
 				</div>
-
 			</div>
-
 		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">File list</h3>
+
+			<ul class="action-group action-group-block">
+				<li><a href="#">0-0-cover.md</a></li>
+				<li><a href="#">0-1-titlepage.md</a></li>
+				<li><a href="#">0-2-copyright.md</a></li>
+				<li><a href="#">0-3-contents.md</a></li>
+			</ul>
+		</div>
+
 
 	</section>
 </main>

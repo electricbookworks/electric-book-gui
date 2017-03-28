@@ -870,15 +870,19 @@ img {
 .action-group {
   list-style: none;
   padding-left: 0; }
-  .action-group li {
-    display: inline-block;
-    margin-left: 1em; }
+
+.action-group-inline li {
+  display: inline-block;
+  padding: 0.25em 0.5em; }
 
 .action-group-main {
   text-align: right; }
 
 .action-group-general {
   text-align: center; }
+
+.action-group-block li {
+  padding: 0.5em; }
 
 section {
   padding: 1em 0; }

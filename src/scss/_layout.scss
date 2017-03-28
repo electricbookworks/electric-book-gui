@@ -54,9 +54,12 @@ img {
 .action-group {
     list-style: none;
     padding-left: 0;
+}
+
+.action-group-inline {
     li {
         display: inline-block;
-        margin-left: 1em;
+        padding: 0.25em 0.5em;
     }
 }
 
@@ -66,6 +69,12 @@ img {
 
 .action-group-general {
     text-align: center;
+}
+
+.action-group-block {
+    li {
+        padding: 0.5em;
+    }
 }
 
 section {
