@@ -9,7 +9,7 @@
 .nav-main {
     padding: 1em;
     list-style: none;
-    margin-top: 0;
+    margin: 0;
     li:first-child {
         margin-bottom: 1em;
     }
@@ -54,6 +54,7 @@ img {
 .action-group {
     list-style: none;
     padding-left: 0;
+    margin-top: 0;
 }
 
 .action-group-inline {
@@ -81,6 +82,11 @@ section {
     padding: 1em 0;
 }
 
+.section-editor {
+    border-top: solid 3px $off-grey;
+    margin-bottom: 1em;
+}
+
 .pagination {
     a {
         padding: 0 0.25em;
@@ -105,6 +111,7 @@ article {
 
 .editor {
     padding: 0.25em 0.5em;
+    margin: 1em 0;
     border: solid 1px $off-grey;
     @media (min-width: $bp-s) {
       margin-right: 20%;

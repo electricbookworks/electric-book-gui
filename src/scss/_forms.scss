@@ -36,7 +36,14 @@ button,
         border-bottom: 0.15em solid transparent;
 		cursor: pointer;
 	}
+    &[disabled] {
+        border: none;
+        background-color: $off-grey;
+        cursor: default;
+    }
 }
+
+
 
 .btn-wide,
 .input-wide,
