@@ -67,7 +67,8 @@ h3 {
   }
 }
 
-h4 {
+h4,
+.repo-details h3 {
   font-size: 1.125em;
   line-height: 1.11111111;
   @media (min-width: 43.75em) {

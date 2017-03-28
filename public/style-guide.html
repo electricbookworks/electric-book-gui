@@ -212,8 +212,8 @@
 
 		<div class="sg-item">
             <h3 class="sg-header">Pagination</h3>
-			<nav class="action-group action-group-inline action-group-general">
-				<ul>
+			<nav>
+				<ul class="action-group action-group-inline action-group-general">
 					<li><a href="#">Previous</a></li>
 					<li><a href="#">1</a></li>
 					<li><a href="#">2</a></li>
@@ -301,7 +301,19 @@
 			</ul>
 		</div>
 
+		<div class="sg-item">
+			<h3 class="sg-header">Split header</h3>
 
+			<header class="header-split">
+				<h2>Editor</h2>
+				<ul class="action-group action-group-inline">
+					<li><button data-event="click:save" data-set="save">Save</button></li>
+					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
+					<li><button data-event="click:delete" title="Delete">Delete 01.md</button></li>
+				</ul>
+
+			</header>
+		</div>
 	</section>
 </main>
 

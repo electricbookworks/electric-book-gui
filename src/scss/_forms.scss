@@ -65,7 +65,8 @@ button,
 
 .commit-message {
     width: 40em;
-    max-width: 100%;
+    max-width: 95%;
+    max-width: calc(100% - 1em);
 }
 
 .btn-secondary {

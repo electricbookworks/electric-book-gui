@@ -713,11 +713,13 @@ h3 {
       font-size: 1.75em;
       line-height: 1.25; } }
 
-h4 {
+h4,
+.repo-details h3 {
   font-size: 1.125em;
   line-height: 1.11111111; }
   @media (min-width: 43.75em) {
-    h4 {
+    h4,
+    .repo-details h3 {
       line-height: 1.22222222; } }
 
 blockquote {
@@ -801,7 +803,8 @@ button,
 
 .commit-message {
   width: 40em;
-  max-width: 100%; }
+  max-width: 95%;
+  max-width: calc(100% - 1em); }
 
 .btn-secondary {
   background-color: #666;
@@ -897,11 +900,10 @@ img {
   padding: 0.5em; }
 
 section {
-  padding: 1em 0; }
-
-.section-editor {
-  border-top: solid 3px #71B8AA;
-  margin-bottom: 1em; }
+  padding: 2em 0;
+  border-top: solid 3px #71B8AA; }
+  section :last-child {
+    margin-bottom: 0; }
 
 .pagination a {
   padding: 0 0.25em;
@@ -922,19 +924,32 @@ section {
     padding-left: 20%;
     padding-right: 20%; } }
 
+@media (min-width: 38em) {
+  .section-editor {
+    padding-left: 5%;
+    padding-right: 5%; } }
+
+@media (min-width: 50em) {
+  .section-editor {
+    padding-left: 10%;
+    padding-right: 10%; } }
+
+@media (min-width: 64em) {
+  .section-editor {
+    padding-left: 15%;
+    padding-right: 15%; } }
+
 .editor {
+  border: solid 1px #71B8AA;
   padding: 0.25em 0.5em;
-  margin: 1em 0;
-  border: solid 1px #71B8AA; }
-  @media (min-width: 38em) {
-    .editor {
-      margin-right: 20%; } }
-  @media (min-width: 50em) {
-    .editor {
-      margin-right: 30%; } }
-  @media (min-width: 64em) {
-    .editor {
-      margin-right: 40%; } }
+  margin: 1em 0; }
+
+@media (min-width: 38em) {
+  .header-split {
+    display: flex;
+    justify-content: space-between; }
+    .header-split h2 {
+      margin-bottom: 0; } }
 
 .repo-list {
   padding-left: 0;
