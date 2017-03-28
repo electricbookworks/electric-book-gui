@@ -6,12 +6,7 @@
 	<h1>Editing {{.RepoName}}</h1>
 	<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
 
-	<div id="repo-nav">
 
-		<div class="repo-commands repo-menu">
-			<button id="repo-commit" title="Commit"><i class="fa fa-cloud-upload"></i></button>
-			<button id="repo-print" title="Print PDF"><i class="fa fa-file-pdf-o"></i></button>
-		</div>
 	{{template "_editor_actions.html" .}}
 
 	<h2>Editor</h2>
@@ -27,6 +22,13 @@
 			</div>
 		</div>
 	</div>
+	<ul class="action-group action-group-inline">
+		<li>Output:</li>
+		<li><button disabled>Web version</button></li>
+		<li><button id="repo-print">Screen PDF</button></li>
+		<li><button disabled>Print PDF</button></li>
+		<li><button disabled>epub</button></li>
+	</ul>
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
 		new RepoEditorPage('{{.RepoName}}');
