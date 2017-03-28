@@ -59,11 +59,20 @@ func RepoDir(user, repo string) (string, error) {
 // Checkout checks out the github repo into the cached directory system,
 // and returns the path to the root of the repo. If the client is already
 // checked out, it updates from the origin server.
-func Checkout(client *Client, user, name, url string) (string, error) {
-	if `` == url {
-		url = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`, client.Username, client.Token, user, name)
+func Checkout(client *Client, user, name, u string) (string, error) {
+	if `` == u {
+		u = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`, client.Username, client.Token, user, name)
+	} else {
+		ux, err := url.Parse(u)
+		if nil != err {
+			return ``, util.Error(err)
+		}
+		if nil == ux.User || ux.User.Username() == `` {
+			ux.User = url.UserPassword(client.Username, client.Token)
+		}
+		u = ux.String()
 	}
-	glog.Infof(`Cloning/updating %s/%s from %s`, user, name, url)
+	glog.Infof(`Cloning/updating %s/%s from %s`, user, name, u)
 	root, err := RepoDir(user, ``)
 	if nil != err {
 		return ``, util.Error(err)
@@ -77,7 +86,7 @@ func Checkout(client *Client, user, name, url string) (string, error) {
 		return ``, util.Error(err)
 	}
 
-	cmd := exec.Command(`git`, `clone`, url+`.git`)
+	cmd := exec.Command(`git`, `clone`, u+`.git`)
 	cmd.Dir = root
 
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
