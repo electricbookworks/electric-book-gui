@@ -13,16 +13,13 @@
 	<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 	</div>
 
-		<div id="pull-requests" class="repo-menu">
-			<h1>Changes for Review</h1>
-			<div id="pull-request-list">
-			</div>
-			<div>
-			<a href="{{.RepoName}}/pull_new"><button id="pull-request-create">Submit Changes for Review</button></a>
-			</div>
-		</div>
-	</div>
 	{{template "_outputs.html"}}
+
+	{{template "_files.html"}}
+
+	{{template "_repo_commits.html"}}
+
+	{{template "_repo_pull_requests.html"}}
 
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
