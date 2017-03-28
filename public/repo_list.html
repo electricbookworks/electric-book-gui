@@ -1,39 +1,53 @@
 {{template "_header.html" .}}
-{{template "_topbar_repo.html" . }}
+{{template "_nav_main.html" . }}
 
 <main>
 
-<h1>My books</h1>
+<h1>Dashboard</h1>
 
-<ul class="repo-list">
-    {{range .Repos }}
-    <li class="repo">
-        <div class="repo-details">
-            <h2><a href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
-            <!-- if {{.Description}} !== <nil> -->
-            <p>{{.Description}}</p>
-            <!-- endif -->
 
-            <!-- Grab latest commit -->
-            <p>Last updated by {TheirUserName} {RelativeTimeAgo}.</p>
-        </div>
-        <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage book</a></p>
+<section>
+    <h2>My books</h2>
 
-    </li>
-    {{end -}}
-</ul>
+    <ul class="repo-list">
+        {{range .Repos }}
+        <li class="repo">
+            <div class="repo-details">
+                <h2><a href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+                <h3><a href="#">UserName</a>'s version, from <a href="#">OrganizationName</a></h3>
+                <!-- if {{.Description}} !== <nil> -->
+                <p>{{.Description}}</p>
+                <!-- endif -->
 
-<!-- Pagination --->
-<!-- Show the first 10 -->
-<!-- Then show Previous | 1 | 2 | 3 | Next -->
+                <!-- Grab latest commit -->
+                <p>Last updated by TheirUserName RelativeTimeAgo.</p>
+            </div>
+            <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a></p>
 
-<form class="form-fork" method="post" action="/github/create-fork">
-    <h2>Create an Adaptation</h2>
-    <label for="repo_name">The base book:
-        <input type="text" name="repo_name" id="repo_name" value="" placeholder="e.g. electricbookworks/electric-book" />
-    </label>
-    <input class="cta" type="submit" value="Create adaptation" />
-</form>
+        </li>
+        {{end -}}
+    </ul>
+
+    <nav>
+        <ul class="action-group action-group-inline action-group-general">
+        	<li><a href="#">Previous</a></li>
+        	<li><a href="#">1</a></li>
+        	<li><a href="#">2</a></li>
+        	<li><a href="#">3</a></li>
+        	<li><a href="#">Next</a></li>
+        </ul>
+    </nav>
+</section>
+
+<section>
+    <form class="form-fork" method="post" action="/github/create-fork">
+        <h2>Create an Adaptation</h2>
+        <label for="repo_name">The base book:
+            <input type="text" name="repo_name" id="repo_name" value="" placeholder="e.g. electricbookworks/electric-book" />
+        </label>
+        <input class="cta" type="submit" value="Create adaptation" />
+    </form>
+</section>
 
 </main>
 
