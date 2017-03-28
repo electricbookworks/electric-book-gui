@@ -693,8 +693,23 @@ button,
     border-bottom: 0.15em solid transparent;
     cursor: pointer; }
 
-.btn-wide {
-  width: 100%; }
+.btn-wide,
+.input-wide,
+.label-wide {
+  display: block; }
+
+.input-wide {
+  width: calc(100% - 1em);
+  margin-left: 0; }
+
+.label-wide {
+  margin-bottom: 0.5em; }
+  .label-wide + input {
+    margin-left: 0; }
+
+.commit-message {
+  width: 40em;
+  max-width: 100%; }
 
 .btn-secondary {
   background-color: #666;

@@ -37,8 +37,27 @@ button,
 	}
 }
 
-.btn-wide {
-	width: 100%;
+.btn-wide,
+.input-wide,
+.label-wide {
+	display: block;
+}
+
+.input-wide {
+    width: calc(100% - 1em);
+    margin-left: 0;
+}
+
+.label-wide {
+    margin-bottom: 0.5em;
+    + input {
+        margin-left: 0;
+    }
+}
+
+.commit-message {
+    width: 40em;
+    max-width: 100%;
 }
 
 .btn-secondary {
