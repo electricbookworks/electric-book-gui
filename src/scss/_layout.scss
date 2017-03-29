@@ -1,10 +1,14 @@
-[role="banner"] {
+[role="banner"],
+[role="contentinfo"] {
     background: $primary;
     color: $white;
     padding: 1em;
     a {
         color: $white;
     }
+}
+
+[role="banner"] {
     @media (min-width: $bp-m) {
         display: flex;
         justify-content: space-between;
@@ -27,7 +31,8 @@
     }
 }
 
-.logo {
+.logo,
+.copyright {
     margin-right: 1em;
 }
 

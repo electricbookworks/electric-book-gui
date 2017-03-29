@@ -834,18 +834,22 @@ button,
   flex-direction: column;
   justify-content: flex-end; }
 
-[role="banner"] {
+[role="banner"],
+[role="contentinfo"] {
   background: #009E7F;
   color: white;
   padding: 1em; }
-  [role="banner"] a {
+  [role="banner"] a,
+  [role="contentinfo"] a {
     color: white; }
-  @media (min-width: 50em) {
-    [role="banner"] {
-      display: flex;
-      justify-content: space-between; } }
-  [role="banner"] p {
-    margin-bottom: 0; }
+
+@media (min-width: 50em) {
+  [role="banner"] {
+    display: flex;
+    justify-content: space-between; } }
+
+[role="banner"] p {
+  margin-bottom: 0; }
 
 .nav-main {
   list-style: none;
@@ -858,7 +862,8 @@ button,
   .nav-main li {
     display: inline-block; }
 
-.logo {
+.logo,
+.copyright {
   margin-right: 1em; }
 
 .gravatar {
