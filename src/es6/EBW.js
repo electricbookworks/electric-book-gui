@@ -14,10 +14,18 @@ class EBW {
 	}
 	static Error(err) {
 		console.error('ERROR: ', err);
+		debugger;
 		alert(err);
 	}
 	static Toast(msg) {
 		Toast.Show(msg);	
+	}
+	static Prompt(msg) {
+		let r = prompt(msg);
+		if (``==r) {
+			r=false;
+		}
+		return Promise.resolve(``==r ? false : r);
 	}
 	static flatten(callback, context=null) {
 		return function(argsArray) {

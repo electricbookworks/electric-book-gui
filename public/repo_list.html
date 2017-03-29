@@ -15,9 +15,9 @@
             <div class="repo-details">
                 <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
                 <h3><a href="#">UserName</a>'s version, from <a href="#">OrganizationName</a></h3>
-                <!-- if {{.Description}} !== <nil> -->
+                {{if .Description}}
                 <p>{{.Description}}</p>
-                <!-- endif -->
+                {{end}}
 
                 <!-- Grab latest commit -->
                 <p>Last updated by TheirUserName RelativeTimeAgo.</p>

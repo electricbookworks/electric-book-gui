@@ -27,6 +27,12 @@ func (rpc *API) ListFiles(repo, pathregex string) ([]string, error) {
 	return git.ListFiles(rpc.Client, rpc.User, repo, pathregex)
 }
 
+// ListAllRepoFiles lists all the repo files that are in the repo
+// in a DirectoryEntry format.
+func (rpc *API) ListAllRepoFiles(repo string) (git.DirectoryEntry, error) {
+	return git.ListAllRepoFiles(rpc.Client, rpc.User, repo)
+}
+
 // GetFile gets the contents of the file at path in the repo.
 func (rpc *API) GetFile(repo, path string) ([]byte, error) {
 	return git.GetFile(rpc.Client, rpc.User, repo, path)

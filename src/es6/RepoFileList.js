@@ -36,6 +36,14 @@ class RepoFileList {
 		.catch( (err)=>{
 			EBW.Error(err);
 		});
+		this.api.ListAllRepoFiles(repo)
+		.then( this.api.flatten(
+			js=>{
+				let d = Directory.FromJS(false, js);
+				d.Debug();
+			}
+		))
+		.catch( EBW.Error );
 		this.parent.appendChild(this.el);
 	}
 	IsDirty() {

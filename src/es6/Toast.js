@@ -2,6 +2,7 @@ let toast_instance = null;
 
 class Toast {
 	constructor(el=false) {
+		console.log(`new Toast: el = `, el);
 		if (null==toast_instance) {
 			toast_instance = this;
 			if (!el) {
@@ -16,11 +17,11 @@ class Toast {
 	static Show(msg) {
 		let T = new Toast();
 		let div = document.createElement(`div`);
-		div.textContent = msg;
+		div.innerHTML = msg;
 		T.parent.appendChild(div);
 		setTimeout( function() {
 			div.remove();
-		},2500);
+		},4500);
 		return div;
 	}
 }

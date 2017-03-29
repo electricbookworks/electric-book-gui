@@ -17,7 +17,7 @@ class RepoFileEditLink {
 			}
 		});
 		Eventify(this.el, {
-			'click': (evt)=>{
+			'click': function (evt){
 				evt.preventDefault();
 				this.click(this, this.file);
 			}

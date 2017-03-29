@@ -48,7 +48,6 @@ class RepoFileModel {
 			});
 		});
 	}
-	
 	GetText() {
 		let t = sessionStorage.getItem(this.storageKey);
 		if (t) {

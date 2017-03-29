@@ -182,11 +182,20 @@ func UpdateFile(client *Client, user, repo, path string, content []byte) error {
 	}
 }
 
+func ListAllRepoFiles(client *Client, user, repo string) (DirectoryEntry, error) {
+	root, err := RepoDir(user, repo)
+	if nil != err {
+		return nil, err
+	}
+	d, err := NewDirectory(root)
+	if nil != err {
+		return nil, err
+	}
+	return d, nil
+}
+
 // ListFiles returns an array of all the files in the repo that match
-// the pathRegexp regular expression. Note that this function
-// only works on the local checked out repo, not on the Github hosted
-// remote repo (which is ok, because that's the model that we are moving
-// towards).
+// the pathRegexp regular expression.
 func ListFiles(client *Client, user, repo, pathRegexp string) ([]string, error) {
 	files := []string{}
 	root, err := RepoDir(user, repo)

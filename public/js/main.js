@@ -142,6 +142,11 @@ var API = function () {
 			return this._rpc("ListFiles", arguments);
 		}
 	}, {
+		key: "ListAllRepoFiles",
+		value: function ListAllRepoFiles(repo) {
+			return this._rpc("ListAllRepoFiles", arguments);
+		}
+	}, {
 		key: "GetFile",
 		value: function GetFile(repo, path) {
 			return this._rpc("GetFile", arguments);
@@ -362,6 +367,11 @@ var APIWs = function () {
 			return this._rpc("ListFiles", arguments);
 		}
 	}, {
+		key: "ListAllRepoFiles",
+		value: function ListAllRepoFiles(repo) {
+			return this._rpc("ListAllRepoFiles", arguments);
+		}
+	}, {
 		key: "GetFile",
 		value: function GetFile(repo, path) {
 			return this._rpc("GetFile", arguments);
@@ -531,6 +541,7 @@ var EBW = function () {
 		key: 'Error',
 		value: function Error(err) {
 			console.error('ERROR: ', err);
+			debugger;
 			alert(err);
 		}
 	}, {
@@ -548,6 +559,15 @@ var EBW = function () {
 		}(function (msg) {
 			Toast.Show(msg);
 		})
+	}, {
+		key: 'Prompt',
+		value: function Prompt(msg) {
+			var r = prompt(msg);
+			if ('' == r) {
+				r = false;
+			}
+			return Promise.resolve('' == r ? false : r);
+		}
 	}, {
 		key: 'flatten',
 		value: function flatten(callback) {
@@ -991,6 +1011,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var PullRequestList = function PullRequestList(parent, repo) {
 	_classCallCheck(this, PullRequestList);
 
+	if (null == parent) {
+		console.error("parent required for PullRequestList");
+		debugger;
+	}
 	this.parent = parent;
 	this.api = EBW.API();
 	this.api.ListPullRequests(repo).then(this.api.flatten(function (prlist) {
@@ -1024,6 +1048,13 @@ var PullRequestList = function PullRequestList(parent, repo) {
 };
 
 window.PullRequestList = PullRequestList;
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var RepoDirectoryModel = function RepoDirectoryModel() {
+	_classCallCheck(this, RepoDirectoryModel);
+};
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1037,10 +1068,11 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 
 	_classCallCheck(this, RepoEditorPage);
 
+	Toast.Show('Hi there, message from me');
 	this.repo = repo;
 	this.editor = new RepoFileEditorCM(document.getElementById('editor'));
 	this.files = new RepoFileList(document.getElementById('files'), repo, this.editor);
-	new PullRequestList(document.getElementById('pull-request-list'), repo);
+	//new PullRequestList(document.getElementById('pull-request-list'), repo);
 	window.addEventListener('beforeunload', function (evt) {
 		// transfer editor to file text
 		_this.editor.setFile(null);
@@ -1053,13 +1085,14 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 		// @TODO Need to check that all files are saved - or at least prompt user...
 		evt.preventDefault();
 		evt.stopPropagation();
-		var msg = prompt('Enter the commit message');
-		if (msg) {
-			EBW.Toast('Committing ' + msg);
-			EBW.API().Commit(_this.repo, msg).then(function () {
-				EBW.Toast('Changes committed: ' + msg);
-			}).catch(EBW.Error);
-		}
+		EBW.Prompt('Enter the commit message:').then(function (msg) {
+			if (msg) {
+				EBW.Toast('Committing ' + msg);
+				EBW.API().Commit(_this.repo, msg).then(function () {
+					EBW.Toast('Changes committed: ' + msg);
+				}).catch(EBW.Error);
+			}
+		});
 	});
 	document.getElementById('repo-print').addEventListener('click', function (evt) {
 		evt.preventDefault();evt.stopPropagation();
@@ -1109,7 +1142,7 @@ var RepoFileEditLink = function () {
 		Eventify(this.el, {
 			'click': function click(evt) {
 				evt.preventDefault();
-				_this.click(_this, _this.file);
+				this.click(this, this.file);
 			}
 		}, this);
 
@@ -1505,6 +1538,10 @@ var RepoFileList = function () {
 		})).catch(function (err) {
 			EBW.Error(err);
 		});
+		this.api.ListAllRepoFiles(repo).then(this.api.flatten(function (js) {
+			var d = Directory.FromJS(false, js);
+			d.Debug();
+		})).catch(EBW.Error);
 		this.parent.appendChild(this.el);
 	}
 
@@ -1676,6 +1713,7 @@ var Toast = function () {
 
 		_classCallCheck(this, Toast);
 
+		console.log("new Toast: el = ", el);
 		if (null == toast_instance) {
 			toast_instance = this;
 			if (!el) {
@@ -1693,11 +1731,11 @@ var Toast = function () {
 		value: function Show(msg) {
 			var T = new Toast();
 			var div = document.createElement("div");
-			div.textContent = msg;
+			div.innerHTML = msg;
 			T.parent.appendChild(div);
 			setTimeout(function () {
 				div.remove();
-			}, 2500);
+			}, 4500);
 			return div;
 		}
 	}]);
@@ -1787,4 +1825,162 @@ var QuerySelectorAllIterate = function QuerySelectorAllIterate(el, query) {
 	}
 	return new joinIterators([els[Symbol.iterator](), new querySelectorAllIterator(qs)]);
 };
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FileType = function () {
+	function FileType(parent, name) {
+		_classCallCheck(this, FileType);
+
+		this._parent = parent;
+		this._name = name;
+	}
+
+	_createClass(FileType, [{
+		key: 'name',
+		get: function get() {
+			return this._name;
+		}
+	}]);
+
+	return FileType;
+}();
+
+var File = function (_FileType) {
+	_inherits(File, _FileType);
+
+	function File(parent, name) {
+		_classCallCheck(this, File);
+
+		return _possibleConstructorReturn(this, (File.__proto__ || Object.getPrototypeOf(File)).call(this, parent, name));
+	}
+
+	_createClass(File, [{
+		key: 'Debug',
+		value: function Debug() {
+			console.log(this.path);
+		}
+	}, {
+		key: 'path',
+		get: function get() {
+			var p = this._parent ? this._parent.path : '';
+			return p + this._name;
+		}
+	}], [{
+		key: 'FromJS',
+		value: function FromJS(parent, js) {
+			return new File(parent, js.Name);
+		}
+	}]);
+
+	return File;
+}(FileType);
+
+/**
+ * Directory models a directory on the server. It needs to know
+ * its own directory name, and the link to its parent so that it
+ * can construct its full name on the parent.
+ */
+
+
+var Directory = function (_FileType2) {
+	_inherits(Directory, _FileType2);
+
+	function Directory(parent, name) {
+		_classCallCheck(this, Directory);
+
+		var _this2 = _possibleConstructorReturn(this, (Directory.__proto__ || Object.getPrototypeOf(Directory)).call(this, parent, name));
+
+		_this2.Files = [];
+		return _this2;
+	}
+
+	_createClass(Directory, [{
+		key: 'Debug',
+		value: function Debug() {
+			console.log(this.path);
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = this.Files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var f = _step.value;
+
+					f.Debug();
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+		}
+	}, {
+		key: 'path',
+		get: function get() {
+			if (this._parent) {
+				return this._parent.path + this.name + '/';
+			}
+			return '';
+		}
+	}], [{
+		key: 'FromJS',
+		value: function FromJS(parent, js) {
+			var d = new Directory(parent, js.Name);
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
+
+			try {
+				for (var _iterator2 = js.Files[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var f = _step2.value;
+
+					var e = null;
+					if (f.Dir) {
+						e = Directory.FromJS(d, f);
+						d.Files.push(e);
+					} else {
+						e = File.FromJS(d, f);
+						d.Files.push(e);
+					}
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
+
+			return d;
+		}
+	}]);
+
+	return Directory;
+}(FileType);
+"use strict";
+"use strict";
 })();

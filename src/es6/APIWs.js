@@ -102,6 +102,10 @@ class APIWs {
 		return this._rpc("ListFiles",  arguments );
 	}
 	
+	ListAllRepoFiles (repo) {
+		return this._rpc("ListAllRepoFiles",  arguments );
+	}
+	
 	GetFile (repo,path) {
 		return this._rpc("GetFile",  arguments );
 	}

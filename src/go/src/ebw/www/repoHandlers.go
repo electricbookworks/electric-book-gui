@@ -25,12 +25,14 @@ func repoList(c *Context) error {
 		// GithubClient will have redirected us
 		return nil
 	}
-	repos, _, err := client.Repositories.List(client.Context, "", &github.RepositoryListOptions{
-		ListOptions: github.ListOptions{
-			PerPage: 500,
-		},
-		Visibility: `all`,
-	})
+	repos, _, err := client.Repositories.List(client.Context, "",
+		&github.RepositoryListOptions{
+			ListOptions: github.ListOptions{
+				PerPage: 500,
+				Page:    1,
+			},
+			Visibility: `all`,
+		})
 	if nil != err {
 		return err
 	}
