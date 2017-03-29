@@ -862,8 +862,7 @@ button,
   .nav-main li {
     display: inline-block; }
 
-.logo,
-.copyright {
+.logo {
   margin-right: 1em; }
 
 .gravatar {
