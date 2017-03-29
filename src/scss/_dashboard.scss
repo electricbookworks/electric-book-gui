@@ -6,7 +6,6 @@
     a.repo-title {
         display: block;
         font-weight: bold;
-        @include h2;
         margin-bottom: 0;
         overflow-wrap: break-word;
         word-wrap: break-word;
@@ -38,7 +37,7 @@
         flex-direction: column;
         align-items: stretch;
         justify-content: space-between;
-        padding: 1em;        
+        padding: 1em;
     }
     @supports (display:grid) {
         display: grid;
@@ -62,4 +61,47 @@
         padding-left: 0;
         list-style: none;
     }
+}
+
+.ebm-repos {
+    padding-left: 0;
+    list-style: none;
+    h2 {
+        margin-bottom: 0;
+        a {
+            text-decoration: none;
+        }
+    }
+    h3 {
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.ebm-pull-requests {
+    padding-left: 0;
+    list-style: none;
+}
+
+.ebm-repos,
+.ebm-pull-request {
+    section {
+        border-top: 0;
+        &:nth-of-type(2) {
+            padding-top: 0;
+        }
+    }
+}
+
+.ebm-repo {
+    border-bottom: 3px solid $off-grey;
+    &:first-child {
+        border-top: 3px solid $off-grey;
+    }
+}
+
+.ebm-pull-request {
+    padding: 1em 0;
+    border-top: 1px solid $grey;
 }
