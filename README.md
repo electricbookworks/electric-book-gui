@@ -16,7 +16,9 @@ Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the 
       client: "-clientID from github oauth application configuration-"
       secret: "-secret from github oauth application configuration-"
 
-Get a personal access token from GitHub (Settings > Developer Settings > Personal access tokens) and place that and your GitHub username in `~/.ebw.yml`
+Get a personal access token from GitHub (Settings > Developer Settings > [Personal access tokens](https://github.com/settings/tokens). At "Select scopes", you currently only need to select `repo`.
+
+Place the token and your GitHub username in `~/.ebw.yml`:
 
     users:
         - token:
