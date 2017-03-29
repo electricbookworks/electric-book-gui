@@ -1002,7 +1002,9 @@ section {
 
 .ebm-repos {
   padding-left: 0;
-  list-style: none; }
+  list-style: none;
+  max-width: 64em;
+  margin: 0 auto; }
   .ebm-repos h2 {
     margin-bottom: 0; }
     .ebm-repos h2 a {

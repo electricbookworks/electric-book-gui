@@ -66,6 +66,8 @@
 .ebm-repos {
     padding-left: 0;
     list-style: none;
+    max-width: $bp-l;
+    margin: 0 auto;
     h2 {
         margin-bottom: 0;
         a {
