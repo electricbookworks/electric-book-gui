@@ -836,6 +836,15 @@ button,
   flex-direction: column;
   justify-content: flex-end; }
 
+.form-search {
+  display: flex;
+  align-items: center;
+  max-width: 38em; }
+
+[type="search"] {
+  margin-right: 1em;
+  flex-grow: 1; }
+
 [role="banner"] {
   background: #009E7F;
   color: white; }
