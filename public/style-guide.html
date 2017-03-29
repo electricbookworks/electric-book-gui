@@ -18,8 +18,13 @@
 <nav role="banner">
 	<ul class="nav-main">
 		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
-		<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
+		<!-- if changes_to_review -->
+		<li><a href="#">Changes to review (1)</a></li>
+		<!-- end -->
 	</ul>
+	<!-- if logged_in -->
+	<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
+	<!-- end -->
 </nav>
 
 <!-- {{template "_nav_main.html" . }} -->
@@ -164,7 +169,6 @@
 				<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
 				<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
 			</ul>
-
 		</div>
 
 		<div class="sg-item" id="books-with-prs">
@@ -350,7 +354,7 @@
 <!-- {{template "_footer.html" .}} -->
 
 <footer role="contentinfo">
-&copy; Electric Book Works
+	<p><a href="http://electricbook.works/">Help</a></p>
 </footer>
 
 </body>
