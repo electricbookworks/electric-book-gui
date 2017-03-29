@@ -104,3 +104,14 @@ button,
         justify-content: flex-end;
     }
 }
+
+.form-search {
+    display: flex;
+    align-items: center;
+    max-width: $bp-s;
+}
+
+[type="search"] {
+    margin-right: 1em;
+    flex-grow: 1;
+}

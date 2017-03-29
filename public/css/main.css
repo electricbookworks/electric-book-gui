@@ -4,7 +4,9 @@
 
 .sg-header {
   text-align: right;
-  border-bottom: solid 1px #71B8AA; }
+  border-bottom: solid 1px #71B8AA;
+  background-color: #f7f7f7;
+  padding: 0.25em; }
 
 .sg-item {
   margin-bottom: 1em; }
@@ -834,6 +836,15 @@ button,
   flex-direction: column;
   justify-content: flex-end; }
 
+.form-search {
+  display: flex;
+  align-items: center;
+  max-width: 38em; }
+
+[type="search"] {
+  margin-right: 1em;
+  flex-grow: 1; }
+
 [role="banner"],
 [role="contentinfo"] {
   background: #009E7F;
@@ -981,8 +992,6 @@ section {
   .repo-list a.repo-title {
     display: block;
     font-weight: bold;
-    font-size: 1.625em;
-    line-height: 1.15384615;
     margin-bottom: 0;
     overflow-wrap: break-word;
     word-wrap: break-word;
@@ -990,14 +999,6 @@ section {
     text-overflow: fade;
     max-width: 100%;
     text-decoration: none; }
-    @media (min-width: 43.75em) {
-      .repo-list a.repo-title {
-        font-size: 2em;
-        line-height: 1.25; } }
-    @media (min-width: 56.25em) {
-      .repo-list a.repo-title {
-        font-size: 2.25em;
-        line-height: 1.25; } }
   .repo-list .repo {
     width: 30%;
     margin-right: 5%;
@@ -1025,3 +1026,35 @@ section {
   .pull-requests ul {
     padding-left: 0;
     list-style: none; }
+
+.ebm-repos {
+  padding-left: 0;
+  list-style: none;
+  max-width: 64em;
+  margin: 0 auto; }
+  .ebm-repos h2 {
+    margin-bottom: 0; }
+    .ebm-repos h2 a {
+      text-decoration: none; }
+  .ebm-repos h3 a {
+    text-decoration: none; }
+
+.ebm-pull-requests {
+  padding-left: 0;
+  list-style: none; }
+
+.ebm-repos section,
+.ebm-pull-request section {
+  border-top: 0; }
+  .ebm-repos section:nth-of-type(2),
+  .ebm-pull-request section:nth-of-type(2) {
+    padding-top: 0; }
+
+.ebm-repo {
+  border-bottom: 3px solid #71B8AA; }
+  .ebm-repo:first-child {
+    border-top: 3px solid #71B8AA; }
+
+.ebm-pull-request {
+  padding: 1em 0;
+  border-top: 1px solid #ddd; }
