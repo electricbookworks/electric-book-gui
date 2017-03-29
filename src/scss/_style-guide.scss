@@ -6,6 +6,8 @@
 .sg-header {
   text-align: right;
   border-bottom: solid 1px $off-grey;
+  background-color: lighten($grey, 10%);
+  padding: 0.25em;
 }
 
 .sg-item {
