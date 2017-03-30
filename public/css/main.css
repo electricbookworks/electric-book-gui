@@ -1034,7 +1034,8 @@ section {
   margin-left: auto;
   margin-right: auto; }
   .electric-books h2 {
-    margin-bottom: 0; }
+    line-height: 1;
+    margin-bottom: 0.5em; }
     .electric-books h2 a {
       text-decoration: none; }
 
