@@ -115,3 +115,14 @@ button,
     margin-right: 1em;
     flex-grow: 1;
 }
+
+.form-new-version {
+    p {
+        margin-bottom: 2em;
+    }
+    label {
+        + p {
+        margin-left: 2em;
+        }
+    }
+}
