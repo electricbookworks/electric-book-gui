@@ -171,77 +171,97 @@
 			</ul>
 		</div>
 
-		<div class="sg-item" id="books-with-prs">
-			<h3 class="sg-header">Books with PRs</h3>
+		<div class="sg-item" id="electric-books">
+			<h3 class="sg-header">Electric Books</h3>
 
-			<ul class="ebm-repos">
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
+			<p class="sg-note">Mine, not a fork</p>
+			<ul class="electric-books">
+				<li class="electric-book">
+					<h2><a href="#">Book-name</a></h2>
 
-						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="#">Manage book</a>
-					</section>
-			    </li>
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
-
-						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="#">Manage book</a>
-					</section>
-					<section>
-						<h3>Changes submitted for review (1)</h3>
-						<ul class="ebm-pull-requests">
-							<li class="ebm-pull-request">
-								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="#">View the discussion on GitHub</a></p>
-							</li>
-						</ul>
-					</section>
-			    </li>
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
-
-						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="#">Manage book</a>
-					</section>
-					<section>
-						<h3>Changes submitted for review (3)</h3>
-						<ul class="ebm-pull-requests">
-							<li class="ebm-pull-request">
-								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="#">View the discussion on GitHub</a></p>
-							</li>
-							<li class="ebm-pull-request">
-								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="#">View the discussion on GitHub</a></p>
-							</li>
-							<li class="ebm-pull-request">
-								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="#">View the discussion on GitHub</a></p>
-							</li>
-						</ul>
-					</section>
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit book</button></li>
+					</ul>
 			    </li>
 			</ul>
+
+			<p class="sg-note">Not mine, not a fork, I can't edit</p>
+			<ul class="electric-books">
+				<li class="electric-book">
+					<h2><a href="#">Other-book-name</a> by Other Person or Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Make my own version</button></li>
+						<li><button disabled>Edit book</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note">Mine, a fork</p>
+			<ul class="electric-books">
+				<li class="electric-book">
+					<h2>My version of <a href="#">Other-book-name</a> by Other Person or Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit book</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note"><br />1. The original book.<br />2. My copy of the book in my org.<br />3. Not mine, a fork, I can edit (e.g. same org). Can't fork because I have one already.</p>
+			<ul class="electric-books">
+				<li class="electric-book">
+					<h2><a href="#">Another-book-name</a> by My Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button disabled>Make my own version</button></li>
+						<li><button>Edit book</button></li>
+					</ul>
+				</li>
+				<li class="electric-book">
+					<h2>My version of <a href="#">Another-book-name</a> by My Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit book</button></li>
+					</ul>
+				</li>
+				<li class="electric-book">
+					<h2>Another Person's version of <a href="#">Another-book-name</a> by My Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button disabled>Make my own version</button></li>
+						<li><button>Edit book</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note">My org's book, I have a fork, PRs open</p>
+			<ul class="electric-books">
+				<li class="electric-book">
+					<h2><a href="#">Another-book-name</a> by My Org</h2>
+
+					<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><a class="btn" href="#">Review submitted changes</a></li>
+						<li><button disabled>Make my own version</button></li>
+						<li><button>Edit book</button></li>
+					</ul>
+				</li>
+			</ul>
+
 		</div>
 
 		<div class="sg-item">
