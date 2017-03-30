@@ -83,4 +83,20 @@
     &:first-child {
         border-top: 3px solid $off-grey;
     }
+    .electric-book-details {
+        max-width: $bp-s;
+        margin-bottom: 1em;
+    }
+    @media (min-width: $bp-l) {
+        display: flex;
+        justify-content: space-between;
+        .action-group-inline {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            li {
+                padding-right: 0;
+            }
+        }
+    }
 }
