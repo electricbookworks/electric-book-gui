@@ -994,6 +994,30 @@ section {
   border: 3px solid #666;
   background-color: #ddd; }
 
+.modal-content {
+  max-width: 38em;
+  margin: 0 auto;
+  background-color: white;
+  padding: 2em;
+  border: 1px solid #71B8AA;
+  border-radius: 0.25em; }
+
+.modal-open {
+  overflow: hidden;
+  position: relative;
+  z-index: 1; }
+  .modal-open .modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background-color: #666;
+    background-color: rgba(102, 102, 102, 0.5); }
+  .modal-open .modal-content {
+    margin-top: 25%; }
+
 .repo-list {
   padding-left: 0;
   list-style: none;
