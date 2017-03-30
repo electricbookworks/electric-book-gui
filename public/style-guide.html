@@ -18,8 +18,13 @@
 <nav role="banner">
 	<ul class="nav-main">
 		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
-		<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
+		<!-- if changes_to_review -->
+		<li><a href="#">Changes to review (1)</a></li>
+		<!-- end -->
 	</ul>
+	<!-- if logged_in -->
+	<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
+	<!-- end -->
 </nav>
 
 <!-- {{template "_nav_main.html" . }} -->
@@ -100,6 +105,14 @@
         </div>
 
         <div class="sg-item">
+            <h3 class="sg-header">input</h3>
+            <label for="book-title">Book title
+                <input type="text" id="book-title" name="book-title" />
+            </label>
+        </div>
+
+
+        <div class="sg-item">
             <h3 class="sg-header">input wide</h3>
             <label for="username">Username
                 <input type="text" id="username" name="username" class="input-wide" />
@@ -116,14 +129,25 @@
 
         <div class="sg-item">
             <h3 class="sg-header">select</h3>
-            <label for="id_gender">Pick one
-                <select name="id_gender" id="id_gender" class="input-wide">
-                    <option value="male">Yes</option>
-                    <option value="female">No</option>
+            <label for="the_choice">Pick one
+                <select name="the_choice" id="the_choice" class="input-wide">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
                     <option value="other">Maybe</option>
                 </select>
             </label>
         </div>
+
+		<div class="sg-item" id="search">
+			<h3 class="sg-header">search</h3>
+			<p class="sg-note">the search box expands to fit the available space. Limit it by setting the width of the containing <code>form.form-search</code></p>
+
+			<form class="form-search" action="" method="post">
+				<label for="search">Search</label>
+				<input type="search" placeholder="e.g. My book" />
+				<button>Find</button>
+			</form>
+		</div>
     </section>
 
     <section class="sg-section">
@@ -145,67 +169,77 @@
 				<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
 				<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
 			</ul>
-
 		</div>
 
-		<div class="sg-item">
-			<h3 class="sg-header">Book listing</h3>
-			<ul class="repo-list">
-				<li class="repo">
-			        <div class="repo-details">
-			            <h2><a href="#">Repo name</a></h2>
+		<div class="sg-item" id="books-with-prs">
+			<h3 class="sg-header">Books with PRs</h3>
 
-			            <p>Description</p>
+			<ul class="ebm-repos">
+				<li class="ebm-repo">
+					<section>
+			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
+						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
 
-						<p>Last update by <a href="#">Nice name (username)</a> 1 week ago</p>
-			        </div>
-			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+						<p>Updated 1 week ago by NiceName (username)</p>
+
+						<a class="btn" href="#">Manage book</a>
+					</section>
 			    </li>
-				<li class="repo">
-			        <div class="repo-details">
-			            <h2><a href="#">Repo name</a></h2>
+				<li class="ebm-repo">
+					<section>
+			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
+						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
 
-			            <p>Description</p>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 
-						<p>Last updated by Nice name (username) 1 week ago. <a href="#">View updates</a></p>
-			        </div>
-			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+						<p>Updated 1 week ago by NiceName (username)</p>
+
+						<a class="btn" href="#">Manage book</a>
+					</section>
+					<section>
+						<h3>Changes submitted for review (1)</h3>
+						<ul class="ebm-pull-requests">
+							<li class="ebm-pull-request">
+								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
+								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
+								<p><a href="#">View the discussion on GitHub</a></p>
+							</li>
+						</ul>
+					</section>
 			    </li>
-			</ul>
-		</div>
+				<li class="ebm-repo">
+					<section>
+			            <h2><a href="#">Repo-name-that-might-be-longish</a></h2>
+						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
 
-		<div class="sg-item">
-			<h3 class="sg-header">PRs for book listing</h3>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 
-			<div class="pull-requests">
-				<h3>Changes submitted for review</h3>
-				<ul>
-					<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
-					<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
-				</ul>
-			</div>
-		</div>
+						<p>Updated 1 week ago by NiceName (username)</p>
 
-		<div class="sg-item">
-			<h3 class="sg-header">Book with PR</h3>
-			<ul class="repo-list">
-				<li class="repo">
-			        <div class="repo-details">
-			            <h2><a href="#">Repo name</a></h2>
-
-			            <p>Description</p>
-
-						<p>Last update by <a href="#">Nice name (username)</a> 1 week ago</p>
-
-						<div class="pull-requests">
-							<h3>Changes submitted for review</h3>
-							<ul>
-								<li>PR Title submitted by Nice Name (username) 1 day ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
-								<li>PR Title submitted by Nice Name Too (usernametoo) 3 days ago. <a href="#">View changes</a>. <a href="#">View the discussion on GitHub</a>.</li>
-							</ul>
-						</div>
-			        </div>
-			        <p class="repo-manage"><a class="btn" href="/repo/electric-book/update?url=https%3a%2f%2fgithub.com%2felectricbookworks%2felectric-book">Manage book</a></p>
+						<a class="btn" href="#">Manage book</a>
+					</section>
+					<section>
+						<h3>Changes submitted for review (3)</h3>
+						<ul class="ebm-pull-requests">
+							<li class="ebm-pull-request">
+								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
+								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
+								<p><a href="#">View the discussion on GitHub</a></p>
+							</li>
+							<li class="ebm-pull-request">
+								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
+								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
+								<p><a href="#">View the discussion on GitHub</a></p>
+							</li>
+							<li class="ebm-pull-request">
+								<h4><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
+								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
+								<p><a href="#">View the discussion on GitHub</a></p>
+							</li>
+						</ul>
+					</section>
 			    </li>
 			</ul>
 		</div>
@@ -320,7 +354,7 @@
 <!-- {{template "_footer.html" .}} -->
 
 <footer role="contentinfo">
-&copy; Electric Book Works
+	<p><a href="http://electricbook.works/">Help</a></p>
 </footer>
 
 </body>
