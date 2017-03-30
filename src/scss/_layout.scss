@@ -165,3 +165,23 @@ article {
         justify-content: space-between;
     }
 }
+
+.notification {
+    padding: 1em;
+    border-radius: 0.25em;
+    max-width: $bp-m;
+    margin: 0 auto 1em auto;
+}
+
+.notification-success {
+    border: 3px solid $primary;
+}
+
+.notification-information {
+    border: 3px solid $off-grey;
+}
+
+.notification-error {
+    border: 3px solid $dark-grey;
+    background-color: $grey;
+}

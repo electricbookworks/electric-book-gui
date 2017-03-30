@@ -978,6 +978,22 @@ section {
     .header-split h2 {
       margin-bottom: 0; } }
 
+.notification {
+  padding: 1em;
+  border-radius: 0.25em;
+  max-width: 50em;
+  margin: 0 auto 1em auto; }
+
+.notification-success {
+  border: 3px solid #009E7F; }
+
+.notification-information {
+  border: 3px solid #71B8AA; }
+
+.notification-error {
+  border: 3px solid #666;
+  background-color: #ddd; }
+
 .repo-list {
   padding-left: 0;
   list-style: none;
