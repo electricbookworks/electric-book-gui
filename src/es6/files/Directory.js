@@ -22,6 +22,9 @@ class File extends FileType {
 		let p = this._parent ? this._parent.path : ``;
 		return p + this._name;
 	}
+	get isFile() {
+		return true;
+	}
 }
 
 /**
@@ -59,5 +62,17 @@ class Directory extends FileType {
 			return this._parent.path + this.name + '/';
 		}
 		return '';
+	}
+	get isFile() {
+		return false;
+	}
+	*FileNamesOnly() {
+		for (let f of this.Files) {
+			if (!f.isFile) {
+				yield* f.FileNamesOnly();
+			} else {
+				yield f.path;
+			}
+		}
 	}
 }

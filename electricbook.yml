@@ -1,5 +1,5 @@
 github:
-  client:
+  client: 
   secret:
 server: "http://localhost:16101"
 # git_cache is the local directory under which git checkouts will be cached
@@ -9,3 +9,4 @@ print:
   token: "very-secret-print-token"
 print_container: bookworks
 print_user: craig
+bind: ":16101"

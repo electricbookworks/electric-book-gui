@@ -440,9 +440,74 @@ if ("function" == typeof window.define && window.define.amd) {
 }
 "use strict";
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * AllFilesEditor is a control that allows the user to select
+ * any file from the repo.
+ */
+var AllFilesEditor = function AllFilesEditor(parent, dir, chooseFileCallback) {
+	_classCallCheck(this, AllFilesEditor);
+
+	if (null == parent) {
+		console.log("NO parent for AllFilesEditor");
+		return;
+	}
+	this.dir = dir;
+	this.chooseFileCallback = chooseFileCallback;
+
+	var _DTemplate = DTemplate("AllFilesEditor");
+
+	var _DTemplate2 = _slicedToArray(_DTemplate, 2);
+
+	this.el = _DTemplate2[0];
+	this.$ = _DTemplate2[1];
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = dir.FileNamesOnly()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var f = _step.value;
+
+			if ("." != f[0]) {
+				var o = document.createElement("option");
+				o.setAttribute("value", f);
+				o.textContent = f;
+				this.$.select.appendChild(o);
+			}
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
+
+	Eventify(this.el, {
+		'change': function change(evt) {
+			var f = this.$.select.value;
+			console.log("selected " + f);
+			this.chooseFileCallback(this, f);
+		}
+	}, this);
+	parent.appendChild(this.el);
+};
+"use strict";
+
 var DTemplate = function () {
 
-	var templates = { "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group action-group-block\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
+	var templates = { "AllFilesEditor": "<div class=\"all-files-editor\">\n\t<select data-set=\"select\" data-event=\"change\">\n\t</select>\n</div>", "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group action-group-block\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
 
 	var mk = function mk(k, html) {
 		var el = document.createElement('div');
@@ -662,7 +727,11 @@ window.Eventify = function (el, methods) {
 						return 'continue';
 					}
 					e.addEventListener(event, function (evt) {
-						methods[method].apply(context, [evt]);
+						if (context) {
+							methods[method].apply(context, [evt]);
+						} else {
+							methods[method](evt);
+						}
 					});
 				};
 
@@ -1539,7 +1608,10 @@ var RepoFileList = function () {
 		});
 		this.api.ListAllRepoFiles(repo).then(this.api.flatten(function (js) {
 			var d = Directory.FromJS(false, js);
-			d.Debug();
+			new AllFilesEditor(document.getElementById('all-files-editor'), d, function (_source, file) {
+				var rfm = new RepoFileModel(_this2.repo, file, _this2, { newFile: false });
+				_this2.editor.setFile(rfm);
+			});
 		})).catch(EBW.Error);
 		this.parent.appendChild(this.el);
 	}
@@ -1872,6 +1944,11 @@ var File = function (_FileType) {
 			var p = this._parent ? this._parent.path : '';
 			return p + this._name;
 		}
+	}, {
+		key: 'isFile',
+		get: function get() {
+			return true;
+		}
 	}], [{
 		key: 'FromJS',
 		value: function FromJS(parent, js) {
@@ -1931,6 +2008,90 @@ var Directory = function (_FileType2) {
 			}
 		}
 	}, {
+		key: 'FileNamesOnly',
+		value: regeneratorRuntime.mark(function FileNamesOnly() {
+			var _iteratorNormalCompletion2, _didIteratorError2, _iteratorError2, _iterator2, _step2, f;
+
+			return regeneratorRuntime.wrap(function FileNamesOnly$(_context) {
+				while (1) {
+					switch (_context.prev = _context.next) {
+						case 0:
+							_iteratorNormalCompletion2 = true;
+							_didIteratorError2 = false;
+							_iteratorError2 = undefined;
+							_context.prev = 3;
+							_iterator2 = this.Files[Symbol.iterator]();
+
+						case 5:
+							if (_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done) {
+								_context.next = 16;
+								break;
+							}
+
+							f = _step2.value;
+
+							if (f.isFile) {
+								_context.next = 11;
+								break;
+							}
+
+							return _context.delegateYield(f.FileNamesOnly(), 't0', 9);
+
+						case 9:
+							_context.next = 13;
+							break;
+
+						case 11:
+							_context.next = 13;
+							return f.path;
+
+						case 13:
+							_iteratorNormalCompletion2 = true;
+							_context.next = 5;
+							break;
+
+						case 16:
+							_context.next = 22;
+							break;
+
+						case 18:
+							_context.prev = 18;
+							_context.t1 = _context['catch'](3);
+							_didIteratorError2 = true;
+							_iteratorError2 = _context.t1;
+
+						case 22:
+							_context.prev = 22;
+							_context.prev = 23;
+
+							if (!_iteratorNormalCompletion2 && _iterator2.return) {
+								_iterator2.return();
+							}
+
+						case 25:
+							_context.prev = 25;
+
+							if (!_didIteratorError2) {
+								_context.next = 28;
+								break;
+							}
+
+							throw _iteratorError2;
+
+						case 28:
+							return _context.finish(25);
+
+						case 29:
+							return _context.finish(22);
+
+						case 30:
+						case 'end':
+							return _context.stop();
+					}
+				}
+			}, FileNamesOnly, this, [[3, 18, 22, 30], [23,, 25, 29]]);
+		})
+	}, {
 		key: 'path',
 		get: function get() {
 			if (this._parent) {
@@ -1938,17 +2099,22 @@ var Directory = function (_FileType2) {
 			}
 			return '';
 		}
+	}, {
+		key: 'isFile',
+		get: function get() {
+			return false;
+		}
 	}], [{
 		key: 'FromJS',
 		value: function FromJS(parent, js) {
 			var d = new Directory(parent, js.Name);
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
+			var _iteratorNormalCompletion3 = true;
+			var _didIteratorError3 = false;
+			var _iteratorError3 = undefined;
 
 			try {
-				for (var _iterator2 = js.Files[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var f = _step2.value;
+				for (var _iterator3 = js.Files[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+					var f = _step3.value;
 
 					var e = null;
 					if (f.Dir) {
@@ -1960,16 +2126,16 @@ var Directory = function (_FileType2) {
 					}
 				}
 			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
+				_didIteratorError3 = true;
+				_iteratorError3 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
+					if (!_iteratorNormalCompletion3 && _iterator3.return) {
+						_iterator3.return();
 					}
 				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
+					if (_didIteratorError3) {
+						throw _iteratorError3;
 					}
 				}
 			}

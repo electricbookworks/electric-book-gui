@@ -40,7 +40,18 @@ class RepoFileList {
 		.then( this.api.flatten(
 			js=>{
 				let d = Directory.FromJS(false, js);
-				d.Debug();
+				new AllFilesEditor(
+					document.getElementById(`all-files-editor`),
+					d, 
+					(_source, file)=>{
+						let rfm = new RepoFileModel(
+							this.repo,
+							file,
+							this,
+							{ newFile: false }
+							);
+						this.editor.setFile(rfm);
+				});
 			}
 		))
 		.catch( EBW.Error );

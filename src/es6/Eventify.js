@@ -19,8 +19,12 @@ window.Eventify = function(el,methods,context=null) {
 					` while eventifying `, el);
 				continue;
 			}
-			e.addEventListener(event, function(evt) {				
-				methods[method].apply(context, [evt]);
+			e.addEventListener(event, function(evt) {
+				if (context) {			
+					methods[method].apply(context, [evt]);
+				} else {
+					methods[method](evt);
+				}
 			});
 		}
 	}

@@ -41,5 +41,4 @@ class PRDiffModel {
 			this.diff.path,
 			content);
 	}
-
 }
