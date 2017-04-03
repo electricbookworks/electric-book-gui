@@ -354,57 +354,73 @@
 
 			<p class="sg-note">This is shown after the user hits "Review submitted changes (x)" in the header: it's a list of PRs. The <code>title</code> and <code>h1</code> of the page match the link text that they just clicked, so that they know they're in the right place. "To review" is open PRs; "Reviewed" is closed PRs. The links in each block show the details of the PR. The <code>li</code> gets <code>submission-accepted</code> or <code>submission-rejected</code> depending on the state of the PR.</p>
 
-			<h2>To review</h2>
+			<section class="electric-books">
 
-			<ul class="electric-books">
-				<li class="electric-book">
-					<div class="electric-book-details">
-						<h2><a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+				<h2>To review</h2>
 
-					<p><a class="btn" href="/">Review submitted changes (2)</a></p>
-				</li>
-				<li class="electric-book">
-					<div class="electric-book-details">
-						<h2>My version of <a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+				<ul>
+					<li class="electric-book">
+						<div class="electric-book-details">
+							<h2><a href="/">Another-book-name</a> by My Org</h2>
+							<ul class="ebm-pull-requests">
+								<li class="ebm-pull-request">
+									<h3><a href="#">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
+									<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
+									<p><a href="#">View the discussion on GitHub</a></p>
+								</li>
+							</ul>
+						</div>
 
-					<p><a class="btn" href="/">Review submitted changes (2)</a></p>
-				</li>
-				<li class="electric-book">
-					<div class="electric-book-details">
-						<h2>Another Person's version of <a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+						<p><a class="btn" href="/">Review submitted changes (2)</a></p>
+					</li>
+					<li class="electric-book">
+						<div class="electric-book-details">
+							<h2>My version of <a href="/">Another-book-name</a> by My Org</h2>
+						</div>
 
-					<p><a class="btn" href="/">Review submitted changes (2)</a></p>
-				</li>
-			</ul>
+						<p><a class="btn" href="/">Review submitted changes (2)</a></p>
+					</li>
+					<li class="electric-book">
+						<div class="electric-book-details">
+							<h2>Another Person's version of <a href="/">Another-book-name</a> by My Org</h2>
+						</div>
 
-			<h2>Reviewed</h2>
+						<p><a class="btn" href="/">Review submitted changes (2)</a></p>
+					</li>
+				</ul>
 
-			<ul class="electric-books electric-books-reviewed">
-				<li class="electric-book submission-accepted">
-					<div class="electric-book-details">
-						<h2><a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+			</section>
 
-					<p><a class="submission-status" href="/">Submission accepted</a> 3 days ago by Another Person</p>
-				</li>
-				<li class="electric-book submission-accepted">
-					<div class="electric-book-details">
-						<h2>My version of <a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+			<section class="electric-books electric-books-reviewed">
 
-					<p><a class="submission-status" href="/">Submission accepted</a> 3 days ago by me</p>
-				</li>
-				<li class="electric-book submission-rejected">
-					<div class="electric-book-details">
-						<h2>Another Person's version of <a href="/">Another-book-name</a> by My Org</h2>
-					</div>
+				<h2>Reviewed</h2>
 
-					<p><a class="submission-status" href="/">Submission rejected</a> 3 days ago by Other Person</p>
-				</li>
-			</ul>
+				<ul>
+					<li class="electric-book submission-accepted">
+						<div class="electric-book-details">
+							<h2><a href="/">Another-book-name</a> by My Org</h2>
+						</div>
+
+						<p><a class="submission-status" href="/">Submission accepted</a> 3 days ago by Another Person</p>
+					</li>
+					<li class="electric-book submission-accepted">
+						<div class="electric-book-details">
+							<h2>My version of <a href="/">Another-book-name</a> by My Org</h2>
+						</div>
+
+						<p><a class="submission-status" href="/">Submission accepted</a> 3 days ago by me</p>
+					</li>
+					<li class="electric-book submission-rejected">
+						<div class="electric-book-details">
+							<h2>Another Person's version of <a href="/">Another-book-name</a> by My Org</h2>
+						</div>
+
+						<p><a class="submission-status" href="/">Submission rejected</a> 3 days ago by Other Person</p>
+					</li>
+				</ul>
+
+			</section>
+
 		</div>
 	</section>
 </main>

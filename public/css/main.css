@@ -1060,16 +1060,18 @@ section {
   border-top: 1px solid #ddd; }
 
 .electric-books {
-  padding-left: 0;
-  list-style: none;
-  max-width: 64em;
-  margin-left: auto;
-  margin-right: auto; }
-  .electric-books h2 {
-    line-height: 1;
-    margin-bottom: 0.5em; }
-    .electric-books h2 a {
-      text-decoration: none; }
+  border: 0; }
+  .electric-books ul {
+    padding-left: 0;
+    list-style: none;
+    max-width: 64em;
+    margin-left: auto;
+    margin-right: auto; }
+    .electric-books ul h2 {
+      line-height: 1;
+      margin-bottom: 0.5em; }
+      .electric-books ul h2 a {
+        text-decoration: none; }
 
 .electric-book {
   padding: 1em 0;

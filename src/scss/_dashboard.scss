@@ -109,16 +109,19 @@
 }
 
 .electric-books {
-    padding-left: 0;
-    list-style: none;
-    max-width: $bp-l;
-    margin-left: auto;
-    margin-right: auto;
-    h2 {
-        line-height: 1;
-        margin-bottom: 0.5em;
-        a {
-            text-decoration: none;
+    border: 0;
+    ul {
+        padding-left: 0;
+        list-style: none;
+        max-width: $bp-l;
+        margin-left: auto;
+        margin-right: auto;
+        h2 {
+            line-height: 1;
+            margin-bottom: 0.5em;
+            a {
+                text-decoration: none;
+            }
         }
     }
 }
