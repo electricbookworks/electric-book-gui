@@ -353,8 +353,8 @@
 			<h3 class="sg-header">Electric Books</h3>
 
 			<p class="sg-note">Mine, not a fork</p>
-			<section class="electric-books electric-books-listing">
-				<ul>
+			<section class="electric-books-listing">
+				<ul class="electric-books">
 					<li class="electric-book">
 						<div class="electric-book-details">
 							<h2><a href="#">Book-name</a></h2>
@@ -369,7 +369,7 @@
 			</section>
 
 			<p class="sg-note">Not mine, not a fork, I can't edit</p>
-			<section class="electric-books electric-books-listing">
+			<section class="electric-books-listing">
 				<ul class="electric-books">
 					<li class="electric-book">
 						<div class="electric-book-details">
@@ -386,7 +386,7 @@
 			</section>
 
 			<p class="sg-note">Mine, a fork</p>
-			<section class="electric-books electric-books-listing">
+			<section class="electric-books-listing">
 				<ul class="electric-books">
 					<li class="electric-book">
 						<div class="electric-book-details">
@@ -402,7 +402,7 @@
 			</section>
 
 			<p class="sg-note"><br />1. The original book.<br />2. My copy of the book in my org.<br />3. Not mine, a fork, I can edit (e.g. same org). Can't fork because I have one already.</p>
-			<section class="electric-books electric-books-listing">
+			<section class="electric-books-listing">
 				<ul class="electric-books">
 					<li class="electric-book">
 						<div class="electric-book-details">
@@ -440,7 +440,7 @@
 			</section>
 
 			<p class="sg-note">My org's book, I have a fork, PRs open</p>
-			<section class="electric-books electric-books-listing">
+			<section class="electric-books-listing">
 				<ul class="electric-books">
 					<li class="electric-book">
 						<div class="electric-book-details">
@@ -464,11 +464,11 @@
 
 			<p class="sg-note">This is shown after the user hits "Review submitted changes (x)" in the header: it's a list of PRs. The <code>title</code> and <code>h1</code> of the page match the link text that they just clicked, so that they know they're in the right place. "To review" is open PRs; "Reviewed" is closed PRs. The links in each block show the details of the PR. The <code>li</code> gets <code>submission-accepted</code> or <code>submission-rejected</code> depending on the state of the PR.</p>
 
-			<section class="electric-books electric-books-submissions">
+			<section class="electric-books-submissions">
 
 				<h1>To review</h1>
 
-				<ul>
+				<ul class="electric-books">
 					<li class="electric-book">
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
 						<ul class="electric-book-submissions">
@@ -548,11 +548,11 @@
 
 			</section>
 
-			<section class="electric-books electric-books-submissions electric-books-submissions-reviewed">
+			<section class="electric-books-submissions electric-books-submissions-reviewed">
 
 				<h1>Reviewed</h1>
 
-				<ul>
+				<ul class="electric-books">
 					<li class="electric-book">
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
 

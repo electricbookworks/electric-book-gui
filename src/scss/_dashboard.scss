@@ -108,18 +108,18 @@
     border-top: 1px solid $grey;
 }
 
-.electric-books {
+.electric-books-listing,
+.electric-books-submissions {
     border: 0;
-    ul {
+}
+
+.electric-books {
         padding-left: 0;
         list-style: none;
-        &:first-child {
-            max-width: $bp-l;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    }
-    h2 {
+        max-width: $bp-l;
+        margin-left: auto;
+        margin-right: auto;
+    h2, h3 {
         line-height: 1;
         margin-bottom: 0.5em;
         a {
@@ -162,10 +162,8 @@
 }
 
 .electric-book-submissions {
-    h3 {
-        line-height: 1;
-        margin-bottom: 0.5em;
-    }
+    padding-left: 0;
+    list-style: none;
 }
 
 .electric-book-submission {
@@ -205,7 +203,7 @@
     .electric-book {
         border-color: $grey;
     }
-    h2 {
+    h2, h3 {
         font-weight: normal;
     }
 }
