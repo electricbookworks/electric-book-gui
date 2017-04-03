@@ -107,3 +107,42 @@
     padding: 1em 0;
     border-top: 1px solid $grey;
 }
+
+.electric-books {
+    padding-left: 0;
+    list-style: none;
+    max-width: $bp-l;
+    margin-left: auto;
+    margin-right: auto;
+    h2 {
+        line-height: 1;
+        margin-bottom: 0.5em;
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+.electric-book {
+    padding: 1em 0;
+    border-bottom: 3px solid $off-grey;
+    &:first-child {
+        border-top: 3px solid $off-grey;
+    }
+    .electric-book-details {
+        max-width: $bp-s;
+        margin-bottom: 1em;
+    }
+    @media (min-width: $bp-l) {
+        display: flex;
+        justify-content: space-between;
+        .action-group-inline {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            li {
+                padding-right: 0;
+            }
+        }
+    }
+}

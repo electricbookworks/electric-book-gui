@@ -1058,3 +1058,34 @@ section {
 .ebm-pull-request {
   padding: 1em 0;
   border-top: 1px solid #ddd; }
+
+.electric-books {
+  padding-left: 0;
+  list-style: none;
+  max-width: 64em;
+  margin-left: auto;
+  margin-right: auto; }
+  .electric-books h2 {
+    line-height: 1;
+    margin-bottom: 0.5em; }
+    .electric-books h2 a {
+      text-decoration: none; }
+
+.electric-book {
+  padding: 1em 0;
+  border-bottom: 3px solid #71B8AA; }
+  .electric-book:first-child {
+    border-top: 3px solid #71B8AA; }
+  .electric-book .electric-book-details {
+    max-width: 38em;
+    margin-bottom: 1em; }
+  @media (min-width: 64em) {
+    .electric-book {
+      display: flex;
+      justify-content: space-between; }
+      .electric-book .action-group-inline {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-end; }
+        .electric-book .action-group-inline li {
+          padding-right: 0; } }
