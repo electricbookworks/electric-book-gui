@@ -19,7 +19,7 @@
 	<ul class="nav-main">
 		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
 		<!-- if changes_to_review -->
-		<li><a href="#">Changes to review (1)</a></li>
+		<li><a href="#">Review submitted changes (1)</a></li>
 		<!-- end -->
 	</ul>
 	<!-- if logged_in -->
@@ -352,6 +352,10 @@
 		<div class="sg-item" id="review-submitted-changes">
 			<h3 class="sg-header">Review submitted changes</h3>
 
+			<p class="sg-note">This is shown after the user hits "Review submitted changes (x)" in the header: it's a list of PRs. The <code>title</code> and <code>h1</code> of the page match the link text that they just clicked, so that they know they're in the right place. "To review" is open PRs; "Reviewed" is closed PRs.</p>
+
+			<h2>To review</h2>
+
 			<ul class="electric-books">
 				<li class="electric-book">
 					<div class="electric-book-details">
@@ -384,6 +388,8 @@
 					</ul>
 				</li>
 			</ul>
+
+			<h2>Reviewed</h2>
 		</div>
 	</section>
 </main>
