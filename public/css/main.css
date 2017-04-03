@@ -1059,10 +1059,6 @@ section {
   padding: 1em 0;
   border-top: 1px solid #ddd; }
 
-.electric-books-listing,
-.electric-books-submissions {
-  border: 0; }
-
 .electric-books {
   padding-left: 0;
   list-style: none;
@@ -1074,6 +1070,13 @@ section {
     margin-bottom: 0.5em; }
     .electric-books h2 a, .electric-books h3 a {
       text-decoration: none; }
+  @media (min-width: 64em) {
+    .electric-books .action-group-inline {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-end; }
+      .electric-books .action-group-inline li {
+        padding-right: 0; } }
 
 .electric-book {
   padding: 1em 0;
@@ -1088,16 +1091,15 @@ section {
       max-width: 38em;
       margin-bottom: 0; } }
 
-@media (min-width: 64em) {
-  .electric-books-listing .electric-book {
-    display: flex;
-    justify-content: space-between; }
-  .electric-books-listing .action-group-inline {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end; }
-    .electric-books-listing .action-group-inline li {
-      padding-right: 0; } }
+.electric-books-listing {
+  border: 0; }
+  @media (min-width: 64em) {
+    .electric-books-listing .electric-book {
+      display: flex;
+      justify-content: space-between; } }
+
+.electric-books-submissions {
+  border: 0; }
 
 .electric-book-submissions {
   padding-left: 0;
@@ -1108,6 +1110,10 @@ section {
   border-top: 1px solid #ddd; }
   .electric-book-submission:last-child {
     padding-bottom: 0; }
+  @media (min-width: 64em) {
+    .electric-book-submission {
+      display: flex;
+      justify-content: space-between; } }
 
 .electric-book-submission-details {
   margin-bottom: 1em; }
@@ -1115,17 +1121,6 @@ section {
     .electric-book-submission-details {
       max-width: 38em;
       margin-bottom: 0; } }
-
-@media (min-width: 64em) {
-  .electric-books-submissions .electric-book-submission {
-    display: flex;
-    justify-content: space-between; }
-  .electric-books-submissions .action-group-inline {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end; }
-    .electric-books-submissions .action-group-inline li {
-      padding-right: 0; } }
 
 .electric-books-submissions-reviewed .electric-book {
   border-color: #ddd; }

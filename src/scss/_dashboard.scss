@@ -108,10 +108,7 @@
     border-top: 1px solid $grey;
 }
 
-.electric-books-listing,
-.electric-books-submissions {
-    border: 0;
-}
+// general book list styles aka repo list
 
 .electric-books {
         padding-left: 0;
@@ -126,6 +123,16 @@
             text-decoration: none;
         }
     }
+    .action-group-inline {
+        @media (min-width: $bp-l) {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            li {
+                padding-right: 0;
+            }
+        }
+    }
 }
 
 .electric-book {
@@ -136,6 +143,8 @@
     }
 }
 
+// book listing aka repo listing
+
 .electric-book-details {
     margin-bottom: 1em;
     @media (min-width: $bp-l) {
@@ -145,20 +154,19 @@
 }
 
 .electric-books-listing {
+    border: 0;
     @media (min-width: $bp-l) {
         .electric-book {
             display: flex;
             justify-content: space-between;
         }
-        .action-group-inline {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: flex-end;
-            li {
-                padding-right: 0;
-            }
-        }
     }
+}
+
+// book submissions aka repo pull requests
+
+.electric-books-submissions {
+    border: 0;
 }
 
 .electric-book-submissions {
@@ -172,6 +180,10 @@
     &:last-child {
         padding-bottom: 0;
     }
+    @media (min-width: $bp-l) {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
 .electric-book-submission-details {
@@ -182,22 +194,7 @@
     }
 }
 
-.electric-books-submissions {
-    @media (min-width: $bp-l) {
-        .electric-book-submission {
-            display: flex;
-            justify-content: space-between;
-        }
-        .action-group-inline {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: flex-end;
-            li {
-                padding-right: 0;
-            }
-        }
-    }
-}
+// reviewed submissions aka closed PRs
 
 .electric-books-submissions-reviewed {
     .electric-book {
