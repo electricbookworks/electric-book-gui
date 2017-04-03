@@ -1066,8 +1066,7 @@ section {
   margin-left: auto;
   margin-right: auto; }
   .electric-books h2, .electric-books h3 {
-    line-height: 1;
-    margin-bottom: 0.5em; }
+    line-height: 1; }
     .electric-books h2 a, .electric-books h3 a {
       text-decoration: none; }
   @media (min-width: 64em) {
@@ -1079,7 +1078,7 @@ section {
         padding-right: 0; } }
 
 .electric-book {
-  padding: 1em 0;
+  padding: 2em 0;
   border-bottom: 3px solid #71B8AA; }
   .electric-book:first-child {
     border-top: 3px solid #71B8AA; }
@@ -1089,7 +1088,7 @@ section {
   @media (min-width: 64em) {
     .electric-book-details {
       max-width: 38em;
-      margin-bottom: 0; } }
+      margin-bottom: 0.5em; } }
 
 .electric-books-listing {
   border: 0; }
@@ -1097,16 +1096,20 @@ section {
     .electric-books-listing .electric-book {
       display: flex;
       justify-content: space-between; } }
+  .electric-books-listing h2 {
+    margin-bottom: 0.5em; }
 
 .electric-books-submissions {
   border: 0; }
+  .electric-books-submissions h3 {
+    margin-bottom: 0.5em; }
 
 .electric-book-submissions {
   padding-left: 0;
   list-style: none; }
 
 .electric-book-submission {
-  padding: 1em 0;
+  padding: 2em 0;
   border-top: 1px solid #ddd; }
   .electric-book-submission:last-child {
     padding-bottom: 0; }
