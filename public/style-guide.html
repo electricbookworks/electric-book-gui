@@ -50,8 +50,11 @@
             <p>Lorem ipsum <em>dolor sit amet</em>, consectetur adipisicing elit, sed do eiusmod <strong>tempor incididunt</strong> ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa <a href="/">qui officia deserunt mollit</a> anim id est laborum.</p>
         </div>
 
-        <div class="sg-item">
+        <div class="sg-item" id="headers">
             <h3 class="sg-header">headers</h3>
+
+			<p class="sg-note">We use the correct header element for the content, not header-like styles on the wrong element (like a <code>div</code> or a <code>h3</code> with <code>h2</code> styles) .</p>
+
             <h1>Heading 1</h1>
             <h2>Heading 2</h2>
             <h3>Heading 3</h3>
@@ -64,9 +67,14 @@
     <section class="sg-section">
         <h2 class="sg-section-header">Forms</h2>
 
-        <div class="sg-item">
-            <h3 class="sg-header">button</h3>
-            <a href="/" class="btn">Read more</a>
+
+        <div class="sg-item" id="buttons">
+            <h3 class="sg-header">buttons</h3>
+			<p class="sg-note">We use <code>a.btn</code> for navigation things that feel like actions and <code>button</code> for actions.</p>
+
+            <a href="/" class="btn">Make my version</a>
+			or
+			<button type="button" name="button">Save my changes</button>
         </div>
 
         <div class="sg-item">
@@ -84,6 +92,8 @@
         </div>
 
         <div class="sg-item">
+			<p class="sg-note">We wrap <code>input</code>s in a <code>label</code>, and use <code>for</code> and <code>id</code> to link them (in case we miss the wrapping).</p>
+
             <h3 class="sg-header">checkbox</h3>
             <label for="remember-me">
                 <input type="checkbox" id="remember-me" name="remember-me">
@@ -91,9 +101,13 @@
             </label>
         </div>
 
-        <div class="sg-item">
+        <div class="sg-item" id="submit">
             <h3 class="sg-header">submit</h3>
-            <input type="submit" value="Submit" class="btn" />
+
+			<p class="sg-note">We use <code>input</code>s or <code>button</code>s with <code>type="submit"</code> for form submissions, and use words that describe the action that will happen when the button is pressed.</p>
+            <input type="submit" value="Save my work" class="btn" />
+			or
+			<button type="submit" name="button">Save my work</button>
         </div>
 
         <div class="sg-item">
@@ -162,13 +176,17 @@
 	<section class="sg-section">
 		<h2 class="sg-section-header">Components</h2>
 
-		<div class="sg-item">
+		<div class="sg-item" id="main-nav">
 			<h3 class="sg-header">Main nav</h3>
 
-			<ul class="nav-main">
-				<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
-				<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
-			</ul>
+			<p class="sg-note">We use <code>ol</code>s for navigation to make them easier to use, and wrap them in a <code>nav</code>.</p>
+
+			<nav>
+				<ul class="nav-main">
+					<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
+					<li>Logged in as <a href="https://github.com/{{.UserName}}">{{.UserName}}</a>. <a href="/logoff">Log out</a></li>
+				</ul>
+			</nav>
 		</div>
 
 		<div class="sg-item" id="books-with-prs">
@@ -246,7 +264,7 @@
 
 		<div class="sg-item">
             <h3 class="sg-header">Pagination</h3>
-			<nav>
+			<nav aria-label="Page navigation">
 				<ul class="action-group action-group-inline action-group-general">
 					<li><a href="/">Previous</a></li>
 					<li><a href="/">1</a></li>
