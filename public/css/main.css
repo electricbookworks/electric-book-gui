@@ -1063,40 +1063,65 @@ section {
   border: 0; }
   .electric-books ul {
     padding-left: 0;
-    list-style: none;
-    max-width: 64em;
-    margin-left: auto;
-    margin-right: auto; }
-    .electric-books ul h2 {
-      line-height: 1;
-      margin-bottom: 0.5em; }
-      .electric-books ul h2 a {
-        text-decoration: none; }
+    list-style: none; }
+    .electric-books ul:first-child {
+      max-width: 64em;
+      margin-left: auto;
+      margin-right: auto; }
+  .electric-books h2 {
+    line-height: 1;
+    margin-bottom: 0.5em; }
+    .electric-books h2 a {
+      text-decoration: none; }
 
 .electric-book {
   padding: 1em 0;
   border-bottom: 3px solid #71B8AA; }
   .electric-book:first-child {
     border-top: 3px solid #71B8AA; }
-  .electric-book .electric-book-details {
-    max-width: 38em;
-    margin-bottom: 1em; }
+
+.electric-book-details {
+  margin-bottom: 1em; }
   @media (min-width: 64em) {
-    .electric-book {
-      display: flex;
-      justify-content: space-between; }
-      .electric-book .action-group-inline {
-        display: flex;
-        flex-direction: column-reverse;
-        justify-content: flex-end; }
-        .electric-book .action-group-inline li {
-          padding-right: 0; } }
+    .electric-book-details {
+      max-width: 38em;
+      margin-bottom: 0; } }
 
-.electric-books-reviewed .electric-book {
-  border-color: #ddd; }
+@media (min-width: 64em) {
+  .electric-books-listing .electric-book {
+    display: flex;
+    justify-content: space-between; }
+  .electric-books-listing .action-group-inline {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end; }
+    .electric-books-listing .action-group-inline li {
+      padding-right: 0; } }
 
-.electric-books-reviewed h2 {
-  font-weight: normal; }
+.electric-book-submissions h3 {
+  line-height: 1;
+  margin-bottom: 0.5em; }
 
-.submission-accepted .submission-status {
-  font-weight: bold; }
+.electric-book-submission {
+  padding: 1em 0;
+  border-top: 1px solid #ddd; }
+  .electric-book-submission:last-child {
+    padding-bottom: 0; }
+
+.electric-book-submission-details {
+  margin-bottom: 1em; }
+  @media (min-width: 64em) {
+    .electric-book-submission-details {
+      max-width: 38em;
+      margin-bottom: 0; } }
+
+@media (min-width: 64em) {
+  .electric-books-submissions .electric-book-submission {
+    display: flex;
+    justify-content: space-between; }
+  .electric-books-submissions .action-group-inline {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end; }
+    .electric-books-submissions .action-group-inline li {
+      padding-right: 0; } }

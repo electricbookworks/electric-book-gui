@@ -161,17 +161,42 @@
     }
 }
 
-.electric-books-reviewed {
-    .electric-book {
-        border-color: $grey;
-    }
-    h2 {
-        font-weight: normal;
+.electric-book-submissions {
+    h3 {
+        line-height: 1;
+        margin-bottom: 0.5em;
     }
 }
 
-.submission-accepted {
-    .submission-status {
-        font-weight: bold;
+.electric-book-submission {
+    padding: 1em 0;
+    border-top: 1px solid $grey;
+    &:last-child {
+        padding-bottom: 0;
+    }
+}
+
+.electric-book-submission-details {
+    margin-bottom: 1em;
+    @media (min-width: $bp-l) {
+        max-width: $bp-s;
+        margin-bottom: 0;
+    }
+}
+
+.electric-books-submissions {
+    @media (min-width: $bp-l) {
+        .electric-book-submission {
+            display: flex;
+            justify-content: space-between;
+        }
+        .action-group-inline {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            li {
+                padding-right: 0;
+            }
+        }
     }
 }
