@@ -728,11 +728,16 @@ a {
     text-decoration: none; }
 
 .logo {
-  text-decoration: none; }
+  text-decoration: none;
+  display: inline-block; }
   .logo img {
     width: 2em;
     height: 2em;
     margin-right: 0.5em; }
+
+:focus {
+  outline: 0.15em dashed #666;
+  outline-offset: 0.1em; }
 
 input,
 textarea,
@@ -764,6 +769,13 @@ button,
   border-right: 0;
   border-left: 0;
   border-bottom: 0.15em solid #006b56; }
+  .cta:hover,
+  .btn:hover,
+  button:hover,
+  [type="submit"]:hover {
+    background-color: #00d1a8;
+    border-bottom: 0.15em solid transparent;
+    cursor: pointer; }
   .cta[disabled],
   .btn[disabled],
   button[disabled],
@@ -771,14 +783,6 @@ button,
     border: none;
     background-color: #71B8AA;
     cursor: default; }
-
-.cta:hover,
-.btn:hover,
-button:hover,
-[type="submit"]:hover {
-  background-color: #00d1a8;
-  border-bottom: 0.15em solid transparent;
-  cursor: pointer; }
 
 .btn-wide,
 .input-wide,
@@ -909,9 +913,6 @@ img {
     list-style: none;
     padding-left: 0;
     margin-top: 0; }
-
-.action-group-inline legend {
-  display: inline-block; }
 
 .action-group-inline li {
   display: inline-block;
