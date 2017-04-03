@@ -146,3 +146,18 @@
         }
     }
 }
+
+.electric-books-reviewed {
+    .electric-book {
+        border-color: $grey;
+    }
+    h2 {
+        font-weight: normal;
+    }
+}
+
+.submission-accepted {
+    .submission-status {
+        font-weight: bold;
+    }
+}

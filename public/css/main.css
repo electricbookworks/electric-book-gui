@@ -1089,3 +1089,12 @@ section {
         justify-content: flex-end; }
         .electric-book .action-group-inline li {
           padding-right: 0; } }
+
+.electric-books-reviewed .electric-book {
+  border-color: #ddd; }
+
+.electric-books-reviewed h2 {
+  font-weight: normal; }
+
+.submission-accepted .submission-status {
+  font-weight: bold; }
