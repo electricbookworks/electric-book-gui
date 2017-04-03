@@ -273,28 +273,33 @@
             <input type="text" id="commit-message" name="commit-message" class="commit-message" placeholder="e.g. grammar and spelling fixes">
 		</div>
 
-		<div class="sg-item">
+		<div class="sg-item" id="repo-actions-output">
 			<h3 class="sg-header">Repo actions: output</h3>
 
-			<p class="sg-note">Lives at the bottom of the editor.</p>
+			<p class="sg-note">Action groups live as <code>ul</code>s inside of <code>fieldset</code>s with a <code>legend</code>. They live at the bottom of the editor.</p>
 
-			<ul class="action-group action-group-inline">
-				<li>Output:</li>
-				<li><button>Web version</button></li>
-				<li><button id="repo-print">Screen PDF</button></li>
-				<li><button>Print PDF</button></li>
-				<li><button disabled>epub</button></li>
-			</ul>
+			<fieldset class="action-group action-group-inline">
+				<legend>Output book as:</legend>
+				<ul>
+					<li><button>Web version</button></li>
+					<li><button id="repo-print">Screen PDF</button></li>
+					<li><button>Print PDF</button></li>
+					<li><button disabled>epub</button></li>
+				</ul>
+			</fieldset>
 		</div>
 
 		<div class="sg-item">
 			<h3 class="sg-header">Repo actions</h3>
 
-			<ul class="action-group action-group-inline action-group-main">
-				<li><button data-event="click:save" data-set="save">Save</button></li>
-				<li><button data-event="click:undo" data-set="undo">Undo</button></li>
-				<li><button data-event="click:delete">Delete</button></li>
-			</ul>
+			<fieldset class="action-group action-group-inline action-group-main">
+				<legend class="visuallyhidden">Electric Book Actions:</legend>
+				<ul>
+					<li><button data-event="click:save" data-set="save">Save</button></li>
+					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
+					<li><button data-event="click:delete">Delete</button></li>
+				</ul>
+			</fieldset>
 		</div>
 
 		<div class="sg-item">
@@ -306,7 +311,7 @@
 
 		<div class="sg-item">
 			<h3 class="sg-header">Pull request</h3>
-			<p class="sg-note">Live at bottom of the page.</p>
+			<p class="sg-note">Lives at bottom of the page.</p>
 
 			<div class="pull-request">
 				<div class="commit-details">

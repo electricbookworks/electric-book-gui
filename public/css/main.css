@@ -498,14 +498,6 @@ video {
   vertical-align: middle; }
 
 /*
- * Remove default fieldset styles.
- */
-fieldset {
-  border: 0;
-  margin: 0;
-  padding: 0; }
-
-/*
  * Allow only vertical resizing of textareas.
  */
 textarea {
@@ -772,13 +764,6 @@ button,
   border-right: 0;
   border-left: 0;
   border-bottom: 0.15em solid #006b56; }
-  .cta:hover,
-  .btn:hover,
-  button:hover,
-  [type="submit"]:hover {
-    background-color: #00d1a8;
-    border-bottom: 0.15em solid transparent;
-    cursor: pointer; }
   .cta[disabled],
   .btn[disabled],
   button[disabled],
@@ -786,6 +771,14 @@ button,
     border: none;
     background-color: #71B8AA;
     cursor: default; }
+
+.cta:hover,
+.btn:hover,
+button:hover,
+[type="submit"]:hover {
+  background-color: #00d1a8;
+  border-bottom: 0.15em solid transparent;
+  cursor: pointer; }
 
 .btn-wide,
 .input-wide,
@@ -844,6 +837,12 @@ button,
 [type="search"] {
   margin-right: 1em;
   flex-grow: 1; }
+
+fieldset {
+  padding: 0.5em 0.75em; }
+
+legend {
+  padding: 0 0.25em; }
 
 [role="banner"],
 [role="contentinfo"] {
@@ -905,9 +904,14 @@ img {
   text-align: center; }
 
 .action-group {
-  list-style: none;
-  padding-left: 0;
-  margin-top: 0; }
+  border: 0; }
+  .action-group ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0; }
+
+.action-group-inline legend {
+  display: inline-block; }
 
 .action-group-inline li {
   display: inline-block;
