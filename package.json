@@ -31,11 +31,17 @@
     "gulp-merge": "^0.1.1",
     "gulp-notify": "^3.0.0",
     "gulp-rename": "^1.2.2",
+    "gulp-rollup": "^2.11.0",
     "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.5.0",
     "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
     "gulp-wrapper": "^1.0.0",
+    "rollup": "^0.41.6",
     "run-sequence": "^1.2.2"
+  },
+  "devDependencies": {
+    "rollup-plugin-gulp": "^1.0.0"
   }
 }
