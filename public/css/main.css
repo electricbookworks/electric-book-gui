@@ -1125,3 +1125,12 @@ section {
     justify-content: flex-end; }
     .electric-books-submissions .action-group-inline li {
       padding-right: 0; } }
+
+.electric-books-submissions-reviewed .electric-book {
+  border-color: #ddd; }
+
+.electric-books-submissions-reviewed h2 {
+  font-weight: normal; }
+
+.submission-status {
+  font-weight: bold; }
