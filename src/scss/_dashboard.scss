@@ -113,11 +113,11 @@
     ul {
         padding-left: 0;
         list-style: none;
-    }
-    > ul {
-        max-width: $bp-l;
-        margin-left: auto;
-        margin-right: auto;
+        &:first-child {
+            max-width: $bp-l;
+            margin-left: auto;
+            margin-right: auto;
+        }
     }
     h2 {
         line-height: 1;
@@ -134,9 +134,22 @@
     &:first-child {
         border-top: 3px solid $off-grey;
     }
+}
+
+.electric-book-details {
+    margin-bottom: 1em;
     @media (min-width: $bp-l) {
-        display: flex;
-        justify-content: space-between;
+        max-width: $bp-m;
+        margin-bottom: 0;
+    }
+}
+
+.electric-books-listing {
+    @media (min-width: $bp-l) {
+        .electric-book {
+            display: flex;
+            justify-content: space-between;
+        }
         .action-group-inline {
             display: flex;
             flex-direction: column-reverse;
@@ -146,10 +159,6 @@
             }
         }
     }
-}
-
-.electric-book-details {
-    max-width: $bp-s;
 }
 
 .electric-books-reviewed {
