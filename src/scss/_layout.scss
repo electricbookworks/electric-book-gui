@@ -118,17 +118,16 @@ img {
     }
 }
 
-
-.file-technical {
+.file-list-technical {
     display: none;
 }
 
 .file-list-admin {
-    .file-technical {
+    .file-list-technical {
         display: block;
     }
     li {
-        &:not(.file-technical) {
+        &:not(.file-list-technical) {
             a {
                 font-weight: bold;
             }
