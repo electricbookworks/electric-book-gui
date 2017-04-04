@@ -923,8 +923,19 @@ img {
 .action-group-general {
   text-align: center; }
 
-.action-group-block li {
+.action-group-block a {
+  display: block;
   padding: 0.5em; }
+  .action-group-block a:hover, .action-group-block a:focus, .action-group-block a:active {
+    background-color: #ddd; }
+
+.file-list {
+  max-width: 38em; }
+
+.file {
+  border-bottom: 1px solid #ddd; }
+  .file:first-child {
+    border-top: 1px solid #ddd; }
 
 section {
   padding: 2em 0;

@@ -99,8 +99,25 @@ img {
 }
 
 .action-group-block {
-    li {
+    a {
+        display: block;
         padding: 0.5em;
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $grey;
+        }
+    }
+}
+
+.file-list {
+    max-width: $bp-s;
+}
+
+.file {
+    border-bottom: 1px solid $grey;
+    &:first-child {
+        border-top: 1px solid $grey;
     }
 }
 
