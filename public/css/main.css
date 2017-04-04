@@ -954,6 +954,10 @@ img {
   content: "📄";
   margin-right: 0.5em; }
 
+.file-or-folder-add a:before {
+  content: "➕";
+  margin-right: 0.5em; }
+
 section {
   padding: 2em 0;
   border-top: solid 3px #71B8AA; }
