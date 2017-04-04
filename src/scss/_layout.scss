@@ -160,6 +160,11 @@ img {
     color: $dark-grey;
 }
 
+.file-change-time {
+    margin-left: 0.5em;
+    white-space: nowrap;
+}
+
 section {
     padding: 2em 0;
     border-top: solid 3px $off-grey;

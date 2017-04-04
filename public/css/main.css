@@ -961,6 +961,10 @@ img {
 .file-nice-name {
   color: #666; }
 
+.file-change-time {
+  margin-left: 0.5em;
+  white-space: nowrap; }
+
 section {
   padding: 2em 0;
   border-top: solid 3px #71B8AA; }
