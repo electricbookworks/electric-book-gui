@@ -923,19 +923,27 @@ img {
 .action-group-general {
   text-align: center; }
 
-.action-group-block a {
-  display: block;
-  padding: 0.5em; }
-  .action-group-block a:hover, .action-group-block a:focus, .action-group-block a:active {
-    background-color: #ddd; }
-
 .file-list {
   max-width: 38em; }
+  .file-list li {
+    border-bottom: 1px solid #ddd; }
+    .file-list li:first-child {
+      border-top: 1px solid #ddd; }
+  .file-list a {
+    text-decoration: none;
+    display: block;
+    padding: 0.5em; }
+    .file-list a:hover, .file-list a:focus, .file-list a:active {
+      background-color: #ddd; }
 
-.file {
-  border-bottom: 1px solid #ddd; }
-  .file:first-child {
-    border-top: 1px solid #ddd; }
+.file-technical {
+  display: none; }
+
+.file-list-admin .file-technical {
+  display: block; }
+
+.file-list-admin li:not(.file-technical) a {
+  font-weight: bold; }
 
 section {
   padding: 2em 0;

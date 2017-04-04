@@ -98,8 +98,16 @@ img {
     text-align: center;
 }
 
-.action-group-block {
+.file-list {
+    max-width: $bp-s;
+    li {
+        border-bottom: 1px solid $grey;
+        &:first-child {
+            border-top: 1px solid $grey;
+        }
+    }
     a {
+        text-decoration: none;
         display: block;
         padding: 0.5em;
         &:hover,
@@ -110,14 +118,21 @@ img {
     }
 }
 
-.file-list {
-    max-width: $bp-s;
+
+.file-technical {
+    display: none;
 }
 
-.file {
-    border-bottom: 1px solid $grey;
-    &:first-child {
-        border-top: 1px solid $grey;
+.file-list-admin {
+    .file-technical {
+        display: block;
+    }
+    li {
+        &:not(.file-technical) {
+            a {
+                font-weight: bold;
+            }
+        }
     }
 }
 

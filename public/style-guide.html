@@ -327,16 +327,32 @@
 		<div class="sg-item" id="file-list">
 			<h3 class="sg-header">File list</h3>
 
-			<p>If all we can get is file names, show as a list in a nav, with the file names as links.</p>
+			<p>If all we can get is file names, show as a list in a nav, with the file names as links. We hide <code>.file-technical</code> items (like configs) by default and show them by adding <code>.file-list-admin</code> to the <code>nav</code> if the user is an admin.</p>
 
 			<section>
 				<h2>Files</h2>
-				<nav class="file-list">
+				<nav class="file-list file-list-admin">
 					<ul class="action-group action-group-block files">
-						<li class="file"><a href="/">0-0-cover.md</a></li>
-						<li class="file"><a href="/">0-1-titlepage.md</a></li>
-						<li class="file"><a href="/">0-2-copyright.md</a></li>
-						<li class="file"><a href="/">0-3-contents.md</a></li>
+						<li class="file file-technical"><a href="/">_configs</a></li>
+						<li class="file"><a href="/">_data</a></li>
+						<li class="file file-technical"><a href="/">_includes</a></li>
+						<li class="file file-technical"><a href="/">_layouts</a></li>
+						<li class="file file-technical"><a href="/">_output</a></li>
+						<li class="file"><a href="/">_sass</a></li>
+						<li class="file file-technical"><a href="/">assets/js</a></li>
+						<li class="file"><a href="/">book</a></li>
+						<li class="file file-technical"><a href="/">.gitattributes</a></li>
+						<li class="file file-technical"><a href="/">.gitignore</a></li>
+						<li class="file file-technical"><a href="/">Gemfile</a></li>
+						<li class="file file-technical"><a href="/">Gemfile.lock</a></li>
+						<li class="file"><a href="/">README.md</a></li>
+						<li class="file"><a href="/">_config.yml</a></li>
+						<li class="file file-technical"><a href="/">_prose.yml</a></li>
+						<li class="file"><a href="/">index.md</a></li>
+						<li class="file file-technical"><a href="/">run-linux.sh</a></li>
+						<li class="file file-technical"><a href="/">run-mac.command</a></li>
+						<li class="file file-technical"><a href="/">run-windows.bat</a></li>
+						<li class="file"><a href="/">search.md</a></li>
 					</ul>
 				</nav>
 			</section>
