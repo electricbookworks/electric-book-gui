@@ -99,7 +99,7 @@ img {
 }
 
 .file-list {
-    max-width: $bp-s;
+    max-width: $bp-m;
     li {
         border-bottom: 1px solid $grey;
         &:first-child {
@@ -154,6 +154,10 @@ img {
         content: "➕";
         margin-right: 0.5em;
     }
+}
+
+.file-nice-name {
+    color: $dark-grey;
 }
 
 section {

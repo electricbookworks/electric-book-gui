@@ -925,7 +925,7 @@ img {
   text-align: center; }
 
 .file-list {
-  max-width: 38em; }
+  max-width: 50em; }
   .file-list li {
     border-bottom: 1px solid #ddd; }
     .file-list li:first-child {
@@ -957,6 +957,9 @@ img {
 .file-or-folder-add a:before {
   content: "➕";
   margin-right: 0.5em; }
+
+.file-nice-name {
+  color: #666; }
 
 section {
   padding: 2em 0;
