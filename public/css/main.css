@@ -1103,12 +1103,6 @@ section {
   padding: 1em 0;
   border-top: 1px solid #ddd; }
 
-/*!
-* Revenge CSS v 1.0 
-* Copyright 2013, Heydon Pickering: http://www.heydonworks.com
-* Released under Attribution 3.0 Unported license - http://creativecommons.org/licenses/by/3.0/
-* Please leave this comment block intact as attribution
-*/
 a:not([href]), a[href=""], a[href$="#"], a[href^="javascript"],
 .button:not(button):not([role="button"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
 .btn:not(button):not([role="button"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
@@ -1407,13 +1401,13 @@ label div::after {
 
 /* Boot Crap (specific to Twitter BootStrap class misuse)
 -----------------------------------------------------------------------------*/
-/* Don't use list elements to divide up list elements. 
-Use a class-based style on the preceeding or proceeding element or use role="separator" 
+/* Don't use list elements to divide up list elements.
+Use a class-based style on the preceeding or proceeding element or use role="separator"
 on the item in question */
 li.divider:not([role="separator"])::after, li:empty:not([role="separator"])::after {
   content: 'Do not use list items to divide up lists unless they have role = separator' !important; }
 
-/* For obvious reasons, a header for a list should not be an item in that list. 
+/* For obvious reasons, a header for a list should not be an item in that list.
 Make two lists! */
 li.dropdown-header::after {
   content: 'Do not use list items as headers for lists, obvs' !important; }
