@@ -83,12 +83,3 @@ Sends a pull-request on the current directory to ? origin-master?
 ### ebw book pull
 
 ### ebw book push
-
-# Using friendly terminology
-
-In the UI, we want to avoid using technical terms like commit and repo. Here's a rough guide to what we use:
-
-| Technical term | Electric Book Manager |
-| --- | --- |
-| Make Pull Request | Submit changes for review |
-| Review Pull Request | Review submitted changes |
