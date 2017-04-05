@@ -101,10 +101,71 @@ img {
     text-align: center;
 }
 
-.action-group-block {
+.file-list {
+    max-width: $bp-m;
     li {
-        padding: 0.5em;
+        border-bottom: 1px solid $grey;
+        &:first-child {
+            border-top: 1px solid $grey;
+        }
     }
+    a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em;
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $grey;
+        }
+    }
+}
+
+.file-list-technical {
+    display: none;
+}
+
+.file-list-admin {
+    .file-list-technical {
+        display: block;
+    }
+    li {
+        &:not(.file-list-technical) {
+            a {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.folder {
+    a:before {
+        content: "📁";
+        margin-right: 0.5em;
+    }
+}
+
+.file {
+    a:before {
+        content: "📄";
+        margin-right: 0.5em;
+    }
+}
+
+.file-or-folder-add {
+    a:before {
+        content: "➕";
+        margin-right: 0.5em;
+    }
+}
+
+.file-nice-name {
+    color: $dark-grey;
+}
+
+.file-change-time {
+    margin-left: 0.5em;
+    white-space: nowrap;
 }
 
 section {
