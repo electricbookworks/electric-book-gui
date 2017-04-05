@@ -88,13 +88,22 @@ Sends a pull-request on the current directory to ? origin-master?
 
 In the UI, we want to avoid using technical terms like commit and repo. Here's a rough guide to what we use:
 
-| Technical term | Electric Book Manager |
-| --- | --- |
-| Repository | Electric Book |
-| Stuff in the working tree | My changes |
-| Commit | Update my version |
-| My commits | My changes |
-| Fork a repo | Make my own version |
-| My fork | My version |
-| User's Repo | Electric Book by User |
-| Make Pull Request | Submit changes for review |
+| Technical term              | Non-technical term               |
+|:----------------------------|:---------------------------------|
+| Repo                        | Repo                             |
+| Branch*                     | Version                          |
+| Stuff in the working tree   | Work-in-progress                 |
+| Save working tree           | Save work-in-progress            |
+| Commit (verb)               | Commit changes                   |
+| Commit (noun)               | Committed changes                |
+| Repo at a given commit      | Snapshot                         |
+| My commits                  | My committed changes             |
+| Fork                        | Copy                             |
+| Fork a repo                 | Edit a copy                      |
+| My fork                     | My copy                          |
+| User's repo                 | User's repo                      |
+| Pull Request(s)             | Submission(s) for review         |
+| Make Pull Request           | Submit changes for review        |
+| Review a Pull Request       | Review Submission                |
+| Upstream master             | The original                     |
+| Update from upstream master | Get latest updates from original |
