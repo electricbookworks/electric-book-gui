@@ -533,6 +533,19 @@
 					</ul>
 				</nav>
 			</section>
+
+			<section>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<p>We use <a href="https://github.com/primer/octicons">Octicons</a> for file lists. SVGs are placed in <code>src/img</code>, then we run <code>gulp svgmin</code> to optimise them and put them in <code>public/css/img</code>, where we can use them as background images in styles.</p>
+				<nav class="file-list file-list-admin">
+					<ul class="action-group action-group-block files">
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_folder</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">file</a></li>
+						<li class="file-or-folder-add"><a href="/:repo_name/files/new">Add file or folder</a></li>
+					</ul>
+				</nav>
+			</section>
 		</div>
 
 		<div class="sg-item">
