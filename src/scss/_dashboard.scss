@@ -63,47 +63,41 @@
     }
 }
 
-.ebm-repos {
+.repositories {
     padding-left: 0;
     list-style: none;
     max-width: $bp-l;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     h2 {
-        margin-bottom: 0;
+        line-height: 1;
+        margin-bottom: 0.5em;
         a {
             text-decoration: none;
         }
     }
-    h3 {
-        a {
-            text-decoration: none;
-        }
-    }
 }
 
-.ebm-pull-requests {
-    padding-left: 0;
-    list-style: none;
-}
-
-.ebm-repos,
-.ebm-pull-request {
-    section {
-        border-top: 0;
-        &:nth-of-type(2) {
-            padding-top: 0;
-        }
-    }
-}
-
-.ebm-repo {
+.repository {
+    padding: 1em 0;
     border-bottom: 3px solid $off-grey;
     &:first-child {
         border-top: 3px solid $off-grey;
     }
-}
-
-.ebm-pull-request {
-    padding: 1em 0;
-    border-top: 1px solid $grey;
+    .repository-details {
+        max-width: $bp-s;
+        margin-bottom: 1em;
+    }
+    @media (min-width: $bp-l) {
+        display: flex;
+        justify-content: space-between;
+        .action-group-inline {
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: flex-end;
+            li {
+                padding-right: 0;
+            }
+        }
+    }
 }

@@ -19,7 +19,7 @@
 	<ul class="nav-main">
 		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png" alt="">Electric Book Manager</a></li>
 		<!-- if changes_to_review -->
-		<li><a href="/">Changes to review (1)</a></li>
+		<li><a href="/">Review submissions (1)</a></li>
 		<!-- end -->
 	</ul>
 	<!-- if logged_in -->
@@ -189,77 +189,159 @@
 			</nav>
 		</div>
 
-		<div class="sg-item" id="books-with-prs">
-			<h3 class="sg-header">Books with PRs</h3>
+		<div class="sg-item" id="electric-books">
+			<h3 class="sg-header">Electric Books</h3>
 
-			<ul class="ebm-repos">
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="/">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
-
+			<p class="sg-note">Mine, not a fork</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2><a href="/">Book-name</a></h2>
 						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
 
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="/">Manage book</a>
-					</section>
-			    </li>
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="/">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
-
-						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="/">Manage book</a>
-					</section>
-					<section>
-						<h3>Changes submitted for review (1)</h3>
-						<ul class="ebm-pull-requests">
-							<li class="ebm-pull-request">
-								<h4><a href="/">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="/">View the discussion on GitHub</a></p>
-							</li>
-						</ul>
-					</section>
-			    </li>
-				<li class="ebm-repo">
-					<section>
-			            <h2><a href="/">Repo-name-that-might-be-longish</a></h2>
-						<p><strong>Your version</strong> / <strong>NiceName (username)</strong>'s version from OrganizationName</p>
-
-						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
-						<p>Updated 1 week ago by NiceName (username)</p>
-
-						<a class="btn" href="/">Manage book</a>
-					</section>
-					<section>
-						<h3>Changes submitted for review (3)</h3>
-						<ul class="ebm-pull-requests">
-							<li class="ebm-pull-request">
-								<h4><a href="/">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="/">View the discussion on GitHub</a></p>
-							</li>
-							<li class="ebm-pull-request">
-								<h4><a href="/">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="/">View the discussion on GitHub</a></p>
-							</li>
-							<li class="ebm-pull-request">
-								<h4><a href="/">PR Title</a> submitted by Nice Name Too (usernametoo)</h4>
-								<p>Updated 3 days ago by Nice Name Three (usernamethree) </p>
-								<p><a href="/">View the discussion on GitHub</a></p>
-							</li>
-						</ul>
-					</section>
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit</button></li>
+					</ul>
 			    </li>
 			</ul>
+
+			<p class="sg-note">Not mine, not a fork, I can't edit</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2>Other-book-name by Other Person or Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit a copy</button></li>
+						<li><button disabled>Edit</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note">Mine, a fork</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2>My copy of <a href="/">Other-book-name</a> by Other Person or Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note"><br />1. The original book(s).<br />2. My copy of the book(s) in my org.<br />3. Not mine, a fork, I can edit (e.g. same org). Can't fork because I have one already.</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2><a href="/">Another-book-name</a> by My Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button disabled>Edit a copy</button></li>
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+				<li class="repository">
+					<div class="repository-details">
+						<h2>My copy of <a href="/">Another-book-name</a> by My Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+				<li class="repository">
+					<div class="repository-details">
+						<h2>Another Person's copy of <a href="/">Another-book-name</a> by My Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button disabled>Edit a copy</button></li>
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note">My org's book, I have a fork, PRs open</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2><a href="/">Another-book-name</a> by My Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><a class="btn" href="/">Review Submissions (2)</a></li>
+						<li><button disabled>Edit a copy</button></li>
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+			</ul>
+
+			<p class="sg-note">My org's book, I don't have a fork, no PRs</p>
+			<ul class="repositories">
+				<li class="repository">
+					<div class="repository-details">
+						<h2><a href="/">Another-book-name</a> by My Org</h2>
+						<p>Description ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+					</div>
+
+					<ul class="action-group action-group-inline action-group-main">
+						<li><button>Edit a copy</button></li>
+						<li><button>Edit</button></li>
+					</ul>
+				</li>
+			</ul>
+
+		</div>
+
+		<div class="sg-item" id="make-a-new-copy">
+			<h3 class="sg-header">Edit a copy</h3>
+
+			<p class="sg-note">This is shown on a new page, after hitting "Edit a copy" from the book listing.</p>
+
+			<h1>Edit a copy</h2>
+			<h2>Other-book-name by Other Person or Org</h2>
+
+			<form class="form-new-copy" action="" method="post">
+				<p>I'm making:</p>
+
+				<label class="label-wide">
+					<input type="radio" id="translation" value="translation" name="copy-type" />
+					<strong>editorial changes.</strong>
+				</label>
+				<p>Your copy of the book will receive updates from the original.</p>
+
+				<label class="label-wide">
+					<input type="radio" id="translation" value="translation" name="copy-type" />
+					<strong>a translation:</strong> the same content in a different language.
+				</label>
+				<p>Your copy of the book will receive updates from the original.</p>
+
+				<label class="label-wide">
+					<input type="radio" id="adaptation" value="adaptation" name="copy-type" />
+					<strong>an adaptation:</strong> a new book based on an old one.
+				</label>
+				<p>Your copy of the book won't receive updates from the original.</p>
+
+				<ul class="action-group action-group-inline action-group-main">
+					<li><input type="submit" value="Edit a copy" /></li>
+					<li><a href="/">Go back to the list of my Electric Books</a></li>
+				</ul>
+			</form>
+
+
+
+
 		</div>
 
 		<div class="sg-item">
@@ -279,8 +361,8 @@
 			<h3 class="sg-header">Make a commit</h3>
 
 			<ul class="action-group action-group-inline action-group-main">
-				<li><a href="/" class="btn">Save as a new version of the book</a></li>
-				<li><a href="/">Don't make a new version yet</a></li>
+				<li><a href="/" class="btn">Save as a new copy of the book</a></li>
+				<li><a href="/">Don't make a new copy yet</a></li>
 			</ul>
 		</div>
 
@@ -446,7 +528,7 @@
 					<ul class="action-group action-group-block files">
 						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span> <span class="file-change-time">1 day ago by Person</span></a></li>
 						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span> <span class="file-change-time">3 weeks ago by Other Person</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago by Person<span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago by Person</span></a></li>
 						<li class="file"><a href="/:repo_name/files/:file_name">not-index-either.md <span class="file-nice-name">(Not series home either)</span> <span class="file-change-time">7 years ago by Another Person</span></a></li>
 					</ul>
 				</nav>
@@ -478,6 +560,12 @@
 				</ul>
 
 			</header>
+		</div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">New book button</h3>
+
+			<p class="l-center"><a class="btn" href="/">Make a new Electric Book</a></p>
 		</div>
 	</section>
 </main>
