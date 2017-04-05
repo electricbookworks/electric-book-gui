@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .sg-section-header {
   text-transform: uppercase;
   font-weight: 400; }
@@ -929,8 +930,46 @@ img {
 .action-group-general {
   text-align: center; }
 
-.action-group-block li {
-  padding: 0.5em; }
+.file-list {
+  max-width: 50em; }
+  .file-list li {
+    border-bottom: 1px solid #ddd; }
+    .file-list li:first-child {
+      border-top: 1px solid #ddd; }
+  .file-list a {
+    text-decoration: none;
+    display: block;
+    padding: 0.5em; }
+    .file-list a:hover, .file-list a:focus, .file-list a:active {
+      background-color: #ddd; }
+
+.file-list-technical {
+  display: none; }
+
+.file-list-admin .file-list-technical {
+  display: block; }
+
+.file-list-admin li:not(.file-list-technical) a {
+  font-weight: bold; }
+
+.folder a:before {
+  content: "📁";
+  margin-right: 0.5em; }
+
+.file a:before {
+  content: "📄";
+  margin-right: 0.5em; }
+
+.file-or-folder-add a:before {
+  content: "➕";
+  margin-right: 0.5em; }
+
+.file-nice-name {
+  color: #666; }
+
+.file-change-time {
+  margin-left: 0.5em;
+  white-space: nowrap; }
 
 section {
   padding: 2em 0;
