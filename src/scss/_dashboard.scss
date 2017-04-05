@@ -102,78 +102,21 @@
     }
 }
 
-// general book list styles aka repo list
+// pull requests
 
-.electric-books {
-        padding-left: 0;
-        list-style: none;
-        max-width: $bp-l;
-        margin-left: auto;
-        margin-right: auto;
-    h2, h3 {
-        line-height: 1;
-        a {
-            text-decoration: none;
-        }
-    }
-    .action-group-inline {
-        @media (min-width: $bp-l) {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: flex-end;
-            li {
-                padding-right: 0;
-            }
-        }
-    }
-}
-
-.electric-book {
-    padding: 2em 0;
-    border-bottom: 3px solid $off-grey;
-    &:first-child {
-        border-top: 3px solid $off-grey;
-    }
-}
-
-// book listing aka repo listing
-
-.electric-book-details {
-    margin-bottom: 1em;
-    @media (min-width: $bp-l) {
-        max-width: $bp-s;
-        margin-bottom: 0.5em;
-    }
-}
-
-.electric-books-listing {
-    border: 0;
-    @media (min-width: $bp-l) {
-        .electric-book {
-            display: flex;
-            justify-content: space-between;
-        }
-    }
-    h2 {
-        margin-bottom: 0.5em;
-    }
-}
-
-// book submissions aka repo pull requests
-
-.electric-books-submissions {
+.repositories-pull-requests {
     border: 0;
     h3 {
         margin-bottom: 0.5em;
     }
 }
 
-.electric-book-submissions {
+.repository-pull-requests {
     padding-left: 0;
     list-style: none;
 }
 
-.electric-book-submission {
+.repository-pull-request {
     padding: 2em 0;
     border-top: 1px solid $grey;
     &:last-child {
@@ -185,7 +128,7 @@
     }
 }
 
-.electric-book-submission-details {
+.repository-pull-request-details {
     margin-bottom: 1em;
     @media (min-width: $bp-l) {
         max-width: $bp-s;
@@ -193,10 +136,10 @@
     }
 }
 
-// reviewed submissions aka closed PRs
+// closed pull-requests
 
-.electric-books-submissions-reviewed {
-    .electric-book {
+.repositories-pull-requests-reviewed {
+    .repository {
         border-color: $grey;
     }
     h2, h3 {
@@ -216,6 +159,6 @@
     }
 }
 
-.submission-status {
+.pull-request-status {
         font-weight: bold;
 }

@@ -189,7 +189,7 @@
 			</nav>
 		</div>
 
-		<div class="sg-item" id="electric-books">
+		<div class="sg-item" id="repositories">
 			<h3 class="sg-header">Electric Books</h3>
 
 			<p class="sg-note">Mine, not a fork</p>
@@ -562,21 +562,21 @@
 			</header>
 		</div>
 
-		<div class="sg-item" id="review-submitted-changes">
+		<div class="sg-item" id="review-pull-requests">
 			<h3 class="sg-header">Review submissions</h3>
 
 			<p class="sg-note">This is shown after the user hits "Review submissions (x)" in the header: it's a list of PRs. The <code>title</code> and <code>h1</code> of the page match the link text that they just clicked, so that they know they're in the right place. "To review" is open PRs; "Reviewed" is closed PRs. The links in each block show the details of the PR. The <code>li</code> gets <code>submission-accepted</code> or <code>submission-rejected</code> depending on the state of the PR.</p>
 
-			<section class="electric-books-submissions">
+			<section class="repositories-pull-requests">
 
 				<h1>To review</h1>
 
-				<ul class="electric-books">
-					<li class="electric-book">
+				<ul class="repositories">
+					<li class="repository">
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 7</a> submitted by Another Person</h4>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -585,8 +585,8 @@
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 7 </a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 8</a> submitted by Another Person</h4>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -597,11 +597,11 @@
 							</li>
 						</ul>
 					</li>
-					<li class="electric-book">
+					<li class="repository">
 						<h2>My copy of <a href="/">Another-book-name</a> by My Org</h2>
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 9</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -610,8 +610,8 @@
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 9 </a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 10</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -622,11 +622,11 @@
 							</li>
 						</ul>
 					</li>
-					<li class="electric-book">
+					<li class="repository">
 						<h2>Another Person's copy of <a href="/">Another-book-name</a> by My Org</h2>
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 11</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -635,8 +635,8 @@
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 11</a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 12</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
@@ -651,17 +651,17 @@
 
 			</section>
 
-			<section class="electric-books-submissions electric-books-submissions-reviewed">
+			<section class="repositories-pull-requests repositories-pull-requests-reviewed">
 
 				<h1>Reviewed</h1>
 
-				<ul class="electric-books">
-					<li class="electric-book">
+				<ul class="repositories">
+					<li class="repository">
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
 
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission electric-book-submission-accepted">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request repository-pull-request-accepted">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 1</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
@@ -670,8 +670,8 @@
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 1 changes</a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission electric-book-submission-rejected">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request repository-pull-request-rejected">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 2</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
@@ -682,12 +682,12 @@
 							</li>
 						</ul>
 					</li>
-					<li class="electric-book submission-accepted">
+					<li class="repository submission-accepted">
 						<h2>My copy of <a href="/">Another-book-name</a> by My Org</h2>
 
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission electric-book-submission-accepted">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request repository-pull-request-accepted">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 3</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
@@ -696,8 +696,8 @@
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 3 changes</a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission electric-book-submission-rejected">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request repository-pull-request-rejected">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 4</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
@@ -708,12 +708,12 @@
 							</li>
 						</ul>
 					</li>
-					<li class="electric-book submission-rejected">
+					<li class="repository submission-rejected">
 						<h2>Another Person's copy of <a href="/">Another-book-name</a> by My Org</h2>
 
-						<ul class="electric-book-submissions">
-							<li class="electric-book-submission electric-book-submission-accepted">
-								<div class="electric-book-submission-details">
+						<ul class="repository-pull-requests">
+							<li class="repository-pull-request repository-pull-request-accepted">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 5</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
@@ -722,8 +722,8 @@
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 5 changes</a></li>
 								</ul>
 							</li>
-							<li class="electric-book-submission electric-book-submission-rejected">
-								<div class="electric-book-submission-details">
+							<li class="repository-pull-request repository-pull-request-rejected">
+								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 6</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
