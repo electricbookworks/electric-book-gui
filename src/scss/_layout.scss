@@ -234,3 +234,59 @@ article {
         justify-content: space-between;
     }
 }
+
+.notification {
+    padding: 1em;
+    border-radius: 0.25em;
+    max-width: $bp-m;
+    margin: 0 auto 1em auto;
+}
+
+.notification-success {
+    border: 3px solid $primary;
+    background-color: $success-light;
+}
+
+.notification-information {
+    border: 3px solid $information;
+    background-color: $information-light;
+    a {
+        color: $bodytext;
+    }
+}
+
+.notification-error {
+    border: 3px solid $error;
+    background-color: $error-light;
+    a {
+        color: $bodytext;
+    }
+}
+
+.modal-content {
+    max-width: $bp-s;
+    margin: 0 auto;
+    background-color: $white;
+    padding: 2em;
+    border: 1px solid $off-grey;
+    border-radius: 0.25em;
+}
+
+.modal-open {
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    .modal {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 2;
+        background-color: $dark-grey;
+        background-color: rgba($dark-grey, 0.5)
+    }
+    .modal-content {
+        margin-top: 25%;
+    }
+}
