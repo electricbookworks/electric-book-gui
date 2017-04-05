@@ -73,11 +73,9 @@ img {
 
 .action-group {
     border: 0;
-    ul {
-        list-style: none;
-        padding-left: 0;
-        margin-top: 0;
-    }
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0;
 }
 
 .action-group-inline {
@@ -138,24 +136,31 @@ img {
     }
 }
 
+.folder,
+.file,
+.file-or-folder-add  {
+    a {
+        background-position: left center;
+        background-repeat: no-repeat;
+        padding-left: 1.5em;
+    }
+}
+
 .folder {
-    a:before {
-        content: "📁";
-        margin-right: 0.5em;
+    a {
+        background-image: url(img/file-directory.svg);
     }
 }
 
 .file {
-    a:before {
-        content: "📄";
-        margin-right: 0.5em;
+    a {
+        background-image: url(img/file.svg);
     }
 }
 
 .file-or-folder-add {
-    a:before {
-        content: "➕";
-        margin-right: 0.5em;
+    a {
+        background-image: url(img/plus.svg);
     }
 }
 

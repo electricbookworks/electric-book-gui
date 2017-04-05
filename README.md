@@ -30,11 +30,13 @@ Start the local electricbook server:
 
     bin/electricbook -logtostderr web
 
-You should then have the UI running on http://localhost:16101/
+You should then have the UI running on http://localhost:16101/.
 
-If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `npm install` to install the rest of the dependencies. Run gulp to watch for the changes:
+Run `npm install` to install the rest of the dependencies. Generate the production-ready CSS by running
 
-    gulp watch
+    gulp sass
+
+If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `gulp watch` to watch for changes.
 
 # ebw CLI tool
 
@@ -83,3 +85,27 @@ Sends a pull-request on the current directory to ? origin-master?
 ### ebw book pull
 
 ### ebw book push
+
+# Using friendly terminology
+
+In the UI, we want to avoid using technical terms like commit and repo. Here's a rough guide to what we use:
+
+| Technical term              | Non-technical term               |
+|:----------------------------|:---------------------------------|
+| Repo                        | Repo                             |
+| Branch*                     | Version                          |
+| Stuff in the working tree   | Work-in-progress                 |
+| Save working tree           | Save work-in-progress            |
+| Commit (verb)               | Commit changes                   |
+| Commit (noun)               | Committed changes                |
+| Repo at a given commit      | Snapshot                         |
+| My commits                  | My committed changes             |
+| Fork                        | Copy                             |
+| Fork a repo                 | Edit a copy                      |
+| My fork                     | My copy                          |
+| User's repo                 | User's repo                      |
+| Pull Request(s)             | Submission(s) for review         |
+| Make Pull Request           | Submit changes for review        |
+| Review a Pull Request       | Review Submission                |
+| Upstream master             | The original                     |
+| Update from upstream master | Get latest updates from original |
