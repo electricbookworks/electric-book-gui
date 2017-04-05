@@ -91,9 +91,15 @@ a {
 
 .logo {
 	text-decoration: none;
+	display: inline-block;
 	img {
 		width: 2em;
 		height: 2em;
 		margin-right: 0.5em;
 	}
+}
+
+:focus {
+	outline: 0.15em dashed $dark-grey;
+	outline-offset: 0.1em;
 }
