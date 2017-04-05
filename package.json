@@ -36,6 +36,7 @@
     "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
     "gulp-wrapper": "^1.0.0",
-    "run-sequence": "^1.2.2"
+    "run-sequence": "^1.2.2",
+    "gulp-svgmin": "^1.2.3"
   }
 }

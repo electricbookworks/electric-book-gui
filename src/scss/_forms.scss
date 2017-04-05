@@ -115,3 +115,22 @@ button,
     margin-right: 1em;
     flex-grow: 1;
 }
+
+.form-new-version {
+    p {
+        margin-bottom: 2em;
+    }
+    label {
+        + p {
+        margin-left: 2em;
+        }
+    }
+}
+
+fieldset {
+    padding: 0.5em 0.75em;
+}
+
+legend {
+    padding: 0 0.25em;
+}

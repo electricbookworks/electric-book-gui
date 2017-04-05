@@ -13,9 +13,10 @@ var
 	babel = require('gulp-babel'),
 	sass = require('gulp-sass'),
 	babelPresetEs2015 = require('babel-preset-es2015'),
-	runSequence = require('run-sequence')
+	runSequence = require('run-sequence'),
+	svgmin = require('gulp-svgmin')
 	;
-	
+
 var hreq = require;
 var exec = hreq('child_process').exec;
 
@@ -34,6 +35,10 @@ var paths = {
 				'lib/bower_components/',
 				'public/bower_components/',
 		]
+	},
+	svg: {
+		src: 'src/img',
+		dest: 'public/css/img'
 	}
 };
 
@@ -96,6 +101,12 @@ gulp.task('scss', function() {
 	.pipe(rename({suffix:".min"}))
 	.pipe(nano())
 	.pipe(gulp.dest('public/css'));
+});
+
+gulp.task('svgmin', function () {
+    return gulp.src(paths.svg.src + '/*.svg')
+        .pipe(svgmin())
+        .pipe(gulp.dest(paths.svg.dest));
 });
 
 gulp.task('watch', function() {
