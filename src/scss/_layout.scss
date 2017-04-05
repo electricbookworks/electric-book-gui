@@ -244,15 +244,17 @@ article {
 
 .notification-success {
     border: 3px solid $primary;
+    background-color: $success-light;
 }
 
 .notification-information {
-    border: 3px solid $off-grey;
+    border: 3px solid $information;
+    background-color: $information-light;
 }
 
 .notification-error {
-    border: 3px solid $dark-grey;
-    background-color: $grey;
+    border: 3px solid $error;
+    background-color: $error-light;
 }
 
 .modal-content {
