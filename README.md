@@ -30,11 +30,13 @@ Start the local electricbook server:
 
     bin/electricbook -logtostderr web
 
-You should then have the UI running on http://localhost:16101/
+You should then have the UI running on http://localhost:16101/.
 
-If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `npm install` to install the rest of the dependencies. Run gulp to watch for the changes:
+Run `npm install` to install the rest of the dependencies. Generate the production-ready CSS by running
 
-    gulp watch
+    gulp sass
+
+If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `gulp watch` to watch for changes.
 
 # ebw CLI tool
 
