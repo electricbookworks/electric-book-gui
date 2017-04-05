@@ -34,7 +34,7 @@ You should then have the UI running on http://localhost:16101/.
 
 Run `npm install` to install the rest of the dependencies. Generate the production-ready CSS by running
 
-    gulp sass
+    gulp scss
 
 If you're going to make changes to the SCSS or JS in the `src` directory, install [dtemplate](https://github.com/craigmj/dtemplate), then run `gulp watch` to watch for changes.
 
