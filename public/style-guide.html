@@ -558,14 +558,39 @@
 					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
 					<li><button data-event="click:delete" title="Delete">Delete 01.md</button></li>
 				</ul>
-
 			</header>
 		</div>
 
-		<div class="sg-item">
-			<h3 class="sg-header">New book button</h3>
+		<div class="sg-item" id="notification">
+			<h3 class="sg-header">Notification</h3>
 
-			<p class="l-center"><a class="btn" href="/">Make a new Electric Book</a></p>
+				<div class="notification notification-success">
+					Successfully authorised the Electric Book Manager on GitHub.
+				</div>
+
+				<div class="notification notification-information">
+					There are updates available to Other-book-name by Other Person or Org. We need to <a href="/">update your version</a> before you can continue.
+				</div>
+
+				<div class="notification notification-error">
+					Something went wrong trying to authorise the Electric Book Manager on GitHub. Please <a href="/">try again</a>.
+				</div>
+		</div>
+
+		<div class="sg-item" id="modal">
+			<h3 class="sg-header">Modal</h3>
+
+			<p class="sg-note">Scroll to the top of the page and add the class <code>modal-open</code> to the <code>body</code> element to see the modal in action.</p>
+
+				<div class="modal">
+					<div class="modal-content">
+						<p>Are you sure you want to leave this page? You'll lose any unsaved changes.</p>
+						<ul class="action-group action-group-inline action-group-main">
+							<li><button>Yes, leave this page</button></li>
+							<li><button class="btn-secondary">No, don't leave yet</button></li>
+						</ul>
+					</div>
+				</div>
 		</div>
 	</section>
 </main>
