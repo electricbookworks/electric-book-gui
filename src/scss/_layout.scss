@@ -250,11 +250,17 @@ article {
 .notification-information {
     border: 3px solid $information;
     background-color: $information-light;
+    a {
+        color: $bodytext;
+    }
 }
 
 .notification-error {
     border: 3px solid $error;
     background-color: $error-light;
+    a {
+        color: $bodytext;
+    }
 }
 
 .modal-content {
