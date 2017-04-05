@@ -843,6 +843,12 @@ button,
   margin-right: 1em;
   flex-grow: 1; }
 
+.form-new-version p {
+  margin-bottom: 2em; }
+
+.form-new-version label + p {
+  margin-left: 2em; }
+
 fieldset {
   padding: 0.5em 0.75em; }
 
@@ -909,11 +915,10 @@ img {
   text-align: center; }
 
 .action-group {
-  border: 0; }
-  .action-group ul {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 0; }
+  border: 0;
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0; }
 
 .action-group-inline li {
   display: inline-block;
@@ -1071,37 +1076,36 @@ section {
     padding-left: 0;
     list-style: none; }
 
-.ebm-repos {
+.repositories {
   padding-left: 0;
   list-style: none;
   max-width: 64em;
-  margin: 0 auto; }
-  .ebm-repos h2 {
-    margin-bottom: 0; }
-    .ebm-repos h2 a {
+  margin-left: auto;
+  margin-right: auto; }
+  .repositories h2 {
+    line-height: 1;
+    margin-bottom: 0.5em; }
+    .repositories h2 a {
       text-decoration: none; }
-  .ebm-repos h3 a {
-    text-decoration: none; }
 
-.ebm-pull-requests {
-  padding-left: 0;
-  list-style: none; }
-
-.ebm-repos section,
-.ebm-pull-request section {
-  border-top: 0; }
-  .ebm-repos section:nth-of-type(2),
-  .ebm-pull-request section:nth-of-type(2) {
-    padding-top: 0; }
-
-.ebm-repo {
-  border-bottom: 3px solid #71B8AA; }
-  .ebm-repo:first-child {
-    border-top: 3px solid #71B8AA; }
-
-.ebm-pull-request {
+.repository {
   padding: 1em 0;
-  border-top: 1px solid #ddd; }
+  border-bottom: 3px solid #71B8AA; }
+  .repository:first-child {
+    border-top: 3px solid #71B8AA; }
+  .repository .repository-details {
+    max-width: 38em;
+    margin-bottom: 1em; }
+  @media (min-width: 64em) {
+    .repository {
+      display: flex;
+      justify-content: space-between; }
+      .repository .action-group-inline {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: flex-end; }
+        .repository .action-group-inline li {
+          padding-right: 0; } }
 
 a:not([href]), a[href=""], a[href$="#"], a[href^="javascript"],
 .button:not(button):not([role="button"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
