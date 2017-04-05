@@ -202,6 +202,18 @@
     h2, h3 {
         font-weight: normal;
     }
+    h3 {
+      font-size: 1.375em;
+      line-height: 1.13636364;
+      @media (min-width: 43.75em) {
+          font-size: 1.375em;
+          line-height: 1.13636364;
+      }
+      @media (min-width: 56.25em) {
+          font-size: 1.375em;
+          line-height: 1.13636364;
+      }
+    }
 }
 
 .submission-status {
