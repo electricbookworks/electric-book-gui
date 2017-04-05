@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .sg-section-header {
   text-transform: uppercase;
   font-weight: 400; }
@@ -946,17 +945,21 @@ img {
 .file-list-admin li:not(.file-list-technical) a {
   font-weight: bold; }
 
-.folder a:before {
-  content: "📁";
-  margin-right: 0.5em; }
+.folder a,
+.file a,
+.file-or-folder-add a {
+  background-position: left center;
+  background-repeat: no-repeat;
+  padding-left: 1.5em; }
 
-.file a:before {
-  content: "📄";
-  margin-right: 0.5em; }
+.folder a {
+  background-image: url(img/file-directory.svg); }
 
-.file-or-folder-add a:before {
-  content: "➕";
-  margin-right: 0.5em; }
+.file a {
+  background-image: url(img/file.svg); }
+
+.file-or-folder-add a {
+  background-image: url(img/plus.svg); }
 
 .file-nice-name {
   color: #666; }
