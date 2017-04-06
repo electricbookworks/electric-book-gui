@@ -190,8 +190,8 @@
 
 		<div class="sg-item" id="pagination">
 			<h3 class="sg-header">Pagination</h3>
-			<nav aria-label="Page navigation">
-				<ul class="action-group action-group-inline action-group-general">
+			<nav aria-label="Page navigation" class="action-group action-group-inline action-group-general">
+				<ul>
 					<li><a href="/">Previous</a></li>
 					<li><a href="/">1</a></li>
 					<li><a href="/">2</a></li>
@@ -284,7 +284,7 @@
 
 					<fieldset class="action-group action-group-inline action-group-main">
 						<legend class="visuallyhidden">Another-book-name: </legend>
-						<ul class="action-group action-group-inline action-group-main">
+						<ul>
 							<li><button>Edit</button></li>
 						</ul>
 					</fieldset>
@@ -371,10 +371,13 @@
 				</label>
 				<p>Your copy of the book won't receive updates from the original.</p>
 
-				<ul class="action-group action-group-inline action-group-main">
-					<li><input type="submit" value="Edit a copy" /></li>
-					<li><a href="/">Go back to the list of my Electric Books</a></li>
-				</ul>
+				<fieldset class="action-group action-group-inline action-group-main">
+					<legend class="visuallyhidden">I want to:</legend>
+					<ul>
+						<li><input type="submit" value="Edit a copy" /></li>
+						<li><a href="/">Go back to the list of my Electric Books</a></li>
+					</ul>
+				</fieldset>
 			</form>
 
 
@@ -423,22 +426,22 @@
 					<li class="repository">
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
 						<ul class="repository-pull-requests">
-							<li class="repository-pull-request">
+							<li class="repository-pull-request action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 7</a> submitted by Another Person</h4>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 7 </span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 7 </a></li>
 								</ul>
 							</li>
-							<li class="repository-pull-request">
+							<li class="repository-pull-request action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 8</a> submitted by Another Person</h4>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 8 </span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 8 </a></li>
 								</ul>
@@ -449,21 +452,21 @@
 						<h2>My copy of <a href="/">Another-book-name</a> by My Org</h2>
 						<ul class="repository-pull-requests">
 							<li class="repository-pull-request">
-								<div class="repository-pull-request-details">
+								<div class="repository-pull-request-details action-group action-group-inline action-group-main">
 									<h3><a href="/">Submission Title 9</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 9 </span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 9 </a></li>
 								</ul>
 							</li>
-							<li class="repository-pull-request">
+							<li class="repository-pull-request action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 10</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 10</span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 10</a></li>
 								</ul>
@@ -473,22 +476,22 @@
 					<li class="repository">
 						<h2>Another Person's copy of <a href="/">Another-book-name</a> by My Org</h2>
 						<ul class="repository-pull-requests">
-							<li class="repository-pull-request">
+							<li class="repository-pull-request action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 11</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 11</span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 11</a></li>
 								</ul>
 							</li>
 							<li class="repository-pull-request">
-								<div class="repository-pull-request-details">
+								<div class="repository-pull-request-details action-group action-group-inline action-group-main">
 									<h3><a href="/">Submission Title 12</a> submitted by Another Person</h3>
 										<p>Updated 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion <span class="visuallyhidden">of Title 12</span> on GitHub</a></li>
 									<li><a class="btn" href="#review-submitted-changes">Review submission Title 12</a></li>
 								</ul>
@@ -508,22 +511,22 @@
 						<h2><a href="/">Another-book-name</a> by My Org</h2>
 
 						<ul class="repository-pull-requests">
-							<li class="repository-pull-request repository-pull-request-accepted">
+							<li class="repository-pull-request repository-pull-request-accepted action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 1</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 1 changes</a></li>
 								</ul>
 							</li>
-							<li class="repository-pull-request repository-pull-request-rejected">
+							<li class="repository-pull-request repository-pull-request-rejected action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 2</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">rejected</span> Submission Title 2 changes</a></li>
 								</ul>
@@ -534,22 +537,22 @@
 						<h2>My copy of <a href="/">Another-book-name</a> by My Org</h2>
 
 						<ul class="repository-pull-requests">
-							<li class="repository-pull-request repository-pull-request-accepted">
+							<li class="repository-pull-request repository-pull-request-accepted action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 3</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 3 changes</a></li>
 								</ul>
 							</li>
-							<li class="repository-pull-request repository-pull-request-rejected">
+							<li class="repository-pull-request repository-pull-request-rejected action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 4</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">rejected</span> Submission Title 4 changes</a></li>
 								</ul>
@@ -561,21 +564,21 @@
 
 						<ul class="repository-pull-requests">
 							<li class="repository-pull-request repository-pull-request-accepted">
-								<div class="repository-pull-request-details">
+								<div class="repository-pull-request-details action-group action-group-inline action-group-main">
 									<h3><a href="/">Submission Title 5</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Accepted</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">accepted</span> Submission Title 5 changes</a></li>
 								</ul>
 							</li>
-							<li class="repository-pull-request repository-pull-request-rejected">
+							<li class="repository-pull-request repository-pull-request-rejected action-group action-group-inline action-group-main">
 								<div class="repository-pull-request-details">
 									<h3><a href="/">Submission Title 6</a> submitted by Another Person</h3>
 										<p><span class="submission-status">Rejected</span> 4 days ago by Yet Another Person </p>
 								</div>
-								<ul class="action-group action-group-inline action-group-main">
+								<ul>
 									<li><a href="/">View the discussion on GitHub</a></li>
 									<li><a href="#review-submitted-changes">View <span class="submission-status">rejected</span> Submission Title 6 changes</a></li>
 								</ul>
@@ -749,9 +752,9 @@
 			<p class="sg-note">Scroll to the top of the page and add the class <code>modal-open</code> to the <code>body</code> element to see the modal in action.</p>
 
 				<div class="modal">
-					<div class="modal-content">
+					<div class="modal-content action-group action-group-inline action-group-main">
 						<p>Are you sure you want to leave this page? You'll lose any unsaved changes.</p>
-						<ul class="action-group action-group-inline action-group-main">
+						<ul class="">
 							<li><button>Yes, leave this page</button></li>
 							<li><button class="btn-secondary">No, don't leave yet</button></li>
 						</ul>
@@ -766,10 +769,13 @@
 		<div class="sg-item" id="make-a-commit">
 			<h3 class="sg-header">Make a commit</h3>
 
-			<ul class="action-group action-group-inline action-group-main">
-				<li><a href="/" class="btn">Commit changes</a></li>
-				<li><a href="/">Don't commit changes yet</a></li>
-			</ul>
+			<fieldset class="action-group action-group-inline action-group-main">
+				<legend class="visuallyhidden">I want to</legend>
+				<ul>
+					<li><a href="/" class="btn">Commit my changes</a></li>
+					<li><a href="/">Don't commit my changes yet</a></li>
+				</ul>
+			</fieldset>
 		</div>
 
 		<div class="sg-item" id="commit-message">

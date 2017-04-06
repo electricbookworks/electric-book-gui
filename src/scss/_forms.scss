@@ -158,7 +158,9 @@ legend {
 }
 
 .action-group-main {
-    text-align: right;
+    ul {
+        text-align: right;
+    }
 }
 
 .action-group-general {
