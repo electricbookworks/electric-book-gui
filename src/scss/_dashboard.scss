@@ -88,6 +88,9 @@
         max-width: $bp-s;
         margin-bottom: 1em;
     }
+}
+
+.repository {
     @media (min-width: $bp-l) {
         display: flex;
         justify-content: space-between;
@@ -100,4 +103,66 @@
             }
         }
     }
+}
+
+// pull requests
+
+.repositories-pull-requests {
+    border: 0;
+    h3 {
+        margin-bottom: 0.5em;
+        font-size: 1.375em;
+        line-height: 1.13636364;
+        @media (min-width: 43.75em) {
+          font-size: 1.375em;
+          line-height: 1.13636364;
+        }
+        @media (min-width: 56.25em) {
+          font-size: 1.375em;
+          line-height: 1.13636364;
+        }
+    }
+    .repository {
+        display: block;
+    }
+}
+
+.repository-pull-requests {
+    padding-left: 0;
+    list-style: none;
+}
+
+.repository-pull-request {
+    padding: 2em 0;
+    border-top: 1px solid $grey;
+    &:last-child {
+        padding-bottom: 0;
+    }
+    @media (min-width: $bp-l) {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.repository-pull-request-details {
+    margin-bottom: 1em;
+    @media (min-width: $bp-l) {
+        max-width: $bp-s;
+        margin-bottom: 0;
+    }
+}
+
+// closed pull-requests
+
+.repositories-pull-requests-reviewed {
+    .repository {
+        border-color: $grey;
+    }
+    h2, h3 {
+        font-weight: normal;
+    }
+}
+
+.pull-request-status {
+        font-weight: bold;
 }
