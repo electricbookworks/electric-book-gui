@@ -95,11 +95,13 @@
         display: flex;
         justify-content: space-between;
         .action-group-inline {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: flex-end;
-            li {
-                padding-right: 0;
+            ul {
+                display: flex;
+                flex-direction: column-reverse;
+                justify-content: flex-end;
+                li {
+                    padding-right: 0;
+                }
             }
         }
     }
@@ -165,4 +167,109 @@
 
 .pull-request-status {
         font-weight: bold;
+}
+
+// file and folder listing
+
+.files {
+    max-width: $bp-m;
+    li {
+        border-bottom: 1px solid $grey;
+        &:first-child {
+            border-top: 1px solid $grey;
+        }
+    }
+    a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em;
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $grey;
+        }
+    }
+}
+
+.file-technical {
+    display: none;
+}
+
+.files-admin {
+    .file-technical {
+        display: block;
+    }
+    li {
+        &:not(.file-technical) {
+            a {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.folder,
+.file,
+.file-or-folder-add  {
+    a {
+        background-position: 0.5em center;
+        background-repeat: no-repeat;
+        padding-left: 2em;
+    }
+}
+
+.folder {
+    a {
+        background-image: url(img/file-directory.svg);
+    }
+}
+
+.file {
+    a {
+        background-image: url(img/file.svg);
+    }
+}
+
+.file-or-folder-add {
+    a {
+        background-image: url(img/plus.svg);
+    }
+}
+
+.file-nice-name {
+    color: $dark-grey;
+}
+
+.file-change-time {
+    margin-left: 0.5em;
+    white-space: nowrap;
+}
+
+
+// commit list
+
+.commit-list {
+    max-width: $bp-m;
+    li {
+        border-bottom: 1px solid $grey;
+        &:first-child {
+            border-top: 1px solid $grey;
+        }
+    }
+    a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em;
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $grey;
+        }
+    }
+}
+
+.commit-meta {
+    color: $dark-grey;
+    margin-left: 0.5em;
+    white-space: nowrap;
 }

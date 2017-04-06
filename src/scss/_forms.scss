@@ -134,3 +134,39 @@ fieldset {
 legend {
     padding: 0 0.25em;
 }
+
+.action-group {
+    border: 0;
+    ul {
+        list-style: none;
+        padding-left: 0;
+        margin-top: 0;
+    }
+}
+
+.action-group-inline {
+    li {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        &:first-child {
+            padding-left: 0;
+        }
+        &:last-child {
+            padding-right: 0;
+        }
+    }
+}
+
+.action-group-main {
+    text-align: right;
+}
+
+.action-group-general {
+    text-align: center;
+}
+
+.form-fork {
+    [type="text"] {
+        width: 30em;
+    }
+}
