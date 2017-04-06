@@ -171,7 +171,7 @@
 
 // file and folder listing
 
-.file-list {
+.files {
     max-width: $bp-m;
     li {
         border-bottom: 1px solid $grey;
@@ -191,16 +191,16 @@
     }
 }
 
-.file-list-technical {
+.file-technical {
     display: none;
 }
 
-.file-list-admin {
-    .file-list-technical {
+.files-admin {
+    .file-technical {
         display: block;
     }
     li {
-        &:not(.file-list-technical) {
+        &:not(.file-technical) {
             a {
                 font-weight: bold;
             }
