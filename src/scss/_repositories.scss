@@ -95,11 +95,13 @@
         display: flex;
         justify-content: space-between;
         .action-group-inline {
-            display: flex;
-            flex-direction: column-reverse;
-            justify-content: flex-end;
-            li {
-                padding-right: 0;
+            ul {
+                display: flex;
+                flex-direction: column-reverse;
+                justify-content: flex-end;
+                li {
+                    padding-right: 0;
+                }                
             }
         }
     }
