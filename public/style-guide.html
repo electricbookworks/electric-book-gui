@@ -32,7 +32,7 @@
 <main>
     <h1>Front-end Style Guide</h1>
 
-	<section class="sg-section">
+	<section class="sg-section" id="colours">
 		<h2 class="sg-section-header">Colours</h2>
 		<div class="sg-item">
 			<div class="swatch swatch-primary">$primary</div>
@@ -42,7 +42,7 @@
 		</div>
 	</section>
 
-    <section class="sg-section">
+    <section class="sg-section" id="typography">
         <h2 class="sg-section-header">Typography</h2>
 
         <div class="sg-item">
@@ -62,9 +62,14 @@
             <h5>Heading 4</h5>
             <h6>Heading 4</h6>
         </div>
+
+		<div class="sg-item">
+			<h3 class="sg-header">logo</h3>
+			<a href="/" class="logo"><img src="/img/electricbookworks.png" alt="Electric Book Manager"></a>
+		</div>
     </section>
 
-    <section class="sg-section">
+    <section class="sg-section" id="forms">
         <h2 class="sg-section-header">Forms</h2>
 
 
@@ -164,17 +169,8 @@
 		</div>
     </section>
 
-    <section class="sg-section">
-        <h2 class="sg-section-header">Other</h2>
-
-        <div class="sg-item">
-            <h3 class="sg-header">logo</h3>
-            <a href="/" class="logo"><img src="/img/electricbookworks.png" alt="Electric Book Manager"></a>
-        </div>
-	</section>
-
-	<section class="sg-section">
-		<h2 class="sg-section-header">Components</h2>
+	<section class="sg-section" id="navigation">
+		<h2 class="sg-section-header">Navigation</h2>
 
 		<div class="sg-item" id="main-nav">
 			<h3 class="sg-header">Main nav</h3>
@@ -189,8 +185,26 @@
 			</nav>
 		</div>
 
+		<div class="sg-item" id="pagination">
+			<h3 class="sg-header">Pagination</h3>
+			<nav aria-label="Page navigation">
+				<ul class="action-group action-group-inline action-group-general">
+					<li><a href="/">Previous</a></li>
+					<li><a href="/">1</a></li>
+					<li><a href="/">2</a></li>
+					<li><a href="/">3</a></li>
+					<li><a href="/">Next</a></li>
+				</ul>
+			</nav>
+        </div>
+
+	</section>
+
+	<section class="sg-section" id="dashboard">
+		<h2 class="sg-section-header">Dashboard</h2>
+
 		<div class="sg-item" id="repositories">
-			<h3 class="sg-header">Electric Books</h3>
+			<h3 class="sg-header">Repo list</h3>
 
 			<p class="sg-note">Mine, not a fork</p>
 			<ul class="repositories">
@@ -344,73 +358,16 @@
 
 		</div>
 
-		<div class="sg-item">
-            <h3 class="sg-header">Pagination</h3>
-			<nav aria-label="Page navigation">
-				<ul class="action-group action-group-inline action-group-general">
-					<li><a href="/">Previous</a></li>
-					<li><a href="/">1</a></li>
-					<li><a href="/">2</a></li>
-					<li><a href="/">3</a></li>
-					<li><a href="/">Next</a></li>
-				</ul>
-			</nav>
-        </div>
 
-		<div class="sg-item">
-			<h3 class="sg-header">Make a commit</h3>
 
-			<ul class="action-group action-group-inline action-group-main">
-				<li><a href="/" class="btn">Commit changes</a></li>
-				<li><a href="/">Don't commit changes yet</a></li>
-			</ul>
-		</div>
+	</section>
 
-		<div class="sg-item">
-			<h3 class="sg-header">Commit message</h3>
 
-			<label class="label-wide" for="commit-message">Short description of the changes you made</label>
-            <input type="text" id="commit-message" name="commit-message" class="commit-message" placeholder="e.g. grammar and spelling fixes">
-		</div>
+	<section class="sg-section" id="pull-request-related">
+		<h2 class="sg-section-header">Pull Request Related</h2>
 
-		<div class="sg-item" id="repo-actions-output">
-			<h3 class="sg-header">Repo actions: output</h3>
-
-			<p class="sg-note">Action groups live as <code>ul</code>s inside of <code>fieldset</code>s with a <code>legend</code>. They live at the bottom of the editor.</p>
-
-			<fieldset class="action-group action-group-inline">
-				<legend>Output as:</legend>
-				<ul>
-					<li><button>Website</button></li>
-					<li><button id="repo-print">Screen PDF</button></li>
-					<li><button>Print PDF</button></li>
-					<li><button disabled>epub</button></li>
-				</ul>
-			</fieldset>
-		</div>
-
-		<div class="sg-item">
-			<h3 class="sg-header">Repo actions</h3>
-
-			<fieldset class="action-group action-group-inline action-group-main">
-				<legend class="visuallyhidden">Electric Book Actions:</legend>
-				<ul>
-					<li><button data-event="click:save" data-set="save">Save</button></li>
-					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
-					<li><button data-event="click:delete">Delete</button></li>
-				</ul>
-			</fieldset>
-		</div>
-
-		<div class="sg-item">
-			<h3 class="sg-header">Editor container</h3>
-			<div class="editor">
-				{{/* Editor contents */}}
-			</div>
-		</div>
-
-		<div class="sg-item">
-			<h3 class="sg-header">Pull request</h3>
+		<div class="sg-item" id="pull-requests">
+			<h3 class="sg-header">Pull requests</h3>
 			<p class="sg-note">Lives at bottom of the page.</p>
 
 			<div class="pull-request">
@@ -427,138 +384,6 @@
 					<button>Submit changes for review</button>
 				</div>
 			</div>
-		</div>
-
-		<div class="sg-item" id="file-list">
-			<h3 class="sg-header">File list</h3>
-
-			<p>If all we can get is file names, show as a list in a nav, with the file names as links. We hide <code>.file-list-technical</code> items (like configs) by default. We can show them by adding <code>.file-list-admin</code> to the <code>nav</code>. We use the `_prose.yml`, if it's present, to determine which files are `file-list-technical`. File links take you to the editor with that file open.</p>
-
-			<section>
-				<h2>Files</h2>
-				<h3>Book-name</h3>
-				<nav class="file-list file-list-admin">
-					<ul class="action-group action-group-block files">
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_configs</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">_data</a></li>
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_includes</a></li>
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_layouts</a></li>
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_output</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">_sass</a></li>
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">assets/js</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">book</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">.gitattributes</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">.gitignore</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">Gemfile</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">Gemfile.lock</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">README.md</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">_config.yml</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">_prose.yml</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">index.md</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-linux.sh</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-mac.command</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-windows.bat</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">search.md</a></li>
-					</ul>
-				</nav>
-			</section>
-
-			<p class="sg-note">Folder links follow GitHub's behaviour: a new screen showing the inside of that folder.</p>
-
-			<section>
-				<h2>Files</h2>
-				<h3>Book-name / book /</h3>
-				<nav class="file-list file-list-admin">
-					<ul class="action-group action-group-block files">
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">fonts</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">images</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">styles</a></li>
-						<li class="folder"><a href="/:repo_name/files/:folder_name">text</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">index.md</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">render-mathjax.js</a></li>
-					</ul>
-				</nav>
-			</section>
-
-			<p class="sg-note">Add new folder / new file links appear at the bottom of the list.</p>
-
-			<section>
-				<h2>Files</h2>
-				<h3>Book-name / foldername /</h3>
-				<nav class="file-list file-list-admin">
-					<ul class="action-group action-group-block files">
-						<li class="folder"><a href="/:repo_name/files/:folder_name">folder</a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">file</a></li>
-						<li class="file-or-folder-add"><a href="/:repo_name/files/new">Add file or folder</a></li>
-					</ul>
-				</nav>
-			</section>
-
-			<section id="files-with-nice-names">
-				<p class="sg-note">If we can pull the nice name from <code>title</code> in the frontmatter of files that have it, we should show that too, to make them more human-friendly.</p>
-				<h2>Files</h2>
-				<h3>Book-name</h3>
-				<nav class="file-list">
-					<ul class="action-group action-group-block files">
-						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span></a></li>
-					</ul>
-				</nav>
-			</section>
-
-			<section id="files-with-nice-names-and-times">
-				<p class="sg-note">If we can pull the times of last changes, as they do on repo listing on GitHub, we should show that too.</p>
-				<h2>Files</h2>
-				<h3>Book-name</h3>
-				<nav class="file-list">
-					<ul class="action-group action-group-block files">
-						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span> <span class="file-change-time">1 day ago</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span> <span class="file-change-time">3 weeks ago</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index-either.md <span class="file-nice-name">(Not series home either)</span> <span class="file-change-time">7 years ago</span></a></li>
-					</ul>
-				</nav>
-			</section>
-			<section id="files-with-lots">
-				<p class="sg-note">If we can pull the times of last changes, we probably have the commit, so we can get the name too.</p>
-				<h2>Files</h2>
-				<h3>Book-name</h3>
-				<nav class="file-list">
-					<ul class="action-group action-group-block files">
-						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span> <span class="file-change-time">1 day ago by Person</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span> <span class="file-change-time">3 weeks ago by Other Person</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago by Person</span></a></li>
-						<li class="file"><a href="/:repo_name/files/:file_name">not-index-either.md <span class="file-nice-name">(Not series home either)</span> <span class="file-change-time">7 years ago by Another Person</span></a></li>
-					</ul>
-				</nav>
-			</section>
-
-			<section>
-				<h2>Files</h2>
-				<h3>Book-name</h3>
-				<p>We use <a href="https://github.com/primer/octicons">Octicons</a> for file lists. SVGs are placed in <code>src/img</code>, then we run <code>gulp svgmin</code> to optimise them and put them in <code>public/css/img</code>, where we can use them as background images in styles.</p>
-				<nav class="file-list file-list-admin">
-					<ul class="action-group action-group-block files">
-						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_folder</a></li>
-						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">file</a></li>
-						<li class="file-or-folder-add"><a href="/:repo_name/files/new">Add file or folder</a></li>
-					</ul>
-				</nav>
-			</section>
-		</div>
-
-		<div class="sg-item">
-			<h3 class="sg-header">Split header</h3>
-
-			<header class="header-split">
-				<h2>Editor</h2>
-				<ul class="action-group action-group-inline">
-					<li><button data-event="click:save" data-set="save">Save</button></li>
-					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
-					<li><button data-event="click:delete" title="Delete">Delete 01.md</button></li>
-				</ul>
-			</header>
 		</div>
 
 		<div class="sg-item" id="review-pull-requests">
@@ -737,6 +562,143 @@
 
 			</section>
 		</div>
+	</section>
+
+	<section class="sg-section" id="components">
+		<h2 class="sg-section-header">Components</h2>
+
+		<div class="sg-item" id="file-list">
+			<h3 class="sg-header">File list</h3>
+
+			<p>If all we can get is file names, show as a list in a nav, with the file names as links. We hide <code>.file-list-technical</code> items (like configs) by default. We can show them by adding <code>.file-list-admin</code> to the <code>nav</code>. We use the `_prose.yml`, if it's present, to determine which files are `file-list-technical`. File links take you to the editor with that file open.</p>
+
+			<section>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<nav class="file-list file-list-admin">
+					<ul class="action-group action-group-block files">
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_configs</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">_data</a></li>
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_includes</a></li>
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_layouts</a></li>
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_output</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">_sass</a></li>
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">assets/js</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">book</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">.gitattributes</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">.gitignore</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">Gemfile</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">Gemfile.lock</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">README.md</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">_config.yml</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">_prose.yml</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">index.md</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-linux.sh</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-mac.command</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">run-windows.bat</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">search.md</a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<p class="sg-note">Folder links follow GitHub's behaviour: a new screen showing the inside of that folder.</p>
+
+			<section>
+				<h2>Files</h2>
+				<h3>Book-name / book /</h3>
+				<nav class="file-list file-list-admin">
+					<ul class="action-group action-group-block files">
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">fonts</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">images</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">styles</a></li>
+						<li class="folder"><a href="/:repo_name/files/:folder_name">text</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">index.md</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">render-mathjax.js</a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<p class="sg-note">Add new folder / new file links appear at the bottom of the list.</p>
+
+			<section>
+				<h2>Files</h2>
+				<h3>Book-name / foldername /</h3>
+				<nav class="file-list file-list-admin">
+					<ul class="action-group action-group-block files">
+						<li class="folder"><a href="/:repo_name/files/:folder_name">folder</a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">file</a></li>
+						<li class="file-or-folder-add"><a href="/:repo_name/files/new">Add file or folder</a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<section id="files-with-nice-names">
+				<p class="sg-note">If we can pull the nice name from <code>title</code> in the frontmatter of files that have it, we should show that too, to make them more human-friendly.</p>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<nav class="file-list">
+					<ul class="action-group action-group-block files">
+						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span></a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<section id="files-with-nice-names-and-times">
+				<p class="sg-note">If we can pull the times of last changes, as they do on repo listing on GitHub, we should show that too.</p>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<nav class="file-list">
+					<ul class="action-group action-group-block files">
+						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span> <span class="file-change-time">1 day ago</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span> <span class="file-change-time">3 weeks ago</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index-either.md <span class="file-nice-name">(Not series home either)</span> <span class="file-change-time">7 years ago</span></a></li>
+					</ul>
+				</nav>
+			</section>
+			<section id="files-with-lots">
+				<p class="sg-note">If we can pull the times of last changes, we probably have the commit, so we can get the name too.</p>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<nav class="file-list">
+					<ul class="action-group action-group-block files">
+						<li class="file"><a href="/:repo_name/files/:file_name">index.md <span class="file-nice-name">(Series home)</span> <span class="file-change-time">1 day ago by Person</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">01.md <span class="file-nice-name">(Quite  a long chapter name if you think about it, and this file should really be inside the book/text folder)</span> <span class="file-change-time">3 weeks ago by Other Person</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index.md <span class="file-nice-name">(Not series home)</span> <span class="file-change-time">5 months ago by Person</span></a></li>
+						<li class="file"><a href="/:repo_name/files/:file_name">not-index-either.md <span class="file-nice-name">(Not series home either)</span> <span class="file-change-time">7 years ago by Another Person</span></a></li>
+					</ul>
+				</nav>
+			</section>
+
+			<section>
+				<h2>Files</h2>
+				<h3>Book-name</h3>
+				<p>We use <a href="https://github.com/primer/octicons">Octicons</a> for file lists. SVGs are placed in <code>src/img</code>, then we run <code>gulp svgmin</code> to optimise them and put them in <code>public/css/img</code>, where we can use them as background images in styles.</p>
+				<nav class="file-list file-list-admin">
+					<ul class="action-group action-group-block files">
+						<li class="folder file-list-technical"><a href="/:repo_name/files/:folder_name">_folder</a></li>
+						<li class="file file-list-technical"><a href="/:repo_name/files/:file_name">file</a></li>
+						<li class="file-or-folder-add"><a href="/:repo_name/files/new">Add file or folder</a></li>
+					</ul>
+				</nav>
+			</section>
+		</div>
+
+		<div class="sg-item" id="split-header">
+			<h3 class="sg-header">Split header</h3>
+
+			<header class="header-split">
+				<h2>Editor</h2>
+				<ul class="action-group action-group-inline">
+					<li><button data-event="click:save" data-set="save">Save</button></li>
+					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
+					<li><button data-event="click:delete" title="Delete">Delete 01.md</button></li>
+				</ul>
+			</header>
+		</div>
+
 
 		<div class="sg-item" id="notification">
 			<h3 class="sg-header">Notification</h3>
@@ -770,6 +732,65 @@
 				</div>
 		</div>
 	</section>
+
+	<section class="sg-section" id="the-editor">
+		<h2 class="sg-section-header">The Editor</h2>
+
+		<div class="sg-item" id="make-a-commit">
+			<h3 class="sg-header">Make a commit</h3>
+
+			<ul class="action-group action-group-inline action-group-main">
+				<li><a href="/" class="btn">Commit changes</a></li>
+				<li><a href="/">Don't commit changes yet</a></li>
+			</ul>
+		</div>
+
+		<div class="sg-item" id="commit-message">
+			<h3 class="sg-header">Commit message</h3>
+
+			<label class="label-wide" for="commit-message">Short description of the changes you made</label>
+            <input type="text" id="commit-message" name="commit-message" class="commit-message" placeholder="e.g. grammar and spelling fixes">
+		</div>
+
+		<div class="sg-item" id="repo-actions-output">
+			<h3 class="sg-header">Repo actions: output</h3>
+
+			<p class="sg-note">Action groups live as <code>ul</code>s inside of <code>fieldset</code>s with a <code>legend</code>. They live at the bottom of the editor.</p>
+
+			<fieldset class="action-group action-group-inline">
+				<legend>Output as:</legend>
+				<ul>
+					<li><button>Website</button></li>
+					<li><button id="repo-print">Screen PDF</button></li>
+					<li><button>Print PDF</button></li>
+					<li><button disabled>epub</button></li>
+				</ul>
+			</fieldset>
+		</div>
+
+		<div class="sg-item" id="actions">
+			<h3 class="sg-header">Actions</h3>
+
+			<fieldset class="action-group action-group-inline action-group-main">
+				<legend class="visuallyhidden">Electric Book Actions:</legend>
+				<ul>
+					<li><button data-event="click:save" data-set="save">Save</button></li>
+					<li><button data-event="click:undo" data-set="undo">Undo</button></li>
+					<li><button data-event="click:delete">Delete</button></li>
+				</ul>
+			</fieldset>
+		</div>
+
+		<div class="sg-item" id="editor-container">
+			<h3 class="sg-header">Editor container</h3>
+			<div class="editor">
+				{{/* Editor contents */}}
+			</div>
+		</div>
+
+
+	</section>
+
 </main>
 
 <!-- {{template "_footer.html" .}} -->
