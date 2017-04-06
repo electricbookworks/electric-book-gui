@@ -166,3 +166,79 @@
 .pull-request-status {
         font-weight: bold;
 }
+
+// file and folder listing
+
+.file-list {
+    max-width: $bp-m;
+    li {
+        border-bottom: 1px solid $grey;
+        &:first-child {
+            border-top: 1px solid $grey;
+        }
+    }
+    a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em;
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $grey;
+        }
+    }
+}
+
+.file-list-technical {
+    display: none;
+}
+
+.file-list-admin {
+    .file-list-technical {
+        display: block;
+    }
+    li {
+        &:not(.file-list-technical) {
+            a {
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+.folder,
+.file,
+.file-or-folder-add  {
+    a {
+        background-position: left center;
+        background-repeat: no-repeat;
+        padding-left: 1.5em;
+    }
+}
+
+.folder {
+    a {
+        background-image: url(img/file-directory.svg);
+    }
+}
+
+.file {
+    a {
+        background-image: url(img/file.svg);
+    }
+}
+
+.file-or-folder-add {
+    a {
+        background-image: url(img/plus.svg);
+    }
+}
+
+.file-nice-name {
+    color: $dark-grey;
+}
+
+.file-change-time {
+    margin-left: 0.5em;
+    white-space: nowrap;
+}
