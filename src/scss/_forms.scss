@@ -133,7 +133,7 @@ fieldset {
 }
 
 legend {
-    padding: 0 0.25em;
+    padding: 0 0.25em 0 0.5em;
 }
 
 .action-group {
@@ -143,7 +143,6 @@ legend {
         margin-top: 0;
     }
     li {
-        display: inline-block;
         padding: 0.25em 0.5em;
     }
 }
@@ -155,6 +154,15 @@ legend {
         ul {
             text-align: right;
         }
+    }
+}
+
+.actions-editor {
+    ul {
+        text-align: right;
+    }
+    li {
+        display: inline-block;
     }
 }
 
