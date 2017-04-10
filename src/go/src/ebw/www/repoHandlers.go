@@ -37,6 +37,8 @@ func fetchRepos(c *Context) []*github.Repository {
 				PerPage: 500,
 				Page:    1,
 			},
+			Direction:`desc`,
+			Sort: `name`,
 			Visibility: `all`,
 		})
 
@@ -53,6 +55,39 @@ func repoList(c *Context) error {
 	}
 	return c.Render("repo_list.html", map[string]interface{}{
 		"Repos":    fetchRepos(c),
+		"UserName": client.Username,
+	})
+}
+
+func searchRepoList(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repos := fetchRepos(c)
+
+	var repoList []*github.Repository
+
+	for i := 0; i < len(repos); i++ {
+
+		var data map[string]interface{}
+
+		result, _ := json.Marshal(repos[i])
+		json.Unmarshal([]byte(result), &data)
+
+		repoContent, _, _, err := client.Repositories.GetContents(client.Context,
+			client.Username, data[`name`].(string), c.P(`file_name`), nil)
+
+		if nil != err {
+		}
+
+		if repoContent != nil {
+			repoList = append(repoList, repos[i])
+		}
+	}
+
+	return c.Render("repo_list.html", map[string]interface{}{
+		"Repos":    repoList,
 		"UserName": client.Username,
 	})
 }
