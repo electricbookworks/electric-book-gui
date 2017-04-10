@@ -129,40 +129,41 @@ button,
 
 fieldset {
     padding: 0.5em 0.75em;
+    border: 0;
 }
 
 legend {
-    padding: 0 0.25em;
+    padding: 0 0.25em 0 0.5em;
 }
 
 .action-group {
-    border: 0;
     ul {
         list-style: none;
         padding-left: 0;
         margin-top: 0;
     }
+    li {
+        padding: 0.25em 0.5em;
+    }
 }
 
-.action-group-inline {
-    li {
-        display: inline-block;
-        padding: 0.25em 0.5em;
-        &:first-child {
-            padding-left: 0;
-        }
-        &:last-child {
-            padding-right: 0;
+.repository,
+.repository-new,
+.modal {
+    .action-group {
+        ul {
+            text-align: right;
         }
     }
 }
 
-.action-group-main {
-    text-align: right;
-}
-
-.action-group-general {
-    text-align: center;
+.actions-editor {
+    ul {
+        text-align: right;
+    }
+    li {
+        display: inline-block;
+    }
 }
 
 .form-fork {

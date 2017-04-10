@@ -94,7 +94,7 @@
     @media (min-width: $bp-l) {
         display: flex;
         justify-content: space-between;
-        .action-group-inline {
+        .action-group {
             ul {
                 display: flex;
                 flex-direction: column-reverse;
@@ -173,12 +173,6 @@
 
 .files {
     max-width: $bp-m;
-    li {
-        border-bottom: 1px solid $grey;
-        &:first-child {
-            border-top: 1px solid $grey;
-        }
-    }
     a {
         text-decoration: none;
         display: block;
@@ -191,14 +185,21 @@
     }
 }
 
+.folder,
+.file {
+    display: block;
+    border-bottom: 1px solid $grey;
+    padding: 0;
+    &:first-child {
+        border-top: 1px solid $grey;
+    }
+}
+
 .file-technical {
     display: none;
 }
 
 .files-admin {
-    .file-technical {
-        display: block;
-    }
     li {
         &:not(.file-technical) {
             a {
@@ -248,14 +249,8 @@
 
 // commit list
 
-.commit-list {
+.commits {
     max-width: $bp-m;
-    li {
-        border-bottom: 1px solid $grey;
-        &:first-child {
-            border-top: 1px solid $grey;
-        }
-    }
     a {
         text-decoration: none;
         display: block;
@@ -265,6 +260,14 @@
         &:active {
             background-color: $grey;
         }
+    }
+}
+
+.commit {
+    display: block;
+    border-bottom: 1px solid $grey;
+    &:first-child {
+        border-top: 1px solid $grey;
     }
 }
 
