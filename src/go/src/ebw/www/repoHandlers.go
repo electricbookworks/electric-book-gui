@@ -84,7 +84,6 @@ func searchRepoList(c *Context) error {
 		if nil != err {
 			glog.Infof(`No repository content found `)
 		}
-
 	}
 
 	return c.Render("repo_list.html", map[string]interface{}{
@@ -111,6 +110,31 @@ func repoView(c *Context) error {
 	}
 
 	return c.Render(`repo_view.html`, nil)
+}
+
+func lastCommit(c *Context, repoName string) CommitInfo {
+	var err error
+	var commitInfo CommitInfo
+	client := Client(c.W, c.R)
+
+	if nil == client {
+		glog.Error(`Problem initializing client`)
+	}
+
+	commits, _, err := client.Repositories.ListCommits(client.Context, client.Username,
+		repoName, &github.CommitsListOptions{})
+
+	if err == nil {
+		var other map[string]interface{}
+
+		results, _ := json.Marshal(*commits[0].Commit)
+		json.Unmarshal([]byte(results), &other)
+
+		commitInfo = CommitInfo{LastModified: other[`author`].(map[string]interface{})[`date`].(string),
+			Committer: other[`author`].(map[string]interface{})[`name`].(string)}
+		return commitInfo
+	}
+	return commitInfo
 }
 
 func repoUpdate(c *Context) error {
