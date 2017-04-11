@@ -4,7 +4,14 @@
 <main>
 
 <h1>Dashboard</h1>
-
+<div class="search-bar">
+    <form class="form-fork" method="post" action="/search-repos">
+        <label for="file_name">Search File:
+            <input type="text" name="file_name" id="file_name" value="" placeholder="search file e.g. ebw.yml" />
+        </label>
+        <input class="cta" type="submit" value="Search repos"/>
+    </form>
+</div>
 
 <section>
     <h2>My books</h2>
@@ -48,7 +55,6 @@
         <input class="cta" type="submit" value="Create adaptation" />
     </form>
 </section>
-
 
 </main>
 

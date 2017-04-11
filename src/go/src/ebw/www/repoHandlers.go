@@ -15,7 +15,7 @@ import (
 	"ebw/util"
 )
 
-type CommitInfo struct {
+type  CommitInfo struct {
 	LastModified string
 	Committer    string
 }
@@ -77,13 +77,14 @@ func searchRepoList(c *Context) error {
 		repoContent, _, _, err := client.Repositories.GetContents(client.Context,
 			client.Username, data[`name`].(string), c.P(`file_name`), nil)
 
+		if repoContent != nil {
+			repoList = append(repoList, repos[i])
+		}
+
 		if nil != err {
 			glog.Infof(`No repository content found `)
 		}
 
-		if repoContent != nil {
-			repoList = append(repoList, repos[i])
-		}
 	}
 
 	return c.Render("repo_list.html", map[string]interface{}{
