@@ -13,7 +13,6 @@ import (
 	"ebw/config"
 	"ebw/git"
 	"ebw/util"
-	"fmt"
 )
 
 type CommitInfo struct {
@@ -43,7 +42,7 @@ func fetchRepos(c *Context) []*github.Repository {
 		})
 
 	if nil != err {
-		fmt.Println(`No repositories found`)
+		glog.Infof(`No repositories found`)
 	}
 	return repos
 }
@@ -79,6 +78,7 @@ func searchRepoList(c *Context) error {
 			client.Username, data[`name`].(string), c.P(`file_name`), nil)
 
 		if nil != err {
+			glog.Infof(`No repository content found `)
 		}
 
 		if repoContent != nil {
