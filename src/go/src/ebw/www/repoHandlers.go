@@ -20,7 +20,6 @@ type  CommitInfo struct {
 	Committer    string
 }
 
-
 func landingHandler(c *Context) error {
 	return c.Render("landing.html", map[string]interface{}{})
 }
@@ -50,12 +49,29 @@ func fetchRepos(c *Context) []*github.Repository {
 
 func repoList(c *Context) error {
 	client := Client(c.W, c.R)
+
 	if nil == client {
 		return nil
 	}
+
+	commits := []CommitInfo{}
+	repos := fetchRepos(c)
+
+	for i := 0; i < len(repos); i++ {
+
+		var data map[string]interface{}
+
+		result, _ := json.Marshal(repos[i])
+		json.Unmarshal([]byte(result), &data)
+
+		commit := lastCommit(c, data[`name`].(string))
+		commits = append(commits, commit)
+		
+	}
 	return c.Render("repo_list.html", map[string]interface{}{
-		"Repos":    fetchRepos(c),
+		"Repos": repos,
 		"UserName": client.Username,
+		"GitCommits": commits,
 	})
 }
 
@@ -67,6 +83,7 @@ func searchRepoList(c *Context) error {
 	repos := fetchRepos(c)
 
 	var repoList []*github.Repository
+	commits := []CommitInfo{}
 
 	for i := 0; i < len(repos); i++ {
 
@@ -79,17 +96,21 @@ func searchRepoList(c *Context) error {
 			client.Username, data[`name`].(string), c.P(`file_name`), nil)
 
 		if repoContent != nil {
+			commit := lastCommit(c, data[`name`].(string))
+			commits = append(commits, commit)
 			repoList = append(repoList, repos[i])
 		}
 
 		if nil != err {
 			glog.Infof(`No repository content found `)
 		}
+
 	}
 
 	return c.Render("repo_list.html", map[string]interface{}{
 		"Repos":    repoList,
 		"UserName": client.Username,
+		"GitCommits": commits,
 	})
 }
 
