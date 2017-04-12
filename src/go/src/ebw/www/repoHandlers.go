@@ -20,6 +20,7 @@ type  CommitInfo struct {
 	Committer    string
 }
 
+
 func landingHandler(c *Context) error {
 	return c.Render("landing.html", map[string]interface{}{})
 }
@@ -36,7 +37,7 @@ func fetchRepos(c *Context) []*github.Repository {
 				PerPage: 500,
 				Page:    1,
 			},
-			Direction:`desc`,
+			Direction:`asc`,
 			Sort: `name`,
 			Visibility: `all`,
 		})
