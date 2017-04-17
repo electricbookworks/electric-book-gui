@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/electricbookworks/electric-book-gui#readme",
   "dependencies": {
-    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2015": "^6.24.1",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-babel": "^6.1.2",
@@ -34,6 +34,7 @@
     "gulp-rollup": "^2.11.0",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.5.0",
+    "gulp-svgmin": "^1.2.3",
     "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
@@ -42,7 +43,10 @@
     "run-sequence": "^1.2.2"
   },
   "devDependencies": {
+    "gulp-svgmin": "^1.2.3",
     "gulp-typescript": "^3.1.6",
-    "rollup-plugin-gulp": "^1.0.0"
+    "rollup-plugin-gulp": "^1.0.0",
+    "run-sequence": "^1.2.2",
+    "typescript": "^2.2.2"
   }
 }
