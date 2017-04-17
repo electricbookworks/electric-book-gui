@@ -15,58 +15,102 @@ import (
 	"ebw/util"
 )
 
+type  CommitInfo struct {
+	LastModified string
+	Committer    string
+}
+
 func landingHandler(c *Context) error {
 	return c.Render("landing.html", map[string]interface{}{})
 }
 
-func repoList(c *Context) error {
+func fetchRepos(c *Context) []*github.Repository {
 	client := Client(c.W, c.R)
 	if nil == client {
-		// GithubClient will have redirected us
 		return nil
 	}
+
 	repos, _, err := client.Repositories.List(client.Context, "",
 		&github.RepositoryListOptions{
 			ListOptions: github.ListOptions{
 				PerPage: 500,
 				Page:    1,
 			},
+			Direction:`asc`,
+			Sort: `name`,
 			Visibility: `all`,
 		})
+
 	if nil != err {
-		return err
+		glog.Infof(`No repositories found`)
+	}
+	return repos
+}
+
+func repoList(c *Context) error {
+	client := Client(c.W, c.R)
+
+	if nil == client {
+		return nil
 	}
 
-	/******************* @TODO JACKIE *********************
-	 * Our repos contains a list of _all_ the client's
-	 * repos (well, say first 500 of them).
-	 *
-	 * # 1. FILTER REPOS
-	 * We want to filter these repos, based on whether a particular
-	 * file exists in the repo.
-	 * So you will need loop through all repos, then use the github
-	 * API to check for the existence of a specific file
-	 * (let's say /electricbook.yml). We only return the repos that contain
-	 * this file.
-	 *
-	 * # 2. SORT REPOS
-	 * Once that is accomplished, we want to sort the repos based on
-	 * the repo-name. At the moment, we get the list of repos
-	 * sorted by organization, name.
-	 *
-	 * # 3. AUGMENT REPO DATA
-	 * To each repo, we want to add information about the last commit
-	 * on the repo: who made the last commit, and when was it made. To
-	 * get this to work with the repo_list.html template, you will
-	 * probably need to create a new `RepoData` struct containing
-	 * whatever information the template uses, and pass that to the
-	 * template rather than the github repo struct.
-	 *
-	 */
+	commits := []CommitInfo{}
+	repos := fetchRepos(c)
+
+	for i := 0; i < len(repos); i++ {
+
+		var data map[string]interface{}
+
+		result, _ := json.Marshal(repos[i])
+		json.Unmarshal([]byte(result), &data)
+
+		commit := lastCommit(c, data[`name`].(string))
+		commits = append(commits, commit)
+		
+	}
+	return c.Render("repo_list.html", map[string]interface{}{
+		"Repos": repos,
+		"UserName": client.Username,
+		"GitCommits": commits,
+	})
+}
+
+func searchRepoList(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repos := fetchRepos(c)
+
+	var repoList []*github.Repository
+	commits := []CommitInfo{}
+
+	for i := 0; i < len(repos); i++ {
+
+		var data map[string]interface{}
+
+		result, _ := json.Marshal(repos[i])
+		json.Unmarshal([]byte(result), &data)
+
+		repoContent, _, _, err := client.Repositories.GetContents(client.Context,
+			client.Username, data[`name`].(string), c.P(`file_name`), nil)
+
+		if repoContent != nil {
+			commit := lastCommit(c, data[`name`].(string))
+			commits = append(commits, commit)
+			repoList = append(repoList, repos[i])
+		}
+
+		if nil != err {
+			glog.Infof(`No repository content found `)
+		}
+
+	}
 
 	return c.Render("repo_list.html", map[string]interface{}{
-		"Repos":    repos,
+		"Repos":    repoList,
 		"UserName": client.Username,
+		"GitCommits": commits,
 	})
 }
 
@@ -88,6 +132,31 @@ func repoView(c *Context) error {
 	}
 
 	return c.Render(`repo_view.html`, nil)
+}
+
+func lastCommit(c *Context, repoName string) CommitInfo {
+	var err error
+	var commitInfo CommitInfo
+	client := Client(c.W, c.R)
+
+	if nil == client {
+		glog.Error(`Problem initializing client`)
+	}
+
+	commits, _, err := client.Repositories.ListCommits(client.Context, client.Username,
+		repoName, &github.CommitsListOptions{})
+
+	if err == nil {
+		var other map[string]interface{}
+
+		results, _ := json.Marshal(*commits[0].Commit)
+		json.Unmarshal([]byte(results), &other)
+
+		commitInfo = CommitInfo{LastModified: other[`author`].(map[string]interface{})[`date`].(string),
+			Committer: other[`author`].(map[string]interface{})[`name`].(string)}
+		return commitInfo
+	}
+	return commitInfo
 }
 
 func repoUpdate(c *Context) error {
