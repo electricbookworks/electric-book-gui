@@ -35,3 +35,5 @@ class EBW {
 }
 
 window.EBW = EBW;
+
+export { EBW };

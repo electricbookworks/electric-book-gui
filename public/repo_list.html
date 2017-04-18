@@ -17,34 +17,35 @@
     <h2>My books</h2>
 
     <ul class="repo-list">
-        {{range $i, $a := .Repos}}
+        {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <a class="repo-title" href="/repo/{{$a.Name}}/update?url={{$a.HTMLURL}}">{{$a.Name}}</a></h2>
-                <h3><a href="#">UserName</a>'s version, from <a href="#">OrganizationName</a></h3>
-                {{if $a.Description}}
-                <p>{{$a.Description}}</p>
+                <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+                <h3><a href="/TODO">UserName</a>'s version, from <a href="/TODO">OrganizationName</a></h3>
+                {{if .Description}}
+                <p>{{.Description}}</p>
                 {{end}}
 
                 <!-- Grab latest commit -->
-                {{$commit := index $.GitCommits $i}}
-                <p>Last updated by {{$commit.Committer}} on {{$commit.LastModified}}</p>
+                {{with .GetLastCommit}}
+                <p>Last updated by {{.Committer}} on {{.LastModified}}</p>
+                {{end}}
             </div>
-            <p class="repo-manage"><a class="btn" href="/repo/{{$a.Name}}/update?url={{$a.HTMLURL}}">Manage</a></p>
+            <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a></p>
         </li>
         {{end}}
     </ul>
 
-    <nav>
-        <ul class="action-group action-group-inline action-group-general">
-        	<li><a href="#">Previous</a></li>
-        	<li><a href="#">1</a></li>
-        	<li><a href="#">2</a></li>
-        	<li><a href="#">3</a></li>
-        	<li><a href="#">Next</a></li>
+<!--     <nav aria-label="Page navigation" class="action-group l-center">
+        <ul>
+            <li><a href="/">Previous</a></li>
+            <li><a href="/">1</a></li>
+            <li><a href="/">2</a></li>
+            <li><a href="/">3</a></li>
+            <li><a href="/">Next</a></li>
         </ul>
     </nav>
-</section>
+ --></section>
 
 <section>
     <form class="form-fork" method="post" action="/github/create-fork">

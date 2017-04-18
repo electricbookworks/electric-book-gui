@@ -41,6 +41,24 @@
   background-color: $dark-grey;
 }
 
+.swatch-success {
+    border: 3px solid $primary;
+    background-color: $success-light;
+    color: $bodytext;
+}
+
+.swatch-information {
+    border: 3px solid $information;
+    background-color: $information-light;
+    color: $bodytext;
+}
+
+.swatch-error {
+    border: 3px solid $error;
+    background-color: $error-light;
+    color: $bodytext;
+}
+
 .sg-note {
     padding: 0.25em 0.5em;
     background: $grey;
