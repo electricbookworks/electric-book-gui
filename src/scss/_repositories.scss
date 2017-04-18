@@ -3,6 +3,7 @@
     list-style: none;
     margin-top: 0;
     margin-bottom: 3em;
+
     a.repo-title {
         display: block;
         font-weight: bold;
@@ -22,13 +23,15 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: flex-start;
-
+    align-items: stretch;
 
     .repo {
-        width: 30%;
+        box-sizing: border-box;
+        width: 32%;
+        border: 1px solid #999;
+        margin-bottom: 1em;
+        margin-right: 2%;
 
-        margin-right: 5%;
         &:nth-child(3n) {
             margin-right: 0;
         }
@@ -39,6 +42,7 @@
         justify-content: space-between;
         padding: 1em;
     }
+
     @supports (display:grid) {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -48,7 +52,6 @@
         .repo {
             //box-sizing: border-box;
             width: auto;
-            border: 1px solid #333;
             word-break: auto;
             margin-right: 0;
         }
@@ -63,6 +66,14 @@
     }
 }
 
+.search-bar{
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
 .repositories {
     padding-left: 0;
     list-style: none;

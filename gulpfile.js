@@ -1,5 +1,10 @@
+
 var
 	gulp = require('gulp'),
+	file = require('gulp-file'),
+	rollup = require('gulp-better-rollup'),
+	babel = require('rollup-plugin-babel'),
+
 	concat = require('gulp-concat'),
 	nano = require('gulp-cssnano'),
 	uglify =require('gulp-uglify'),
@@ -10,11 +15,11 @@ var
 	gulpIf = require('gulp-if'),
 	wrapper = require('gulp-wrapper'),
 	merge = require('gulp-merge'),
-	babel = require('gulp-babel'),
 	sass = require('gulp-sass'),
 	babelPresetEs2015 = require('babel-preset-es2015'),
 	runSequence = require('run-sequence'),
-	svgmin = require('gulp-svgmin')
+	svgmin = require('gulp-svgmin'),
+	sourcemaps = require('gulp-sourcemaps')
 	;
 
 var hreq = require;
@@ -50,35 +55,63 @@ function errorAlert(task) {
 	};
 }
 
-gulp.task('es6-build', function() {
-	return gulp.src(paths.es6.src + "/**/*.js")
-	.pipe(babel({
-		presets: ['es2015']
-		}).on('error', notify.onError({message:'ERR es6: <%=error.message%>'}))//errorAlert('es6'))
-	)
-	.pipe(concat('_es6.js'))
-	.pipe(gulp.dest(paths.es6.dest))
-	.on('error', errorAlert('es6'))
-	.pipe(notify("es6 completed"));
+gulp.task('rollup', function() {
+  gulp.src(paths.es6.src + '/main.js')
+    .pipe(sourcemaps.init())
+    .pipe(rollup({
+      // notice there is no `entry` option as rollup integrates into gulp pipeline 
+      plugins: [babel()]
+    }, {
+      // also rollups `sourceMap` option is replaced by gulp-sourcemaps plugin 
+      format: 'umd',
+    }))
+    // inlining the sourcemap into the exported .js file 
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.es6.dest));
 });
 
-gulp.task('es6', function(cb) {
-	runSequence('es6-build','merge', cb);
+gulp.task('es6', function() {
+	return rollup(paths.es6.src + '/main.js')
+	.pipe(sourcemaps.init())
+	.pipe(rollup({
+		plugins:[
+			babel({
+				exclude: 'node_modules/**',
+				presets: ['es2015-rollup']
+			}),
+		]} 
+	))
+	.pipe(sourcemaps.write(paths.es6.dest))
+	.pipe(gulp.dest(paths.es6.dest));
+
+	// return gulp.src(paths.es6.src + "/**/*.js")
+	// .pipe(babel({
+	// 	presets: ['es2015']
+	// 	}).on('error', notify.onError({message:'ERR es6: <%=error.message%>'}))//errorAlert('es6'))
+	// )
+	// .pipe(concat('_es6.js'))
+	// .pipe(gulp.dest(paths.es6.dest))
+	// .on('error', errorAlert('es6'))
+	// .pipe(notify("es6 completed"));
 });
 
-gulp.task('merge', function() {
-	return gulp.src([paths.es6.dest + '/_*.js'])
-		.pipe(concat('main.js'))
-		.pipe(wrapper({
-			header: "(function() {\n",
-			footer: "\n})();"
-		}))
-		.pipe(gulp.dest(paths.es6.dest))
-		.pipe(rename({suffix:".min"}))
-		.pipe(uglify())
-		.pipe(gulp.dest(paths.es6.dest))
-		;
-});
+// gulp.task('es6', function(cb) {
+// 	runSequence('es6-build', cb);
+// });
+
+// gulp.task('merge', function() {
+// 	return gulp.src([paths.es6.dest + '/_*.js'])
+// 		.pipe(concat('main.js'))
+// 		.pipe(wrapper({
+// 			header: "(function() {\n",
+// 			footer: "\n})();"
+// 		}))
+// 		.pipe(gulp.dest(paths.es6.dest))
+// 		.pipe(rename({suffix:".min"}))
+// 		.pipe(uglify())
+// 		.pipe(gulp.dest(paths.es6.dest))
+// 		;
+// });
 
 gulp.task('dtemplate-build', function(cb) {
   exec('dtemplate -dir ' + paths.dtemplate.src + ' -out ' + paths.es6.src + 

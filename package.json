@@ -43,9 +43,19 @@
     "run-sequence": "^1.2.2"
   },
   "devDependencies": {
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-better-rollup": "^1.1.1",
+    "gulp-file": "^0.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-rollup": "^2.11.0",
+    "gulp-sourcemaps": "^2.6.0",
     "gulp-svgmin": "^1.2.3",
     "gulp-typescript": "^3.1.6",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-gulp": "^1.0.0",
+    "rollup-stream": "^1.19.0",
     "run-sequence": "^1.2.2",
     "typescript": "^2.2.2"
   }
