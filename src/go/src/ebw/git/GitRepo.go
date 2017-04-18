@@ -37,7 +37,7 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 	grs := make([]*GitRepo, len(repos))
 	for i, r := range repos {
 		gr := &GitRepo{Repository: r}
-		lc, err := LastCommit(client, gr.GetName())
+		lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
 		if nil == err {
 			gr.lastCommit = lc
 		}

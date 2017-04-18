@@ -18,7 +18,10 @@ type CommitInfo struct {
 }
 
 // LastCommit returns the last commit for the given repo
-func LastCommit(client *Client, repoName string) (*CommitInfo, error) {
+func LastCommit(client *Client, userName, repoName string) (*CommitInfo, error) {
+	if `` == userName {
+		userName = client.Username
+	}
 	lc := &CommitInfo{
 		waiting: sync.WaitGroup{},
 	}
@@ -33,7 +36,8 @@ func LastCommit(client *Client, repoName string) (*CommitInfo, error) {
 		options := &github.CommitsListOptions{
 			ListOptions: listOptions,
 		}
-		commits, _, err := client.Repositories.ListCommits(client.Context, client.Username,
+		commits, _, err := client.Repositories.ListCommits(
+			client.Context, userName,
 			repoName, options)
 		if nil != err {
 			glog.Errorf(`Error on listCommits(%s): %s`, repoName, err.Error())
