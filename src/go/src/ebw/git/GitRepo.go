@@ -14,8 +14,7 @@ type GitRepo struct {
 	lastCommit *CommitInfo
 }
 
-//const DefaultFile = `_data/meta.yml`
-const DefaultFile = `finger_protocol.py`
+const DefaultFile = `_data/meta.yml`
 
 func (gr *GitRepo) GetLastCommit() *CommitInfo {
 	gr.lastCommit.waiting.Wait()
@@ -39,6 +38,7 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 		return nil, util.Error(err)
 	}
 	grs := make([]*GitRepo, len(repos))
+
 	for i, r := range repos {
 		gr := &GitRepo{Repository: r}
 		lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
@@ -46,11 +46,14 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 			gr.lastCommit = lc
 		}
 
-		//rc, err := ContainsFile(client, gr)
+		rc, err := ContainsFile(client, gr)
 
-		grs[i] = gr
+		if nil == err && nil != rc {
+			grs[i] = gr
+		}
 	}
-	return grs, nil
+
+	return RemoveEmpty(grs), nil
 }
 
 func ContainsFile(client *Client, gr *GitRepo) (*github.RepositoryContent, error) {
@@ -62,4 +65,14 @@ func ContainsFile(client *Client, gr *GitRepo) (*github.RepositoryContent, error
 		return nil, util.Error(err)
 	}
 	return rc, err
+}
+
+func RemoveEmpty(s []*GitRepo) []*GitRepo {
+	var repos []*GitRepo
+	for _, repo := range s {
+		if repo != nil {
+			repos = append(repos, repo)
+		}
+	}
+	return repos
 }
