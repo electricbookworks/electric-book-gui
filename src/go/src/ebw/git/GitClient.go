@@ -18,6 +18,7 @@ type Client struct {
 	Username string
 	Token    string
 	Context  context.Context
+	User     *github.User
 }
 
 const GithubTokenCookie = "github_token_cookie"
@@ -54,6 +55,7 @@ func ClientFromWebRequest(w http.ResponseWriter, r *http.Request) (*Client, erro
 		user.GetLogin(),
 		token,
 		r.Context(),
+		user,
 	}, nil
 }
 
@@ -81,11 +83,19 @@ func ClientFromCLIConfig() (*Client, error) {
 	)
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
+	githubClient := github.NewClient(tc)
+	ctxt := context.Background()
+	githubUser, _, err := githubClient.Users.Get(ctxt, "")
+	if nil != err {
+		return nil, err
+	}
+
 	client := &Client{
-		github.NewClient(tc),
-		``,
-		user.Token,
-		context.Background(),
+		Client:   githubClient,
+		Username: ``,
+		Token:    user.Token,
+		Context:  ctxt,
+		User:     githubUser,
 	}
 	client.Username, err = Username(client)
 	if nil != err {
