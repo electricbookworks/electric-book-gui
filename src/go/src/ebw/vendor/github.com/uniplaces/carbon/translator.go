@@ -78,7 +78,6 @@ func (t *Translator) loadResource(l string) error {
 
 // chooseUnit will choose unit of translations according to the count
 func (t *Translator) chooseUnit(unit string, count int64) (string, error) {
-	glog.Infof(`Translator.chooseUnit: unit=%s`, unit)
 	s := strings.Split(t.resources[unit], "|")
 	if count > 1 {
 		return strings.Replace(s[1], ":count", strconv.FormatInt(int64(count), 10), 1), nil

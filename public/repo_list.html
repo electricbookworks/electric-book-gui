@@ -10,6 +10,16 @@
         <li class="repo">
             <div class="repo-details">
                 <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+                {{if .Parent}}
+                <div><b>PARENT is {{.Parent.FullName}}</b></div>
+                {{end}}
+                {{if .Fork}}
+                <div><b>FORK is set</b></div>
+                {{end}}
+                {{if .Source}}
+                <div><b>SOURCE is {{.Source.FullName}}</b></div>
+                {{end}}
+
                 <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s version
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
@@ -38,25 +48,16 @@
     <div class="reveal" id="repo-new-modal" data-reveal>
          <button class="close-button" data-close aria-label="Close modal" type="button">
             <span aria-hidden="true">&times;</span>
-          </button>
-          <h1>Add a New Book</h1>
-          <form method="post" action="#">
-          <label>
-            <input type="radio" name="new_book_type" value="new">
-            Create an entirely new book.
-          </label>
-          <label>
-            <input type="radio" name="new_book_type" value="contribute">
-            Contribute to an existing book somebody else is working on.
-
-          </label>
-
-          </form>
-
+          </button>        
     </div>
 
 </section>
 
 </main>
+<script type="text/javascript">
+document.addEventListener(`DOMContentLoaded`, function() {
+  new AddNewBookDialog(document.getElementById(`repo-new-modal`));
+});
+</script>
 
 {{template "_footer.html" .}}

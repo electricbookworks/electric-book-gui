@@ -1,0 +1,37 @@
+<div>
+	<div data-set="chooseType">
+		<h1>Add a New Book</h1>
+		<fieldset>
+			<label>
+				<input type="radio" value="new" data-set="newBookRadio" />
+				Start an new book.
+			</label>
+			<label>
+				<input type="radio" value="collaborate"
+				data-set="collaborateRadio" />
+				Collaborate on an existing book.
+			</label>
+		</fieldset>
+		<button data-event="click:choseType" class="button">Next</button>
+	</div>
+	<div data-set="newBook" style="display: none;">
+		<h1>New Book</h1>
+		<form method="post" action="/REPO/NEW">
+		<input type="hidden" name="action" value="new" />
+		<label>Enter the name for your new book.
+		<input type="text" name="repo_name" placeholder="e.g. MobyDick" data-set="repo_name"/>
+		</label>
+		<input type="submit" class="button" value="New Book"/>
+		</form>
+	</div>
+	<div data-set="collaborate">
+		<h1>Collaborate</h1>
+		<form method="post" action="/REPO/NEW">
+		<input type="hidden" name="action" value="collaborate" />
+		<label>Enter the owner and repo for the book you will collaborate on.
+		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core" data-set="collaborate_repo" />
+		</label>
+		<input type="submit" class="button" value="Collaborate" />
+		</form>
+	</div>
+</div>

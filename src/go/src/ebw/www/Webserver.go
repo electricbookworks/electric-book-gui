@@ -92,7 +92,6 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 			if !ok {
 				return "NOT time.Time"
 			}
-			glog.Infof(`Time = %v`, t)
 			ct := carbon.NewCarbon(t)
 			// ct = carbon.Now().SubMinutes(20)
 			s, err := ct.DiffForHumans(nil, false, false, false)

@@ -25,7 +25,7 @@ func repoList(c *Context) error {
 		return nil
 	}
 
-	repos, err := git.FetchRepos(client)
+	repos, err := git.FetchRepos(client, int(c.PI(`pg`)), int(c.PI(`pp`)))
 	if nil != err {
 		return err
 	}
@@ -50,7 +50,7 @@ func searchRepoList(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	repos, err := git.FetchRepos(client)
+	repos, err := git.FetchRepos(client, int(c.PI(`pg`)), int(c.PI(`pp`)))
 	if nil != err {
 		return err
 	}

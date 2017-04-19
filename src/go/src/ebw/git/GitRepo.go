@@ -19,14 +19,23 @@ func (gr *GitRepo) GetLastCommit() *CommitInfo {
 }
 
 // FetchRepos fetches all the repositories for the client
-func FetchRepos(client *Client) ([]*GitRepo, error) {
+func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
+	if 0 == perPage {
+		perPage = 100
+	}
+
 	repos, _, err := client.Repositories.List(client.Context, "",
 		&github.RepositoryListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: 5,
-				Page:    1,
+				PerPage: perPage,
+				Page:    page,
 			},
-			Direction:  `asc`,
+			Affiliation: `owner,collaborator,organization_member`,
+			Direction:   `asc`,
+			// is `name` valid here?
+			// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
+			// suggests valid values are created, updated, pushed,
+			// full_name. Default: full_name
 			Sort:       `name`,
 			Visibility: `all`,
 		})
