@@ -5,7 +5,6 @@ import (
 	"github.com/google/go-github/github"
 
 	"ebw/util"
-	"github.com/golang/glog"
 )
 
 type GitRepo struct {
@@ -13,8 +12,6 @@ type GitRepo struct {
 
 	lastCommit *CommitInfo
 }
-
-const DefaultFile = `_data/meta.yml`
 
 func (gr *GitRepo) GetLastCommit() *CommitInfo {
 	gr.lastCommit.waiting.Wait()
@@ -41,14 +38,19 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 
 	for i, r := range repos {
 		gr := &GitRepo{Repository: r}
-		lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
-		if nil == err {
-			gr.lastCommit = lc
-		}
 
 		rc, err := ContainsFile(client, gr)
 
-		if nil == err && nil != rc {
+		if nil != err {
+			return nil, util.Error(err)
+		}
+
+		//only add to list and fetch last commits and if the repo already contains the file
+		if rc.containsFile {
+			lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
+			if nil == err {
+				gr.lastCommit = lc
+			}
 			grs[i] = gr
 		}
 	}
@@ -56,23 +58,13 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 	return RemoveEmpty(grs), nil
 }
 
-func ContainsFile(client *Client, gr *GitRepo) (*github.RepositoryContent, error) {
-	rc, _, _, err := client.Repositories.GetContents(client.Context,
-		gr.Owner.GetLogin(), gr.GetName(), DefaultFile, nil)
-
-	if nil != err {
-		glog.Errorf(`File named file(%s) not found: %s`, DefaultFile, err.Error())
-		return nil, util.Error(err)
-	}
-	return rc, err
-}
-
 func RemoveEmpty(s []*GitRepo) []*GitRepo {
-	var repos []*GitRepo
+	var r []*GitRepo
 	for _, repo := range s {
 		if repo != nil {
-			repos = append(repos, repo)
+			r = append(r, repo)
 		}
 	}
-	return repos
+	return r
 }
+
