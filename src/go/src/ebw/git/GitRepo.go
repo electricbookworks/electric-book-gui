@@ -5,6 +5,7 @@ import (
 	"github.com/google/go-github/github"
 
 	"ebw/util"
+	"github.com/golang/glog"
 )
 
 type GitRepo struct {
@@ -12,6 +13,9 @@ type GitRepo struct {
 
 	lastCommit *CommitInfo
 }
+
+//const DefaultFile = `_data/meta.yml`
+const DefaultFile = `finger_protocol.py`
 
 func (gr *GitRepo) GetLastCommit() *CommitInfo {
 	gr.lastCommit.waiting.Wait()
@@ -41,7 +45,21 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 		if nil == err {
 			gr.lastCommit = lc
 		}
+
+		//rc, err := ContainsFile(client, gr)
+
 		grs[i] = gr
 	}
 	return grs, nil
+}
+
+func ContainsFile(client *Client, gr *GitRepo) (*github.RepositoryContent, error) {
+	rc, _, _, err := client.Repositories.GetContents(client.Context,
+		gr.Owner.GetLogin(), gr.GetName(), DefaultFile, nil)
+
+	if nil != err {
+		glog.Errorf(`File named file(%s) not found: %s`, DefaultFile, err.Error())
+		return nil, util.Error(err)
+	}
+	return rc, err
 }
