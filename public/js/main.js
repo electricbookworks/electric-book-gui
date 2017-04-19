@@ -508,7 +508,7 @@ var AllFilesEditor = function AllFilesEditor(parent, dir, chooseFileCallback) {
 
 var DTemplate = function () {
 
-	var templates = { "AllFilesEditor": "<div class=\"all-files-editor\">\n\t<select data-set=\"select\" data-event=\"change\">\n\t</select>\n</div>", "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
+	var templates = { "AllFilesEditor": "<div class=\"all-files-editor\">\n\t<select data-set=\"select\" data-event=\"change\">\n\t</select>\n</div>", "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\"><i class=\"fa fa-save\"> </i></button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<h1>Differences</h1>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
 
 	var mk = function mk(k, html) {
 		var el = document.createElement('div');
@@ -651,7 +651,6 @@ window.EBW = EBW;
 
 document.addEventListener('DOMContentLoaded', function () {
 	jQuery(document).foundation();
-	console.log('Foundation initiated');
 });
 'use strict';
 
@@ -1463,7 +1462,7 @@ var RepoFileEditorCM = function () {
 		this.editor = new EditorCodeMirror(this.$.editor);
 		this.parent.appendChild(this.el);
 		// this.editor.getSession().on('change', (evt)=>{
-		// 	console.log(`editor-on-chance: justLoaded = ${this.justLoaded}`);
+		// 	console.log(`editor-on-change: justLoaded = ${this.justLoaded}`);
 		// 	this.$.save.disabled = this.justLoaded;
 		// 	this.justLoaded = false;
 		// });
@@ -1529,12 +1528,6 @@ var RepoFileEditorCM = function () {
 
 	return RepoFileEditorCM;
 }();
-
-// document.addEventListener('DOMContentLoaded', function() {
-// 	for (let e of document.querySelectorAll('[data-instance="RepoFileEditor"]')) {
-// 		new RepoFileEditor(e);
-// 	}
-// });
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -1569,7 +1562,7 @@ var RepoFileList = function () {
 				evt.preventDefault();
 				var name = prompt('Enter new filename:');
 				if (!name) return;
-				var file = new RepoFileModel(this.repo, 'book/text/' + name, this, { "newFile": true });
+				var file = new RepoFileModel(this.repo, 'book/text/' + name, { "newFile": true });
 				this.files.push(file);
 				new RepoFileEditLink(this.$.fileList, file, function (x, file) {
 					_this.editor.setFile(file);
@@ -1589,7 +1582,7 @@ var RepoFileList = function () {
 				for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 					var f = _step.value;
 
-					var file = new RepoFileModel(repo, f, _this2);
+					var file = new RepoFileModel(repo, f);
 					_this2.files.push(file);
 					new RepoFileEditLink(_this2.$.fileList, file, function (x, file) {
 						_this2.editor.setFile(file);
@@ -1612,10 +1605,11 @@ var RepoFileList = function () {
 		})).catch(function (err) {
 			EBW.Error(err);
 		});
+
 		this.api.ListAllRepoFiles(repo).then(this.api.flatten(function (js) {
 			var d = Directory.FromJS(false, js);
 			new AllFilesEditor(document.getElementById('all-files-editor'), d, function (_source, file) {
-				var rfm = new RepoFileModel(_this2.repo, file, _this2, { newFile: false });
+				var rfm = new RepoFileModel(_this2.repo, file, { newFile: false });
 				_this2.editor.setFile(rfm);
 			});
 		})).catch(EBW.Error);
@@ -1666,18 +1660,40 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var _repoFileModelCache = {};
+
+/**
+ * RepoFileModel provides a wrapper around a file on the
+ * server and a local copy of the file stored in the browser's
+ * sessionStorage.
+ * The RepoFileModel class has Dirty and Editing signals
+ * that can be mapped to be notified when the file is editing or
+ * when the file contents on the browser are Dirty, and should be 
+ * updated to the server.
+ * The RepoFileModel _should_ be somehow static for all
+ * repo-path combinations, but at present it isn't, and it also
+ * has a dependency upon the fileList object, which isn't great - I'm 
+ * not entirely sure why this dependency exists. 
+ */
+
 var RepoFileModel = function () {
-	function RepoFileModel(repo, path, fileList) {
-		var args = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+	function RepoFileModel(repo, path) {
+		var args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 		_classCallCheck(this, RepoFileModel);
 
+		var cacheKey = repo + ':/' + path;
+		var fm = _repoFileModelCache[cacheKey];
+		if (fm) {
+			return fm;
+		}
 		this.repo = repo;
 		this.path = path;
-		this.fileList = fileList;
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
 		this.args = args;
+		_repoFileModelCache[cacheKey] = this;
+		return this;
 	}
 
 	_createClass(RepoFileModel, [{
@@ -1906,82 +1922,20 @@ var QuerySelectorAllIterate = function QuerySelectorAllIterate(el, query) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FileType = function () {
-	function FileType(parent, name) {
-		_classCallCheck(this, FileType);
-
-		this._parent = parent;
-		this._name = name;
-	}
-
-	_createClass(FileType, [{
-		key: 'name',
-		get: function get() {
-			return this._name;
-		}
-	}]);
-
-	return FileType;
-}();
-
-var File = function (_FileType) {
-	_inherits(File, _FileType);
-
-	function File(parent, name) {
-		_classCallCheck(this, File);
-
-		return _possibleConstructorReturn(this, (File.__proto__ || Object.getPrototypeOf(File)).call(this, parent, name));
-	}
-
-	_createClass(File, [{
-		key: 'Debug',
-		value: function Debug() {
-			console.log(this.path);
-		}
-	}, {
-		key: 'path',
-		get: function get() {
-			var p = this._parent ? this._parent.path : '';
-			return p + this._name;
-		}
-	}, {
-		key: 'isFile',
-		get: function get() {
-			return true;
-		}
-	}], [{
-		key: 'FromJS',
-		value: function FromJS(parent, js) {
-			return new File(parent, js.Name);
-		}
-	}]);
-
-	return File;
-}(FileType);
 
 /**
  * Directory models a directory on the server. It needs to know
  * its own directory name, and the link to its parent so that it
  * can construct its full name on the parent.
  */
-
-
-var Directory = function (_FileType2) {
-	_inherits(Directory, _FileType2);
-
+var Directory = function () {
 	function Directory(parent, name) {
 		_classCallCheck(this, Directory);
 
-		var _this2 = _possibleConstructorReturn(this, (Directory.__proto__ || Object.getPrototypeOf(Directory)).call(this, parent, name));
-
-		_this2.Files = [];
-		return _this2;
+		this._parent = parent;
+		this._name = name;
+		this.Files = [];
 	}
 
 	_createClass(Directory, [{
@@ -2106,6 +2060,11 @@ var Directory = function (_FileType2) {
 			return '';
 		}
 	}, {
+		key: 'name',
+		get: function get() {
+			return this._name;
+		}
+	}, {
 		key: 'isFile',
 		get: function get() {
 			return false;
@@ -2151,7 +2110,52 @@ var Directory = function (_FileType2) {
 	}]);
 
 	return Directory;
-}(FileType);
+}();
 "use strict";
-"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * File models a File on the server.
+ */
+var File = function () {
+	function File(parent, name) {
+		_classCallCheck(this, File);
+
+		this._parent = parent;
+		this._name = name;
+	}
+
+	_createClass(File, [{
+		key: "Debug",
+		value: function Debug() {
+			console.log(this.path);
+		}
+	}, {
+		key: "path",
+		get: function get() {
+			var p = this._parent ? this._parent.path : "";
+			return p + this._name;
+		}
+	}, {
+		key: "isFile",
+		get: function get() {
+			return true;
+		}
+	}, {
+		key: "name",
+		get: function get() {
+			return this._name;
+		}
+	}], [{
+		key: "FromJS",
+		value: function FromJS(parent, js) {
+			return new File(parent, js.Name);
+		}
+	}]);
+
+	return File;
+}();
 })();

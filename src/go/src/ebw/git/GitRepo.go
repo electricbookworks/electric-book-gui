@@ -23,7 +23,7 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 	repos, _, err := client.Repositories.List(client.Context, "",
 		&github.RepositoryListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: 500,
+				PerPage: 5,
 				Page:    1,
 			},
 			Direction:  `asc`,

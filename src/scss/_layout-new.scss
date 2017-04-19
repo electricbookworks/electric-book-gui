@@ -1,0 +1,28 @@
+section {
+	margin-top: 1em;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+	min-height: 100vh;
+
+	main {
+		flex-grow: 1;
+	}
+
+	footer {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: center;
+		align-items: baseline;
+		padding-top: 1em;
+
+		background-color: $color-bg;
+
+		border-top: 1px solid darken($color-bg, 10%);
+	}
+}

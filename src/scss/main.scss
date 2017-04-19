@@ -9,12 +9,18 @@ $bp-xl: 80em;
 @import 'foundation';
 @include foundation-everything(true);
 
-@import 'style-guide';
+// @import 'style-guide';
 //@import 'normalize';
 //@import 'h5bp';
-@import 'typography';
-@import 'forms';
-@import 'layout';
+// @import 'typography';
+// @import 'forms';
+// @import 'layout';
+@import 'layout-new';
+
 @import 'widgets/Toast';
-@import 'repositories';
+@import 'widgets/nav_main';
+// @import 'repositories';
 // @import 'html-checker';
+
+@import 'pages/new-editor';
+@import 'pages/repo_list';

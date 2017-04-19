@@ -1,0 +1,16 @@
+.topbar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: baseline;
+
+	background-color: $color-bg;
+	padding: 1em 1em 0 1em;
+	border-bottom: 1px solid darken($color-bg, 10%);
+
+	img {
+		width: 3em;
+		height: 2em;
+		padding: 0 0.5em;
+	}
+}

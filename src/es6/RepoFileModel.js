@@ -1,11 +1,32 @@
+let _repoFileModelCache = {};
+
+/**
+ * RepoFileModel provides a wrapper around a file on the
+ * server and a local copy of the file stored in the browser's
+ * sessionStorage.
+ * The RepoFileModel class has Dirty and Editing signals
+ * that can be mapped to be notified when the file is editing or
+ * when the file contents on the browser are Dirty, and should be 
+ * updated to the server.
+ * The RepoFileModel _should_ be somehow static for all
+ * repo-path combinations, but at present it isn't, and it also
+ * has a dependency upon the fileList object, which isn't great - I'm 
+ * not entirely sure why this dependency exists. 
+ */
 class RepoFileModel {
-	constructor(repo, path, fileList, args={}) {
+	constructor(repo, path, args={}) {
+		let cacheKey = `${repo}:/${path}`;
+		let fm = _repoFileModelCache[cacheKey];
+		if (fm) {
+			return fm;
+		}
 		this.repo = repo;
 		this.path = path;
-		this.fileList = fileList;
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
 		this.args = args;
+		_repoFileModelCache[cacheKey] = this;
+		return this;
 	}
 	get storageKey() {
 		return `${this.repo}:${this.path}`;

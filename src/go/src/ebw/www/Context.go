@@ -46,7 +46,7 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 	}
 
 	_, ok = c.D[`User`]
-	if !ok {
+	if !ok && (nil != c.Client) {
 		c.D[`User`] = c.Client.User
 	}
 

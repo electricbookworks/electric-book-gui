@@ -1,40 +1,12 @@
-class FileType {
-	constructor(parent,name) {
-		this._parent = parent;
-		this._name = name;
-	}
-	get name() {
-		return this._name;
-	}
-}
-
-class File extends FileType {
-	constructor(parent, name) {
-		super(parent,name)
-	}
-	static FromJS(parent, js) {
-		return new File(parent, js.Name);
-	}
-	Debug() {
-		console.log(this.path);
-	}
-	get path() {
-		let p = this._parent ? this._parent.path : ``;
-		return p + this._name;
-	}
-	get isFile() {
-		return true;
-	}
-}
-
 /**
  * Directory models a directory on the server. It needs to know
  * its own directory name, and the link to its parent so that it
  * can construct its full name on the parent.
  */
-class Directory extends FileType {
+class Directory {
 	constructor(parent, name) {
-		super(parent,name);
+		this._parent = parent;
+		this._name = name;
 		this.Files = [];
 	}
 	static FromJS(parent, js) {
@@ -62,6 +34,9 @@ class Directory extends FileType {
 			return this._parent.path + this.name + '/';
 		}
 		return '';
+	}
+	get name() {
+		return this._name;
 	}
 	get isFile() {
 		return false;

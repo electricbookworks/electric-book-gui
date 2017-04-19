@@ -1,11 +1,13 @@
-<nav role="banner">
-	<ul class="nav-main">
-		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
+<nav class="topbar">
+	<div class="topbar-left">
+		<a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a>
 		<!-- if changes_to_review -->
-		<li><a href="/">Review submissions (1)</a></li>
+		<!-- <a href="/">Review submissions (1)</a> -->
 		<!-- end -->
-	</ul>
-	<!-- if logged_in -->
-	<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="" alt="">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
-	<!-- end -->
+	</div>
+	{{if .User}}
+	<div class="topbar-right">
+		<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
+		{{end}}
+	</div>
 </nav>

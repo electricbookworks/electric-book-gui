@@ -102,6 +102,10 @@ func repoView(c *Context) error {
 	if nil != err {
 		return err
 	}
+	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repo)
+	if nil != err {
+		return err
+	}
 
 	return c.Render(`repo_view.html`, nil)
 }

@@ -3,18 +3,7 @@
 
 <main>
 
-<h1>Dashboard</h1>
-<div class="search-bar">
-    <form class="form-fork" method="post" action="/search-repos">
-        <label for="file_name">Search File:
-            <input type="text" name="file_name" id="file_name" value="" placeholder="search file e.g. ebw.yml" />
-        </label>
-        <input class="cta" type="submit" value="Search repos"/>
-    </form>
-</div>
-
 <section>
-    <h2>My books</h2>
 
     <ul class="repo-list">
         {{range .Repos}}
@@ -31,33 +20,41 @@
 
                 <!-- Grab latest commit -->
                 {{with .GetLastCommit}}
-                <p>Last updated by {{.Committer}} on {{.LastModified}}</p>
+                {{if .Committer}}
+                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}</p>
+                {{end}}
                 {{end}}
             </div>
             <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a></p>
         </li>
         {{end}}
+        <li class="repo">
+            <div class="repo-add-repo">
+                <a data-open="repo-new-modal">Add a New Book</a>
+            </div>
+        </li>
     </ul>
 
-<!--     <nav aria-label="Page navigation" class="action-group l-center">
-        <ul>
-            <li><a href="/">Previous</a></li>
-            <li><a href="/">1</a></li>
-            <li><a href="/">2</a></li>
-            <li><a href="/">3</a></li>
-            <li><a href="/">Next</a></li>
-        </ul>
-    </nav>
- --></section>
+    <div class="reveal" id="repo-new-modal" data-reveal>
+         <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h1>Add a New Book</h1>
+          <form method="post" action="#">
+          <label>
+            <input type="radio" name="new_book_type" value="new">
+            Create an entirely new book.
+          </label>
+          <label>
+            <input type="radio" name="new_book_type" value="contribute">
+            Contribute to an existing book somebody else is working on.
 
-<section>
-    <form class="form-fork" method="post" action="/github/create-fork">
-        <h2>Create an Adaptation</h2>
-        <label for="repo_name">The base book:
-            <input type="text" name="repo_name" id="repo_name" value="" placeholder="e.g. electricbookworks/electric-book" />
-        </label>
-        <input class="cta" type="submit" value="Create adaptation" />
-    </form>
+          </label>
+
+          </form>
+
+    </div>
+
 </section>
 
 </main>

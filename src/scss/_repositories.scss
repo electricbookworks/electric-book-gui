@@ -41,6 +41,16 @@
         align-items: stretch;
         justify-content: space-between;
         padding: 1em;
+
+        .repo-add-repo {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            background: no-repeat center url('../img/plus.svg');
+            background-size: 8em 8em;
+            min-height: 10em;
+        }
     }
 
     @supports (display:grid) {

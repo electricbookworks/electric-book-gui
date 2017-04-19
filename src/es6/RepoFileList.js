@@ -11,7 +11,7 @@ class RepoFileList {
 				evt.preventDefault();
 				let name = prompt('Enter new filename:');
 				if (!name) return;
-				let file = new RepoFileModel(this.repo, `book/text/${name}`, this, {"newFile":true});
+				let file = new RepoFileModel(this.repo, `book/text/${name}`, {"newFile":true});
 				this.files.push(file);
 				new RepoFileEditLink(this.$.fileList, file, (x,file)=>{
 					this.editor.setFile(file);
@@ -26,7 +26,7 @@ class RepoFileList {
 		.then( this.api.flatten(
 			files=>{
 				for (let f of files) {
-					let file = new RepoFileModel(repo, f, this);
+					let file = new RepoFileModel(repo, f);
 					this.files.push(file);
 					new RepoFileEditLink(this.$.fileList, file, (x,file) =>{
 						this.editor.setFile(file);
@@ -36,6 +36,7 @@ class RepoFileList {
 		.catch( (err)=>{
 			EBW.Error(err);
 		});
+		
 		this.api.ListAllRepoFiles(repo)
 		.then( this.api.flatten(
 			js=>{
@@ -46,8 +47,7 @@ class RepoFileList {
 					(_source, file)=>{
 						let rfm = new RepoFileModel(
 							this.repo,
-							file,
-							this,
+							file,							
 							{ newFile: false }
 							);
 						this.editor.setFile(rfm);

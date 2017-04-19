@@ -1,6 +1,7 @@
 package www
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -13,6 +14,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"github.com/uniplaces/carbon"
 	"golang.org/x/net/webdav"
 
 	"ebw/api/jsonrpc"
@@ -77,6 +79,27 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 	t := template.New("").Funcs(map[string]interface{}{
 		"Rand": func() string {
 			return fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int())
+		},
+		"json": func(in interface{}) string {
+			raw, err := json.Marshal(in)
+			if nil != err {
+				return err.Error()
+			}
+			return string(raw)
+		},
+		"humantime": func(in interface{}) string {
+			t, ok := in.(time.Time)
+			if !ok {
+				return "NOT time.Time"
+			}
+			glog.Infof(`Time = %v`, t)
+			ct := carbon.NewCarbon(t)
+			// ct = carbon.Now().SubMinutes(20)
+			s, err := ct.DiffForHumans(nil, false, false, false)
+			if nil != err {
+				return err.Error()
+			}
+			return s
 		},
 	})
 	if err := filepath.Walk("public", func(name string, info os.FileInfo, err error) error {

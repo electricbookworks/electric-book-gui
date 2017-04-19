@@ -1,38 +1,36 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
-<nav class="off-canvas position-left" id="filesList" data-off-canvas>
+<nav id="files-list" class="off-canvas position-left" data-off-canvas>
 <h1>Files</h1>
 
 </nav>
-
-<main>
-
-	<h1>Editing {{.RepoName}}</h1>
-	<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
-
-	<div id="all-files-editor">
+<main id="new-editor">
+	<div id="all-files-editor" data-files="{{.RepoFiles | json}}">
 	</div>
 
-
-	<section class="section-editor">
+	<section class="xsection-editor">
 
 		<header class="header-split">
-			<h2>Editor</h2>
-			{{template "_editor_actions.html" .}}
+			<h2>Edit {{.RepoName}}</h2>
+			<fieldset class="action-group" id="editor-actions">
+				<button data-event="click:save" data-set="save">Save</button>
+				<button data-event="click:undo" data-set="undo">Undo</button>
+				<button data-event="click:delete" data-set="delete" title="Delete">Delete</button>
+			</fieldset>
+		
 		</header>
 
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
 
-		{{template "_outputs.html"}}
+		<fieldset class="action-group action-group-main">
+		   <button disabled>Web version</button>
+		   <button id="repo-print">Screen PDF</button>
+		   <button disabled>Print PDF</button>
+		   <button disabled>epub</button>
+		</fieldset>
 	</section>
 
-
-	{{template "_files.html"}}
-
-	{{template "_repo_commits.html"}}
-
-	{{template "_repo_pull_requests.html"}}
 
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {

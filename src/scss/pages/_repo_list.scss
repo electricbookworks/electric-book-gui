@@ -1,0 +1,72 @@
+.repo-list {
+    padding-left: 0;
+    list-style: none;
+    margin: 0 0 3em 0;
+    padding: 0 1em;
+
+    a.repo-title {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-all;
+        text-overflow: fade;
+
+        max-width: 100%;
+        text-decoration: none;
+    }
+
+    position:relative;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: stretch;
+
+    .repo {
+        box-sizing: border-box;
+        width: 32%;
+        border: 1px solid #999;
+        margin-bottom: 1em;
+        @supports (display:grid) {
+            margin-bottom: 0;
+        }
+        margin-right: 2%;
+
+        &:nth-child(3n) {
+            margin-right: 0;
+        }
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-between;
+        padding: 1em;
+
+        .repo-add-repo {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            // background: no-repeat center url('../img/plus.svg');
+            // background-size: 8em 8em;
+            min-height: 10em;
+        }
+    }
+
+    @supports (display:grid) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 1em;
+        align-items: stretch;
+
+        .repo {
+            //box-sizing: border-box;
+            width: auto;
+            word-break: auto;
+            margin-right: 0;
+        }
+    }
+}
