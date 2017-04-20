@@ -6,9 +6,12 @@ $bp-l: 64em;
 $bp-xl: 80em;
 
 @import 'colors';
+@import 'foundation';
+@include foundation-everything(true);
+
 @import 'style-guide';
-@import 'normalize';
-@import 'h5bp';
+//@import 'normalize';
+//@import 'h5bp';
 @import 'typography';
 @import 'forms';
 @import 'layout';

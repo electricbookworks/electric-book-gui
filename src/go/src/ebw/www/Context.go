@@ -5,24 +5,31 @@ import (
 	"net/http"
 	"strconv"
 
+	// "github.com/google/go-github/github"
 	"github.com/gorilla/mux"
+
+	"ebw/git"
 )
 
 type Context struct {
-	R    *http.Request
-	W    http.ResponseWriter
-	Vars map[string]string
-	D    map[string]interface{}
+	R      *http.Request
+	W      http.ResponseWriter
+	Vars   map[string]string
+	D      map[string]interface{}
+	Client *git.Client
 }
 
 type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	client, _ := git.ClientFromWebRequest(w, r)
+
 	c := &Context{
-		R:    r,
-		W:    w,
-		D:    map[string]interface{}{},
-		Vars: mux.Vars(r),
+		R:      r,
+		W:      w,
+		D:      map[string]interface{}{},
+		Vars:   mux.Vars(r),
+		Client: client,
 	}
 	if err := f(c); nil != err {
 		WebError(w, r, err)
@@ -36,6 +43,11 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 	_, ok := c.D[`CMVersion`]
 	if !ok {
 		c.D[`CMVersion`] = `5.12.0`
+	}
+
+	_, ok = c.D[`User`]
+	if !ok {
+		c.D[`User`] = c.Client.User
 	}
 
 	return Render(c.W, c.R, templ, c.D)

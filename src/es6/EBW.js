@@ -35,3 +35,8 @@ class EBW {
 }
 
 window.EBW = EBW;
+
+document.addEventListener('DOMContentLoaded', function() {
+	jQuery(document).foundation();
+	console.log('Foundation initiated');
+});

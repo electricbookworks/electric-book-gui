@@ -11,11 +11,17 @@ type GitRepo struct {
 	*github.Repository
 
 	lastCommit *CommitInfo
+	totalPRs   *PullRequestInfo
 }
 
 func (gr *GitRepo) GetLastCommit() *CommitInfo {
 	gr.lastCommit.waiting.Wait()
 	return gr.lastCommit
+}
+
+func (prs *PullRequestInfo) GetTotalPRs() int {
+	prs.waiting.Wait()
+	return prs.PRCount
 }
 
 // FetchRepos fetches all the repositories for the client
@@ -51,6 +57,12 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 			if nil == err {
 				gr.lastCommit = lc
 			}
+		  prs, err := TotalPRs(client, gr.Owner.GetLogin(), gr.GetName())
+
+		  if nil == err {
+			  gr.totalPRs = prs
+		  }
+      
 			grs[i] = gr
 		}
 	}
