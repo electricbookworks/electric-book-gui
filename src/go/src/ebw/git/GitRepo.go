@@ -41,20 +41,42 @@ func FetchRepos(client *Client) ([]*GitRepo, error) {
 		return nil, util.Error(err)
 	}
 	grs := make([]*GitRepo, len(repos))
+
 	for i, r := range repos {
 		gr := &GitRepo{Repository: r}
-		lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
-		if nil == err {
-			gr.lastCommit = lc
-		}
-		prs, err := TotalPRs(client, gr.Owner.GetLogin(), gr.GetName())
 
-		if nil == err {
-			gr.totalPRs = prs
+		rc, err := ContainsFile(client, gr)
+
+		if nil != err {
+			return nil, util.Error(err)
 		}
 
-		grs[i] = gr
+		//only add to list and fetch last commits and if the repo already contains the file
+		if rc.containsFile {
+			lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
+			if nil == err {
+				gr.lastCommit = lc
+			}
+		  prs, err := TotalPRs(client, gr.Owner.GetLogin(), gr.GetName())
+
+		  if nil == err {
+			  gr.totalPRs = prs
+		  }
+      
+			grs[i] = gr
+		}
 	}
-	return grs, nil
 
+	return RemoveEmpty(grs), nil
 }
+
+func RemoveEmpty(s []*GitRepo) []*GitRepo {
+	var r []*GitRepo
+	for _, repo := range s {
+		if repo != nil {
+			r = append(r, repo)
+		}
+	}
+	return r
+}
+
