@@ -17,6 +17,8 @@ $bp-xl: 80em;
 // @import 'layout';
 @import 'layout-new';
 
+@import 'widgets/buttons';
+
 @import 'widgets/Toast';
 @import 'widgets/nav_main';
 // @import 'repositories';
@@ -24,3 +26,4 @@ $bp-xl: 80em;
 
 @import 'pages/new-editor';
 @import 'pages/repo_list';
+

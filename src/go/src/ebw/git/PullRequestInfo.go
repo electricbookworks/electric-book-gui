@@ -24,7 +24,7 @@ func TotalPRs(client *Client, userName, repoName string) (*PullRequestInfo, erro
 	go func() {
 		defer pr.waiting.Done()
 		listOptions := github.ListOptions{
-			Page: 0, PerPage: 1,
+			Page: 0, PerPage: 1000,
 		}
 		options := &github.PullRequestListOptions{
 			ListOptions: listOptions,
@@ -37,7 +37,7 @@ func TotalPRs(client *Client, userName, repoName string) (*PullRequestInfo, erro
 			return
 		}
 		if 0 == len(pullRequests) {
-			glog.Errorf(`No pull requests found for repo %s`, repoName)
+			//glog.Errorf(`No pull requests found for repo %s`, repoName)
 			return
 		}
 		pr.PRCount = len(pullRequests)

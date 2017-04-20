@@ -29,7 +29,12 @@
                 {{end}}
                 {{end}}
             </div>
-            <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a></p>
+            <div class="repo-manage">
+              <a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a>
+              {{if .GetTotalPRs}}
+              <a class="btn" href="/repo/{{.Name}}/X">Review Submissions ({{.GetTotalPRs}})</a>
+              {{end}}
+            </div>
         </li>
         {{end}}
         <li class="repo">

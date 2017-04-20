@@ -19,9 +19,9 @@ func (gr *GitRepo) GetLastCommit() *CommitInfo {
 	return gr.lastCommit
 }
 
-func (prs *PullRequestInfo) GetTotalPRs() int {
-	prs.waiting.Wait()
-	return prs.PRCount
+func (gr *GitRepo) GetTotalPRs() int {
+	gr.totalPRs.waiting.Wait()
+	return gr.totalPRs.PRCount
 }
 
 // FetchRepos fetches all the repositories for the client

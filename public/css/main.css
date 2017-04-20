@@ -3713,6 +3713,14 @@ body {
     background-color: #eee;
     border-top: 1px solid #d5d5d5; }
 
+.btn {
+  background-color: #1779ba;
+  color: white;
+  padding: 0.4em 1em; }
+  .btn:hover, .btn:focus {
+    background-color: #14679e;
+    color: white; }
+
 .Toast {
   position: fixed;
   width: 100%;
