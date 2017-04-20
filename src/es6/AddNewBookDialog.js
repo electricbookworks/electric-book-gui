@@ -1,3 +1,8 @@
+// AddNewBookDialog steps the user through two pages
+// determining what sort of new book they want to create,
+// and where the original of that book should be found:
+// ie copy the ebw electricbook template, or fork an existing
+// book.
 class AddNewBookDialog {
 	constructor(parent) {
 		[this.el, this.$] = DTemplate(`AddNewBookDialog`);
@@ -33,9 +38,6 @@ class AddNewBookDialog {
 		});
 
 		parent.appendChild(this.el);
-	}
-	show() {
-
 	}
 }
 

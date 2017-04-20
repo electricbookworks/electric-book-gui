@@ -27,7 +27,7 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	repos, _, err := client.Repositories.List(client.Context, "",
 		&github.RepositoryListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: perPage,
+				PerPage: 5000,
 				Page:    page,
 			},
 			Affiliation: `owner,collaborator,organization_member`,
@@ -43,6 +43,7 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	if nil != err {
 		return nil, util.Error(err)
 	}
+
 	grs := make([]*GitRepo, len(repos))
 	for i, r := range repos {
 		gr := &GitRepo{Repository: r}

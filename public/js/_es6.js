@@ -442,64 +442,58 @@ if ("function" == typeof window.define && window.define.amd) {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AddNewBookDialog = function () {
-	function AddNewBookDialog(parent) {
-		var _this = this;
+// AddNewBookDialog steps the user through two pages
+// determining what sort of new book they want to create,
+// and where the original of that book should be found:
+// ie copy the ebw electricbook template, or fork an existing
+// book.
+var AddNewBookDialog = function AddNewBookDialog(parent) {
+	var _this = this;
 
-		_classCallCheck(this, AddNewBookDialog);
+	_classCallCheck(this, AddNewBookDialog);
 
-		var _DTemplate = DTemplate('AddNewBookDialog');
+	var _DTemplate = DTemplate('AddNewBookDialog');
 
-		var _DTemplate2 = _slicedToArray(_DTemplate, 2);
+	var _DTemplate2 = _slicedToArray(_DTemplate, 2);
 
-		this.el = _DTemplate2[0];
-		this.$ = _DTemplate2[1];
+	this.el = _DTemplate2[0];
+	this.$ = _DTemplate2[1];
 
-		Eventify(this.el, {
-			'choseType': function choseType() {
-				var newBook = this.$.newBookRadio.checked;
-				var collaborate = this.$.collaborateRadio.checked;
-				if (!newBook && !collaborate) {
-					alert('You need to choose one or the other');
-					return;
-				}
-				if (newBook) {
-					this.$.newBook.style.display = 'block';
-					this.$.repo_name.focus();
-				} else {
-					this.$.collaborate.style.display = 'block';
-					this.$.collaborate_repo.focus();
-				}
-				this.$.chooseType.style.display = 'none';
+	Eventify(this.el, {
+		'choseType': function choseType() {
+			var newBook = this.$.newBookRadio.checked;
+			var collaborate = this.$.collaborateRadio.checked;
+			if (!newBook && !collaborate) {
+				alert('You need to choose one or the other');
+				return;
 			}
-		}, this);
+			if (newBook) {
+				this.$.newBook.style.display = 'block';
+				this.$.repo_name.focus();
+			} else {
+				this.$.collaborate.style.display = 'block';
+				this.$.collaborate_repo.focus();
+			}
+			this.$.chooseType.style.display = 'none';
+		}
+	}, this);
 
-		jQuery(parent).bind('open.zf.reveal', function (evt) {
-			_this.$.chooseType.style.display = 'block';
-			_this.$.newBookRadio.checked = false;
-			_this.$.collaborateRadio.checked = false;
+	jQuery(parent).bind('open.zf.reveal', function (evt) {
+		_this.$.chooseType.style.display = 'block';
+		_this.$.newBookRadio.checked = false;
+		_this.$.collaborateRadio.checked = false;
 
-			_this.$.newBook.style.display = 'none';
-			_this.$.repo_name.value = '';
+		_this.$.newBook.style.display = 'none';
+		_this.$.repo_name.value = '';
 
-			_this.$.collaborate.style.display = 'none';
-			_this.$.collaborate_repo.value = '';
-		});
+		_this.$.collaborate.style.display = 'none';
+		_this.$.collaborate_repo.value = '';
+	});
 
-		parent.appendChild(this.el);
-	}
-
-	_createClass(AddNewBookDialog, [{
-		key: 'show',
-		value: function show() {}
-	}]);
-
-	return AddNewBookDialog;
-}();
+	parent.appendChild(this.el);
+};
 
 window.AddNewBookDialog = AddNewBookDialog;
 "use strict";
