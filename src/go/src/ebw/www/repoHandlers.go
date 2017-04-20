@@ -30,59 +30,9 @@ func repoList(c *Context) error {
 		return err
 	}
 
-	// commits := []github.CommitInfo{}
-	// for i := 0; i < len(repos); i++ {
-	// 	var data map[string]interface{}
-	// 	result, _ := json.Marshal(repos[i])
-	// 	json.Unmarshal([]byte(result), &data)
-
-	// 	commit := lastCommit(c, data[`name`].(string))
-	// 	commits = append(commits, commit)
-	// }
 	return c.Render("repo_list.html", map[string]interface{}{
 		"Repos":    repos,
 		"UserName": client.Username,
-	})
-}
-
-func searchRepoList(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	repos, err := git.FetchRepos(client, int(c.PI(`pg`)), int(c.PI(`pp`)))
-	if nil != err {
-		return err
-	}
-
-	// commits := []CommitInfo{}
-
-	// for i := 0; i < len(repos); i++ {
-
-	// var data map[string]interface{}
-
-	// result, _ := json.Marshal(repos[i])
-	// json.Unmarshal([]byte(result), &data)
-
-	// repoContent, _, _, err := client.Repositories.GetContents(client.Context,
-	// 	client.Username, data[`name`].(string), c.P(`file_name`), nil)
-
-	// if repoContent != nil {
-	// 	commit := lastCommit(c, data[`name`].(string))
-	// 	commits = append(commits, commit)
-	// 	repoList = append(repoList, repos[i])
-	// }
-
-	// if nil != err {
-	// 	glog.Infof(`No repository content found `)
-	// }
-
-	// }
-
-	return c.Render("repo_list.html", map[string]interface{}{
-		"Repos":    repos,
-		"UserName": client.Username,
-		// "GitCommits": commits,
 	})
 }
 

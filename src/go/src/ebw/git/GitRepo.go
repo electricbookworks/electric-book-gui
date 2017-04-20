@@ -1,6 +1,9 @@
 package git
 
 import (
+	"sort"
+	"sync"
+
 	// "github.com/golang/glog"
 	"github.com/google/go-github/github"
 
@@ -12,6 +15,22 @@ type GitRepo struct {
 
 	lastCommit *CommitInfo
 	totalPRs   *PullRequestInfo
+}
+
+type GitRepoSlice []*GitRepo
+
+func (g GitRepoSlice) Len() int {
+	return len(g)
+}
+func (g GitRepoSlice) Swap(i, j int) {
+	g[i], g[j] = g[j], g[i]
+}
+func (g GitRepoSlice) Less(i, j int) bool {
+	in, jn := g[i].GetName(), g[j].GetName()
+	if in == jn {
+		return g[i].Owner.GetLogin() < g[j].Owner.GetLogin()
+	}
+	return in < jn
 }
 
 func (gr *GitRepo) GetLastCommit() *CommitInfo {
@@ -50,21 +69,56 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 		return nil, util.Error(err)
 	}
 
-	grs := make([]*GitRepo, len(repos))
-	for i, r := range repos {
-		gr := &GitRepo{Repository: r}
-		lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
-		if nil == err {
-			gr.lastCommit = lc
-		}
-		prs, err := TotalPRs(client, gr.Owner.GetLogin(), gr.GetName())
+	C := make(chan *GitRepo)
+	var waitForFileChecks sync.WaitGroup
+	waitForFileChecks.Add(len(repos))
 
-		if nil == err {
-			gr.totalPRs = prs
-		}
+	ERR := make(chan error, len(repos))
+	go func() {
+		waitForFileChecks.Wait()
+		close(C)
+		close(ERR)
+	}()
 
-		grs[i] = gr
+	for _, r := range repos {
+		go func(r *github.Repository) {
+			defer waitForFileChecks.Done()
+			gr := &GitRepo{Repository: r}
+
+			containsFile, err := ContainsFile(client, gr)
+			if nil != err {
+				ERR <- err
+				return
+			}
+
+			//only add to list and fetch last commits and if the repo already contains the file
+			if containsFile {
+				lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
+				if nil == err {
+					gr.lastCommit = lc
+				}
+				prs, err := TotalPRs(client, gr.Owner.GetLogin(), gr.GetName())
+				if nil == err {
+					gr.totalPRs = prs
+				}
+				C <- gr
+			}
+			ERR <- nil
+		}(r)
 	}
-	return grs, nil
 
+	books := make([]*GitRepo, 0, len(repos))
+	for book := range C {
+		books = append(books, book)
+	}
+	// TODO : We can't be sure of the order books arrive on the
+	// channel, so we need to sort the books at this point
+	sort.Sort(GitRepoSlice(books))
+
+	for err := range ERR {
+		if nil != err {
+			return nil, util.Error(err)
+		}
+	}
+	return books, nil
 }

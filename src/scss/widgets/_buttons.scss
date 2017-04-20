@@ -1,0 +1,4 @@
+.btn {
+	@include button-style();
+	padding: 0.4em 1em;
+}
