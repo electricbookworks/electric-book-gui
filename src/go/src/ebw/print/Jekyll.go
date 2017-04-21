@@ -34,7 +34,7 @@ type Jekyll struct {
 	path [3]string
 }
 
-func (j *Jekyll) GetBaseUrl() string {
+func (j *Jekyll) getBaseUrl() string {
 	start, end := regexp.MustCompile(`^[/\s]+`), regexp.MustCompile(`[/\s]+$`)
 	j.BaseUrl = start.ReplaceAllString(j.BaseUrl, ``)
 	j.BaseUrl = end.ReplaceAllString(j.BaseUrl, ``)
@@ -44,8 +44,7 @@ func (j *Jekyll) GetBaseUrl() string {
 	return `/` + j.BaseUrl
 }
 
-func (j *Jekyll) Start() error {
-
+func (j *Jekyll) start() error {
 	j.cmd = exec.Command(
 		`/usr/local/rvm/bin/rvm`,
 		`2.3.0`,
@@ -57,7 +56,7 @@ func (j *Jekyll) Start() error {
 		`--config`,
 		`_config.yml,_configs/_config.web.yml,`+j.ConfigFiles,
 		`--baseurl`,
-		j.GetBaseUrl(),
+		j.getBaseUrl(),
 		`-P`,
 		strconv.FormatInt(j.Port, 10),
 		`--watch`,
@@ -93,13 +92,13 @@ func (j *Jekyll) Start() error {
 	glog.Infof(`Server is up on %s`, targetUrl.String())
 
 	go func() {
-		t := time.NewTicker(5 * time.Second)
+		t := time.NewTicker(time.Minute)
 		for range t.C {
 			glog.Infof(`Checking time for jeckyl %s`, j.RepoDir)
 			j.lock.Lock()
-			maxDuration := 10
-			if time.Now().Add(-1 * time.Duration(maxDuration) * time.Second).After(j.lastRequest) {
-				glog.Infof(`Jekyll for %s has been inactive for %ds - shutting down`, j.RepoDir, maxDuration)
+			maxDuration := 15
+			if time.Now().Add(-1 * time.Duration(maxDuration) * time.Minute).After(j.lastRequest) {
+				glog.Infof(`Jekyll for %s has been inactive for %dm - shutting down`, j.RepoDir, maxDuration)
 				j.shutdown()
 				j.lock.Unlock()
 				t.Stop()

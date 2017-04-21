@@ -1,8 +1,6 @@
 package www
 
 import (
-	"github.com/golang/glog"
-
 	"ebw/print"
 )
 
@@ -24,13 +22,12 @@ func jeckylRepoServer(c *Context) error {
 	repoUser := c.Vars[`repoUser`]
 	repoName := c.Vars[`repoName`]
 
-	glog.Infof(`Got jeckyl request for %s/%s/%s on path %s`,
-		username, repoUser, repoName, c.Vars[`path`])
+	// glog.Infof(`Got jeckyl request for %s/%s/%s on path %s`, username, repoUser, repoName, c.Vars[`path`])
 
 	// Ok, so now we've got a path on the Jekyll server
 	// we want to serve
 
-	j, err := jekyllManager.GetJekyll(client.Username, repoUser, repoName)
+	j, err := jekyllManager.GetJekyll(username, repoUser, repoName)
 	if nil != err {
 		return err
 	}

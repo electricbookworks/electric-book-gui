@@ -29,6 +29,8 @@ func NewJekyllManager() *JekyllManager {
 	}
 }
 
+// GetJekyll returns the Jekyll server for the specific user, repoUser and repoName
+// combination, starting a new Jekyll server if necessary.
 func (jm *JekyllManager) GetJekyll(user, repoUser, repoName string) (*Jekyll, error) {
 	jm.lock.Lock()
 	defer jm.lock.Unlock()
@@ -57,14 +59,14 @@ func (jm *JekyllManager) GetJekyll(user, repoUser, repoName string) (*Jekyll, er
 			path:    [3]string{user, repoUser, repoName},
 		}
 		ru[repoName] = j
-		if err := j.Start(); nil != err {
+		if err := j.start(); nil != err {
 			return nil, err
 		}
 	}
 	return j, nil
 }
 
-// Remove expects jm to be already locked, and removes the given
+// remove expects jm to be already locked, and removes the given
 // jekyll instance from the manager
 func (jm *JekyllManager) remove(j *Jekyll) {
 	delete(jm.servers[j.path[0]][j.path[1]], j.path[2])
