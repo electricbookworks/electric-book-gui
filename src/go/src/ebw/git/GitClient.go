@@ -13,6 +13,8 @@ import (
 	"ebw/util"
 )
 
+var _ = glog.Info
+
 type Client struct {
 	*github.Client
 	Username string
@@ -32,7 +34,7 @@ func ClientFromWebRequest(w http.ResponseWriter, r *http.Request) (*Client, erro
 	if nil != err {
 		return nil, err
 	}
-	glog.Infof("TOKEN = %s", token)
+	// glog.Infof("TOKEN = %s", token)
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},

@@ -10,11 +10,8 @@
         <li class="repo">
             <div class="repo-details">
                 <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
-                {{if .GetFork}}
-                <div><b>FORK is set</b></div>
-                {{end}}
 
-                <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s version
+                <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s {{if .GetFork}}version{{else}}original{{end}}
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
                 {{- end}}</h3>
@@ -25,7 +22,7 @@
                 <!-- Grab latest commit -->
                 {{with .GetLastCommit}}
                 {{if .Committer}}
-                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}</p>
+                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
                 {{end}}
                 {{end}}
             </div>

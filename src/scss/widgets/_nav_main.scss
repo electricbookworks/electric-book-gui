@@ -3,10 +3,10 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: baseline;
+	padding: 1em;
+	border-bottom: 1px solid darken($color-inverse-bg, 10%);
 
-	background-color: $color-bg;
-	padding: 1em 1em 0 1em;
-	border-bottom: 1px solid darken($color-bg, 10%);
+	@include inverse;
 
 	img {
 		width: 3em;

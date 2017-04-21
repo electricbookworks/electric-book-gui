@@ -12,9 +12,10 @@ $bp-xl: 80em;
 // @import 'style-guide';
 //@import 'normalize';
 //@import 'h5bp';
-// @import 'typography';
 // @import 'forms';
 // @import 'layout';
+@import 'typography-new';
+
 @import 'layout-new';
 
 @import 'widgets/buttons';
@@ -27,3 +28,5 @@ $bp-xl: 80em;
 @import 'pages/new-editor';
 @import 'pages/repo_list';
 
+//@import 'typography';
+@import 'forms';

@@ -63,7 +63,7 @@ func ReposCommand() *commander.Command {
 
 func DeleteRepoCommand() *commander.Command {
 	return commander.NewCommand("delete-repo",
-		"Delete the current repo from github",
+		"Delete a repo from github",
 		nil,
 		func(args []string) error {
 			if 1 != len(args) {

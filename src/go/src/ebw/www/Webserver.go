@@ -57,6 +57,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repo}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repo}/pull_new`, WebHandler(pullRequestCreate))
 	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
+	r.Handle(`/jekyll/{repoUser}/{repoName}/{path:.*}`, WebHandler(jeckylRepoServer))
 
 	r.Handle(`/logoff`, WebHandler(LogoffHandler))
 	r.Handle(`/to-github`, WebHandler(ToGithubHandler))

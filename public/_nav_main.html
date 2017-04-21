@@ -7,7 +7,9 @@
 	</div>
 	{{if .User}}
 	<div class="topbar-right">
-		<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
-		{{end}}
+		<div>
+			Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a>. <a href="/logoff">Log out</a>
+		</span>
 	</div>
+	{{end}}
 </nav>

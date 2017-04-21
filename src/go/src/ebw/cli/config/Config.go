@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/golang/glog"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -59,6 +61,7 @@ func (c *conf) readFile(in string) error {
 	if "" == in {
 		in = filepath.Join(os.Getenv("HOME"), ".ebw.yml")
 	}
+	glog.Infof(`Reading config file %s`, in)
 	raw, err := ioutil.ReadFile(in)
 	if nil != err {
 		return err

@@ -20,35 +20,36 @@ $global-width: rem-calc(1200) !default;
 /// @type Number
 $global-lineheight: 1.5 !default;
 
+/// Colors set in _colors.scss
 /// Colors used for buttons, callouts, links, etc. There must always be a color called `primary`.
 /// @type Map
 $foundation-palette: (
-  primary: #1779ba,
-  secondary: #767676,
-  success: #3adb76,
-  warning: #ffae00,
-  alert: #cc4b37,
+  primary: $color-primary,
+  secondary: $color-secondary,
+  success: $color-success,
+  warning: $color-warning,
+  alert: $color-alert,
 ) !default;
 
 /// Color used for light gray UI items.
 /// @type Color
-$light-gray: #e6e6e6 !default;
+$light-gray: $color-lightgray !default;
 
 /// Color used for medium gray UI items.
 /// @type Color
-$medium-gray: #cacaca !default;
+$medium-gray: $color-mediumgray !default;
 
 /// Color used for dark gray UI items.
 /// @type Color
-$dark-gray: #8a8a8a !default;
+$dark-gray: $color-darkgray !default;
 
 /// Color used for black ui items.
 /// @type Color
-$black: #0a0a0a !default;
+$black: $color-black !default;
 
 /// Color used for white ui items.
 /// @type Color
-$white: #fefefe !default;
+$white: $color-white !default;
 
 /// Background color of the body.
 /// @type Color

@@ -21,8 +21,7 @@ body {
 		align-items: baseline;
 		padding-top: 1em;
 
-		background-color: $color-bg;
-
-		border-top: 1px solid darken($color-bg, 10%);
+		@include inverse;
+		border-top: 1px solid darken($color-inverse-bg, 10%);
 	}
 }
