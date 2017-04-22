@@ -36,6 +36,7 @@ class RepoEditorPage {
 		});
 		document.getElementById(`repo-print`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
+			console.log(`Starting printing...`);
 			EBW.Toast(`Printing in progress...`);
 			new PrintListener(this.repo, `book`);
 		});

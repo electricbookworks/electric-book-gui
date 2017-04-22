@@ -5,39 +5,32 @@
 
 </nav>
 <main id="new-editor">
-	<div id="all-files-editor" data-files="{{.RepoFiles | json}}">
-	</div>
+	<nav id="all-files-editor" data-files="{{.RepoFiles | json}}">
+	</nav>
 
-	<section class="xsection-editor">
-
+	<section class="section-editor" id="file-editors">
 		<header class="header-split">
-			<h2>Edit {{.RepoName}}</h2>
-			<fieldset class="action-group" id="editor-actions">
-				<button data-event="click:save" data-set="save">Save</button>
-				<button data-event="click:undo" data-set="undo">Undo</button>
-				<button data-event="click:delete" data-set="delete" title="Delete">Delete</button>
-			</fieldset>
-		
+			<div class="action-group primary" id="editor-actions">
+				<button data-set="commit" id="repo-commit" class="btn">Commit</button>
+				<button data-event="click:save" data-set="save" class="btn">Save</button>
+				<button data-event="click:undo" data-set="undo" class="btn">Undo</button>
+				<button data-event="click:delete" data-set="delete" title="Delete" class="btn">Delete</button>
+			</div>
 		</header>
-
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
-
-		<fieldset class="action-group action-group-main">
-		   <button disabled>Web version</button>
-		   <button id="repo-print">Screen PDF</button>
-		   <button disabled>Print PDF</button>
-		   <button disabled>epub</button>
-		</fieldset>
+		<div class="action-group secondary">
+		   <button disabled class="btn">Web version</button>
+		   <button id="repo-print" class="btn">Screen PDF</button>
+		   <button disabled class="btn">Print PDF</button>
+		   <button disabled class="btn">epub</button>
+		</div>
 	</section>
-
-
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
 		new RepoEditorPage('{{.RepoName}}');
 	});
 	</script>
-
 </main>
 
 {{template "_footer.html" .}}

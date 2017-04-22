@@ -19,6 +19,7 @@ import (
 
 	"ebw/api/jsonrpc"
 	"ebw/print"
+	"ebw/util"
 )
 
 func webdavRoutes(r *mux.Router, prefix string) {
@@ -50,7 +51,8 @@ func RunWebServer(bind string) error {
 	r.Handle(`/github/login`, WebHandler(githubLogin))
 	r.HandleFunc(`/github/auth`, githubAuth)
 
-	r.Handle(`/github/create-fork`, WebHandler(githubCreateFork))
+	r.Handle(`/github/create/fork`, WebHandler(githubCreateFork))
+	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
 	r.Handle(`/repo/{repo}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repo}`, WebHandler(repoView))
 	r.Handle(`/repo/{repo}/pull/{number}`, WebHandler(pullRequestView))
@@ -73,6 +75,20 @@ func RunWebServer(bind string) error {
 	// @TODO convert to handle signals and clean shutdown
 	glog.Infof("Listening on %s", bind)
 	return http.ListenAndServe(bind, nil)
+}
+
+// pathRepoEdit returns the URL path to edit the given repo
+func pathRepoEdit(c *Context, repoUserAndName string) (string, error) {
+	parts := strings.Split(repoUserAndName, `/`)
+	// @TODO If we move to storing the repoUser in the path as well,
+	// we'll need to make this 1==len(parts) and error condition
+	if 1 == len(parts) {
+		return fmt.Sprintf(`/repo/%s/update`, parts[0]), nil
+	}
+	if 2 != len(parts) {
+		return ``, util.Error(fmt.Errorf(`Expected user/name format for repoUserAndName(%s)`, repoUserAndName))
+	}
+	return fmt.Sprintf(`/repo/%s/update`, parts[1]), nil
 }
 
 func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{}) error {

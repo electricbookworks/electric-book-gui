@@ -26,7 +26,6 @@ func jeckylRepoServer(c *Context) error {
 
 	// Ok, so now we've got a path on the Jekyll server
 	// we want to serve
-
 	j, err := jekyllManager.GetJekyll(username, repoUser, repoName)
 	if nil != err {
 		return err

@@ -1,5 +1,10 @@
 class RepoFileList {
 	constructor(parent, repo, editor) {
+		new AllFilesList(repo, editor);
+		if (!parent) {
+			console.log(`Created RepoFileList with null parent`);
+			return;
+		}
 		this.parent = parent;
 		this.repo = repo;
 		this.editor = editor;
@@ -37,27 +42,12 @@ class RepoFileList {
 			EBW.Error(err);
 		});
 		
-		this.api.ListAllRepoFiles(repo)
-		.then( this.api.flatten(
-			js=>{
-				let d = Directory.FromJS(false, js);
-				new AllFilesEditor(
-					document.getElementById(`all-files-editor`),
-					d, 
-					(_source, file)=>{
-						let rfm = new RepoFileModel(
-							this.repo,
-							file,							
-							{ newFile: false }
-							);
-						this.editor.setFile(rfm);
-				});
-			}
-		))
-		.catch( EBW.Error );
 		this.parent.appendChild(this.el);
 	}
 	IsDirty() {
+		if (!this.files) {
+			return false;
+		}
 		for (let f of this.files) {
 			if (f.IsDirty()) {
 				return true;

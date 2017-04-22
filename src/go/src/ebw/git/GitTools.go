@@ -27,7 +27,8 @@ var ErrNoGitDirectory = errors.New(`Not a GIT directory`)
 // ErrUnknownUser indicates that Github was unable to resolve the user's name.
 var ErrUnknownUser = errors.New(`UnknownUser: no recognized login or ID`)
 
-// Username returns the username of the currently logged in user on GitHub.
+// Username returns the username of the currently logged in user
+// on GitHub.
 func Username(client *Client) (string, error) {
 	// Empty username gives the currently logged-in user
 	user, _, err := client.Users.Get(client.Context, "")
@@ -61,7 +62,8 @@ func RepoDir(user, repo string) (string, error) {
 // checked out, it updates from the origin server.
 func Checkout(client *Client, user, name, u string) (string, error) {
 	if `` == u {
-		u = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`, client.Username, client.Token, user, name)
+		u = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`,
+			client.Username, client.Token, user, name)
 	} else {
 		ux, err := url.Parse(u)
 		if nil != err {
@@ -229,9 +231,27 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, n
 	return nil
 }
 
-func ContributeToRepo(client *Client) error {
+func ContributeToRepo(client *Client, repoUserAndName string) error {
 	// See CLI BookContribute for model of how this should function.
-	return nil
+	parts := strings.Split(repoUserAndName, `/`)
+	if 2 != len(parts) {
+		return errors.New(`repo should be user/repo format`)
+	}
+	_, _, err := client.Repositories.CreateFork(
+		client.Context,
+		parts[0],
+		parts[1],
+		&github.RepositoryCreateForkOptions{})
+	if nil != err {
+		return err
+	}
+
+	repoDir, err := RepoDir(client.Username, parts[1])
+	if nil != err {
+		return err
+	}
+	return GitCloneTo(client, repoDir, /* empty working dir will default to current dir */
+		parts[0], parts[1])
 }
 
 func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string) error {

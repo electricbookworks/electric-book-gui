@@ -1,3 +1,54 @@
 #new-editor {
-	
+	height: 100%;
+	width: 100%;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: stretch;
+	#all-files-editor {
+		flex-grow: 0;
+		width: 20%;
+		max-width: 20%;
+	}
+	#file-editors {
+		flex-grow: 0;
+		width: 80%;
+		max-width: 80%;
+
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: stretch;
+
+		max-height: 100% !important;
+		position: relative;
+
+		.editor {
+			flex-grow: 1;
+			position: relative;
+
+			.repo-file-editor-workspace {
+				height: 100%;
+				position: relative;
+				.repo-file-editor {
+					height: 100%;
+					position: relative;
+					.CodeMirror {
+						font-size: 1.6em;
+						// height: 5em !important;
+						height: 30em !important;
+						max-height: 100%;
+						min-height: 100%;
+					}
+				}
+			}
+		}
+	}
+}
+
+#editor {
+	border-style: solid;
+	border-color: $color-primary;
+	border-width: 1px 0 1px 0;
 }

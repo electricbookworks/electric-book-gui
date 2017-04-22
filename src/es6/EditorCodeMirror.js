@@ -14,5 +14,8 @@ class EditorCodeMirror {
 	}
 	setValue(s) {
 		this.cm.getDoc().setValue(s);
+		// this.cm.setSize('100%','100%');
+		this.cm.refresh();
+		// this.cm.setSize('100%','100%');
 	}
 }

@@ -2,3 +2,23 @@
 	@include button-style();
 	padding: 0.4em 1em;
 }
+
+.action-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: baseline;
+	padding: 0.4em;
+	&>* {
+		margin-left: 1em;
+		&:first-child {
+			margin-left: 0;
+		}
+	}
+	&.primary {
+
+	}
+	&.secondary {
+
+	}
+}
