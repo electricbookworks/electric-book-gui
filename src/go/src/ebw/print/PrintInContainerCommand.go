@@ -16,7 +16,7 @@ func PrintCommand() *commander.Command {
 	return commander.NewCommand(`print`, `Print in container`,
 		nil,
 		func([]string) error {
-			repoDir, err := git.RepoDir(`craigmj`, `aikido-grading`)
+			repoDir, err := git.RepoDir(`craigmj`, `craigmj`, `aikido-grading`)
 			if nil != err {
 				return err
 			}

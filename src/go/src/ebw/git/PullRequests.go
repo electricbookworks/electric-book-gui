@@ -13,16 +13,16 @@ import (
 	"ebw/util"
 )
 
-func ListPullRequests(client *Client, user, repo string) ([]*github.PullRequest, error) {
-	requests, _, err := client.PullRequests.List(client.Context, user, repo, &github.PullRequestListOptions{})
+func ListPullRequests(client *Client, user, repoOwner, repoName string) ([]*github.PullRequest, error) {
+	requests, _, err := client.PullRequests.List(client.Context, repoOwner, repoName, &github.PullRequestListOptions{})
 	if nil != err {
 		return nil, util.Error(err)
 	}
 	return requests, nil
 }
 
-func GetPullRequest(client *Client, user, repo string, number int) (*github.PullRequest, error) {
-	pr, _, err := client.PullRequests.Get(client.Context, user, repo, number)
+func GetPullRequest(client *Client, user, repoOwner, repoName string, number int) (*github.PullRequest, error) {
+	pr, _, err := client.PullRequests.Get(client.Context, repoOwner, repoName, number)
 	return pr, err
 }
 
@@ -69,9 +69,9 @@ func PullRequestCheckout(remoteUrl, sha string) (string, error) {
 	return prRoot, nil
 }
 
-func PullRequestDiffList(client *Client, user, repo string,
+func PullRequestDiffList(client *Client, user, repoOwner, repoName string,
 	sha string, pathRegexp string) ([]*PullRequestDiff, error) {
-	localPath, err := RepoDir(user, repo)
+	localPath, err := RepoDir(user, repoOwner, repoName)
 	if nil != err {
 		return nil, err
 	}
@@ -85,9 +85,9 @@ func PullRequestDiffList(client *Client, user, repo string,
 
 // PullRequestUpdate just updates the file in the 'master' repo the
 // same as editing in the regular system.
-func PullRequestUpdate(client *Client, user, repo string,
+func PullRequestUpdate(client *Client, user, repoOwner, repoName string,
 	sha string, path string, content []byte) error {
-	return UpdateFile(client, user, repo, path, content)
+	return UpdateFile(client, user, repoOwner, repoName, path, content)
 	// localPath, err := RepoDir(user, repo)
 	// if nil != err {
 	// 	return err
@@ -98,11 +98,11 @@ func PullRequestUpdate(client *Client, user, repo string,
 	// return nil
 }
 
-func PullRequestClose(client *Client, user, repo string, number int) error {
+func PullRequestClose(client *Client, user, repoOwner, repoName string, number int) error {
 	closedAt := time.Now()
 	merged := true
 	state := `closed`
-	_, _, err := client.PullRequests.Edit(client.Context, user, repo, number, &github.PullRequest{
+	_, _, err := client.PullRequests.Edit(client.Context, repoOwner, repoName, number, &github.PullRequest{
 		Number:   &number,
 		ClosedAt: &closedAt,
 		Merged:   &merged,
@@ -114,13 +114,13 @@ func PullRequestClose(client *Client, user, repo string, number int) error {
 	return nil
 }
 
-func PullRequestCreate(client *Client, user, repo, title, notes string) error {
+func PullRequestCreate(client *Client, user, repoOwner, repoName, title, notes string) error {
 	// base := `master`
 	head := fmt.Sprintf(`%s:master`, user)
 	// head := `master`
 	base := `master`
 
-	upstream, _, err := client.Repositories.Get(client.Context, user, repo)
+	upstream, _, err := client.Repositories.Get(client.Context, repoOwner, repoName)
 	if nil != err {
 		return err
 	}

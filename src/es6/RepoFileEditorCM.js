@@ -19,7 +19,7 @@ class RepoFileEditorCM {
 				.then(
 					()=>{						
 						// this.$.save.disabled = true;
-						console.log(`Document saved`);
+						EBW.Toast(`Document saved.`);
 					})
 				.catch(
 					(err)=>{

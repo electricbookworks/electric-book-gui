@@ -1,11 +1,12 @@
 class PrintListener {
-	constructor(repo, book=`book`) {
-		this.repo = repo;
+	constructor(repoOwner, repoName, book=`book`) {
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		if (``==book) {
 			book = `book`;
 		}
 		this.book = book;
-		EBW.API().PrintPdfEndpoint(repo, book).then(
+		EBW.API().PrintPdfEndpoint(repoOwner, repoName, book).then(
 			(args)=>{
 				this.startListener(args[0]);
 			})
@@ -36,9 +37,9 @@ class PrintListener {
 			let url = document.location.protocol +
 				 "//" +
 				 document.location.host + 
-				 `/www/${this.repo}/${data}`;
+				 `/www/${this.repoOwner}/${this.repoName}/${data}`;
 			Toast.Show(`Your PDF is ready: opening in a new window.`);
-			window.open(url, `${this.repo}-output`);
+			window.open(url, `${this.repoOwner}-${this.repoName}-pdf`);
 		});
 		sse.addEventListener(`done`, function(e) {
 			sse.close();

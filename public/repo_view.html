@@ -1,9 +1,6 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
-<nav id="files-list" class="off-canvas position-left" data-off-canvas>
-<h1>Files</h1>
 
-</nav>
 <main id="new-editor">
 	<nav id="all-files-editor" data-files="{{.RepoFiles | json}}">
 	</nav>
@@ -20,7 +17,7 @@
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
 		<div class="action-group secondary">
-		   <button disabled class="btn">Web version</button>
+		   <button id="repo-jekyll" class="btn">Web version</button>
 		   <button id="repo-print" class="btn">Screen PDF</button>
 		   <button disabled class="btn">Print PDF</button>
 		   <button disabled class="btn">epub</button>
@@ -28,7 +25,7 @@
 	</section>
 	<script>
 	document.addEventListener('DOMContentLoaded', function() {
-		new RepoEditorPage('{{.RepoName}}');
+		new RepoEditorPage('{{.RepoOwner}}','{{.RepoName}}');
 	});
 	</script>
 </main>

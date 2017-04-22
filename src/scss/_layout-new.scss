@@ -24,4 +24,13 @@ body {
 		@include inverse;
 		border-top: 1px solid darken($color-inverse-bg, 10%);
 	}
+	article {
+		&.constrain-page {
+			width: 60em;
+			margin: 0 auto;
+		}
+		.l-center {
+			text-align: center;
+		}
+	}
 }

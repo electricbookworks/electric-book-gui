@@ -17,6 +17,12 @@ type GitRepo struct {
 	totalPRs   *PullRequestInfo
 }
 
+// GetRepoOwner returns the github username of the
+// owner of the repo.
+func (g *GitRepo) RepoOwner() string {
+	return g.Owner.GetLogin()
+}
+
 type GitRepoSlice []*GitRepo
 
 func (g GitRepoSlice) Len() int {
@@ -111,8 +117,9 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	for book := range C {
 		books = append(books, book)
 	}
-	// TODO : We can't be sure of the order books arrive on the
-	// channel, so we need to sort the books at this point
+	// Books aren't guaranteed returned on the channel in the
+	// order the go-routines were triggered, so we sort
+	// the books.
 	sort.Sort(GitRepoSlice(books))
 
 	for err := range ERR {

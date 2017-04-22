@@ -60,5 +60,5 @@ func githubCreateNew(c *Context) error {
 		return err
 	}
 
-	return c.Redirect(`/`)
+	return c.Redirect(redirectUrl)
 }

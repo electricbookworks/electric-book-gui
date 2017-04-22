@@ -133,62 +133,62 @@ var API = function () {
 		}
 	}, {
 		key: "DeleteFile",
-		value: function DeleteFile(repo, path) {
+		value: function DeleteFile(repoOwner, repoName, path) {
 			return this._rpc("DeleteFile", arguments);
 		}
 	}, {
 		key: "ListFiles",
-		value: function ListFiles(repo, pathregex) {
+		value: function ListFiles(repoOwner, repoName, pathregex) {
 			return this._rpc("ListFiles", arguments);
 		}
 	}, {
 		key: "ListAllRepoFiles",
-		value: function ListAllRepoFiles(repo) {
+		value: function ListAllRepoFiles(repoOwner, repoName) {
 			return this._rpc("ListAllRepoFiles", arguments);
 		}
 	}, {
 		key: "GetFile",
-		value: function GetFile(repo, path) {
+		value: function GetFile(repoOwner, repoName, path) {
 			return this._rpc("GetFile", arguments);
 		}
 	}, {
 		key: "GetFileString",
-		value: function GetFileString(repo, path) {
+		value: function GetFileString(repoOwner, repoName, path) {
 			return this._rpc("GetFileString", arguments);
 		}
 	}, {
 		key: "UpdateFile",
-		value: function UpdateFile(repo, path, content) {
+		value: function UpdateFile(repoOwner, repoName, path, content) {
 			return this._rpc("UpdateFile", arguments);
 		}
 	}, {
 		key: "ListPullRequests",
-		value: function ListPullRequests(repo) {
+		value: function ListPullRequests(repoOwner, repoName) {
 			return this._rpc("ListPullRequests", arguments);
 		}
 	}, {
 		key: "PullRequestDiffList",
-		value: function PullRequestDiffList(repo, sha, regexp) {
+		value: function PullRequestDiffList(repoOwner, repoName, sha, regexp) {
 			return this._rpc("PullRequestDiffList", arguments);
 		}
 	}, {
 		key: "PullRequestVersions",
-		value: function PullRequestVersions(repo, remoteUrl, remoteSha, filePath) {
+		value: function PullRequestVersions(repoOwner, repoName, remoteUrl, remoteSha, filePath) {
 			return this._rpc("PullRequestVersions", arguments);
 		}
 	}, {
 		key: "PullRequestUpdate",
-		value: function PullRequestUpdate(repo, remoteSHA, filePath, data) {
+		value: function PullRequestUpdate(repoOwner, repoName, remoteSHA, filePath, data) {
 			return this._rpc("PullRequestUpdate", arguments);
 		}
 	}, {
 		key: "Commit",
-		value: function Commit(repo, message) {
+		value: function Commit(repoOwner, repoName, message) {
 			return this._rpc("Commit", arguments);
 		}
 	}, {
 		key: "PrintPdfEndpoint",
-		value: function PrintPdfEndpoint(repo, book) {
+		value: function PrintPdfEndpoint(repoOwner, repoName, book) {
 			return this._rpc("PrintPdfEndpoint", arguments);
 		}
 	}, {
@@ -358,62 +358,62 @@ var APIWs = function () {
 		}
 	}, {
 		key: "DeleteFile",
-		value: function DeleteFile(repo, path) {
+		value: function DeleteFile(repoOwner, repoName, path) {
 			return this._rpc("DeleteFile", arguments);
 		}
 	}, {
 		key: "ListFiles",
-		value: function ListFiles(repo, pathregex) {
+		value: function ListFiles(repoOwner, repoName, pathregex) {
 			return this._rpc("ListFiles", arguments);
 		}
 	}, {
 		key: "ListAllRepoFiles",
-		value: function ListAllRepoFiles(repo) {
+		value: function ListAllRepoFiles(repoOwner, repoName) {
 			return this._rpc("ListAllRepoFiles", arguments);
 		}
 	}, {
 		key: "GetFile",
-		value: function GetFile(repo, path) {
+		value: function GetFile(repoOwner, repoName, path) {
 			return this._rpc("GetFile", arguments);
 		}
 	}, {
 		key: "GetFileString",
-		value: function GetFileString(repo, path) {
+		value: function GetFileString(repoOwner, repoName, path) {
 			return this._rpc("GetFileString", arguments);
 		}
 	}, {
 		key: "UpdateFile",
-		value: function UpdateFile(repo, path, content) {
+		value: function UpdateFile(repoOwner, repoName, path, content) {
 			return this._rpc("UpdateFile", arguments);
 		}
 	}, {
 		key: "ListPullRequests",
-		value: function ListPullRequests(repo) {
+		value: function ListPullRequests(repoOwner, repoName) {
 			return this._rpc("ListPullRequests", arguments);
 		}
 	}, {
 		key: "PullRequestDiffList",
-		value: function PullRequestDiffList(repo, sha, regexp) {
+		value: function PullRequestDiffList(repoOwner, repoName, sha, regexp) {
 			return this._rpc("PullRequestDiffList", arguments);
 		}
 	}, {
 		key: "PullRequestVersions",
-		value: function PullRequestVersions(repo, remoteUrl, remoteSha, filePath) {
+		value: function PullRequestVersions(repoOwner, repoName, remoteUrl, remoteSha, filePath) {
 			return this._rpc("PullRequestVersions", arguments);
 		}
 	}, {
 		key: "PullRequestUpdate",
-		value: function PullRequestUpdate(repo, remoteSHA, filePath, data) {
+		value: function PullRequestUpdate(repoOwner, repoName, remoteSHA, filePath, data) {
 			return this._rpc("PullRequestUpdate", arguments);
 		}
 	}, {
 		key: "Commit",
-		value: function Commit(repo, message) {
+		value: function Commit(repoOwner, repoName, message) {
 			return this._rpc("Commit", arguments);
 		}
 	}, {
 		key: "PrintPdfEndpoint",
-		value: function PrintPdfEndpoint(repo, book) {
+		value: function PrintPdfEndpoint(repoOwner, repoName, book) {
 			return this._rpc("PrintPdfEndpoint", arguments);
 		}
 	}, {
@@ -566,18 +566,19 @@ var AllFilesEditor = function AllFilesEditor(parent, dir, chooseFileCallback) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var AllFilesList = function AllFilesList(repo, editor) {
+var AllFilesList = function AllFilesList(repoOwner, repoName, editor) {
 	var _this = this;
 
 	_classCallCheck(this, AllFilesList);
 
 	this.editor = editor;
-	this.repo = repo;
+	this.repoOwner = repoOwner;
+	this.repoName = repoName;
 	this.api = EBW.API();
-	this.api.ListAllRepoFiles(repo).then(this.api.flatten(function (js) {
+	this.api.ListAllRepoFiles(repoOwner, repoName).then(this.api.flatten(function (js) {
 		var d = Directory.FromJS(false, js);
 		new AllFilesEditor(document.getElementById("all-files-editor"), d, function (_source, file) {
-			var rfm = new RepoFileModel(_this.repo, file, { newFile: false });
+			var rfm = new RepoFileModel(_this.repoOwner, _this.repoName, file, { newFile: false });
 			_this.editor.setFile(rfm);
 		});
 	})).catch(EBW.Error);
@@ -998,19 +999,20 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PrintListener = function () {
-	function PrintListener(repo) {
+	function PrintListener(repoOwner, repoName) {
 		var _this = this;
 
-		var book = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "book";
+		var book = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "book";
 
 		_classCallCheck(this, PrintListener);
 
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		if ("" == book) {
 			book = "book";
 		}
 		this.book = book;
-		EBW.API().PrintPdfEndpoint(repo, book).then(function (args) {
+		EBW.API().PrintPdfEndpoint(repoOwner, repoName, book).then(function (args) {
 			_this.startListener(args[0]);
 		}).catch(EBW.Error);
 	}
@@ -1038,9 +1040,9 @@ var PrintListener = function () {
 			});
 			sse.addEventListener("output", function (e) {
 				var data = JSON.parse(e.data);
-				var url = document.location.protocol + "//" + document.location.host + ("/www/" + _this2.repo + "/" + data);
+				var url = document.location.protocol + "//" + document.location.host + ("/www/" + _this2.repoOwner + "/" + _this2.repoName + "/" + data);
 				Toast.Show("Your PDF is ready: opening in a new window.");
-				window.open(url, _this2.repo + "-output");
+				window.open(url, _this2.repoOwner + "-" + _this2.repoName + "-pdf");
 			});
 			sse.addEventListener("done", function (e) {
 				sse.close();
@@ -1217,15 +1219,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * RepoEditorPage is the JS controller for the page that allows
  * editing of a repo.
  */
-var RepoEditorPage = function RepoEditorPage(repo) {
+var RepoEditorPage = function RepoEditorPage(repoOwner, repoName) {
 	var _this = this;
 
 	_classCallCheck(this, RepoEditorPage);
 
-	Toast.Show('Hi there, message from me');
-	this.repo = repo;
+	this.repoOwner = repoOwner;
+	this.repoName = repoName;
 	this.editor = new RepoFileEditorCM(document.getElementById('editor'));
-	this.files = new RepoFileList(document.getElementById('files'), repo, this.editor);
+	this.files = new RepoFileList(document.getElementById('files'), repoOwner, repoName, this.editor);
 	//new PullRequestList(document.getElementById('pull-request-list'), repo);
 	window.addEventListener('beforeunload', function (evt) {
 		// transfer editor to file text
@@ -1242,7 +1244,7 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 		EBW.Prompt('Enter the commit message:').then(function (msg) {
 			if (msg) {
 				EBW.Toast('Committing ' + msg);
-				EBW.API().Commit(_this.repo, msg).then(function () {
+				EBW.API().Commit(_this.repoOwner, _this.repoName, msg).then(function () {
 					EBW.Toast('Changes committed: ' + msg);
 				}).catch(EBW.Error);
 			}
@@ -1252,7 +1254,14 @@ var RepoEditorPage = function RepoEditorPage(repo) {
 		evt.preventDefault();evt.stopPropagation();
 		console.log('Starting printing...');
 		EBW.Toast('Printing in progress...');
-		new PrintListener(_this.repo, 'book');
+		new PrintListener(_this.repoOwner, _this.repoName, 'book');
+	});
+	document.getElementById('repo-jekyll').addEventListener('click', function (evt) {
+		evt.preventDefault();evt.stopPropagation();
+		var l = document.location;
+		var jekyllUrl = l.protocol + '//' + l.host + '/jekyll/' + _this.repoOwner + '/' + _this.repoName + '/';
+		console.log('URL = ' + jekyllUrl);
+		window.open(jekyllUrl, _this.repoOwner + '-' + _this.repoName + '-jekyll');
 	});
 };
 
@@ -1512,7 +1521,7 @@ var RepoFileEditorCM = function () {
 
 				this.file.Save().then(function () {
 					// this.$.save.disabled = true;
-					console.log('Document saved');
+					EBW.Toast('Document saved.');
 				}).catch(function (err) {
 					EBW.Error(err);
 				});
@@ -1610,7 +1619,7 @@ var RepoFileEditorCM = function () {
 
 	return RepoFileEditorCM;
 }();
-'use strict';
+"use strict";
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
@@ -1619,23 +1628,24 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var RepoFileList = function () {
-	function RepoFileList(parent, repo, editor) {
+	function RepoFileList(parent, repoOwner, repoName, editor) {
 		var _this2 = this;
 
 		_classCallCheck(this, RepoFileList);
 
-		new AllFilesList(repo, editor);
+		new AllFilesList(repoOwner, repoName, editor);
 		if (!parent) {
-			console.log('Created RepoFileList with null parent');
+			console.log("Created RepoFileList with null parent");
 			return;
 		}
 		this.parent = parent;
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		this.editor = editor;
 
 		this.files = [];
 
-		var _DTemplate = DTemplate('RepoFileList');
+		var _DTemplate = DTemplate("RepoFileList");
 
 		var _DTemplate2 = _slicedToArray(_DTemplate, 2);
 
@@ -1647,20 +1657,22 @@ var RepoFileList = function () {
 				var _this = this;
 
 				evt.preventDefault();
-				var name = prompt('Enter new filename:');
-				if (!name) return;
-				var file = new RepoFileModel(this.repo, 'book/text/' + name, { "newFile": true });
-				this.files.push(file);
-				new RepoFileEditLink(this.$.fileList, file, function (x, file) {
+				// TODO Convert this to EBW.Prompt
+				EBW.Prompt("Enter new filename:").then(function (name) {
+					if (!name) return;
+					var file = new RepoFileModel(_this.repoOwner, _this.repoName, "book/text/" + name, { "newFile": true });
+					_this.files.push(file);
+					new RepoFileEditLink(_this.$.fileList, file, function (x, file) {
+						_this.editor.setFile(file);
+					});
 					_this.editor.setFile(file);
 				});
-				this.editor.setFile(file);
 			}
 		}, this);
 
 		this.api = EBW.API();
 
-		this.api.ListFiles(repo, '^book/text/.*').then(this.api.flatten(function (files) {
+		this.api.ListFiles(repoOwner, repoName, "^book/text/.*").then(this.api.flatten(function (files) {
 			var _iteratorNormalCompletion = true;
 			var _didIteratorError = false;
 			var _iteratorError = undefined;
@@ -1669,7 +1681,7 @@ var RepoFileList = function () {
 				for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 					var f = _step.value;
 
-					var file = new RepoFileModel(repo, f);
+					var file = new RepoFileModel(repoOwner, repoName, f);
 					_this2.files.push(file);
 					new RepoFileEditLink(_this2.$.fileList, file, function (x, file) {
 						_this2.editor.setFile(file);
@@ -1697,7 +1709,7 @@ var RepoFileList = function () {
 	}
 
 	_createClass(RepoFileList, [{
-		key: 'IsDirty',
+		key: "IsDirty",
 		value: function IsDirty() {
 			if (!this.files) {
 				return false;
@@ -1760,17 +1772,18 @@ var _repoFileModelCache = {};
  */
 
 var RepoFileModel = function () {
-	function RepoFileModel(repo, path) {
-		var args = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+	function RepoFileModel(repoOwner, repoName, path) {
+		var args = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
 		_classCallCheck(this, RepoFileModel);
 
-		var cacheKey = repo + ':/' + path;
+		var cacheKey = repoOwner + '/' + repoName + ':/' + path;
 		var fm = _repoFileModelCache[cacheKey];
 		if (fm) {
 			return fm;
 		}
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		this.path = path;
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
@@ -1818,7 +1831,7 @@ var RepoFileModel = function () {
 				return Promise.resolve(true);
 			}
 			return new Promise(function (resolve, reject) {
-				EBW.API().UpdateFile(_this.repo, _this.path, t).then(function (res) {
+				EBW.API().UpdateFile(_this.repoOwner, _this.repoName, _this.path, t).then(function (res) {
 					sessionStorage.setItem(_this.storageKey + '-original', t);
 					_this.SetText(t);
 					_this.args.newFile = false;
@@ -1843,7 +1856,7 @@ var RepoFileModel = function () {
 			}
 
 			return new Promise(function (resolve, reject) {
-				EBW.API().GetFileString(_this2.repo, _this2.path).then(function (res) {
+				EBW.API().GetFileString(_this2.repoOwner, _this2.repoName, _this2.path).then(function (res) {
 					var text = res[0];
 					sessionStorage.setItem(_this2.storageKey + '-original', text);
 					resolve(text);
@@ -1869,7 +1882,7 @@ var RepoFileModel = function () {
 	}, {
 		key: 'storageKey',
 		get: function get() {
-			return this.repo + ':' + this.path;
+			return this.repoOwner + '/' + this.repoName + ':' + this.path;
 		}
 	}]);
 

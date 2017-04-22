@@ -53,7 +53,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 			endpointsL.Unlock()
 		}()
 
-		repoDir, err := git.RepoDir(pr.Username, pr.Repo)
+		repoDir, err := git.RepoDir(pr.Username, pr.RepoOwner, pr.RepoName)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}
 			return
@@ -72,5 +72,5 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	glog.Infof("Serving SSE for %s", key)
 	s.ServeHTTP(w, r)
-	glog.Infof("Exiting handler for SSE %s", pr.Repo)
+	glog.Infof("Exiting handler for SSE %s/%s", pr.RepoOwner, pr.RepoName)
 }

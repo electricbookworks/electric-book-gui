@@ -44,15 +44,17 @@ func repoView(c *Context) error {
 		return nil
 	}
 
-	repo := c.Vars[`repo`]
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
 
 	c.D[`UserName`] = client.Username
-	c.D[`RepoName`] = repo
-	c.D[`Path`], err = git.RepoDir(client.Username, repo)
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	c.D[`Path`], err = git.RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
-	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repo)
+	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
@@ -65,15 +67,16 @@ func repoUpdate(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	repo := c.Vars[`repo`]
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
 
 	url := c.P(`url`)
-	if _, err := git.Checkout(client, client.Username, repo, url); nil != err {
+	if _, err := git.Checkout(client, repoOwner, repoName, url); nil != err {
 		return err
 	}
 
 	// redirect the user to repoView
-	return c.Redirect(`/repo/%s`, repo)
+	return c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
 }
 
 func pullRequestClose(c *Context) error {
@@ -81,13 +84,14 @@ func pullRequestClose(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	repo := c.Vars[`repo`]
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
 
 	number := int(c.PI(`number`))
-	if err := git.PullRequestClose(client, client.Username, repo, number); nil != err {
+	if err := git.PullRequestClose(client, client.Username, repoOwner, repoName, number); nil != err {
 		return err
 	}
-	return c.Redirect(`/repo/%s`, repo)
+	return c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
 }
 
 func pullRequestView(c *Context) error {
@@ -95,11 +99,13 @@ func pullRequestView(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	repo := c.Vars[`repo`]
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
 
 	c.D[`UserName`] = client.Username
-	c.D[`RepoName`] = repo
-	pr, err := git.GetPullRequest(client, client.Username, repo, int(c.PI(`number`)))
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, int(c.PI(`number`)))
 	if nil != err {
 		return err
 	}
@@ -109,7 +115,7 @@ func pullRequestView(c *Context) error {
 	}
 
 	// Need to checkout both the repo and the PR
-	if _, err = git.Checkout(client, client.Username, repo, ``); nil != err {
+	if _, err = git.Checkout(client, repoOwner, repoName, ``); nil != err {
 		return err
 	}
 	js := json.NewEncoder(os.Stdout)
@@ -119,7 +125,7 @@ func pullRequestView(c *Context) error {
 		return err
 	}
 
-	diffs, err := git.PullRequestDiffList(client, client.Username, repo, *pr.Head.SHA, `^book/text/.*`)
+	diffs, err := git.PullRequestDiffList(client, client.Username, repoOwner, repoName, *pr.Head.SHA, `^book/text/.*`)
 	if nil != err {
 		return err
 	}
@@ -135,18 +141,20 @@ func pullRequestCreate(c *Context) error {
 	if nil == client {
 		return nil
 	}
-	repo := c.Vars[`repo`]
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
 
 	c.D[`UserName`] = client.Username
-	c.D[`RepoName`] = repo
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
 
 	if `POST` == c.R.Method {
 		if err := git.PullRequestCreate(
-			client, client.Username, repo,
+			client, client.Username, repoOwner, repoName,
 			c.P(`title`), c.P(`notes`)); nil != err {
 			return err
 		}
-		c.Redirect(`/repo/%s`, repo)
+		c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
 		return nil
 	}
 

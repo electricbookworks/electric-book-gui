@@ -89,51 +89,51 @@ class API {
 		return this._rpc("Version",  arguments );
 	}
 	
-	DeleteFile(repo,path) {
+	DeleteFile(repoOwner,repoName,path) {
 		return this._rpc("DeleteFile",  arguments );
 	}
 	
-	ListFiles(repo,pathregex) {
+	ListFiles(repoOwner,repoName,pathregex) {
 		return this._rpc("ListFiles",  arguments );
 	}
 	
-	ListAllRepoFiles(repo) {
+	ListAllRepoFiles(repoOwner,repoName) {
 		return this._rpc("ListAllRepoFiles",  arguments );
 	}
 	
-	GetFile(repo,path) {
+	GetFile(repoOwner,repoName,path) {
 		return this._rpc("GetFile",  arguments );
 	}
 	
-	GetFileString(repo,path) {
+	GetFileString(repoOwner,repoName,path) {
 		return this._rpc("GetFileString",  arguments );
 	}
 	
-	UpdateFile(repo,path,content) {
+	UpdateFile(repoOwner,repoName,path,content) {
 		return this._rpc("UpdateFile",  arguments );
 	}
 	
-	ListPullRequests(repo) {
+	ListPullRequests(repoOwner,repoName) {
 		return this._rpc("ListPullRequests",  arguments );
 	}
 	
-	PullRequestDiffList(repo,sha,regexp) {
+	PullRequestDiffList(repoOwner,repoName,sha,regexp) {
 		return this._rpc("PullRequestDiffList",  arguments );
 	}
 	
-	PullRequestVersions(repo,remoteUrl,remoteSha,filePath) {
+	PullRequestVersions(repoOwner,repoName,remoteUrl,remoteSha,filePath) {
 		return this._rpc("PullRequestVersions",  arguments );
 	}
 	
-	PullRequestUpdate(repo,remoteSHA,filePath,data) {
+	PullRequestUpdate(repoOwner,repoName,remoteSHA,filePath,data) {
 		return this._rpc("PullRequestUpdate",  arguments );
 	}
 	
-	Commit(repo,message) {
+	Commit(repoOwner,repoName,message) {
 		return this._rpc("Commit",  arguments );
 	}
 	
-	PrintPdfEndpoint(repo,book) {
+	PrintPdfEndpoint(repoOwner,repoName,book) {
 		return this._rpc("PrintPdfEndpoint",  arguments );
 	}
 	

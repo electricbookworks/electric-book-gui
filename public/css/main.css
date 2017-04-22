@@ -3717,6 +3717,11 @@ body {
       color: white; }
       body footer a:hover {
         color: #e6e6e6; }
+  body article.constrain-page {
+    width: 60em;
+    margin: 0 auto; }
+  body article .l-center {
+    text-align: center; }
 
 .btn {
   background-color: #009E7F;
@@ -3725,6 +3730,11 @@ body {
   .btn:hover, .btn:focus {
     background-color: #00866c;
     color: white; }
+  .btn.disabled {
+    background-color: #05ffce;
+    border-bottom-width: 0px; }
+    .btn.disabled:hover {
+      background-color: inherit; }
 
 .action-group {
   display: flex;

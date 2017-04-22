@@ -1,6 +1,13 @@
 .btn {
 	@include button-style();
 	padding: 0.4em 1em;
+	&.disabled {
+		background-color: lighten($color-primary, 20%);
+		border-bottom-width: 0px;
+		&:hover {
+			background-color: inherit;
+		}
+	}
 }
 
 .action-group {

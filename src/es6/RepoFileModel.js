@@ -14,13 +14,14 @@ let _repoFileModelCache = {};
  * not entirely sure why this dependency exists. 
  */
 class RepoFileModel {
-	constructor(repo, path, args={}) {
-		let cacheKey = `${repo}:/${path}`;
+	constructor(repoOwner, repoName, path, args={}) {
+		let cacheKey = `${repoOwner}/${repoName}:/${path}`;
 		let fm = _repoFileModelCache[cacheKey];
 		if (fm) {
 			return fm;
 		}
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		this.path = path;
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
@@ -29,7 +30,7 @@ class RepoFileModel {
 		return this;
 	}
 	get storageKey() {
-		return `${this.repo}:${this.path}`;
+		return `${this.repoOwner}/${this.repoName}:${this.path}`;
 	}
 	SetEditing(editing) {
 		this.editing = editing;
@@ -56,7 +57,7 @@ class RepoFileModel {
 			return Promise.resolve(true);
 		}
 		return new Promise( (resolve,reject)=> {
-			EBW.API().UpdateFile(this.repo, this.path, t).then(
+			EBW.API().UpdateFile(this.repoOwner, this.repoName, this.path, t).then(
 				(res)=>{
 					sessionStorage.setItem(this.storageKey + '-original', t);
 					this.SetText(t);
@@ -79,7 +80,7 @@ class RepoFileModel {
 		}
 
 		return new Promise( (resolve,reject)=>{
-			EBW.API().GetFileString(this.repo, this.path).then(
+			EBW.API().GetFileString(this.repoOwner, this.repoName, this.path).then(
 				(res)=>{
 					let text = res[0];
 					sessionStorage.setItem(this.storageKey + '-original', text);

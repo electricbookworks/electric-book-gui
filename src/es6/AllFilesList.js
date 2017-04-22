@@ -1,9 +1,10 @@
 class AllFilesList {
-	constructor(repo, editor) {
+	constructor(repoOwner, repoName, editor) {
 		this.editor = editor;
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		this.api = EBW.API();
-		this.api.ListAllRepoFiles(repo)
+		this.api.ListAllRepoFiles(repoOwner, repoName)
 		.then( this.api.flatten(
 			js=>{
 				let d = Directory.FromJS(false, js);
@@ -12,7 +13,7 @@ class AllFilesList {
 					d, 
 					(_source, file)=>{
 						let rfm = new RepoFileModel(
-							this.repo,
+							this.repoOwner, this.repoName,
 							file,							
 							{ newFile: false }
 							);

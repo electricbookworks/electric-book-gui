@@ -29,9 +29,9 @@ func NewJekyllManager() *JekyllManager {
 	}
 }
 
-// GetJekyll returns the Jekyll server for the specific user, repoUser and repoName
+// GetJekyll returns the Jekyll server for the specific user, repoOwner and repoName
 // combination, starting a new Jekyll server if necessary.
-func (jm *JekyllManager) GetJekyll(user, repoUser, repoName string) (*Jekyll, error) {
+func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, error) {
 	jm.lock.Lock()
 	defer jm.lock.Unlock()
 
@@ -40,23 +40,23 @@ func (jm *JekyllManager) GetJekyll(user, repoUser, repoName string) (*Jekyll, er
 		um = map[string]map[string]*Jekyll{}
 		jm.servers[user] = um
 	}
-	ru, ok := um[repoUser]
+	ru, ok := um[repoOwner]
 	if !ok {
 		ru = map[string]*Jekyll{}
-		um[repoUser] = ru
+		um[repoOwner] = ru
 	}
 	j, ok := ru[repoName]
 	if !ok {
-		repoDir, err := git.RepoDir(user, repoName)
+		repoDir, err := git.RepoDir(user, repoOwner, repoName)
 		if nil != err {
 			return nil, util.Error(err)
 		}
 		j = &Jekyll{
 			RepoDir: repoDir,
-			BaseUrl: fmt.Sprintf(`jekyll/%s/%s`, repoUser, repoName),
+			BaseUrl: fmt.Sprintf(`jekyll/%s/%s`, repoOwner, repoName),
 			Port:    jm.ports.Assign(),
 			manager: jm,
-			path:    [3]string{user, repoUser, repoName},
+			path:    [3]string{user, repoOwner, repoName},
 		}
 		ru[repoName] = j
 		if err := j.start(); nil != err {
