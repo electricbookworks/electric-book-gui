@@ -25,12 +25,22 @@ body {
 		border-top: 1px solid darken($color-inverse-bg, 10%);
 	}
 	article {
-		&.constrain-page {
-			width: 60em;
-			margin: 0 auto;
-		}
-		.l-center {
-			text-align: center;
-		}
 	}
+}
+
+.constrain-page {
+  width: 90%;
+  margin: auto;
+
+  @media (min-width: $bp-m) {
+  	width: 70%;
+  }
+
+  @media (min-width: $bp-l) {
+  	width: 70%;
+  }
+}
+
+.l-center {
+	text-align: center;
 }

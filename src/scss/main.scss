@@ -15,6 +15,7 @@ $bp-xl: 80em;
 // @import 'forms';
 // @import 'layout';
 @import 'typography-new';
+@import 'typography';
 
 @import 'layout-new';
 
@@ -26,6 +27,8 @@ $bp-xl: 80em;
 // @import 'html-checker';
 
 @import 'pages/new-editor';
+@import 'pages/pull_request_list';
+@import 'pages/pull_request_view';
 @import 'pages/repo_list';
 
 //@import 'typography';

@@ -28,15 +28,23 @@ class PRDiffModel {
 		return this.key + '-original';
 	}
 	GetContent() {
+		console.log(`calling API.PullRequestVersions(`, 
+			this.prArgs[`repoOwner`], `,`, this.prArgs['repoName'],
+			`,`, this.prArgs[`remoteURL`],
+			`,`, this.prArgs[`remoteSHA`],
+			`,`, this.diff.path);
+
 		return EBW.API().PullRequestVersions(
-				this.prArgs['repo'],
+				this.prArgs['repoOwner'],
+				this.prArgs['repoName'],
 				this.prArgs['remoteURL'],
 				this.prArgs['remoteSHA'],
 				this.diff.path);
 	}
 	Update(content) {
 		return EBW.API().PullRequestUpdate(
-			this.prArgs['repo'],
+			this.prArgs['repoOwner'],
+			this.prArgs['repoName'],
 			this.prArgs['remoteSHA'],
 			this.diff.path,
 			content);

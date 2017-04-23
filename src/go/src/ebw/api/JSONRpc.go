@@ -48,7 +48,7 @@ func (rpc *API) UpdateFile(repoOwner, repoName, path, content string) error {
 }
 
 func (rpc *API) ListPullRequests(repoOwner, repoName string) ([]*github.PullRequest, error) {
-	return git.ListPullRequests(rpc.Client, rpc.User, repoOwner, repoName)
+	return git.ListPullRequests(rpc.Client, repoOwner, repoName)
 }
 
 func (rpc *API) PullRequestDiffList(repoOwner, repoName, sha, regexp string) ([]*git.PullRequestDiff, error) {

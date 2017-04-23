@@ -1,32 +1,29 @@
 {{template "_header.html" .}}
-{{template "_topbar_repo.html" .}}
+{{template "_nav_main.html" .}}
 
-<div id="repo-workspace">
-<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
-	<div id="repo-nav">
+<main id="pull-request-view">
+	<nav id="differences">
 		<div>Changes for Review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
-		<div id="repo-files" class="repo-menu">
-			<ul id="repo-file-list">
-			</ul>
+		<div id="repo-file-list">
 		</div>
-		<div>
-		<a href="{{.PullRequest.Number}}/close"><button>Close Changes</button></a>
-		</div>
-	</div>
-	<div id="mergely">
 
+		<div>
+			<a href="{{.PullRequest.Number}}/close" class="btn">Close Changes</a>
+		</div>
+	</nav>
+	<div id="mergely-container">
 	</div>
-	</div>
-</div>
+</main>
 
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 	new PullRequestDiffList(document.getElementById('repo-file-list'), {{.Diffs}}, {
-			"repo":{{.RepoName}},
+			"repoOwner":{{.RepoOwner}},
+			"repoName": {{.RepoName}},
 			"remoteURL" : {{.PullURL}},
 			"remoteSHA": {{.SHA}},
-		}, document.getElementById('mergely'));
+		}, document.getElementById('mergely-container'));
 });
 </script>
 

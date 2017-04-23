@@ -13,8 +13,11 @@ import (
 	"ebw/util"
 )
 
-func ListPullRequests(client *Client, user, repoOwner, repoName string) ([]*github.PullRequest, error) {
-	requests, _, err := client.PullRequests.List(client.Context, repoOwner, repoName, &github.PullRequestListOptions{})
+// ListPullRequests returns a list of the Pull Requests for the
+// given repoOwner/repoName
+func ListPullRequests(client *Client, repoOwner, repoName string) ([]*github.PullRequest, error) {
+	requests, _, err := client.PullRequests.List(client.Context,
+		repoOwner, repoName, &github.PullRequestListOptions{})
 	if nil != err {
 		return nil, util.Error(err)
 	}

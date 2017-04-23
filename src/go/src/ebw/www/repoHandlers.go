@@ -94,6 +94,30 @@ func pullRequestClose(c *Context) error {
 	return c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
 }
 
+// pullRequestList shows a list of all the open (and perhaps closed)
+// PR's for a repo.
+func pullRequestList(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+
+	pullRequests, err := git.ListPullRequests(client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+
+	c.D[`UserName`] = client.Username
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	c.D[`PullRequests`] = pullRequests
+
+	return c.Render(`pull_request_list.html`, nil)
+}
+
 func pullRequestView(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
@@ -105,6 +129,7 @@ func pullRequestView(c *Context) error {
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
+
 	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, int(c.PI(`number`)))
 	if nil != err {
 		return err

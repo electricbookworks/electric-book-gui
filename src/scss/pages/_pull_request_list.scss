@@ -1,0 +1,32 @@
+#pull-request-list {
+
+}
+
+.pull-requests {
+	list-style: none;
+	margin: 0;
+
+	.repository-pull-request-details {
+		border-top: 1px solid $color-lightgray;
+		&:last-child {
+			border-bottom: 1px solid $color-lightgray;
+		}
+		padding: 2em 0;
+
+		margin: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		justify-content: space-between;
+
+		.details {
+			margin-right: 2em;
+		}
+		.actions {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			justify-content: flex-start;
+		}
+	}
+}

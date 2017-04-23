@@ -83,7 +83,7 @@ blockquote {
 }
 
 a {
-	color: $primary;
+	color: $color-primary;
 	&:hover {
 		text-decoration: none;
 	}
@@ -99,7 +99,7 @@ a {
 	}
 }
 
-:focus {
-	outline: 0.15em dashed $dark-grey;
-	outline-offset: 0.1em;
-}
+// :focus {
+// 	outline: 0.15em dashed $color-darkgray;
+// 	outline-offset: 0.1em;
+// }

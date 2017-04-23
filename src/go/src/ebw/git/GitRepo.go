@@ -23,15 +23,15 @@ func (g *GitRepo) RepoOwner() string {
 	return g.Owner.GetLogin()
 }
 
-type GitRepoSlice []*GitRepo
+type gitRepoSlice []*GitRepo
 
-func (g GitRepoSlice) Len() int {
+func (g gitRepoSlice) Len() int {
 	return len(g)
 }
-func (g GitRepoSlice) Swap(i, j int) {
+func (g gitRepoSlice) Swap(i, j int) {
 	g[i], g[j] = g[j], g[i]
 }
-func (g GitRepoSlice) Less(i, j int) bool {
+func (g gitRepoSlice) Less(i, j int) bool {
 	in, jn := g[i].GetName(), g[j].GetName()
 	if in == jn {
 		return g[i].Owner.GetLogin() < g[j].Owner.GetLogin()
@@ -120,7 +120,7 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	// Books aren't guaranteed returned on the channel in the
 	// order the go-routines were triggered, so we sort
 	// the books.
-	sort.Sort(GitRepoSlice(books))
+	sort.Sort(gitRepoSlice(books))
 
 	for err := range ERR {
 		if nil != err {

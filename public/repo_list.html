@@ -2,7 +2,6 @@
 {{template "_nav_main.html" . }}
 
 <main>
-
 <section>
 
     <ul class="repo-list">
@@ -29,7 +28,7 @@
             <div class="repo-manage">
               <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?url={{.HTMLURL}}">Manage</a>
               {{if .GetTotalPRs}}
-              <div class="btn" disabled href="/repo/{{.RepoOwner}}/{{.Name}}/submissions">Review Submissions ({{.GetTotalPRs}})</div>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
               {{end}}
             </div>
         </li>
