@@ -1,6 +1,8 @@
 .btn {
 	@include button-style();
 	padding: 0.4em 1em;
+	line-height: 1em;
+	appearance: button;
 	&.disabled {
 		background-color: lighten($color-primary, 20%);
 		border-bottom-width: 0px;

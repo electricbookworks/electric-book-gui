@@ -130,7 +130,7 @@ func (j *Jekyll) shutdown() {
 	if err := j.cmd.Process.Signal(os.Interrupt); nil != err {
 		glog.Errorf(`ERROR interrupting process for jeckyl: %s`, err.Error)
 	}
-	glog.Infof(`os Interrupt sent to bash process`)
+	glog.Infof(`os Interrupt sent to process`)
 	// if err := j.cmd.Process.Kill(); nil != err {
 	// 	glog.Errorf(`ERROR killing process for jeckyl: %s`, err.Error())
 	// }

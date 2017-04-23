@@ -3726,7 +3726,9 @@ body {
 .btn {
   background-color: #009E7F;
   color: white;
-  padding: 0.4em 1em; }
+  padding: 0.4em 1em;
+  line-height: 1em;
+  appearance: button; }
   .btn:hover, .btn:focus {
     background-color: #00866c;
     color: white; }
