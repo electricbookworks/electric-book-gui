@@ -4,16 +4,22 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
+	// "path/filepath"
 	// "github.com/golang/glog"
 
+	"ebw/book"
 	"ebw/util"
 )
 
-func PrintLocal(repoPath, book string, C chan PrintMessage) (string, error) {
+func PrintLocal(repoPath, bookName string, C chan PrintMessage) (string, error) {
 	doError := func(err error) error {
 		C <- PrintMessage{Event: `error`, Data: err.Error()}
 		return util.Error(err)
+	}
+
+	bookConfig, err := book.ReadConfig(repoPath)
+	if nil != err {
+		return ``, err
 	}
 
 	inR, inW, err := os.Pipe()
@@ -27,8 +33,8 @@ echo 'Start of printing script'
 source /usr/local/rvm/scripts/rvm
 bundle install
 bundle exec jekyll build --config="_config.yml,_configs/_config.print-pdf.yml"
-cd _html/` + book + `/text
-prince -v -l file-list -o ../../../_output/` + book + `.pdf
+cd ` + bookConfig.GetDestinationDir(bookName, `text`) + `
+prince -v -l file-list -o ../../../_output/` + bookName + `.pdf
 echo 'End of printing script'
 `)
 	}()
@@ -42,7 +48,7 @@ echo 'End of printing script'
 		return ``, doError(fmt.Errorf(`ERROR executing build: %s`, err.Error()))
 	}
 
-	output := filepath.Join(`_output`, book+`.pdf`)
+	output := `_output/` + bookName + `.pdf`
 
 	return output, nil
 }
