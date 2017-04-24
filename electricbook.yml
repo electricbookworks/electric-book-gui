@@ -10,3 +10,5 @@ print:
 print_container: bookworks
 print_user: craig
 bind: ":16101"
+rvm: "/usr/local/rvm/bin/rvm"
+ruby_version: "2.4.0"

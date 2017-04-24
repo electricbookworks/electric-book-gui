@@ -30,6 +30,8 @@ type config struct {
 	PrintContainer string      `yaml:"print_container"`
 	PrintUser      string      `yaml:"print_user"`
 	Bind           string      `yaml:"bind"`
+	Rvm            string      `yaml:"rvm"`
+	RubyVersion    string      `yaml:"ruby_version"`
 }
 
 func (c config) String() string {

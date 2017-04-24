@@ -14,6 +14,7 @@ import (
 
 	"github.com/golang/glog"
 
+	"ebw/config"
 	"ebw/util"
 )
 
@@ -45,9 +46,20 @@ func (j *Jekyll) getBaseUrl() string {
 }
 
 func (j *Jekyll) start() error {
+	c := exec.Command(
+		config.Config.Rvm,
+		config.Config.RubyVersion,
+		`do`,
+		`bundle`,
+		`install`)
+	c.Stdout, c.Stderr = os.Stdout, os.Stderr
+	c.Dir = j.RepoDir
+	if err := c.Run(); nil != err {
+		return util.Error(err)
+	}
 	j.cmd = exec.Command(
-		`/usr/local/rvm/bin/rvm`,
-		`2.3.0`,
+		config.Config.Rvm,
+		config.Config.RubyVersion,
 		`do`,
 		`bundle`,
 		`exec`,

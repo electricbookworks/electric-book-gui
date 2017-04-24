@@ -32,7 +32,7 @@
     mode=0755
   become: yes
 
-- name: install electricbook server
+- name: install electricbook server from local version
   copy: >
     dest=/opt/electricbook/bin/electricbook
     force=yes
