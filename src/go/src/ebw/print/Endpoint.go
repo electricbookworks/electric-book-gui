@@ -3,6 +3,7 @@ package print
 import (
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
@@ -51,6 +52,34 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 			endpointsL.Lock()
 			delete(endpoints, key)
 			endpointsL.Unlock()
+		}()
+		// t := time.NewTicker(time.Second)
+
+		// go func() {
+		// 	for range t.C {
+		// 		C <- PrintMessage{Event: `tick`, Data: `Hi there`}
+		// 	}
+		// 	glog.Infof(`Quitting timer ticker`)
+		// }()
+		// defer func() {
+		// 	t.Stop()
+		// 	close(tickC)
+		// }()
+		tickC := make(chan bool, 1)
+		defer func() {
+			tickC <- true
+		}()
+		go func() {
+			for {
+				time.Sleep(time.Second)
+				select {
+				case <-tickC:
+					glog.Infof(`Quitting timer ticker`)
+					return
+				default:
+					C <- PrintMessage{Event: `tick`, Data: `Hi there`}
+				}
+			}
 		}()
 
 		repoDir, err := git.RepoDir(pr.Username, pr.RepoOwner, pr.RepoName)

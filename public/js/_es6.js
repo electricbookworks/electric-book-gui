@@ -1024,7 +1024,7 @@ var PrintListener = function () {
 			var sse = new EventSource(url);
 			sse.addEventListener("open", function () {});
 			sse.addEventListener('tick', function (e) {
-				// console.log(`tick received: `, e);
+				console.log("tick received: ", e);
 			});
 			sse.addEventListener("info", function (e) {
 				// console.log(`INFO on printListener: `, e.data);
