@@ -44,7 +44,11 @@ func PullRequestDir(sha string) (string, error) {
 }
 
 // PullRequestCheckout checks out the given remoteUrl with given sha
-func PullRequestCheckout(remoteUrl, sha string) (string, error) {
+func PullRequestCheckout(client *Client, remoteUrl, sha string) (string, error) {
+	remoteUrl, err := client.AddAuth(remoteUrl)
+	if nil != err {
+		return ``, err
+	}
 	glog.Infof(`PullRequestCheckout(remote = %s, sha = %s)`, remoteUrl, sha)
 	prRoot, err := PullRequestDir(``)
 	os.MkdirAll(prRoot, 0755)

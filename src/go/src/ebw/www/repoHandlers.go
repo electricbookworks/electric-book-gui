@@ -146,7 +146,7 @@ func pullRequestView(c *Context) error {
 	js := json.NewEncoder(os.Stdout)
 	js.SetIndent(``, `  `)
 	js.Encode(pr)
-	if _, err = git.PullRequestCheckout(*pr.Head.Repo.CloneURL, *pr.Head.SHA); nil != err {
+	if _, err = git.PullRequestCheckout(client, *pr.Head.Repo.CloneURL, *pr.Head.SHA); nil != err {
 		return err
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -104,4 +105,17 @@ func ClientFromCLIConfig() (*Client, error) {
 		return nil, err
 	}
 	return client, nil
+}
+
+// AddAuth adds username and password authentication to the
+// origUrl from the client credentials.
+func (c *Client) AddAuth(origUrl string) (string, error) {
+	u, err := url.Parse(origUrl)
+	if nil != err {
+		return ``, util.Error(err)
+	}
+	if nil == u.User || `` == u.User.Username() {
+		u.User = url.UserPassword(c.Username, c.Token)
+	}
+	return u.String(), nil
 }
