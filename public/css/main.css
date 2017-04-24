@@ -3876,6 +3876,8 @@ body {
     width: 3em;
     height: 2em;
     padding: 0 0.5em; }
+  .topbar .topbar-center {
+    font-weight: bold; }
 
 #new-editor {
   flex-grow: 1;

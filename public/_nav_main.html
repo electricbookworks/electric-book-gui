@@ -5,6 +5,11 @@
 		<!-- <a href="/">Review submissions (1)</a> -->
 		<!-- end -->
 	</div>
+	{{if .RepoOwner}}
+	<div class="topbar-center">
+		{{.RepoOwner}}/{{.RepoName}}
+	</div>
+	{{end}}
 	{{if .User}}
 	<div class="topbar-right">
 		<div>
