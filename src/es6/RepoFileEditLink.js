@@ -3,7 +3,8 @@ class RepoFileEditLink {
 		this.parent = parent;
 		this.file = file;
 		[this.el, this.$] = DTemplate(`RepoFileEditLink`);
-		this.$.name.textContent = this.file.path.substring('book/text/'.length);
+		// this.$.name.textContent = this.file.path.substring('book/text/'.length);
+		this.$.name.textContent = this.file.path;
 		this.click = click;
 		this.file.EditingSignal.add( (f,editing)=> {
 			this.SetEditing(editing);

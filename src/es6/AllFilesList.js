@@ -4,23 +4,25 @@ class AllFilesList {
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
 		this.api = EBW.API();
-		this.api.ListAllRepoFiles(repoOwner, repoName)
-		.then( this.api.flatten(
-			js=>{
-				let d = Directory.FromJS(false, js);
-				new AllFilesEditor(
-					document.getElementById(`all-files-editor`),
-					d, 
-					(_source, file)=>{
-						let rfm = new RepoFileModel(
-							this.repoOwner, this.repoName,
-							file,							
-							{ newFile: false }
-							);
-						this.editor.setFile(rfm);
-				});
-			}
-		))
-		.catch( EBW.Error );
+		let el = document.getElementById(`all-files-editor`);
+		if (el.hasAttribute(`data-files`)) {
+			this.renderFilesList(JSON.parse(el.getAttribute(`data-files`)));
+		} else {
+			this.api.ListAllRepoFiles(repoOwner, repoName)
+			.then( this.api.flatten(
+				this.renderFilesList, this
+			))
+			.catch( EBW.Error );
+		}
+	}
+	renderFilesList(js) {
+		let d = Directory.FromJS(false, js);
+		new AllFilesEditor(
+			this.repoOwner, this.repoName,
+			document.getElementById(`all-files-editor`),
+			d, 
+			(_source, file)=>{
+				this.editor.setFile(file);
+		});
 	}
 }
