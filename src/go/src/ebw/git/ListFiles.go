@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
 )
@@ -141,45 +142,40 @@ func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 	}
 }
 
-// UpdateFile updates the given file with the given content, and adds it to the
+// UpdateFile updates the given file with the given content,
+// and adds it to the
 // git staging area, ready for the next commit.
 func UpdateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
-	if false {
-		glog.Infof("UpdateFile(%s)", path)
-		sha, err := GetFileSHA(client, user, repoOwner, repoName, path)
-
-		if nil != err {
-			if GitNotExistError(err) {
-				glog.Infof(`UpdateFile %s does not exist: creating`, path)
-				return CreateFile(client, user, repoOwner, repoName, path, content)
-			}
-			return util.Error(err)
-		}
-		message := `automatic message`
-		_, _, err = client.Repositories.UpdateFile(client.Context, repoOwner, repoName, path,
-			&github.RepositoryContentFileOptions{
-				Content: content,
-				SHA:     sha,
-				Message: &message,
-			})
-
-		if nil != err {
-			return util.Error(err)
-		}
-		return nil
-	} else {
-		root, err := RepoDir(user, repoOwner, repoName)
-		if nil != err {
-			return err
-		}
-		if err := ioutil.WriteFile(filepath.Join(root, path), content, 0644); nil != err {
-			return util.Error(err)
-		}
-		if err := runGitDir(root, []string{`add`, path}); nil != err {
-			return util.Error(err)
-		}
-		return nil
+	repoDir, err := RepoDir(user, repoOwner, repoName)
+	if nil != err {
+		return err
 	}
+	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
+		return util.Error(err)
+	}
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer repo.Free()
+
+	index, err := repo.Index()
+	if nil != err {
+		return util.Error(err)
+	}
+	defer index.Free()
+	if err := index.AddByPath(path); nil != err {
+		return util.Error(err)
+	}
+	if err := index.Write(); nil != err {
+		return util.Error(err)
+	}
+	glog.Infof(`AddByPath appears to have worked`)
+
+	// if err := runGitDir(root, []string{`add`, path}); nil != err {
+	// 	return util.Error(err)
+	// }
+	return nil
 }
 
 // ListAllRepoFiles returns a Directory type with all the files in

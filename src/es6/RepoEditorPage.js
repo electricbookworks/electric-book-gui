@@ -17,23 +17,23 @@ class RepoEditorPage {
 				evt.stopPropagation();
 			}
 		});
-		document.getElementById('repo-commit').addEventListener('click', evt=>{
-			// @TODO Need to check that all files are saved - or at least prompt user...
-			evt.preventDefault();
-			evt.stopPropagation();
-			EBW.Prompt(`Enter the commit message:`).then(
-				(msg)=> {
-					if (msg) {
-						EBW.Toast(`Committing ${msg}`);
-						EBW.API().Commit(this.repoOwner, this.repoName, msg).then(
-							()=>{
-								EBW.Toast(`Changes committed: ${msg}`);
-							}
-						).catch( EBW.Error );
-					}
-				}
-			);
-		});
+		// document.getElementById('repo-commit').addEventListener('click', evt=>{
+		// 	// @TODO Need to check that all files are saved - or at least prompt user...
+		// 	evt.preventDefault();
+		// 	evt.stopPropagation();
+		// 	EBW.Prompt(`Enter the commit message:`).then(
+		// 		(msg)=> {
+		// 			if (msg) {
+		// 				EBW.Toast(`Committing ${msg}`);
+		// 				EBW.API().Commit(this.repoOwner, this.repoName, msg).then(
+		// 					()=>{
+		// 						EBW.Toast(`Changes committed: ${msg}`);
+		// 					}
+		// 				).catch( EBW.Error );
+		// 			}
+		// 		}
+		// 	);
+		// });
 		document.getElementById(`repo-print`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			console.log(`Starting printing...`);

@@ -876,6 +876,26 @@ window.Eventify = function (el, methods) {
 		}
 	}
 };
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Flashes = function Flashes(el) {
+	_classCallCheck(this, Flashes);
+
+	var fs = el.querySelectorAll(".flash");
+	for (var i = 0; i < fs.length; i++) {
+		var f = fs.item(i);
+		console.log("Found flash: ", f);
+	}
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+	var el = document.getElementById("flashes");
+	if (el) {
+		new Flashes(el);
+	}
+});
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
@@ -1273,19 +1293,23 @@ var RepoEditorPage = function RepoEditorPage(repoOwner, repoName) {
 			evt.stopPropagation();
 		}
 	});
-	document.getElementById('repo-commit').addEventListener('click', function (evt) {
-		// @TODO Need to check that all files are saved - or at least prompt user...
-		evt.preventDefault();
-		evt.stopPropagation();
-		EBW.Prompt('Enter the commit message:').then(function (msg) {
-			if (msg) {
-				EBW.Toast('Committing ' + msg);
-				EBW.API().Commit(_this.repoOwner, _this.repoName, msg).then(function () {
-					EBW.Toast('Changes committed: ' + msg);
-				}).catch(EBW.Error);
-			}
-		});
-	});
+	// document.getElementById('repo-commit').addEventListener('click', evt=>{
+	// 	// @TODO Need to check that all files are saved - or at least prompt user...
+	// 	evt.preventDefault();
+	// 	evt.stopPropagation();
+	// 	EBW.Prompt(`Enter the commit message:`).then(
+	// 		(msg)=> {
+	// 			if (msg) {
+	// 				EBW.Toast(`Committing ${msg}`);
+	// 				EBW.API().Commit(this.repoOwner, this.repoName, msg).then(
+	// 					()=>{
+	// 						EBW.Toast(`Changes committed: ${msg}`);
+	// 					}
+	// 				).catch( EBW.Error );
+	// 			}
+	// 		}
+	// 	);
+	// });
 	document.getElementById('repo-print').addEventListener('click', function (evt) {
 		evt.preventDefault();evt.stopPropagation();
 		console.log('Starting printing...');

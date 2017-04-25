@@ -1,6 +1,7 @@
 package www
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -50,6 +51,15 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 		c.D[`User`] = c.Client.User
 	}
 
+	_, ok = c.D[`Flashes`]
+	if !ok {
+		flashes, err := c.Flashes()
+		if nil != err {
+			return err
+		}
+		c.D[`Flashes`] = flashes
+	}
+
 	return Render(c.W, c.R, templ, c.D)
 }
 
@@ -69,4 +79,8 @@ func (c *Context) PI(k string) int64 {
 func (c *Context) Redirect(f string, args ...interface{}) error {
 	http.Redirect(c.W, c.R, fmt.Sprintf(f, args...), http.StatusFound)
 	return nil
+}
+
+func (c *Context) Context() context.Context {
+	return c.R.Context()
 }

@@ -19,6 +19,49 @@ func landingHandler(c *Context) error {
 	return c.Render("landing.html", map[string]interface{}{})
 }
 
+func repoCommit(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+
+	repoDir, err := git.RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+
+	if `POST` == c.R.Method {
+		// Process a POST for a Commit
+		msg := c.P(`commit_message`)
+		if `` == msg {
+			c.FlashError(`Enter a Commit Message`, `Please enter a commit message to describe the changes you're committing.`, nil)
+			return c.Redirect(`/repo/%s/%s/commit`, repoOwner, repoName)
+		}
+		oid, err := git.Commit(client, repoOwner, repoName, msg)
+		if nil != err {
+			return err
+		}
+		c.FlashSuccess(`Commit Succeeded`, `Your commit succeeded with ID {{.Oid}}`, map[string]interface{}{`Oid`: oid.String()})
+		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
+	}
+
+	c.D[`UserName`] = client.Username
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	c.D[`Path`] = repoDir
+
+	statusList, err := git.GitStatusList(c.Context(), repoDir)
+	if nil != err {
+		return err
+	}
+	c.D[`StatusList`] = statusList
+
+	return c.Render(`repo_commit.html`, nil)
+}
+
 func repoList(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
@@ -76,7 +119,7 @@ func repoUpdate(c *Context) error {
 	}
 
 	// redirect the user to repoView
-	return c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
+	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
 }
 
 func pullRequestClose(c *Context) error {
@@ -91,7 +134,7 @@ func pullRequestClose(c *Context) error {
 	if err := git.PullRequestClose(client, client.Username, repoOwner, repoName, number); nil != err {
 		return err
 	}
-	return c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
+	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
 }
 
 // pullRequestList shows a list of all the open (and perhaps closed)
@@ -179,7 +222,7 @@ func pullRequestCreate(c *Context) error {
 			c.P(`title`), c.P(`notes`)); nil != err {
 			return err
 		}
-		c.Redirect(`/repo/%s/%s`, repoOwner, repoName)
+		c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
 		return nil
 	}
 

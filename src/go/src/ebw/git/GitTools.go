@@ -1,6 +1,7 @@
 package git
 
 import (
+	"context"
 	"crypto/md5"
 	"errors"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -106,18 +108,66 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 	return repoDir, cmd.Run()
 }
 
-func Commit(client *Client, user, repoOwner, repoName, message string) error {
-	root, err := RepoDir(user, repoOwner, repoName)
+func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, error) {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
-		return err
+		return nil, err
 	}
-	if err = runGitDir(root, []string{`commit`, `-am`, message}); nil != err {
-		return err
+
+	// We are using git2go to do the commit
+	// if err = runGitDir(repoDir, []string{`commit`, `-am`, message}); nil != err {
+	// 	return err
+	// }
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return nil, util.Error(err)
 	}
-	if err = runGitDir(root, []string{`push`, `origin`, `master`}); nil != err {
-		return err
+	defer repo.Free()
+	author := &git2go.Signature{
+		Name:  client.Username,
+		Email: client.User.GetEmail(),
+		When:  time.Now(),
 	}
-	return nil
+	index, err := repo.Index()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer index.Free()
+	treeId, err := index.WriteTree()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	tree, err := repo.LookupTree(treeId)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer tree.Free()
+
+	//Getting repo HEAD
+	head, err := repo.Head()
+	if err != nil {
+		return nil, util.Error(err)
+	}
+	defer head.Free()
+
+	headCommit, err := repo.LookupCommit(head.Target())
+	if err != nil {
+		return nil, util.Error(err)
+	}
+	defer headCommit.Free()
+
+	oid, err := repo.CreateCommit(`HEAD`, author, author, message, tree, headCommit)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	glog.Infof(`COMMIT Created: oid = %s`, oid.String())
+
+	// Push the server-side commit to our master: which is probably
+	// our FORK of a repo.
+	if err = runGitDir(repoDir, []string{`push`, `origin`, `master`}); nil != err {
+		return nil, err
+	}
+	return oid, nil
 }
 
 // gitUpdate updates the files in the given repo root directory.
@@ -419,4 +469,87 @@ func GitFindRepoRootDirectory(workingDir string) (string, error) {
 		return ``, ErrNoGitDirectory
 	}
 	return GitFindRepoRootDirectory(parent)
+}
+
+type StatusList struct {
+	*git2go.StatusList
+}
+type StatusEntry struct {
+	git2go.StatusEntry
+}
+
+// Filename returns the name of the file based on the
+// HEAD-Index status.
+func (se *StatusEntry) Filename() string {
+	if 0 != se.Status&(git2go.StatusIndexNew|git2go.StatusIndexModified) {
+		return se.HeadToIndex.NewFile.Path
+	}
+	if 0 != se.Status&(git2go.StatusIndexDeleted) {
+		return se.HeadToIndex.OldFile.Path
+	}
+	if 0 != se.Status&(git2go.StatusIndexRenamed) {
+		return se.HeadToIndex.OldFile.Path + " renamed to " + se.HeadToIndex.NewFile.Path
+	}
+	return fmt.Sprintf(`Currently unsupported status %v`, se.Status)
+}
+
+// StatusType returns a textual type description of the
+// HEAD-Index status of the entry
+func (se *StatusEntry) StatusType() string {
+	switch {
+	case 0 != se.Status&git2go.StatusIndexNew:
+		return "new"
+	case 0 != se.Status&git2go.StatusIndexModified:
+		return "modified"
+	case 0 != se.Status&git2go.StatusIndexDeleted:
+		return "deleted"
+	case 0 != se.Status&git2go.StatusIndexRenamed:
+		return "renamed"
+	}
+	return "unsupported"
+}
+
+func (s *StatusList) Statuses() chan *StatusEntry {
+	C := make(chan *StatusEntry)
+	count, err := s.EntryCount()
+	if nil != err {
+		panic(err)
+	}
+	go func() {
+		defer close(C)
+		for i := 0; i < count; i++ {
+			se, err := s.ByIndex(i)
+			if nil != err {
+				panic(err)
+			}
+			C <- &StatusEntry{se}
+		}
+	}()
+	return C
+}
+
+// GitStatusList returns the status list for a particular repo. If
+// the caller provides a Context, the StatusList will be freed when
+// the Context is done. Otherhe
+// caller MUST call .Free on the StatusList when done.
+func GitStatusList(ctxt context.Context, repoDir string) (*StatusList, error) {
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer repo.Free()
+	sl, err := repo.StatusList(&git2go.StatusOptions{
+		Show: git2go.StatusShowIndexOnly,
+	})
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	if nil != ctxt {
+		c, _ := context.WithCancel(ctxt)
+		go func() {
+			<-c.Done()
+			sl.Free()
+		}()
+	}
+	return &StatusList{sl}, nil
 }

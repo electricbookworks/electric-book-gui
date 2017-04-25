@@ -64,7 +64,8 @@ func (rpc *API) PullRequestUpdate(repoOwner, repoName, remoteSHA, filePath strin
 }
 
 func (rpc *API) Commit(repoOwner, repoName, message string) error {
-	return git.Commit(rpc.Client, rpc.User, repoOwner, repoName, message)
+	_, err := git.Commit(rpc.Client, repoOwner, repoName, message)
+	return err
 }
 
 func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book string) (string, error) {

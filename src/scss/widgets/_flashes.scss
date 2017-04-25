@@ -1,0 +1,30 @@
+.flashes {
+	margin: 1em auto;
+	.flash {
+		position: relative;
+		margin-top: 1em;
+		&:first-child {
+			margin-top: 0;
+		}
+		h1 {
+			font-size: 1.2em;
+		}
+		border: 3px solid $color-primary;
+		border-width: 2px;
+		border-radius: .25em;
+		padding: 1em;
+		&.success {
+			border-color: $color-success;
+			background-color: lighten($color-success, 15%);
+		}
+		&.info {
+			border-color: $color-info;
+			background-color: lighten($color-info, 35%);
+		}
+		&.error {
+			border-color: $color-error;
+			background-color: lighten($color-error, 25%);
+
+		}
+	}
+}
