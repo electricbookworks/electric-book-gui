@@ -18,30 +18,6 @@
 	</div>
 	{{end}}
 </nav>
-<div id="flashes" class="constrain-page flashes">
-	<div class="callout flash success"  data-closable>
-		<h1>Title Flash</h1>
-		<div class="content">This is the content of the flash</div>
-		  <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-    <span aria-hidden="true">&times;</span>
-  </button>
-	</div>
-	<div class="callout flash info"  data-closable>
-		<h1>Title Flash</h1>
-		<div class="content">This is the content of the flash</div>
-		  <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-    <span aria-hidden="true">&times;</span>
-  </button>
-	</div>
-	<div class="callout flash error"  data-closable>
-		<h1>Title Flash</h1>
-		<div class="content">This is the content of the flash</div>
-		  <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
-    <span aria-hidden="true">&times;</span>
-  </button>
-	</div>
-</div>
-
 {{if .UserName -}}{{if .Flashes -}}
 <div id="flashes" class="constrain-page flashes">
 {{range .Flashes}}

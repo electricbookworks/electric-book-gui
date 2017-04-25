@@ -1,11 +1,7 @@
 .flashes {
-	margin: 1em auto;
 	.flash {
 		position: relative;
-		margin-top: 1em;
-		&:first-child {
-			margin-top: 0;
-		}
+		margin: 1em auto;
 		h1 {
 			font-size: 1.2em;
 		}

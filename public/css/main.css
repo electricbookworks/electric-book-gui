@@ -3879,28 +3879,24 @@ body {
   .topbar .topbar-center {
     font-weight: bold; }
 
-.flashes {
-  margin: 1em auto; }
-  .flashes .flash {
-    position: relative;
-    margin-top: 1em;
-    border: 3px solid #009E7F;
-    border-width: 2px;
-    border-radius: .25em;
-    padding: 1em; }
-    .flashes .flash:first-child {
-      margin-top: 0; }
-    .flashes .flash h1 {
-      font-size: 1.2em; }
-    .flashes .flash.success {
-      border-color: #b8d5ca;
-      background-color: #e8f1ee; }
-    .flashes .flash.info {
-      border-color: #fab414;
-      background-color: #feecc3; }
-    .flashes .flash.error {
-      border-color: #f05a50;
-      background-color: #fac9c5; }
+.flashes .flash {
+  position: relative;
+  margin: 1em auto;
+  border: 3px solid #009E7F;
+  border-width: 2px;
+  border-radius: .25em;
+  padding: 1em; }
+  .flashes .flash h1 {
+    font-size: 1.2em; }
+  .flashes .flash.success {
+    border-color: #b8d5ca;
+    background-color: #e8f1ee; }
+  .flashes .flash.info {
+    border-color: #fab414;
+    background-color: #feecc3; }
+  .flashes .flash.error {
+    border-color: #f05a50;
+    background-color: #fac9c5; }
 
 #new-editor {
   flex-grow: 1;
