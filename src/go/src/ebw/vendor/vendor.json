@@ -91,6 +91,12 @@
 			"revisionTime": "2015-09-04T22:15:18Z"
 		},
 		{
+			"checksumSHA1": "xInF1WnOJNIjp1NwCUu6b7rN310=",
+			"path": "github.com/libgit2/git2go",
+			"revision": "7cd5a4e731e982391b9274e17c7f32050d8e5b15",
+			"revisionTime": "2017-04-14T11:11:28Z"
+		},
+		{
 			"checksumSHA1": "bKMZjd2wPw13VwoE7mBeSv5djFA=",
 			"path": "github.com/matttproud/golang_protobuf_extensions/pbutil",
 			"revision": "c12348ce28de40eed0136aa2b644d0ee0650e56c",
@@ -187,6 +193,12 @@
 			"revisionTime": "2016-10-09T01:44:59Z"
 		},
 		{
+			"checksumSHA1": "Ws1ZR+8A8E4lgwbgFO29nChcRiw=",
+			"path": "gopkg.in/libgit2/git2go.v25",
+			"revision": "334260d743d713a55ff3c097ec6707f2bb39e9d5",
+			"revisionTime": "2017-01-20T13:46:32Z"
+		},
+		{
 			"checksumSHA1": "uTrfNV/aZJscnyrIG2EwtNoL3P4=",
 			"path": "gopkg.in/lxc/go-lxc.v2",
 			"revision": "8304875cc3423823032ec93556beee076c6ba687",
@@ -197,7 +209,11 @@
 			"path": "gopkg.in/yaml.v2",
 			"revision": "a5b47d31c556af34a302ce5d659e6fea44d90de0",
 			"revisionTime": "2016-09-28T15:37:09Z"
+		},
+		{
+			"path": "https://github.com/libgit2/git2go.git",
+			"revision": ""
 		}
 	],
-	"rootPath": "go/src/ebw"
+	"rootPath": "ebw"
 }

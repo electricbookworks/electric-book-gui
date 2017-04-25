@@ -1,8 +1,8 @@
-- name: Install required packages git, vim
+- name: Install required packages git, vim, libgit2-dev
   apt: >
     name={{item}}
     state=present
-  with_items: [ git, vim ]
+  with_items: [ git, vim, libgit2-dev ]
   become: yes
 
 - name: Create electricbook user

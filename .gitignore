@@ -14,3 +14,4 @@ git_cache/repos/*
 !git_cache/repos/README.md
 node_modules
 public/css/*.css
+src/go/src/gopkg.in/libgit2

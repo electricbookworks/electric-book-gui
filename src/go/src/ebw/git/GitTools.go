@@ -17,6 +17,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/config"
 	"ebw/util"
@@ -320,21 +321,44 @@ func GitRemoteRepo(workingDir, remote string) (remoteUser, remoteProject string,
 	if `` == remote {
 		remote = `origin`
 	}
-	if `` == workingDir {
-		workingDir, err = os.Getwd()
-		if nil != err {
-			return ``, ``, util.Error(err)
-		}
-	}
-
-	remoteUrl, err := getGitOutput(workingDir, []string{
-		`remote`,
-		`get-url`,
-		remote,
-	})
+	repo, err := git2go.OpenRepository(util.WorkingDir(workingDir))
 	if nil != err {
+		return ``, ``, util.Error(err)
+	}
+	defer repo.Free()
+	rem, err := repo.Remotes.Lookup(remote)
+	if nil != err {
+		glog.Error(err)
 		return ``, ``, err
 	}
+	defer rem.Free()
+	return gitRemoteParseUrl(rem.Url())
+}
+
+// DEPRECATED - we're using git2go instead
+// func GitRemoteRepo_shell(workingDir, remote string) (remoteUser, remoteProject string, err error) {
+// 	if `` == remote {
+// 		remote = `origin`
+// 	}
+// 	if `` == workingDir {
+// 		workingDir, err = os.Getwd()
+// 		if nil != err {
+// 			return ``, ``, util.Error(err)
+// 		}
+// 	}
+
+// 	remoteUrl, err := getGitOutput(workingDir, []string{
+// 		`remote`,
+// 		`get-url`,
+// 		remote,
+// 	})
+// 	if nil != err {
+// 		return ``, ``, err
+// 	}
+// 	return gitRemoteParseUrl(remoteUrl)
+// }
+
+func gitRemoteParseUrl(remoteUrl string) (string, string, error) {
 	ru, err := url.Parse(remoteUrl)
 	if nil != err {
 		return ``, ``, util.Error(err)
@@ -344,8 +368,8 @@ func GitRemoteRepo(workingDir, remote string) (remoteUser, remoteProject string,
 		path = path[0 : len(path)-4]
 	}
 	paths := strings.Split(path, `/`)
-	remoteProject = paths[len(paths)-1]
-	remoteUser = strings.Join(paths[0:len(paths)-1], `/`)
+	remoteProject := paths[len(paths)-1]
+	remoteUser := strings.Join(paths[0:len(paths)-1], `/`)
 
 	return remoteUser, remoteProject, nil
 }
