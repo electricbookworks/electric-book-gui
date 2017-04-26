@@ -79,6 +79,18 @@
 			"revisionTime": "2016-09-20T23:08:13Z"
 		},
 		{
+			"checksumSHA1": "ucTBCc7dDRKLGPsYfAzu/Gq63qA=",
+			"path": "github.com/gorilla/securecookie",
+			"revision": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983",
+			"revisionTime": "2017-02-24T19:38:04Z"
+		},
+		{
+			"checksumSHA1": "qmq72HOuwQQ87E3WKFh/Wl/SE9c=",
+			"path": "github.com/gorilla/sessions",
+			"revision": "ba78acc856fe7c79891d516131b3d903cc8d9367",
+			"revisionTime": "2017-03-07T00:35:30Z"
+		},
+		{
 			"checksumSHA1": "VDDqSe8tduhyRWwcH1dE5HYruBo=",
 			"path": "github.com/gorilla/websocket",
 			"revision": "5df680c89f2a84ad9cb16cf143557a0853cfaabc",

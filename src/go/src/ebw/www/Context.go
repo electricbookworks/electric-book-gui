@@ -8,29 +8,36 @@ import (
 
 	// "github.com/google/go-github/github"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 
 	"ebw/git"
 )
 
 type Context struct {
-	R      *http.Request
-	W      http.ResponseWriter
-	Vars   map[string]string
-	D      map[string]interface{}
-	Client *git.Client
+	R       *http.Request
+	W       http.ResponseWriter
+	Vars    map[string]string
+	D       map[string]interface{}
+	Client  *git.Client
+	Session *sessions.Session
 }
 
 type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	client, _ := git.ClientFromWebRequest(w, r)
-
+	session, err := store.Get(r, `ebw-session`)
+	if nil != err {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	c := &Context{
-		R:      r,
-		W:      w,
-		D:      map[string]interface{}{},
-		Vars:   mux.Vars(r),
-		Client: client,
+		R:       r,
+		W:       w,
+		D:       map[string]interface{}{},
+		Vars:    mux.Vars(r),
+		Client:  client,
+		Session: session,
 	}
 	if err := f(c); nil != err {
 		WebError(w, r, err)
@@ -38,6 +45,9 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Context) Render(templ string, data map[string]interface{}) error {
+	if err := c.SaveSession(); nil != err {
+		return err
+	}
 	for k, v := range data {
 		c.D[k] = v
 	}
@@ -77,6 +87,9 @@ func (c *Context) PI(k string) int64 {
 }
 
 func (c *Context) Redirect(f string, args ...interface{}) error {
+	if err := c.SaveSession(); nil != err {
+		return err
+	}
 	http.Redirect(c.W, c.R, fmt.Sprintf(f, args...), http.StatusFound)
 	return nil
 }

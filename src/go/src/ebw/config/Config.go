@@ -32,6 +32,8 @@ type config struct {
 	Bind           string      `yaml:"bind"`
 	Rvm            string      `yaml:"rvm"`
 	RubyVersion    string      `yaml:"ruby_version"`
+	SessionAuth    string      `yaml:"session_auth"`
+	SessionEncrypt string      `yaml:"session_encrypt"`
 }
 
 func (c config) String() string {

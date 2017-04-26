@@ -32,8 +32,8 @@ func (c *Context) Flash(css, title, content string, args map[string]interface{})
 		Title:   template.HTML(tsOut.String()),
 		Content: template.HTML(tcOut.String()),
 	}
-	glog.Infof(`Adding FlashMessage %s: %v`, c.Client.Username, f)
-	return flash.Add(c.Client.Username, f)
+	glog.Infof(`Adding FlashMessage %s: %v`, c.Session.ID, f)
+	return flash.Add(c.Session.ID, f)
 }
 
 func (c *Context) FlashError(title, content string, args map[string]interface{}) error {
@@ -47,7 +47,6 @@ func (c *Context) FlashSuccess(title, content string, args map[string]interface{
 }
 
 func (c *Context) Flashes() ([]interface{}, error) {
-	f, err := flash.Find(c.Client.Username)
-	glog.Infof(`Found flashes for %s: %v`, c.Client.Username, f)
+	f, err := flash.Find(c.Session.ID)
 	return f, err
 }

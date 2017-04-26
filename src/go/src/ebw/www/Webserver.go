@@ -42,6 +42,10 @@ func WebError(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func RunWebServer(bind string) error {
+	// Initialize the sessions manager
+	if err := initSessions(); nil != err {
+		return err
+	}
 	r := mux.NewRouter()
 	r.Handle(`/`, WebHandler(repoList))
 	webdavRoutes(r, `/webdav`)
