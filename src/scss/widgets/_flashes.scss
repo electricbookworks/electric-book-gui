@@ -11,15 +11,15 @@
 		padding: 1em;
 		&.success {
 			border-color: $color-success;
-			background-color: lighten($color-success, 15%);
+			background-color: $color-success-light;
 		}
 		&.info {
 			border-color: $color-info;
-			background-color: lighten($color-info, 35%);
+			background-color: $color-info-light;
 		}
 		&.error {
 			border-color: $color-error;
-			background-color: lighten($color-error, 25%);
+			background-color: $color-error-light;
 
 		}
 	}

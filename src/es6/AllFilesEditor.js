@@ -24,13 +24,6 @@ class AllFilesEditor {
 				);
 			}
 		}
-		Eventify(this.el, {
-			'change': function(evt) {
-				let f = this.$.select.value;
-				console.log(`selected ${f}`);
-				this.chooseFileCallback(this, f);
-			}
-		}, this);
 		parent.appendChild(this.el);
 	}
 }

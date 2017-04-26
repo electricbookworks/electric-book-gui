@@ -16,7 +16,7 @@ window.Eventify = function(el,methods,context=null) {
 			}
 			if (undefined == methods[method]) {
 				console.error(`No method ${method} (from ${p}) defined on `, methods, 
-					` while eventifying `, el);
+					` while eventifying `, e);
 				continue;
 			}
 			e.addEventListener(event, function(evt) {

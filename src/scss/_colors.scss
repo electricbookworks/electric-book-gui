@@ -17,6 +17,8 @@ $color-secondary: #767676;
 $color-success: #3adb76;
 $color-warning: #ffae00;
 $color-alert: #cc4637;
+$color-info: #cc4637;
+$color-error: $color-warning;
 $color-lightgray: #e6e6e6;
 $color-mediumgray: #cacaca;
 $color-darkgray: #8a8a8a;
@@ -28,9 +30,12 @@ $color-inverse-fg: $color-primary;
 
 $color-primary: #009E7F;
 $color-secondary: #767676;
-$color-success: rgb(184,213,202);
+$color-success: #009e7f;	//rgb(184,213,202);
 $color-warning: rgb(250,180,20);
 $color-alert: rgb(240,90,80);
+$color-error: #f05a50;
+$color-info: #fab414;
+
 $color-lightgray: #ddd;
 $color-mediumgray: #71B8AA;
 $color-darkgray: #666;
@@ -40,7 +45,8 @@ $color-inverse-bg: $color-primary;
 $color-inverse-fg: $color-white;
 
 
+$color-success-light: #b8d5ca;
+$color-info-light: #fee4b7;
+$color-error-light: #fdd9ca;
 
 $color-offgray: $color-mediumgray;
-$color-error: $color-alert;
-$color-info: $color-warning;

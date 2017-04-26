@@ -557,13 +557,6 @@ var AllFilesEditor = function AllFilesEditor(repoOwner, repoName, parent, dir, c
 		}
 	}
 
-	Eventify(this.el, {
-		'change': function change(evt) {
-			var f = this.$.select.value;
-			console.log("selected " + f);
-			this.chooseFileCallback(this, f);
-		}
-	}, this);
 	parent.appendChild(this.el);
 };
 "use strict";
@@ -606,7 +599,7 @@ var AllFilesList = function () {
 
 var DTemplate = function () {
 
-	var templates = { "AddNewBookDialog": "<div>\n\t<div data-set=\"chooseType\">\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" data-set=\"newBookRadio\" />\n\t\t\t\tStart an new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\"\n\t\t\t\tdata-set=\"collaborateRadio\" />\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div data-set=\"newBook\" style=\"display: none;\">\n\t\t<h1>New Book</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\" />\n\t\t<label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\" data-set=\"repo_name\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New Book\"/>\n\t\t</form>\n\t</div>\n\t<div data-set=\"collaborate\">\n\t\t<h1>Collaborate</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\" />\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\" data-set=\"collaborate_repo\" />\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Collaborate\" />\n\t\t</form>\n\t</div>\n</div>\n", "AllFilesEditor": "<ul data-set=\"filesList\" data-event=\"change\" class=\"files-list\">\n</ul>\n", "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button data-event=\"click:save\" class=\"btn\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
+	var templates = { "AddNewBookDialog": "<div>\n\t<div data-set=\"chooseType\">\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" data-set=\"newBookRadio\" />\n\t\t\t\tStart an new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\"\n\t\t\t\tdata-set=\"collaborateRadio\" />\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div data-set=\"newBook\" style=\"display: none;\">\n\t\t<h1>New Book</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\" />\n\t\t<label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\" data-set=\"repo_name\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New Book\"/>\n\t\t</form>\n\t</div>\n\t<div data-set=\"collaborate\">\n\t\t<h1>Collaborate</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\" />\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\" data-set=\"collaborate_repo\" />\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Collaborate\" />\n\t\t</form>\n\t</div>\n</div>\n", "AllFilesEditor": "<ul data-set=\"filesList\" class=\"files-list\">\n</ul>\n", "MergeEditor": "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button data-event=\"click:save\" class=\"btn\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\" data-set=\"mergely\">\n\t</div>\n</div>", "PullRequestDiffList": "<div>\n\t<ul data-set=\"list\">\n\t</ul>\n\t<button data-set=\"closePR\"><i class=\"fa fa-check\"> </i></button>\n</div>", "PullRequestLink": "<div class=\"pull-request-link\">\n\t<a href=\"#\" data-set=\"link\">_</a>\n</div>", "RepoFileEditLink": "<ul>\n\t<li class=\"edit-link\" data-set=\"this\" data-event=\"click\">\n\t\t<span class=\"file-dirty-tag\"><i data-set=\"editing\" class=\"fa fa-pencil\"> </i></span>\n\t\t<a href=\"#\"><span data-set=\"name\"> </span></a>\n\t</li>\n</ul>\n", "RepoFileEditor_ace": "<div class=\"repo-file-editor-workspace\">\t\n\t<div class=\"toolbar-menu\">\n\t\t<button data-event=\"click:save\" data-set=\"save\"><i class=\"fa fa-save\"> </i></button>\n\t\t<button data-event=\"click:undo\" data-set=\"undo\"><i class=\"fa fa-undo\"> </i></button>\n\t\t<div class=\"spacer\"> </div>\n\t\t<button data-event=\"click:delete\"><i class=\"fa fa-trash\"> </i></button>\n\t</div>\n\t<div class=\"repo-file-editor repo-file-editor-ace\" data-set=\"editor\">\n\t</div>\n</div>", "RepoFileEditor_codemirror": "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor\" data-set=\"editor\">\n\t</div>\n</div>\n", "RepoFileList": "<div class=\"repo-file-list\">\n\t<div class=\"menu-header repo-files\">\n\t\t<h2 class=\"menu-title\">Files</h2>\n\t</div>\n\t<ul class=\"action-group\" id=\"files\" data-set=\"fileList\">\n\t</ul>\n\t<button data-event='click:click-new'>Add new file</button>\n</div>\n" };
 
 	var mk = function mk(k, html) {
 		var el = document.createElement('div');
@@ -829,7 +822,7 @@ window.Eventify = function (el, methods) {
 						method = event;
 					}
 					if (undefined == methods[method]) {
-						console.error('No method ' + method + ' (from ' + p + ') defined on ', methods, ' while eventifying ', el);
+						console.error('No method ' + method + ' (from ' + p + ') defined on ', methods, ' while eventifying ', e);
 						return 'continue';
 					}
 					e.addEventListener(event, function (evt) {
@@ -880,6 +873,10 @@ window.Eventify = function (el, methods) {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+// Flashes is meant to implement a class that
+// removes the containing #flashes div when the last flash
+// is removed. But we haven't actually implemented this,
+// because the div just becomes 0 height and 'disappears'.
 var Flashes = function Flashes(el) {
 	_classCallCheck(this, Flashes);
 
@@ -890,12 +887,12 @@ var Flashes = function Flashes(el) {
 	}
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-	var el = document.getElementById("flashes");
-	if (el) {
-		new Flashes(el);
-	}
-});
+// document.addEventListener(`DOMContentLoaded`, function() {
+// 	let el = document.getElementById(`flashes`);
+// 	if (el) {
+// 		new Flashes(el);
+// 	}
+// });
 'use strict';
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();

@@ -6,8 +6,8 @@ import (
 
 	"github.com/golang/glog"
 
+	"ebw/flash"
 	"ebw/util"
-	"flash"
 )
 
 type FlashMessage struct {
