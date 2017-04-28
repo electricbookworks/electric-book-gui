@@ -2,7 +2,7 @@
   apt: >
     name={{item}}
     state=present
-  with_items: [ git, vim, libgit2-dev ]
+  with_items: [ git, vim, libgit2-dev, lxc-dev ]
   become: yes
 
 - name: Create electricbook user
@@ -32,7 +32,7 @@
     mode=0755
   become: yes
 
-- name: install electricbook server from local version
+- name: install electricbook
   copy: >
     dest=/opt/electricbook/bin/electricbook
     force=yes
@@ -68,4 +68,3 @@
 - include: nginx.yml
   when: >
     'nginx'==webserver
-

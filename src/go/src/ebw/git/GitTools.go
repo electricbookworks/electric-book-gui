@@ -128,6 +128,12 @@ func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, e
 		Email: client.User.GetEmail(),
 		When:  time.Now(),
 	}
+	// TODO: If we don't have a User Email address,
+	// where can we get one?
+	if `` == author.Email {
+		author.Email = author.Name
+	}
+	glog.Infof(`Committing with signatures Name:%s, Email:%s`, client.Username, client.User.GetEmail())
 	index, err := repo.Index()
 	if nil != err {
 		return nil, util.Error(err)

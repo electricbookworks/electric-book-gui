@@ -12,3 +12,8 @@ ebw.lxc ansible_user=ubuntu ansible_password=ubuntu fqdn=ebw.lxc webserver=nginx
 #
 github_client=
 github_secret=
+# Configure these for each host
+# session_auth must be a 64 character ascii random string
+session_auth=
+# session_encrypt should be a 32 character ascii random string
+session_encrypt=

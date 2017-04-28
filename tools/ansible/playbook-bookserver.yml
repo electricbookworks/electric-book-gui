@@ -1,3 +1,7 @@
 - hosts: servers
   roles:
     - electricbook
+
+- hosts: haproxy
+  roles:
+    - haproxy

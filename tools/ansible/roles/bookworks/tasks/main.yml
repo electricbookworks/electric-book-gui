@@ -1,0 +1,28 @@
+# Our dependency on rvm_io.ruby will install rvm and bundler
+- name: install bookworks prereqs
+  apt: >
+    name={{item}}
+    state=present
+    force=yes
+  with_items:
+    - git
+    - curl
+    - vim
+    - libcurl3
+    - libfontconfig1
+    - libfreetype6
+    - libgif7
+    - libjpeg8
+    - libtiff5
+    - libxml2
+    - libcairo2
+    - libpixman-1-0
+  become: yes
+
+- name: install prince
+  become: yes
+  script: install-prince.sh
+
+- name: bookworks-test-install
+  become: yes
+  script: install-first-run.sh

@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -57,8 +58,7 @@ func (j *Jekyll) start() error {
 	if err := c.Run(); nil != err {
 		return util.Error(err)
 	}
-	j.cmd = exec.Command(
-		config.Config.Rvm,
+	args := []string{
 		config.Config.RubyVersion,
 		`do`,
 		`bundle`,
@@ -66,13 +66,16 @@ func (j *Jekyll) start() error {
 		`jekyll`,
 		`serve`,
 		`--config`,
-		`_config.yml,_configs/_config.web.yml,`+j.ConfigFiles,
+		`_config.yml,_configs/_config.web.yml,` + j.ConfigFiles,
 		`--baseurl`,
 		j.getBaseUrl(),
 		`-P`,
 		strconv.FormatInt(j.Port, 10),
 		`--watch`,
-	)
+		// `--incremental`,
+	}
+	glog.Infof(`Starting jekyll with %s %s`, config.Config.Rvm, strings.Join(args, ` `))
+	j.cmd = exec.Command(config.Config.Rvm, args...)
 	j.cmd.Dir = j.RepoDir
 	inR, _, err := os.Pipe()
 	if nil != err {

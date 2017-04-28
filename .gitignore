@@ -7,6 +7,7 @@ src/go/pkg
 tools/ansible/*.retry
 tools/ansible/hosts-lateral
 tools/ansible/hosts-ebw
+tools/ansible/hosts-*
 electricbook-*.yml
 git_cache/pr_requests/*
 git_cache/repos/*
@@ -15,3 +16,4 @@ git_cache/repos/*
 node_modules
 public/css/*.css
 src/go/src/gopkg.in/libgit2
+

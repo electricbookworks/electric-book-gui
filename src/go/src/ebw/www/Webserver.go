@@ -53,7 +53,7 @@ func RunWebServer(bind string) error {
 	r.HandleFunc(`/rpc/API/json`, jsonrpc.HttpHandlerFunc)
 	r.HandleFunc(`/rpc/API/json/ws`, jsonrpc.WsHandlerFunc)
 	r.Handle(`/github/login`, WebHandler(githubLogin))
-	r.HandleFunc(`/github/auth`, githubAuth)
+	r.Handle(`/github/auth`, WebHandler(githubAuth))
 
 	r.Handle(`/github/create/fork`, WebHandler(githubCreateFork))
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
