@@ -1,4 +1,6 @@
 import {EBW} from './EBW';
+import {FileInfo} from './FS/FileInfo';
+import {FileState} from './FS/FileState';
 import signals = require('signals');
 
 let _repoFileModelCache = {};
@@ -6,6 +8,7 @@ let _repoFileModelCache = {};
 interface RepoFileModelOptions {
 	newFile?: boolean,
 }
+
 /**
  * RepoFileModel provides a wrapper around a file on the
  * server and a local copy of the file stored in the browser's
@@ -26,9 +29,9 @@ export class RepoFileModel {
 
 	constructor(protected repoOwner:string,
 	 protected repoName:string, 
-	 protected path:string, 
+	 protected fileInfo:FileInfo,
 	 protected options:RepoFileModelOptions={}) {
-		let cacheKey = `${repoOwner}/${repoName}:/${path}`;
+		let cacheKey = `${repoOwner}/${repoName}:/${this.Path()}`;
 		let fm = _repoFileModelCache[cacheKey];
 		if (fm) {
 			return fm;
@@ -39,10 +42,10 @@ export class RepoFileModel {
 		return this;
 	}
 	Path() : string {
-		return this.path;
+		return this.fileInfo.Name();
 	}
 	storageKey() : string {
-		return `${this.repoOwner}/${this.repoName}:${this.path}`;
+		return `${this.repoOwner}/${this.repoName}:${this.Path()}`;
 	}
 	SetEditing(editing: boolean):void {
 		this.editing = editing;
@@ -58,23 +61,23 @@ export class RepoFileModel {
 		if (!t) {
 			t = sessionStorage.getItem(this.storageKey());
 		}
-		let orig = sessionStorage.getItem(this.storageKey() + '-original');
+		let orig = this.Original();
 		return (orig!=t);
 	}
-	Save(t:string|boolean=false) {
+	Save(t:string|boolean=false):Promise<void> {
 		if (!t) {
 			t = sessionStorage.getItem(this.storageKey());
 		}
 		if (!this.IsDirty(t)) {
-			return Promise.resolve(true);
+			return Promise.resolve();
 		}
 		return new Promise( (resolve,reject)=> {
-			EBW.API().UpdateFile(this.repoOwner, this.repoName, this.path, t as string).then(
+			EBW.API().UpdateFile(this.repoOwner, this.repoName, this.Path(), t as string).then(
 				(res)=>{
-					sessionStorage.setItem(this.storageKey + '-original', t as string);
-					this.SetText(t);
-					this.options.newFile = false;					
-					resolve(true);
+					this.SetOriginal(t as string);
+					this.SetText(t as string);
+					this.options.newFile = false;
+					resolve();
 				})
 			.catch( err=>{
 				EBW.Error(err);
@@ -82,34 +85,40 @@ export class RepoFileModel {
 			});
 		});
 	}
-	GetText() {
+	GetText():Promise<string> {
 		let t = sessionStorage.getItem(this.storageKey());
 		if (t) {
-			return Promise.resolve(t);
+			return Promise.resolve<string>(t);
 		}
 		if (this.options.newFile) {
-			return Promise.resolve('');
+			return Promise.resolve<string>('');
 		}
 
-		return new Promise( (resolve,reject)=>{
-			EBW.API().GetFileString(this.repoOwner, this.repoName, this.path).then(
-				([text])=>{
-					sessionStorage.setItem(this.storageKey() + '-original', text);
-					resolve(text);
-				},
-				(err)=>{
-					reject(err);
-				});			
-		});
+		return EBW.API()
+		.GetFileString(
+			this.repoOwner, 
+			this.repoName, 
+			this.Path())
+		.then(
+			([text])=>{
+				this.SetOriginal(text);
+				return Promise.resolve<string>(text);
+			});
 	}
 	SetText(t:string) : void {
 		sessionStorage.setItem(this.storageKey(), t);
-		this.DirtySignal.dispatch(this, this.IsDirty(t));
+		let dirty = this.IsDirty(t);
+		this.DirtySignal.dispatch(this, dirty);
+		let state = dirty ? FileState.Changed : FileState.Exists;
+		this.fileInfo.SetState(state);
 	}
 	Original() : string {
 		if (this.options.newFile) {
 			return '';
 		}
 		return sessionStorage.getItem(this.storageKey() + '-original');
+	}
+	SetOriginal(t:string) : void {
+		sessionStorage.setItem(this.storageKey() + '-original', t);
 	}
 }

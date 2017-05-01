@@ -379,16 +379,21 @@ var AllFiles_File$1 = (function (_super) {
         return _this;
     }
     AllFiles_File$$1.prototype.FileEvent = function (fileInfo) {
+        console.log("FileEvent in _File: " + fileInfo.Name() + ", state = ", fileInfo.State());
         switch (fileInfo.State()) {
             case FileState.Exists:
                 this.el.classList.remove('changed', 'removed');
+                break;
             case FileState.Changed:
                 this.el.classList.add('changed');
+                break;
             case FileState.Removed:
                 this.el.classList.remove('changed');
                 this.el.classList.add('removed');
+                break;
             case FileState.Purged:
                 this.el.remove();
+                break;
         }
     };
     return AllFiles_File$$1;
@@ -409,13 +414,13 @@ var _repoFileModelCache = {};
  * not entirely sure why this dependency exists.
  */
 var RepoFileModel = (function () {
-    function RepoFileModel(repoOwner, repoName, path, options) {
+    function RepoFileModel(repoOwner, repoName, fileInfo, options) {
         if (options === void 0) { options = {}; }
         this.repoOwner = repoOwner;
         this.repoName = repoName;
-        this.path = path;
+        this.fileInfo = fileInfo;
         this.options = options;
-        var cacheKey = repoOwner + "/" + repoName + ":/" + path;
+        var cacheKey = repoOwner + "/" + repoName + ":/" + this.Path();
         var fm = _repoFileModelCache[cacheKey];
         if (fm) {
             return fm;
@@ -426,10 +431,10 @@ var RepoFileModel = (function () {
         return this;
     }
     RepoFileModel.prototype.Path = function () {
-        return this.path;
+        return this.fileInfo.Name();
     };
     RepoFileModel.prototype.storageKey = function () {
-        return this.repoOwner + "/" + this.repoName + ":" + this.path;
+        return this.repoOwner + "/" + this.repoName + ":" + this.Path();
     };
     RepoFileModel.prototype.SetEditing = function (editing) {
         this.editing = editing;
@@ -446,7 +451,7 @@ var RepoFileModel = (function () {
         if (!t) {
             t = sessionStorage.getItem(this.storageKey());
         }
-        var orig = sessionStorage.getItem(this.storageKey() + '-original');
+        var orig = this.Original();
         return (orig != t);
     };
     RepoFileModel.prototype.Save = function (t) {
@@ -456,14 +461,14 @@ var RepoFileModel = (function () {
             t = sessionStorage.getItem(this.storageKey());
         }
         if (!this.IsDirty(t)) {
-            return Promise.resolve(true);
+            return Promise.resolve();
         }
         return new Promise(function (resolve, reject) {
-            EBW.API().UpdateFile(_this.repoOwner, _this.repoName, _this.path, t).then(function (res) {
-                sessionStorage.setItem(_this.storageKey + '-original', t);
+            EBW.API().UpdateFile(_this.repoOwner, _this.repoName, _this.Path(), t).then(function (res) {
+                _this.SetOriginal(t);
                 _this.SetText(t);
                 _this.options.newFile = false;
-                resolve(true);
+                resolve();
             })["catch"](function (err) {
                 EBW.Error(err);
                 reject(err);
@@ -479,25 +484,29 @@ var RepoFileModel = (function () {
         if (this.options.newFile) {
             return Promise.resolve('');
         }
-        return new Promise(function (resolve, reject) {
-            EBW.API().GetFileString(_this.repoOwner, _this.repoName, _this.path).then(function (_a) {
-                var text = _a[0];
-                sessionStorage.setItem(_this.storageKey() + '-original', text);
-                resolve(text);
-            }, function (err) {
-                reject(err);
-            });
+        return EBW.API()
+            .GetFileString(this.repoOwner, this.repoName, this.Path())
+            .then(function (_a) {
+            var text = _a[0];
+            _this.SetOriginal(text);
+            return Promise.resolve(text);
         });
     };
     RepoFileModel.prototype.SetText = function (t) {
         sessionStorage.setItem(this.storageKey(), t);
-        this.DirtySignal.dispatch(this, this.IsDirty(t));
+        var dirty = this.IsDirty(t);
+        this.DirtySignal.dispatch(this, dirty);
+        var state = dirty ? FileState.Changed : FileState.Exists;
+        this.fileInfo.SetState(state);
     };
     RepoFileModel.prototype.Original = function () {
         if (this.options.newFile) {
             return '';
         }
         return sessionStorage.getItem(this.storageKey() + '-original');
+    };
+    RepoFileModel.prototype.SetOriginal = function (t) {
+        sessionStorage.setItem(this.storageKey() + '-original', t);
     };
     return RepoFileModel;
 }());
@@ -557,7 +566,7 @@ var AllFilesList = (function () {
         var f = new AllFiles_File$1(this.parent, fileInfo, {
             clickName: function (evt) {
                 console.log("clicked " + fileInfo.Name());
-                var m = new RepoFileModel(_this.repoOwner, _this.repoName, fileInfo.Name());
+                var m = new RepoFileModel(_this.repoOwner, _this.repoName, fileInfo);
                 _this.editor.setFile(m);
             }
         });
@@ -656,8 +665,7 @@ var RepoFileEditorCM = (function (_super) {
         Eventify(document.getElementById('editor-actions'), {
             'save': function (evt) {
                 evt.preventDefault();
-                _this.file.SetText(_this.editor.getValue());
-                _this.file.Save()
+                _this.file.Save(_this.editor.getValue())
                     .then(function () {
                     // this.$.save.disabled = true;
                     EBW.Toast("Document saved.");
@@ -822,12 +830,14 @@ var FileInfo = (function () {
         this.Listener = new signals.Signal();
     }
     FileInfo.prototype.SetState = function (s) {
-        this.State = s;
-        this.Listener.despatch(this);
+        console.log("SetState " + this.name + " = ", s);
+        this.state = s;
+        this.Listener.dispatch(this);
     };
     FileInfo.prototype.State = function () {
         return this.state;
     };
+    // Name returns the full pathed name of the file.
     FileInfo.prototype.Name = function () {
         return this.name;
     };

@@ -14,14 +14,16 @@ export class FileInfo {
 	}
 
 	SetState(s:FileState) {
-		this.State = s;
-		this.Listener.despatch(this);
+		console.log(`SetState ${this.name} = `, s);
+		this.state = s;
+		this.Listener.dispatch(this);
 	}
 
 	State(): FileState {
 		return this.state;
 	}
 
+	// Name returns the full pathed name of the file.
 	Name() : string {
 		return this.name;
 	}

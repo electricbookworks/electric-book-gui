@@ -3908,11 +3908,22 @@ body {
     left: 0;
     width: 20%;
     max-width: 20%;
-    overflow: scroll; }
-    #new-editor #all-files-editor .files-list {
+    overflow: scroll;
+    box-sizing: border-box;
+    margin: 0; }
+    #new-editor #all-files-editor .allfiles-file {
       list-style: none;
       margin: 0;
-      padding: 0; }
+      padding: 0;
+      box-sizing: border-box;
+      cursor: pointer; }
+      #new-editor #all-files-editor .allfiles-file:hover {
+        background-color: #009E7F; }
+      #new-editor #all-files-editor .allfiles-file.changed {
+        color: green; }
+      #new-editor #all-files-editor .allfiles-file.removed {
+        color: red;
+        text-decoration: line-through; }
   #new-editor #file-editors {
     position: absolute;
     top: 0;

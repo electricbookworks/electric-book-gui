@@ -65,7 +65,7 @@ export class AllFilesList {
 			clickName: (evt)=>{
 				console.log(`clicked ${fileInfo.Name()}`);
 				let m = new RepoFileModel(this.repoOwner,
-					this.repoName, fileInfo.Name());
+					this.repoName, fileInfo);
 				this.editor.setFile(m);
 			}
 		});

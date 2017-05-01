@@ -10,25 +10,14 @@ var
 	gulpIf = require('gulp-if'),
 	wrapper = require('gulp-wrapper'),
 	merge = require('gulp-merge'),
-	babel = require('gulp-babel'),
 	sass = require('gulp-sass'),
-	babelPresetEs2015 = require('babel-preset-es2015'),
-	runSequence = require('run-sequence'),
-	svgmin = require('gulp-svgmin'),
-	typescript = require('gulp-typescript')
+	svgmin = require('gulp-svgmin')
 	;
 
 var hreq = require;
 var exec = hreq('child_process').exec;
 
 var paths = {
-	es6: {
-		src: "src/es6",
-		dest: "public/js",
-	},
-	dtemplate: {
-		src: 'src/es6'
-	},
 	scss: {
 		src: 'src/scss',
 		dest: 'public/css',
@@ -50,50 +39,6 @@ function errorAlert(task) {
 		this.emit('end');
 	};
 }
-
-gulp.task('es6-build', function() {
-	return gulp.src(paths.es6.src + "/**/*.js")
-	.pipe(babel({
-		presets: ['es2015']
-		}).on('error', notify.onError({message:'ERR es6: <%=error.message%>'}))//errorAlert('es6'))
-	)
-	.pipe(concat('_es6.js'))
-	.pipe(gulp.dest(paths.es6.dest))
-	.on('error', errorAlert('es6'))
-	.pipe(notify("es6 completed"));
-});
-
-gulp.task('es6', function(cb) {
-	runSequence('es6-build','merge', cb);
-});
-
-gulp.task('merge', function() {
-	return gulp.src([paths.es6.dest + '/_*.js'])
-		.pipe(concat('main.js'))
-		.pipe(wrapper({
-			header: "(function() {\n",
-			footer: "\n})();"
-		}))
-		.pipe(gulp.dest(paths.es6.dest))
-		.pipe(rename({suffix:".min"}))
-		.pipe(uglify())
-		.pipe(gulp.dest(paths.es6.dest))
-		;
-});
-
-gulp.task('dtemplate-build', function(cb) {
-  exec('dtemplate -dir ' + paths.dtemplate.src + ' -out ' + paths.es6.src + 
-  		'/DTemplate.js -include-query-select no ', function (err, stdout, stderr) {
-    console.log(stdout);
-    console.log(stderr);
-    cb(err);
-  });
-});
-
-gulp.task('dtemplate', function(cb) {
-	runSequence('dtemplate-build','es6', cb);
-});
-  
 gulp.task('scss', function() {
 	return gulp.src(paths.scss.src + '/main.scss')
 	.pipe(concat('main.css'))
@@ -104,25 +49,7 @@ gulp.task('scss', function() {
 	.pipe(gulp.dest('public/css'));
 });
 
-gulp.task('typescript-compile', function() {
-	return gulp.src(paths.es6.src + '/**/*.ts')
-	.pipe(typescript({
-			"target": "es2016",
-			"module": "es6",
-			"sourceMap": true,
-			"allowJs": true,
-			"checkJs": true,
-			"outDir": "./rollup",
-	}))
-	.on('error', errorAlert('es6'))
-	.pipe(gulp.dest(paths.es6.dest))
-	.pipe(notify("typescript-compile completed"));
-;
-});
 
-gulp.task('typescript', function(cb) {
-	runSequence('typescript-compile','merge', cb);
-});
 
 gulp.task('svgmin', function () {
     return gulp.src(paths.svg.src + '/*.svg')
@@ -131,8 +58,5 @@ gulp.task('svgmin', function () {
 });
 
 gulp.task('watch', function() {
-	gulp.watch(paths.es6.src + '/**/*.js', ['es6']);
-	gulp.watch([paths.dtemplate.src + '/**/*.html'], ['dtemplate']);
 	gulp.watch(paths.scss.src + '/**/*.scss', ['scss']);
-	gulp.watch(paths.es6.src + '/**/*.ts', ['typescript']);
 });

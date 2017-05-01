@@ -13,12 +13,27 @@
 		// max-height: 100%;		
 		// border: 2px solid red;
 		overflow: scroll;
+		// padding: 1em;
+		box-sizing: border-box;
+		margin: 0;
 
-		.files-list {
+		.allfiles-file {			
 			list-style: none;
 			margin: 0;
 			padding: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			&:hover {
+				background-color: $color-primary;
+			}
 			// max-height: 80vh;
+			&.changed {
+				color: green;
+			}
+			&.removed {
+				color: red;
+				text-decoration: line-through;
+			}
 		}
 	}
 	#file-editors {

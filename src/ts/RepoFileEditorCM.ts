@@ -14,8 +14,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		Eventify(document.getElementById('editor-actions'), {
 			'save': (evt)=>{
 				evt.preventDefault();
-				this.file.SetText(this.editor.getValue());
-				this.file.Save()
+				this.file.Save(this.editor.getValue())
 				.then(
 					()=>{						
 						// this.$.save.disabled = true;

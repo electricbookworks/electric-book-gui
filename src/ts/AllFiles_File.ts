@@ -17,16 +17,21 @@ export class AllFiles_File extends Template {
 		AddToParent(parent, this.el);
 	}
 	FileEvent(fileInfo:FileInfo): void {
+		console.log(`FileEvent in _File: ${fileInfo.Name()}, state = `, fileInfo.State());
 		switch (fileInfo.State()) {
 			case FileState.Exists:
 				this.el.classList.remove('changed','removed');
+				break;
 			case FileState.Changed:
 				this.el.classList.add('changed');
+				break;
 			case FileState.Removed:
 				this.el.classList.remove('changed');
 				this.el.classList.add('removed');
+				break;
 			case FileState.Purged:
 				this.el.remove();
+				break;
 		}
 	}
 }
