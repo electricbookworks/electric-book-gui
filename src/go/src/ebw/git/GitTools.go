@@ -103,9 +103,32 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 
 	cmd := exec.Command(`git`, `clone`, repoUrl+`.git`)
 	cmd.Dir = repoOwnerDir
-
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	return repoDir, cmd.Run()
+	if err := cmd.Run(); nil != err {
+		return ``, util.Error(err)
+	}
+
+	return repoDir, gitConfig(client, repoDir)
+}
+
+// gitConfig configures the git username and email for the given
+// client-repo combination.
+func gitConfig(client *Client, repoDir string) error {
+	// repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	// if nil != err {
+	// 	return util.Error(err)
+	// }
+	if err := runGitDir(repoDir, []string{`config`, `user.name`, client.Username}); nil != err {
+		return util.Error(err)
+	}
+	if nil != client.User {
+		if err := runGitDir(repoDir, []string{`config`, `user.email`, client.User.GetEmail()}); nil != err {
+			return util.Error(err)
+		}
+	} else {
+		glog.Errorf(`Unable to set user.email for user %s in %s: no Email set`, client.Username, repoDir)
+	}
+	return nil
 }
 
 func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, error) {
@@ -182,7 +205,10 @@ func gitUpdate(client *Client, root string) (string, error) {
 	cmd.Dir = root
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	glog.Infof("dir = %s: git pull origin master", root)
-	return root, cmd.Run()
+	if err := cmd.Run(); nil != err {
+		return ``, util.Error(err)
+	}
+	return root, gitConfig(client, root)
 }
 
 // RemoteName returns a name for the remote based on the remoteUrl

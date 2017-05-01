@@ -1,10 +1,6 @@
-import signals = require('signals');
+import {FileState} from './FileState';
 
-export enum FileState {
-	Exists = 1,
-	Changed= 2,
-	Removed= 4
-};
+import signals = require('signals');
 
 export class FileInfo {
 	protected name: string;

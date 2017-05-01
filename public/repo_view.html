@@ -2,7 +2,7 @@
 {{template "_nav_main.html" .}}
 
 <main id="new-editor">
-	<nav id="all-files-editor" data-files="{{.RepoFiles | json}}" data-instance="AllFilesList">
+	<nav id="all-files-editor" data-instance="AllFilesList">
 	</nav>
 
 	<section class="section-editor" id="file-editors">
@@ -24,7 +24,10 @@
 		</div>
 	</section>
 
-	<script data-instance="RepoEditorPage" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"> </script>
+	<script type="text/hidden" id="volume-element">
+	{{- .RepoFiles | json | JS -}}
+	</script>
+	<script data-instance="RepoEditorPage" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"></script>
 </main>
 
 {{template "_footer.html" .}}

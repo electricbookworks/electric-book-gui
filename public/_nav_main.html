@@ -14,16 +14,19 @@
 	<div class="topbar-right">
 		<div>
 			Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a>. <a href="/logoff">Log out</a>
-		</span>
+		</div>
 	</div>
 	{{end}}
 </nav>
 {{if .UserName -}}{{if .Flashes -}}
 <div id="flashes" class="constrain-page flashes">
 {{range .Flashes}}
-	<div class="flash {{.CSS}}">
+	<div class="callout flash {{.CSS}}" data-closable>
 		{{- if .Title}}<h1>{{.Title}}</h1>{{end -}}
 		<div class="content">{{.Content}}</div>
+		<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+			<span aria-hidden="true">&times;</span>
+		</button>
 	</div>
 {{- end}}
 </div>

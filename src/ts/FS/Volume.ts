@@ -1,5 +1,6 @@
 import {Directory} from './Directory';
-import {FileInfo,FileState} from './FileInfo';
+import {FileInfo} from './FileInfo';
+import {FileState} from './FileState';
 
 import signals = require('signals');
 
@@ -10,6 +11,20 @@ export class Volume {
 		this.files = new Map<string,FileState>();
 		this.Events = new signals.Signal();
 	}
+	// Get returns the FileInfo for the file at the 
+	// named path, or undefined if there is no such
+	// file at the named path.
+	// To create a file, use Write.
+	Get(path:string) : FileInfo|undefined {
+		let f= files.get(path);
+		if (f) {
+			return f;
+		}
+		return undefined;
+	}
+	// Write creates a file at the named path, or updates
+	// the files state to FileState.Changed if the file
+	// already exists.
 	Write(path:string) {
 		if (this.files.has(path)) {
 			let fi = this.files.get(path);
@@ -19,6 +34,8 @@ export class Volume {
 		let fi = new FileInfo(path, FileState.Changed);
 		this.files.set(path, fi);
 	}
+	// Remove sets the state of the file at the given
+	// path to FileState.Removed
 	Remove(path:string) {
 		if (!this.files.has(path)) {
 			return;
@@ -26,6 +43,19 @@ export class Volume {
 		let fi = this.files.get(path);
 		fi.SetState(FileState.Removed);
 	}
+	// Purge purges the file at the given path. Unlike
+	// Remove, which simply marks a file as 'deleted',
+	// Purge actually removes the file entirely, including
+	// removing the record that we have of the file.
+	Purge(path:string) {
+		let f = this.files.get(path);
+		if (f) {
+			f.SetState(FileState.Purged);
+			this.files.delete(path);
+		}
+	}
+	// FromJS adds files to the Volume from the Directory
+	// and File objects serialized in the given js object.
 	FromJS(js : any) {
 		let d = Directory.FromJS(undefined, js);
 		this.files = new Map<string,FileState>();

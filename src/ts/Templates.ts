@@ -1,7 +1,6 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
-	export type AllFilesEditor =	HTMLUListElement;
 	export type AllFiles_File =	HTMLUListElement;
 	export type RepoFileEditLink =	HTMLUListElement;
 	export type RepoFileEditor_codemirror =	HTMLDivElement;
@@ -16,8 +15,6 @@ export namespace R {
 		repo_name: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
-		};
-	export interface AllFilesEditor {
 		};
 	export interface AllFiles_File {
 		name: HTMLDivElement,
@@ -87,25 +84,6 @@ export class AddNewBookDialog {
 			repo_name: n.childNodes[3].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[5] as HTMLDivElement,
 			collaborate_repo: n.childNodes[5].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
-		};
-		this.el = n;
-	}
-}
-export class AllFilesEditor {
-	public static _template : HTMLUListElement;
-	public el : HTMLUListElement;
-	public $ : R.AllFilesEditor;
-	constructor() {
-		let t = AllFilesEditor._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<ul class="files-list">
-</ul>`;
-			t = d.firstElementChild as HTMLUListElement;
-			AllFilesEditor._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUListElement;
-		this.$ = {
 		};
 		this.el = n;
 	}

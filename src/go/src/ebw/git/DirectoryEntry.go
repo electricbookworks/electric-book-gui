@@ -23,8 +23,8 @@ func (f *File) Name() string {
 
 func (f *File) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
-		"Name": f.name,
-		"Dir":  false,
+		"N": f.name,
+		"D": false,
 	})
 }
 func (f *File) IsDirectory() bool {
@@ -42,9 +42,9 @@ func (d *Directory) Name() string {
 
 func (d *Directory) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
-		"Name":  d.name,
-		"Dir":   true,
-		"Files": d.Files,
+		"N": d.name,
+		"D": true,
+		"F": d.Files,
 	})
 }
 

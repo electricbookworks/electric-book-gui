@@ -13,6 +13,7 @@ export class EBW {
 		if (null==EBW.instance) {
 			EBW.instance = this;
 			this.api = new APIWs();
+			console.log(`Activating foundation on the document`);
 			jQuery(document).foundation();
 			AddNewBookDialog.instantiate();
 			RepoEditorPage.instantiate();

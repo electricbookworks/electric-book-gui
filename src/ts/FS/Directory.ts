@@ -16,10 +16,10 @@ export class Directory {
 		this.Files = [];
 	}
 	static FromJS(parent:Directory|undefined, js:any) : Directory {
-		let d = new Directory(parent, js.Name as string);
-		for (let f of js.Files) {
+		let d = new Directory(parent, js.N as string);
+		for (let f of js.F) {
 			let e : Directory|File;
-			if (f.Dir) {
+			if (f.D) {
 				e = Directory.FromJS(d, f);
 				d.Files.push(e);
 			} else {

@@ -2,6 +2,8 @@ import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {EBW} from './EBW';
+import {Volume} from './FS/Volume';
+import {VolumeElement} from './VolumeElement';
 
 /**
  * RepoEditorPage is the JS controller for the page that allows
@@ -9,6 +11,7 @@ import {EBW} from './EBW';
  */
 export class RepoEditorPage {
 	protected editor: RepoFileEditorCM;
+	protected volume: VolumeElement;
 
 	constructor(
 		protected repoOwner:string, 
@@ -18,7 +21,11 @@ export class RepoEditorPage {
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
 		this.editor = new RepoFileEditorCM(document.getElementById('editor'));
-		new AllFilesList(allFilesListEl, repoOwner, repoName, this.editor);
+		this.volume = new VolumeElement(document.getElementById(`volume-element`));
+
+		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
+
+		this.volume.Load();
 
 		//new PullRequestList(document.getElementById('pull-request-list'), repo);
 		// window.addEventListener('beforeunload', evt=> {
@@ -46,10 +53,13 @@ export class RepoEditorPage {
 	static instantiate() {
 		let el = document.querySelector(`[data-instance="RepoEditorPage"]`);
 		if (el) {
-			console.log(`Instnatiating RepoEditorPage`);
+			console.log(`Instantiating RepoEditorPage`);
 			let repoOwner = el.getAttribute('repo-owner');
 			let repoName = el.getAttribute('repo-name');
-			let allFilesList = document.querySelector(`[data-instace='AllFilesList']`);
+			let volumeEL = document.getElementById(`volume-element`);
+			let volume = new VolumeElement()
+			let allFilesList = document.querySelector(`[data-instance='AllFilesList']`);
+
 			new RepoEditorPage(repoOwner, repoName, document.querySelector(`[data-instance='AllFilesList']`) as HTMLElement);
 		}
 	}

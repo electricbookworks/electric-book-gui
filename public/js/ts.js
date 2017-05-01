@@ -167,7 +167,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart an new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div style=\"display: none;\">\n\t\t<h1>New Book</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New Book\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Collaborate</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Collaborate\"/>\n\t\t</form>\n\t</div>\n</div>";
+            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New Book</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New Book\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Collaborate</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Collaborate\"/>\n\t\t</form>\n\t</div>\n</div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -309,161 +309,19 @@ var AddNewBookDialog$$1 = (function (_super) {
     return AddNewBookDialog$$1;
 }(AddNewBookDialog$1));
 
-var File = (function () {
-    function File(parent, name) {
-        this._parent = parent;
-        this._name = name;
-    }
-    File.FromJS = function (parent, js) {
-        return new File(parent, js.Name);
-    };
-    File.prototype.Debug = function () {
-        console.log(this.path());
-    };
-    File.prototype.Path = function () {
-        var p = this._parent ? this._parent.Path() : "";
-        return p + this._name;
-    };
-    File.prototype.IsFile = function () {
-        return true;
-    };
-    File.prototype.Name = function () {
-        return this._name;
-    };
-    return File;
-}());
-
-var Directory = (function () {
-    function Directory(parent, name) {
-        this._parent = parent;
-        this._name = name;
-        this.Files = [];
-    }
-    Directory.FromJS = function (parent, js) {
-        var d = new Directory(parent, js.Name);
-        for (var _i = 0, _a = js.Files; _i < _a.length; _i++) {
-            var f = _a[_i];
-            var e = void 0;
-            if (f.Dir) {
-                e = Directory.FromJS(d, f);
-                d.Files.push(e);
-            }
-            else {
-                e = File.FromJS(d, f);
-                d.Files.push(e);
-            }
-        }
-        return d;
-    };
-    Directory.prototype.Debug = function () {
-        console.log(this.Path());
-        for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
-            var f = _a[_i];
-            f.Debug();
-        }
-    };
-    Directory.prototype.Path = function () {
-        if (this._parent) {
-            return this._parent.Path() + this._name + '/';
-        }
-        return '';
-    };
-    Directory.prototype.Name = function () {
-        return this._name;
-    };
-    Directory.prototype.IsFile = function () {
-        return false;
-    };
-    Directory.prototype.FileNamesOnly = function (filter) {
-        var fs = [];
-        for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
-            var f = _a[_i];
-            if (f.IsFile()) {
-                var p = f.Path();
-                if (!filter || filter(p)) {
-                    fs.push(p);
-                }
-            }
-            else {
-                fs = fs.concat(f.FileNamesOnly(filter));
-            }
-        }
-        return fs.sort();
-    };
-    return Directory;
-}());
-
 var FileState;
 (function (FileState) {
+    // This is a file that exists on the FS, but hasn't changed
     FileState[FileState["Exists"] = 1] = "Exists";
+    // A file that has been written to.
     FileState[FileState["Changed"] = 2] = "Changed";
+    // A file that has been Removed, but the removal isn't yet synchronized
     FileState[FileState["Removed"] = 4] = "Removed";
+    // A file that is gone - it should be removed entirely.
+    FileState[FileState["Purged"] = 8] = "Purged";
 })(FileState || (FileState = {}));
 
-var FileInfo = (function () {
-    function FileInfo(name, state) {
-        this.name = name;
-        this.state = state;
-        this.Listener = new signals.Signal();
-    }
-    FileInfo.prototype.SetState = function (s) {
-        this.State = s;
-        this.Listener.despatch(this);
-    };
-    FileInfo.prototype.State = function () {
-        return this.state;
-    };
-    FileInfo.prototype.Name = function () {
-        return this.name;
-    };
-    return FileInfo;
-}());
-
-var Volume = (function () {
-    function Volume() {
-        this.files = new Map();
-        this.Events = new signals.Signal();
-    }
-    Volume.prototype.Write = function (path) {
-        if (this.files.has(path)) {
-            var fi_1 = this.files.get(path);
-            fi_1.SetState(FileState.Changed);
-            return;
-        }
-        var fi = new FileInfo(path, FileState.Changed);
-        this.files.set(path, fi);
-    };
-    Volume.prototype.Remove = function (path) {
-        if (!this.files.has(path)) {
-            return;
-        }
-        var fi = this.files.get(path);
-        fi.SetState(FileState.Removed);
-    };
-    Volume.prototype.FromJS = function (js) {
-        var d = Directory.FromJS(undefined, js);
-        this.files = new Map();
-        var filter = function (n) {
-            if ("." == n.substr(0, 1)) {
-                return false;
-            }
-            if ("_output" == n.substr(0, 7)) {
-                return false;
-            }
-            if ("_html" == n.substr(0, 5)) {
-                return false;
-            }
-            return true;
-        };
-        for (var _i = 0, _a = d.FileNamesOnly(filter); _i < _a.length; _i++) {
-            var f = _a[_i];
-            var fi = new FileInfo(f, FileState.Exists);
-            this.files.set(f, fi);
-            this.Events.dispatch(this, fi);
-        }
-    };
-    return Volume;
-}());
+//# sourceMappingURL=FileState.js.map
 
 function AddToParent(parent, el) {
     if (!parent) {
@@ -484,9 +342,23 @@ var AllFiles_File$1 = (function (_super) {
         _this.fileInfo = fileInfo;
         _this.$.name.textContent = fileInfo.Name();
         Eventify(_this.el, events);
+        fileInfo.Listener.add(_this.FileEvent, _this);
         AddToParent(parent, _this.el);
         return _this;
     }
+    AllFiles_File$$1.prototype.FileEvent = function (fileInfo) {
+        switch (fileInfo.State()) {
+            case FileState.Exists:
+                this.el.classList.remove('changed', 'removed');
+            case FileState.Changed:
+                this.el.classList.add('changed');
+            case FileState.Removed:
+                this.el.classList.remove('changed');
+                this.el.classList.add('removed');
+            case FileState.Purged:
+                this.el.remove();
+        }
+    };
     return AllFiles_File$$1;
 }(AllFiles_File));
 
@@ -600,11 +472,11 @@ var RepoFileModel = (function () {
 
 // import {Directory} from './Directory';
 var AllFilesList = (function () {
-    function AllFilesList(parent, repoOwner, repoName, editor) {
-        var _this = this;
+    function AllFilesList(parent, repoOwner, repoName, volume, editor) {
         this.parent = parent;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
+        this.volume = volume;
         this.editor = editor;
         this.api = EBW.API();
         if ("" == this.repoOwner) {
@@ -613,38 +485,52 @@ var AllFilesList = (function () {
         if ("" == this.repoName) {
             this.repoName = parent.getAttribute("repo-name");
         }
-        if (parent.hasAttribute("data-files")) {
-            this.renderFilesList(JSON.parse(parent.getAttribute("data-files")));
-        }
-        else {
-            this.api.ListAllRepoFiles(this.repoOwner, this.repoName)
-                .then(function (_a) {
-                var js = _a[0];
-                _this.renderFilesList(js);
-            })["catch"](EBW.Error);
-        }
+        this.volume.Events.add(this.volumeChange, this);
+        this.files = new Map();
     }
-    AllFilesList.prototype.renderFilesList = function (js) {
-        var v = new Volume();
-        v.Events.add(this.volumeChange, this);
-        v.FromJS(js);
-        // new AllFilesEditor(
-        // 	this.repoOwner, this.repoName,
-        // 	document.getElementById(`all-files-editor`),
-        // 	d, 
-        // 	(_source, file)=>{
-        // 		this.editor.setFile(file);
-        // });
-    };
     AllFilesList.prototype.volumeChange = function (volume, fileInfo) {
+        // If fileInfo==FileState.Exists,
+        // we check whether we already have this element,
+        // otherwise we need to add it to our list.
+        // If fileInfo==FileState.Changed, we also check
+        // whether we have the element, since Changed can
+        // mark a creation.
+        // For Purged, the AllFiles_File will handle the
+        // state change itself, but we need to remove the
+        // element from our tracking list. 
+        var f = this.files.get(fileInfo.Name());
+        // We only
+        switch (fileInfo.State()) {
+            case FileState.Exists:
+                if (!f) {
+                    this.newFile(fileInfo);
+                }
+                break;
+            case FileState.Changed:
+                if (!f) {
+                    this.newFile(fileInfo);
+                }
+                break;
+            case FileState.Removed:
+                break;
+            case FileState.Purged:
+                if (f) {
+                    this.files["delete"](fileInfo.Name());
+                }
+                break;
+        }
+    };
+    AllFilesList.prototype.newFile = function (fileInfo) {
         var _this = this;
-        new AllFiles_File$1(this.parent, fileInfo, {
+        var f = new AllFiles_File$1(this.parent, fileInfo, {
             clickName: function (evt) {
                 console.log("clicked " + fileInfo.Name());
                 var m = new RepoFileModel(_this.repoOwner, _this.repoName, fileInfo.Name());
                 _this.editor.setFile(m);
             }
         });
+        this.files.set(fileInfo.Name(), f);
+        return f;
     };
     return AllFilesList;
 }());
@@ -813,6 +699,223 @@ var RepoFileEditorCM = (function (_super) {
     return RepoFileEditorCM;
 }(RepoFileEditor_codemirror));
 
+var File = (function () {
+    function File(parent, name) {
+        this._parent = parent;
+        this._name = name;
+    }
+    File.FromJS = function (parent, js) {
+        return new File(parent, js.N);
+    };
+    File.prototype.Debug = function () {
+        console.log(this.path());
+    };
+    File.prototype.Path = function () {
+        var p = this._parent ? this._parent.Path() : "";
+        return p + this._name;
+    };
+    File.prototype.IsFile = function () {
+        return true;
+    };
+    File.prototype.Name = function () {
+        return this._name;
+    };
+    return File;
+}());
+
+var Directory = (function () {
+    function Directory(parent, name) {
+        this._parent = parent;
+        this._name = name;
+        this.Files = [];
+    }
+    Directory.FromJS = function (parent, js) {
+        var d = new Directory(parent, js.N);
+        for (var _i = 0, _a = js.F; _i < _a.length; _i++) {
+            var f = _a[_i];
+            var e = void 0;
+            if (f.D) {
+                e = Directory.FromJS(d, f);
+                d.Files.push(e);
+            }
+            else {
+                e = File.FromJS(d, f);
+                d.Files.push(e);
+            }
+        }
+        return d;
+    };
+    Directory.prototype.Debug = function () {
+        console.log(this.Path());
+        for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
+            var f = _a[_i];
+            f.Debug();
+        }
+    };
+    Directory.prototype.Path = function () {
+        if (this._parent) {
+            return this._parent.Path() + this._name + '/';
+        }
+        return '';
+    };
+    Directory.prototype.Name = function () {
+        return this._name;
+    };
+    Directory.prototype.IsFile = function () {
+        return false;
+    };
+    Directory.prototype.FileNamesOnly = function (filter) {
+        var fs = [];
+        for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
+            var f = _a[_i];
+            if (f.IsFile()) {
+                var p = f.Path();
+                if (!filter || filter(p)) {
+                    fs.push(p);
+                }
+            }
+            else {
+                fs = fs.concat(f.FileNamesOnly(filter));
+            }
+        }
+        return fs.sort();
+    };
+    return Directory;
+}());
+
+var FileInfo = (function () {
+    function FileInfo(name, state) {
+        this.name = name;
+        this.state = state;
+        this.Listener = new signals.Signal();
+    }
+    FileInfo.prototype.SetState = function (s) {
+        this.State = s;
+        this.Listener.despatch(this);
+    };
+    FileInfo.prototype.State = function () {
+        return this.state;
+    };
+    FileInfo.prototype.Name = function () {
+        return this.name;
+    };
+    return FileInfo;
+}());
+
+var Volume = (function () {
+    function Volume() {
+        this.files = new Map();
+        this.Events = new signals.Signal();
+    }
+    // Get returns the FileInfo for the file at the 
+    // named path, or undefined if there is no such
+    // file at the named path.
+    // To create a file, use Write.
+    Volume.prototype.Get = function (path) {
+        var f = files.get(path);
+        if (f) {
+            return f;
+        }
+        return undefined;
+    };
+    // Write creates a file at the named path, or updates
+    // the files state to FileState.Changed if the file
+    // already exists.
+    Volume.prototype.Write = function (path) {
+        if (this.files.has(path)) {
+            var fi_1 = this.files.get(path);
+            fi_1.SetState(FileState.Changed);
+            return;
+        }
+        var fi = new FileInfo(path, FileState.Changed);
+        this.files.set(path, fi);
+    };
+    // Remove sets the state of the file at the given
+    // path to FileState.Removed
+    Volume.prototype.Remove = function (path) {
+        if (!this.files.has(path)) {
+            return;
+        }
+        var fi = this.files.get(path);
+        fi.SetState(FileState.Removed);
+    };
+    // Purge purges the file at the given path. Unlike
+    // Remove, which simply marks a file as 'deleted',
+    // Purge actually removes the file entirely, including
+    // removing the record that we have of the file.
+    Volume.prototype.Purge = function (path) {
+        var f = this.files.get(path);
+        if (f) {
+            f.SetState(FileState.Purged);
+            this.files["delete"](path);
+        }
+    };
+    // FromJS adds files to the Volume from the Directory
+    // and File objects serialized in the given js object.
+    Volume.prototype.FromJS = function (js) {
+        var d = Directory.FromJS(undefined, js);
+        this.files = new Map();
+        var filter = function (n) {
+            if ("." == n.substr(0, 1)) {
+                return false;
+            }
+            if ("_output" == n.substr(0, 7)) {
+                return false;
+            }
+            if ("_html" == n.substr(0, 5)) {
+                return false;
+            }
+            return true;
+        };
+        for (var _i = 0, _a = d.FileNamesOnly(filter); _i < _a.length; _i++) {
+            var f = _a[_i];
+            var fi = new FileInfo(f, FileState.Exists);
+            this.files.set(f, fi);
+            this.Events.dispatch(this, fi);
+        }
+    };
+    return Volume;
+}());
+
+var VolumeElement = (function (_super) {
+    tslib_1.__extends(VolumeElement, _super);
+    function VolumeElement(parent, repoOwner, repoName) {
+        var _this = _super.call(this) || this;
+        _this.parent = parent;
+        if (!parent) {
+            parent = document.getElementById("volume-element");
+        }
+        if (!repoOwner) {
+            repoOwner = parent.getAttribute("repo-owner");
+        }
+        if (!repoName) {
+            repoName = parent.getAttribute("repo-name");
+        }
+        _this.repoOwner = repoOwner;
+        _this.repoName = repoName;
+        return _this;
+    }
+    VolumeElement.prototype.Load = function () {
+        var _this = this;
+        if (this.parent.hasAttribute("data-files")) {
+            this.FromJS(JSON.parse(this.parent.getAttribute("data-files")));
+            return Promise.resolve();
+        }
+        var content = this.parent.innerText.trim();
+        if ("" != content) {
+            this.FromJS(JSON.parse(content));
+            return Promise.resolve();
+        }
+        this.api.ListAllRepoFiles(this.repoOwner, this.repoName)
+            .then(function (_a) {
+            var js = _a[0];
+            _this.FromJS(js);
+            return Promise.resolve();
+        });
+    };
+    return VolumeElement;
+}(Volume));
+
 var RepoEditorPage = (function () {
     function RepoEditorPage(repoOwner, repoName, allFilesListEl) {
         var _this = this;
@@ -821,7 +924,9 @@ var RepoEditorPage = (function () {
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.editor = new RepoFileEditorCM(document.getElementById('editor'));
-        new AllFilesList(allFilesListEl, repoOwner, repoName, this.editor);
+        this.volume = new VolumeElement(document.getElementById("volume-element"));
+        new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
+        this.volume.Load();
         //new PullRequestList(document.getElementById('pull-request-list'), repo);
         // window.addEventListener('beforeunload', evt=> {
         // 	// transfer editor to file text
@@ -850,10 +955,12 @@ var RepoEditorPage = (function () {
     RepoEditorPage.instantiate = function () {
         var el = document.querySelector("[data-instance=\"RepoEditorPage\"]");
         if (el) {
-            console.log("Instnatiating RepoEditorPage");
+            console.log("Instantiating RepoEditorPage");
             var repoOwner = el.getAttribute('repo-owner');
             var repoName = el.getAttribute('repo-name');
-            var allFilesList = document.querySelector("[data-instace='AllFilesList']");
+            var volumeEL = document.getElementById("volume-element");
+            var volume = new VolumeElement();
+            var allFilesList = document.querySelector("[data-instance='AllFilesList']");
             new RepoEditorPage(repoOwner, repoName, document.querySelector("[data-instance='AllFilesList']"));
         }
     };
@@ -865,6 +972,7 @@ var EBW = (function () {
         if (null == EBW.instance) {
             EBW.instance = this;
             this.api = new APIWs();
+            console.log("Activating foundation on the document");
             jQuery(document).foundation();
             AddNewBookDialog$$1.instantiate();
             RepoEditorPage.instantiate();

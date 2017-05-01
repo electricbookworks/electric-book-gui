@@ -109,6 +109,12 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 			}
 			return string(raw)
 		},
+		`JS`: func(in string) template.JS {
+			return template.JS(in)
+		},
+		`JSStr`: func(in string) template.JSStr {
+			return template.JSStr(in)
+		},
 		"humantime": func(in interface{}) string {
 			t, ok := in.(time.Time)
 			if !ok {

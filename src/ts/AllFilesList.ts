@@ -5,15 +5,18 @@ import {EBW} from './EBW';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {Volume} from './FS/Volume';
 import {FileInfo} from './FS/FileInfo';
+import {FileState} from './FS/FileState';
 import {AllFiles_File} from './AllFiles_File';
 import {RepoFileModel} from './RepoFileModel';
 
 export class AllFilesList {
 	protected api: API;
+	protected files: Map<string, AllFiles_File>;
 	constructor(
 		protected parent:HTMLElement,
 		protected repoOwner:string, 
 		protected repoName:string,
+		protected volume:Volume,
 		protected editor: RepoFileEditorCM) {
 		this.api = EBW.API();
 		if (``==this.repoOwner) {
@@ -22,30 +25,43 @@ export class AllFilesList {
 		if (``==this.repoName) {
 			this.repoName = parent.getAttribute(`repo-name`);
 		}
-		if (parent.hasAttribute(`data-files`)) {
-			this.renderFilesList(JSON.parse(parent.getAttribute(`data-files`)));
-		} else {
-			this.api.ListAllRepoFiles(this.repoOwner, this.repoName)
-			.then( ([js])=>{
-				this.renderFilesList(js);
-			})
-			.catch( EBW.Error );
-		}
-	}
-	renderFilesList(js) {
-		let v = new Volume();
-		v.Events.add(this.volumeChange, this);
-		v.FromJS(js);
-		// new AllFilesEditor(
-		// 	this.repoOwner, this.repoName,
-		// 	document.getElementById(`all-files-editor`),
-		// 	d, 
-		// 	(_source, file)=>{
-		// 		this.editor.setFile(file);
-		// });
+		this.volume.Events.add(this.volumeChange, this);
+		this.files = new Map<string,AllFiles_File>();
 	}
 	volumeChange(volume: Volume, fileInfo: FileInfo) {
-		new AllFiles_File(this.parent, fileInfo, {
+		// If fileInfo==FileState.Exists,
+		// we check whether we already have this element,
+		// otherwise we need to add it to our list.
+		// If fileInfo==FileState.Changed, we also check
+		// whether we have the element, since Changed can
+		// mark a creation.
+		// For Purged, the AllFiles_File will handle the
+		// state change itself, but we need to remove the
+		// element from our tracking list. 
+		let f : AllFiles_File = this.files.get(fileInfo.Name());
+		// We only
+		switch (fileInfo.State()) {
+			case FileState.Exists:
+				if (!f) {
+					this.newFile(fileInfo);
+				}
+				break;
+			case FileState.Changed:
+				if (!f) {
+					this.newFile(fileInfo);
+				}
+				break;
+			case FileState.Removed:
+				break;
+			case FileState.Purged:
+				if (f) {
+					this.files.delete(fileInfo.Name());
+				}
+				break;
+		}
+	}
+	newFile(fileInfo:FileInfo) : AllFiles_File {
+		let f = new AllFiles_File(this.parent, fileInfo, {
 			clickName: (evt)=>{
 				console.log(`clicked ${fileInfo.Name()}`);
 				let m = new RepoFileModel(this.repoOwner,
@@ -53,5 +69,8 @@ export class AllFilesList {
 				this.editor.setFile(m);
 			}
 		});
+		this.files.set(fileInfo.Name(), f);
+		return f;
 	}
+
 }

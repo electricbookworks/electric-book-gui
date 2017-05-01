@@ -11,7 +11,7 @@ export class File {
 		this._name = name;
 	}
 	static FromJS(parent:Directory, js:any) : File {
-		return new File(parent, js.Name);
+		return new File(parent, js.N);
 	}
 	Debug() {
 		console.log(this.path());
