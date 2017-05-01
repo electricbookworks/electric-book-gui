@@ -19,7 +19,7 @@ export class Directory {
 		let d = new Directory(parent, js.N as string);
 		for (let f of js.F) {
 			let e : Directory|File;
-			if (f.D) {
+			if (f.F) {
 				e = Directory.FromJS(d, f);
 				d.Files.push(e);
 			} else {

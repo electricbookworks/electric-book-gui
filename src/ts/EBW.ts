@@ -5,6 +5,7 @@ import {AddNewBookDialog} from './AddNewBookDialog';
 import {RepoEditorPage} from './RepoEditorPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import './AllFilesList';
+import {PullRequestMergePage} from './PullRequestMergePage';
 
 export class EBW {
 	static instance : EBW;
@@ -15,8 +16,11 @@ export class EBW {
 			this.api = new APIWs();
 			console.log(`Activating foundation on the document`);
 			jQuery(document).foundation();
+			/* TODO: This should actually use a Router
+			   to determine what content we have. */
 			AddNewBookDialog.instantiate();
 			RepoEditorPage.instantiate();
+			PullRequestMergePage.instantiate();
 		}
 		return EBW.instance;
 	}
@@ -36,6 +40,14 @@ export class EBW {
 		let r : string|boolean = prompt(msg);
 		return Promise.resolve(``==r ? false : r);
 	}
+	// flatten takes returns a function that accepts an 
+	// array of arguments, and calls the callback function
+	// with each array element as a distinct parameter.
+	static flatten(callback:any, context?:any) {
+		return function(argsArray:any[]) {
+			callback.apply(context, argsArray);
+		}
+	}		
 }
 
 document.addEventListener('DOMContentLoaded', function() {

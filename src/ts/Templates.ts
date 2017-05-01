@@ -2,6 +2,8 @@
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
 	export type AllFiles_File =	HTMLUListElement;
+	export type MergeEditor =	HTMLDivElement;
+	export type PullRequestDiffList_File =	HTMLUListElement;
 	export type RepoFileEditLink =	HTMLUListElement;
 	export type RepoFileEditor_codemirror =	HTMLDivElement;
 	
@@ -18,6 +20,11 @@ export namespace R {
 		};
 	export interface AllFiles_File {
 		name: HTMLDivElement,
+		};
+	export interface MergeEditor {
+		mergely: HTMLDivElement,
+		};
+	export interface PullRequestDiffList_File {
 		};
 	export interface RepoFileEditLink {
 		editing: HTMLUnknownElement,
@@ -108,6 +115,52 @@ export class AllFiles_File {
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
 			name: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class MergeEditor {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.MergeEditor;
+	constructor() {
+		let t = MergeEditor._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="merge-editor">
+	<div class="action-group">
+		<button data-event="click:save" class="btn">Save</button>
+	</div>
+	<div class="merge-mergely">
+	</div>
+</div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			MergeEditor._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			mergely: n.childNodes[3] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class PullRequestDiffList_File {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.PullRequestDiffList_File;
+	constructor() {
+		let t = PullRequestDiffList_File._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul>
+	<li data-set="this">
+	</li>
+</ul>`;
+			t = d.firstElementChild.childNodes[1] as HTMLUListElement;
+			PullRequestDiffList_File._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
 		};
 		this.el = n;
 	}

@@ -202,6 +202,38 @@ var AllFiles_File = (function () {
     }
     return AllFiles_File;
 }());
+var MergeEditor = (function () {
+    function MergeEditor() {
+        var t = MergeEditor._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button data-event=\"click:save\" class=\"btn\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\">\n\t</div>\n</div>";
+            t = d.firstElementChild;
+            MergeEditor._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            mergely: n.childNodes[3]
+        };
+        this.el = n;
+    }
+    return MergeEditor;
+}());
+var PullRequestDiffList_File = (function () {
+    function PullRequestDiffList_File() {
+        var t = PullRequestDiffList_File._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t</li>\n</ul>";
+            t = d.firstElementChild.childNodes[1];
+            PullRequestDiffList_File._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {};
+        this.el = n;
+    }
+    return PullRequestDiffList_File;
+}());
 var RepoFileEditor_codemirror = (function () {
     function RepoFileEditor_codemirror() {
         var t = RepoFileEditor_codemirror._template;
@@ -734,7 +766,7 @@ var Directory = (function () {
         for (var _i = 0, _a = js.F; _i < _a.length; _i++) {
             var f = _a[_i];
             var e = void 0;
-            if (f.D) {
+            if (f.F) {
                 e = Directory.FromJS(d, f);
                 d.Files.push(e);
             }
@@ -953,7 +985,7 @@ var RepoEditorPage = (function () {
         });
     }
     RepoEditorPage.instantiate = function () {
-        var el = document.querySelector("[data-instance=\"RepoEditorPage\"]");
+        var el = document.getElementById("repo-editor-page");
         if (el) {
             console.log("Instantiating RepoEditorPage");
             var repoOwner = el.getAttribute('repo-owner');
@@ -967,6 +999,149 @@ var RepoEditorPage = (function () {
     return RepoEditorPage;
 }());
 
+var MergeEditor$1 = (function (_super) {
+    tslib_1.__extends(MergeEditor$$1, _super);
+    function MergeEditor$$1(parent, model) {
+        var _this = _super.call(this) || this;
+        _this.parent = parent;
+        _this.model = model;
+        Eventify(_this.el, {
+            'save': function (evt) {
+                evt.preventDefault();
+                model.Update(_this.get())["catch"](function (err) {
+                    console.log("Error on the save function");
+                    EBW.Error(err);
+                });
+            }
+        });
+        AddToParent(_this.parent, _this.el);
+        model.GetContent()
+            .then(function (args) { return _this.mergely(args); })["catch"](EBW.Error);
+        return _this;
+    }
+    MergeEditor$$1.prototype.get = function () {
+        var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
+        return cm.getDoc().getValue();
+    };
+    MergeEditor$$1.prototype.mergely = function (_a) {
+        var _this = this;
+        var local = _a[0], remote = _a[1], diff = _a[2];
+        this.$.mergely.textContent = "";
+        this.mergelyDiv = document.createElement("div");
+        this.$.mergely.appendChild(this.mergelyDiv);
+        var m = jQuery(this.mergelyDiv);
+        m.mergely({
+            cmsettings: {
+                readOnly: false,
+                lineNumbers: true,
+                wrap_lines: true
+            },
+            rhs_cmsettings: {},
+            // editor_height: "40em",
+            autoresize: true,
+            editor_height: "100%",
+            // editor_width: "48%",
+            wrap_lines: true,
+            lhs: function (setValue) {
+                setValue(local);
+            },
+            rhs: function (setValue) {
+                setValue(remote);
+            },
+            height: function (h) {
+                return _this.$.mergely.clientHeight + "px";
+            },
+            width: function (w) {
+                return _this.$.mergely.clientWidth + "px";
+            }
+        });
+        var right = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
+        console.log('right hand cm = ', right);
+    };
+    return MergeEditor$$1;
+}(MergeEditor));
+
+var PRDiffModel = (function () {
+    function PRDiffModel(diff, prArgs) {
+        this.diff = diff;
+        this.prArgs = prArgs;
+        this.DirtySignal = new signals.Signal();
+        this.EditingSignal = new signals.Signal();
+    }
+    PRDiffModel.prototype.path = function () {
+        return this.diff.path;
+    };
+    PRDiffModel.prototype.key = function () {
+        return this.diff.remote_hash + ":" + this.diff.local_hash;
+    };
+    PRDiffModel.prototype.origKey = function () {
+        return this.key + '-original';
+    };
+    PRDiffModel.prototype.GetContent = function () {
+        console.log("calling API.PullRequestVersions(", JSON.stringify(this.prArgs), this.diff.path, ")");
+        return EBW.API().PullRequestVersions(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteURL, this.prArgs.remoteSHA, this.diff.path);
+    };
+    PRDiffModel.prototype.Update = function (content) {
+        return EBW.API().PullRequestUpdate(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteSHA, this.diff.path, content);
+    };
+    return PRDiffModel;
+}());
+
+var PullRequestDiffList_File$1 = (function (_super) {
+    tslib_1.__extends(PullRequestDiffList_File$$1, _super);
+    function PullRequestDiffList_File$$1(parent, diff, callback) {
+        var _this = _super.call(this) || this;
+        _this.parent = parent;
+        _this.diff = diff;
+        _this.callback = callback;
+        _this.el.textContent = diff.path();
+        _this.el.addEventListener('click', function (evt) {
+            _this.callback(_this.diff);
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    return PullRequestDiffList_File$$1;
+}(PullRequestDiffList_File));
+
+var PullRequestMergePage = (function () {
+    function PullRequestMergePage(diffs, prArgs, filesParent, mergelyParent) {
+        var _this = this;
+        this.prArgs = prArgs;
+        this.filesParent = filesParent;
+        this.mergelyParent = mergelyParent;
+        this.files = [];
+        if (!this.filesParent) {
+            alert("PullRequestMergePage called, but filesParent is undefined");
+            debugger;
+        }
+        for (var _i = 0, diffs_1 = diffs; _i < diffs_1.length; _i++) {
+            var d = diffs_1[_i];
+            var diff = new PRDiffModel(d, prArgs);
+            this.files.push(diff);
+            new PullRequestDiffList_File$1(this.filesParent, diff, function (d) {
+                _this.viewDiff(d);
+            });
+        }
+    }
+    PullRequestMergePage.prototype.viewDiff = function (diff) {
+        this.mergelyParent.textContent = '';
+        new MergeEditor$1(this.mergelyParent, diff);
+    };
+    PullRequestMergePage.instantiate = function () {
+        var pr = document.getElementById('pr-merge-page');
+        if (pr) {
+            new PullRequestMergePage(JSON.parse(pr.textContent), {
+                repoOwner: pr.getAttribute("repo-owner"),
+                repoName: pr.getAttribute("repo-name"),
+                remoteURL: pr.getAttribute("remote-url"),
+                remoteSHA: pr.getAttribute("remote-sha")
+            }, document.getElementById("pr-files-list"), document.getElementById("mergely-container"));
+        }
+    };
+    return PullRequestMergePage;
+}());
+
 var EBW = (function () {
     function EBW() {
         if (null == EBW.instance) {
@@ -974,8 +1149,11 @@ var EBW = (function () {
             this.api = new APIWs();
             console.log("Activating foundation on the document");
             jQuery(document).foundation();
+            /* TODO: This should actually use a Router
+               to determine what content we have. */
             AddNewBookDialog$$1.instantiate();
             RepoEditorPage.instantiate();
+            PullRequestMergePage.instantiate();
         }
         return EBW.instance;
     }
@@ -998,6 +1176,14 @@ var EBW = (function () {
     EBW.Prompt = function (msg) {
         var r = prompt(msg);
         return Promise.resolve("" == r ? false : r);
+    };
+    // flatten takes returns a function that accepts an 
+    // array of arguments, and calls the callback function
+    // with each array element as a distinct parameter.
+    EBW.flatten = function (callback, context) {
+        return function (argsArray) {
+            callback.apply(context, argsArray);
+        };
     };
     return EBW;
 }());

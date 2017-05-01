@@ -11,6 +11,7 @@ import (
 type DirectoryEntry interface {
 	Name() string
 	IsDirectory() bool
+	Map() map[string]interface{}
 }
 
 type File struct {
@@ -24,11 +25,16 @@ func (f *File) Name() string {
 func (f *File) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
 		"N": f.name,
-		"D": false,
 	})
 }
 func (f *File) IsDirectory() bool {
 	return false
+}
+
+func (f *File) Map() map[string]interface{} {
+	return map[string]interface{}{
+		"N": f.name,
+	}
 }
 
 type Directory struct {
@@ -43,9 +49,19 @@ func (d *Directory) Name() string {
 func (d *Directory) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
 		"N": d.name,
-		"D": true,
 		"F": d.Files,
 	})
+}
+
+func (d *Directory) Map() map[string]interface{} {
+	files := make([]map[string]interface{}, len(d.Files))
+	for i, f := range d.Files {
+		files[i] = f.Map()
+	}
+	return map[string]interface{}{
+		"N": d.name,
+		"F": files,
+	}
 }
 
 func (d *Directory) IsDirectory() bool {

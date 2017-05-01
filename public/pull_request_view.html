@@ -4,7 +4,7 @@
 <main id="pull-request-view">
 	<nav id="differences">
 		<div>Changes for Review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
-		<div id="repo-file-list">
+		<div id="pr-files-list">
 		</div>
 
 		<div>
@@ -16,15 +16,8 @@
 </main>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-	new PullRequestDiffList(document.getElementById('repo-file-list'), {{.Diffs}}, {
-			"repoOwner":{{.RepoOwner}},
-			"repoName": {{.RepoName}},
-			"remoteURL" : {{.PullURL}},
-			"remoteSHA": {{.SHA}},
-		}, document.getElementById('mergely-container'));
-});
+<script id="pr-merge-page" type="text/hidden" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}" remote-url="{{.PullURL}}" remote-sha="{{.SHA}}">
+{{- .Diffs -}}
 </script>
 
 {{template "_footer.html" .}}

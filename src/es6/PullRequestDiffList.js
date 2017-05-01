@@ -20,7 +20,6 @@ class PullRequestDiffList {
 		this.mergelyParent.textContent='';
 		new MergeEditor(this.mergelyParent, diff);
 	}
-
 }
 
 window.PullRequestDiffList = PullRequestDiffList

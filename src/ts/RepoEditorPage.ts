@@ -51,7 +51,7 @@ export class RepoEditorPage {
 		});
 	}
 	static instantiate() {
-		let el = document.querySelector(`[data-instance="RepoEditorPage"]`);
+		let el = document.getElementById(`repo-editor-page`);
 		if (el) {
 			console.log(`Instantiating RepoEditorPage`);
 			let repoOwner = el.getAttribute('repo-owner');

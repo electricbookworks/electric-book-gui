@@ -25,9 +25,9 @@
 	</section>
 
 	<script type="text/hidden" id="volume-element">
-	{{- .RepoFiles | json | JS -}}
+	{{- .RepoFiles -}}
 	</script>
-	<script data-instance="RepoEditorPage" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"></script>
+	<script id="repo-editor-page" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"></script>
 </main>
 
 {{template "_footer.html" .}}
