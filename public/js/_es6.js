@@ -1945,6 +1945,159 @@ var RepoFileModel = function () {
 
 	return RepoFileModel;
 }();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// dtemplate generated - do not edit
+var TTemplate = function () {
+	var joinIterators = function () {
+		function joinIterators(iters) {
+			_classCallCheck(this, joinIterators);
+
+			this.iters = iters;
+			this.i = 0;
+		}
+
+		_createClass(joinIterators, [{
+			key: 'next',
+			value: function next() {
+				if (this.i == this.iters.length) {
+					return { 'value': undefined, 'done': true };
+				}
+				var r = this.iters[this.i].next();
+				if (!r.done) {
+					return r;
+				}
+				this.i++;
+				return this.next();
+			}
+		}, {
+			key: Symbol.iterator,
+			value: function value() {
+				return this;
+			}
+		}]);
+
+		return joinIterators;
+	}();
+
+	var querySelectorAllIterator = function () {
+		function querySelectorAllIterator(qs) {
+			_classCallCheck(this, querySelectorAllIterator);
+
+			this.qs = qs;
+			this.i = 0;
+		}
+
+		_createClass(querySelectorAllIterator, [{
+			key: 'next',
+			value: function next() {
+				if (this.i == this.qs.length) {
+					return { 'value': undefined, 'done': true };
+				}
+				return { 'value': this.qs.item(this.i++), 'done': false };
+			}
+		}, {
+			key: Symbol.iterator,
+			value: function value() {
+				return this;
+			}
+		}]);
+
+		return querySelectorAllIterator;
+	}();
+
+	var QuerySelectorAllIterate = function QuerySelectorAllIterate(el, query) {
+		var els = [];
+		if ('function' == typeof el.matches) {
+			if (el.matches(query)) {
+				els.push(el);
+			}
+		} else if ('function' == typeof el.matchesSelector) {
+			if (el.matchesSelector(query)) {
+				els.push(el);
+			}
+		}
+		var qs = el.querySelectorAll(query);
+		var i = qs[Symbol.iterator];
+		if ('function' == typeof i) {
+			return new joinIterators([els[Symbol.iterator](), qs[Symbol.iterator]()]);
+		}
+		return new joinIterators([els[Symbol.iterator](), new querySelectorAllIterator(qs)]);
+	};
+
+	var templates = { "AddNewBookDialog": '<div>\n\t<div data-set="chooseType">\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type="radio" value="new" data-set="newBookRadio" />\n\t\t\t\tStart an new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type="radio" value="collaborate"\n\t\t\t\tdata-set="collaborateRadio" />\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event="click:choseType" class="btn">Next</button>\n\t</div>\n\t<div data-set="newBook" style="display: none;">\n\t\t<h1>New Book</h1>\n\t\t<form method="post" action="/github/create/new">\n\t\t<input type="hidden" name="action" value="new" />\n\t\t<label>Enter the name for your new book.\n\t\t<input type="text" name="repo_new" placeholder="e.g. MobyDick" data-set="repo_name"/>\n\t\t</label>\n\t\t<input type="submit" class="btn" value="New Book"/>\n\t\t</form>\n\t</div>\n\t<div data-set="collaborate">\n\t\t<h1>Collaborate</h1>\n\t\t<form method="post" action="/github/create/fork">\n\t\t<input type="hidden" name="action" value="fork" />\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core" data-set="collaborate_repo" />\n\t\t</label>\n\t\t<input type="submit" class="btn" value="Collaborate" />\n\t\t</form>\n\t</div>\n</div>\n' };
+
+	var mk = function mk(k, html) {
+		var el = document.createElement('div');
+		el.innerHTML = html;
+
+		var c = el.firstElementChild;
+		while (null != c && Node.ELEMENT_NODE != c.nodeType) {
+			c = c.nextSibling;
+		}
+		if (null == c) {
+			console.error("FAILED TO FIND ANY ELEMENT CHILD OF ", k, ":", el);
+			return mk('error', '<em>No child elements in template ' + k + '</em>');
+		}
+		el = c;
+		var et = el.querySelector('[data-set="this"]');
+		if (null != et) {
+			el = et;
+			el.removeAttribute('data-set');
+		}
+		return el;
+	};
+
+	for (var i in templates) {
+		templates[i] = mk(i, templates[i]);
+	}
+
+	return function (t) {
+		var dest = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+		// Return a deep copy of the node
+		var n = templates[t].cloneNode(true);
+		try {
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = QuerySelectorAllIterate(n, '[data-set]')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var el = _step.value;
+
+					var a = el.getAttribute('data-set');
+					if (a.substr(0, 1) == '$') {
+						a = a.substr(1);
+						el = jQuery(el);
+					}
+					dest[a] = el;
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+		} catch (err) {
+			console.error("ERROR in DTemplate(" + t + "): ", err);
+			debugger;
+		}
+		return [n, dest];
+	};
+}();
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2311,3 +2464,21 @@ var File = function () {
 
 	return File;
 }();
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _rollupPluginTypescript = require('rollup-plugin-typescript');
+
+var _rollupPluginTypescript2 = _interopRequireDefault(_rollupPluginTypescript);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+	entry: './main.ts',
+	plugins: [(0, _rollupPluginTypescript2.default)({
+		typescript: require('typescript@2.3.1')
+	})]
+}; // rollup.config.js

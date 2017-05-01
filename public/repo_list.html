@@ -40,7 +40,7 @@
         </li>
     </ul>
 
-    <div class="reveal" id="repo-new-modal" data-reveal>
+    <div class="reveal" data-instance="AddNewBookDialog" id="repo-new-modal" data-reveal>
          <button class="close-button" data-close aria-label="Close modal" type="button">
             <span aria-hidden="true">&times;</span>
           </button>        
@@ -49,10 +49,5 @@
 </section>
 
 </main>
-<script type="text/javascript">
-document.addEventListener(`DOMContentLoaded`, function() {
-  new AddNewBookDialog(document.getElementById(`repo-new-modal`));
-});
-</script>
 
 {{template "_footer.html" .}}

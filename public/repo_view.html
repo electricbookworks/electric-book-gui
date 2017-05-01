@@ -2,7 +2,7 @@
 {{template "_nav_main.html" .}}
 
 <main id="new-editor">
-	<nav id="all-files-editor" data-files="{{.RepoFiles | json}}">
+	<nav id="all-files-editor" data-files="{{.RepoFiles | json}}" data-instance="AllFilesList">
 	</nav>
 
 	<section class="section-editor" id="file-editors">
@@ -23,11 +23,8 @@
 		   <button disabled class="btn">epub</button>
 		</div>
 	</section>
-	<script>
-	document.addEventListener('DOMContentLoaded', function() {
-		new RepoEditorPage('{{.RepoOwner}}','{{.RepoName}}');
-	});
-	</script>
+
+	<script data-instance="RepoEditorPage" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"> </script>
 </main>
 
 {{template "_footer.html" .}}

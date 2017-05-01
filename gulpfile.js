@@ -14,7 +14,8 @@ var
 	sass = require('gulp-sass'),
 	babelPresetEs2015 = require('babel-preset-es2015'),
 	runSequence = require('run-sequence'),
-	svgmin = require('gulp-svgmin')
+	svgmin = require('gulp-svgmin'),
+	typescript = require('gulp-typescript')
 	;
 
 var hreq = require;
@@ -103,6 +104,26 @@ gulp.task('scss', function() {
 	.pipe(gulp.dest('public/css'));
 });
 
+gulp.task('typescript-compile', function() {
+	return gulp.src(paths.es6.src + '/**/*.ts')
+	.pipe(typescript({
+			"target": "es2016",
+			"module": "es6",
+			"sourceMap": true,
+			"allowJs": true,
+			"checkJs": true,
+			"outDir": "./rollup",
+	}))
+	.on('error', errorAlert('es6'))
+	.pipe(gulp.dest(paths.es6.dest))
+	.pipe(notify("typescript-compile completed"));
+;
+});
+
+gulp.task('typescript', function(cb) {
+	runSequence('typescript-compile','merge', cb);
+});
+
 gulp.task('svgmin', function () {
     return gulp.src(paths.svg.src + '/*.svg')
         .pipe(svgmin())
@@ -113,4 +134,5 @@ gulp.task('watch', function() {
 	gulp.watch(paths.es6.src + '/**/*.js', ['es6']);
 	gulp.watch([paths.dtemplate.src + '/**/*.html'], ['dtemplate']);
 	gulp.watch(paths.scss.src + '/**/*.scss', ['scss']);
+	gulp.watch(paths.es6.src + '/**/*.ts', ['typescript']);
 });

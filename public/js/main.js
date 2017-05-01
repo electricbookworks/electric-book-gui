@@ -2312,4 +2312,42 @@ var File = function () {
 
 	return File;
 }();
+"use strict";
+var FSActionType;
+(function (FSActionType) {
+    FSActionType[FSActionType["Write"] = 1] = "Write";
+    FSActionType[FSActionType["Delete"] = 2] = "Delete";
+    FSActionType[FSActionType["Move"] = 3] = "Move";
+})(FSActionType || (FSActionType = {}));
+var FSAction = (function () {
+    function FSAction(actionType, path, destination) {
+        this.actionType = actionType;
+        this.path = path;
+        this.destination = destination;
+    }
+    FSAction.prototype.Action = function () {
+        return this.actionType;
+    };
+    FSAction.prototype.Path = function () {
+        return this.path;
+    };
+    FSAction.prototype.Destination = function () {
+        return this.destination;
+    };
+    return FSAction;
+}());
+/**
+ * SessionFS is a filesystem that stores its
+ * files in the browser's SessionStorage.
+ */
+var SessionFS = (function () {
+    function SessionFS(name) {
+        this._name = name;
+    }
+    SessionFS.prototype.fileKey = function (path) {
+        return "sessionfs:" + this._name + "/" + path;
+    };
+    return SessionFS;
+}());
+
 })();
