@@ -167,19 +167,19 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a New Book</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new book.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New Book</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New Book\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Collaborate</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Collaborate\"/>\n\t\t</form>\n\t</div>\n</div>";
+            d.innerHTML = "<div><div><h1>Add a New Book</h1><fieldset><label><input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new book.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing book.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New Book</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new book.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New Book\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the owner and repo for the book you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            chooseType: n.childNodes[1],
-            newBookRadio: n.childNodes[1].childNodes[3].childNodes[1].childNodes[1],
-            collaborateRadio: n.childNodes[1].childNodes[3].childNodes[3].childNodes[1],
-            newBook: n.childNodes[3],
-            repo_name: n.childNodes[3].childNodes[3].childNodes[3].childNodes[1],
-            collaborate: n.childNodes[5],
-            collaborate_repo: n.childNodes[5].childNodes[3].childNodes[3].childNodes[1]
+            chooseType: n.childNodes[0],
+            newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0],
+            collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0],
+            newBook: n.childNodes[1],
+            repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1],
+            collaborate: n.childNodes[2],
+            collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1]
         };
         this.el = n;
     }
@@ -190,13 +190,13 @@ var AllFiles_File = (function () {
         var t = AllFiles_File._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<ul>\n\t<li data-set=\"this\" class=\"allfiles-file\">\n\t\t<div data-event=\"click:clickName\">NAME\n\t\t</div>\n\t</li>\n</ul>";
-            t = d.firstElementChild.childNodes[1];
+            d.innerHTML = "<ul><li data-set=\"this\" class=\"allfiles-file\"><div data-event=\"click:clickName\">NAME\n\t\t</div></li></ul>";
+            t = d.firstElementChild.childNodes[0];
             AllFiles_File._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            name: n.childNodes[1]
+            name: n.childNodes[0]
         };
         this.el = n;
     }
@@ -207,13 +207,13 @@ var MergeEditor = (function () {
         var t = MergeEditor._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button data-event=\"click:save\" class=\"btn\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\">\n\t</div>\n</div>";
+            d.innerHTML = "<div class=\"merge-editor\"><div class=\"action-group\"><button data-event=\"click:save\" class=\"btn\">Save</button></div><div class=\"merge-mergely\">\n\t</div></div>";
             t = d.firstElementChild;
             MergeEditor._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            mergely: n.childNodes[3]
+            mergely: n.childNodes[1]
         };
         this.el = n;
     }
@@ -224,8 +224,8 @@ var PullRequestDiffList_File = (function () {
         var t = PullRequestDiffList_File._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t</li>\n</ul>";
-            t = d.firstElementChild.childNodes[1];
+            d.innerHTML = "<ul><li data-set=\"this\">\n\t</li></ul>";
+            t = d.firstElementChild.childNodes[0];
             PullRequestDiffList_File._template = t;
         }
         var n = t.cloneNode(true);
@@ -239,17 +239,35 @@ var RepoFileEditor_codemirror = (function () {
         var t = RepoFileEditor_codemirror._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"repo-file-editor-workspace\">\n\t<div class=\"repo-file-editor\">\n\t</div>\n</div>";
+            d.innerHTML = "<div class=\"repo-file-editor-workspace\"><div class=\"repo-file-editor\">\n\t</div></div>";
             t = d.firstElementChild;
             RepoFileEditor_codemirror._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            editor: n.childNodes[1]
+            editor: n.childNodes[0]
         };
         this.el = n;
     }
     return RepoFileEditor_codemirror;
+}());
+var RepoPageEditor_NewFileDialog = (function () {
+    function RepoPageEditor_NewFileDialog() {
+        var t = RepoPageEditor_NewFileDialog._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\"><div class=\"content\"><div class=\"error\">\n\t\t</div><fieldset><label>\n\t\t\t\tEnter the full path to your new file.\n\t\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t\t</label></fieldset><button class=\"btn\" data-event=\"click\">Create File</button></div><button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\"><span aria-hidden=\"true\">\u00D7</span></button></div>";
+            t = d.firstElementChild;
+            RepoPageEditor_NewFileDialog._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            error: n.childNodes[0].childNodes[0],
+            filename: n.childNodes[0].childNodes[1].childNodes[0].childNodes[1]
+        };
+        this.el = n;
+    }
+    return RepoPageEditor_NewFileDialog;
 }());
 
 function QuerySelectorAllIterate(el, query) {
@@ -404,14 +422,18 @@ var _repoFileModelCache = {};
  * RepoFileModel provides a wrapper around a file on the
  * server and a local copy of the file stored in the browser's
  * sessionStorage.
- * The RepoFileModel class has Dirty and Editing signals
- * that can be mapped to be notified when the file is editing or
- * when the file contents on the browser are Dirty, and should be
+ *
+ * The RepoFileModel class has
+ * Dirty and Editing signals
+ * that can be mapped to be notified when
+ * the file is editing or
+ * when the file contents on the browser are Dirty,
+ * and should be
  * updated to the server.
- * The RepoFileModel _should_ be somehow static for all
- * repo-path combinations, but at present it isn't, and it also
- * has a dependency upon the fileList object, which isn't great - I'm
- * not entirely sure why this dependency exists.
+ *
+ * RepoFileModel is essentially static for every
+ * repoOwner, repoName and file name combination.
+ *
  */
 var RepoFileModel = (function () {
     function RepoFileModel(repoOwner, repoName, fileInfo, options) {
@@ -530,6 +552,8 @@ var AllFilesList = (function () {
         this.files = new Map();
     }
     AllFilesList.prototype.volumeChange = function (volume, fileInfo) {
+        console.log("volumeChange: fileInfo = ", fileInfo.Name());
+        console.log("fileInfo = ", fileInfo);
         // If fileInfo==FileState.Exists,
         // we check whether we already have this element,
         // otherwise we need to add it to our list.
@@ -739,6 +763,46 @@ var RepoFileEditorCM = (function (_super) {
     return RepoFileEditorCM;
 }(RepoFileEditor_codemirror));
 
+var RepoPageEditor_NewFileDialog$1 = (function (_super) {
+    tslib_1.__extends(RepoPageEditor_NewFileDialog$$1, _super);
+    function RepoPageEditor_NewFileDialog$$1(repoOwner, repoName, openElement, volume, editor) {
+        var _this = _super.call(this) || this;
+        _this.repoOwner = repoOwner;
+        _this.repoName = repoName;
+        _this.volume = volume;
+        _this.editor = editor;
+        document.body.appendChild(_this.el);
+        _this.$el = jQuery(_this.el);
+        new Foundation.Reveal(_this.$el);
+        Eventify(_this.el, {
+            "click": function (evt) {
+                var filename = _this.$.filename.value;
+                if (_this.volume.Exists(filename)) {
+                    alert("A file named " + filename + " already exists");
+                    return;
+                }
+                _this.volume.Write(filename);
+                _this.$el.foundation('close');
+                var m = new RepoFileModel(_this.repoOwner, _this.repoName, _this.volume.Get(filename), { newFile: true });
+                _this.editor.setFile(m);
+            },
+            "change": function (evt) {
+            }
+        });
+        openElement.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.$el.foundation('open');
+        });
+        _this.$el.bind('open.zf.reveal', function (evt) {
+            _this.$.filename.value = '';
+            _this.$.filename.focus();
+        });
+        return _this;
+    }
+    return RepoPageEditor_NewFileDialog$$1;
+}(RepoPageEditor_NewFileDialog));
+
 var File = (function () {
     function File(parent, name) {
         this._parent = parent;
@@ -854,11 +918,15 @@ var Volume = (function () {
     // file at the named path.
     // To create a file, use Write.
     Volume.prototype.Get = function (path) {
-        var f = files.get(path);
+        var f = this.files.get(path);
         if (f) {
             return f;
         }
         return undefined;
+    };
+    // Exists returns true if the given file exists.
+    Volume.prototype.Exists = function (path) {
+        return this.files.has(path);
     };
     // Write creates a file at the named path, or updates
     // the files state to FileState.Changed if the file
@@ -867,10 +935,12 @@ var Volume = (function () {
         if (this.files.has(path)) {
             var fi_1 = this.files.get(path);
             fi_1.SetState(FileState.Changed);
+            this.Events.dispatch(this, fi_1);
             return;
         }
         var fi = new FileInfo(path, FileState.Changed);
         this.files.set(path, fi);
+        this.Events.dispatch(this, fi);
     };
     // Remove sets the state of the file at the given
     // path to FileState.Removed
@@ -880,16 +950,18 @@ var Volume = (function () {
         }
         var fi = this.files.get(path);
         fi.SetState(FileState.Removed);
+        this.Events.dispatch(this, fi);
     };
     // Purge purges the file at the given path. Unlike
     // Remove, which simply marks a file as 'deleted',
     // Purge actually removes the file entirely, including
     // removing the record that we have of the file.
     Volume.prototype.Purge = function (path) {
-        var f = this.files.get(path);
-        if (f) {
-            f.SetState(FileState.Purged);
+        var fi = this.files.get(path);
+        if (fi) {
+            fi.SetState(FileState.Purged);
             this.files["delete"](path);
+            this.Events.dispatch(this, fi);
         }
     };
     // FromJS adds files to the Volume from the Directory
@@ -968,6 +1040,7 @@ var RepoEditorPage = (function () {
         this.editor = new RepoFileEditorCM(document.getElementById('editor'));
         this.volume = new VolumeElement(document.getElementById("volume-element"));
         new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
+        new RepoPageEditor_NewFileDialog$1(this.repoOwner, this.repoName, document.getElementById('repo-new-file'), this.volume, this.editor);
         this.volume.Load();
         //new PullRequestList(document.getElementById('pull-request-list'), repo);
         // window.addEventListener('beforeunload', evt=> {

@@ -13,14 +13,18 @@ interface RepoFileModelOptions {
  * RepoFileModel provides a wrapper around a file on the
  * server and a local copy of the file stored in the browser's
  * sessionStorage.
- * The RepoFileModel class has Dirty and Editing signals
- * that can be mapped to be notified when the file is editing or
- * when the file contents on the browser are Dirty, and should be 
+ * 
+ * The RepoFileModel class has 
+ * Dirty and Editing signals
+ * that can be mapped to be notified when 
+ * the file is editing or
+ * when the file contents on the browser are Dirty, 
+ * and should be 
  * updated to the server.
- * The RepoFileModel _should_ be somehow static for all
- * repo-path combinations, but at present it isn't, and it also
- * has a dependency upon the fileList object, which isn't great - I'm 
- * not entirely sure why this dependency exists. 
+ *
+ * RepoFileModel is essentially static for every
+ * repoOwner, repoName and file name combination.
+ *
  */
 export class RepoFileModel {
 	protected DirtySignal: signals.Signal;

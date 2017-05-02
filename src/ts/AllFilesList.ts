@@ -29,6 +29,8 @@ export class AllFilesList {
 		this.files = new Map<string,AllFiles_File>();
 	}
 	volumeChange(volume: Volume, fileInfo: FileInfo) {
+		console.log(`volumeChange: fileInfo = `, fileInfo.Name());
+		console.log(`fileInfo = `, fileInfo);
 		// If fileInfo==FileState.Exists,
 		// we check whether we already have this element,
 		// otherwise we need to add it to our list.

@@ -1,6 +1,7 @@
 import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
+import {RepoPageEditor_NewFileDialog} from './RepoPageEditor_NewFileDialog';
 import {EBW} from './EBW';
 import {Volume} from './FS/Volume';
 import {VolumeElement} from './VolumeElement';
@@ -25,6 +26,13 @@ export class RepoEditorPage {
 
 		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
 
+		new RepoPageEditor_NewFileDialog(
+			this.repoOwner,
+			this.repoName,
+			document.getElementById('repo-new-file'),
+			this.volume,
+			this.editor);
+		
 		this.volume.Load();
 
 		//new PullRequestList(document.getElementById('pull-request-list'), repo);

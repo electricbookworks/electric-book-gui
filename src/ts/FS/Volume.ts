@@ -16,11 +16,15 @@ export class Volume {
 	// file at the named path.
 	// To create a file, use Write.
 	Get(path:string) : FileInfo|undefined {
-		let f= files.get(path);
+		let f= this.files.get(path);
 		if (f) {
 			return f;
 		}
 		return undefined;
+	}
+	// Exists returns true if the given file exists.
+	Exists(path:string): boolean {
+		return this.files.has(path);
 	}
 	// Write creates a file at the named path, or updates
 	// the files state to FileState.Changed if the file
@@ -29,10 +33,12 @@ export class Volume {
 		if (this.files.has(path)) {
 			let fi = this.files.get(path);
 			fi.SetState(FileState.Changed);
+			this.Events.dispatch(this, fi);
 			return;
 		}
 		let fi = new FileInfo(path, FileState.Changed);
 		this.files.set(path, fi);
+		this.Events.dispatch(this, fi);
 	}
 	// Remove sets the state of the file at the given
 	// path to FileState.Removed
@@ -42,16 +48,18 @@ export class Volume {
 		}
 		let fi = this.files.get(path);
 		fi.SetState(FileState.Removed);
+		this.Events.dispatch(this, fi);
 	}
 	// Purge purges the file at the given path. Unlike
 	// Remove, which simply marks a file as 'deleted',
 	// Purge actually removes the file entirely, including
 	// removing the record that we have of the file.
 	Purge(path:string) {
-		let f = this.files.get(path);
-		if (f) {
-			f.SetState(FileState.Purged);
+		let fi = this.files.get(path);
+		if (fi) {
+			fi.SetState(FileState.Purged);
 			this.files.delete(path);
+			this.Events.dispatch(this, fi);
 		}
 	}
 	// FromJS adds files to the Volume from the Directory

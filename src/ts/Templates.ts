@@ -6,6 +6,7 @@ export namespace EL {
 	export type PullRequestDiffList_File =	HTMLUListElement;
 	export type RepoFileEditLink =	HTMLUListElement;
 	export type RepoFileEditor_codemirror =	HTMLDivElement;
+	export type RepoPageEditor_NewFileDialog =	HTMLDivElement;
 	
 }
 export namespace R {
@@ -33,6 +34,10 @@ export namespace R {
 	export interface RepoFileEditor_codemirror {
 		editor: HTMLDivElement,
 		};
+	export interface RepoPageEditor_NewFileDialog {
+		error: HTMLDivElement,
+		filename: HTMLInputElement,
+		};
 	
 }	// end namespace R
 export class AddNewBookDialog {
@@ -43,54 +48,27 @@ export class AddNewBookDialog {
 		let t = AddNewBookDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<div>
-		<h1>Add a New Book</h1>
-		<fieldset>
-			<label>
-				<input type="radio" value="new"/>
+			d.innerHTML = `<div><div><h1>Add a New Book</h1><fieldset><label><input type="radio" value="new"/>
 				Start a new book.
-			</label>
-			<label>
-				<input type="radio" value="collaborate"/>
+			</label><label><input type="radio" value="collaborate"/>
 				Collaborate on an existing book.
-			</label>
-		</fieldset>
-		<button data-event="click:choseType" class="btn">Next</button>
-	</div>
-	<div>
-		<h1>New Book</h1>
-		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
-		<label>Enter the name for your new book.
+			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New Book</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new book.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
-		</label>
-		<input type="submit" class="btn" value="New Book"/>
-		</form>
-	</div>
-	<div>
-		<h1>Collaborate</h1>
-		<form method="post" action="/github/create/fork">
-		<input type="hidden" name="action" value="fork"/>
-		<label>Enter the owner and repo for the book you will collaborate on.
+		</label><input type="submit" class="btn" value="New Book"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the owner and repo for the book you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
-		</label>
-		<input type="submit" class="btn" value="Collaborate"/>
-		</form>
-	</div>
-</div>`;
+		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			AddNewBookDialog._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			chooseType: n.childNodes[1] as HTMLDivElement,
-			newBookRadio: n.childNodes[1].childNodes[3].childNodes[1].childNodes[1] as HTMLInputElement,
-			collaborateRadio: n.childNodes[1].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
-			newBook: n.childNodes[3] as HTMLDivElement,
-			repo_name: n.childNodes[3].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
-			collaborate: n.childNodes[5] as HTMLDivElement,
-			collaborate_repo: n.childNodes[5].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
+			chooseType: n.childNodes[0] as HTMLDivElement,
+			newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0] as HTMLInputElement,
+			collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0] as HTMLInputElement,
+			newBook: n.childNodes[1] as HTMLDivElement,
+			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			collaborate: n.childNodes[2] as HTMLDivElement,
+			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 		};
 		this.el = n;
 	}
@@ -103,18 +81,14 @@ export class AllFiles_File {
 		let t = AllFiles_File._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<ul>
-	<li data-set="this" class="allfiles-file">
-		<div data-event="click:clickName">NAME
-		</div>
-	</li>
-</ul>`;
-			t = d.firstElementChild.childNodes[1] as HTMLUListElement;
+			d.innerHTML = `<ul><li data-set="this" class="allfiles-file"><div data-event="click:clickName">NAME
+		</div></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
 			AllFiles_File._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
-			name: n.childNodes[1] as HTMLDivElement,
+			name: n.childNodes[0] as HTMLDivElement,
 		};
 		this.el = n;
 	}
@@ -127,19 +101,14 @@ export class MergeEditor {
 		let t = MergeEditor._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="merge-editor">
-	<div class="action-group">
-		<button data-event="click:save" class="btn">Save</button>
-	</div>
-	<div class="merge-mergely">
-	</div>
-</div>`;
+			d.innerHTML = `<div class="merge-editor"><div class="action-group"><button data-event="click:save" class="btn">Save</button></div><div class="merge-mergely">
+	</div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			MergeEditor._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			mergely: n.childNodes[3] as HTMLDivElement,
+			mergely: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}
@@ -152,11 +121,9 @@ export class PullRequestDiffList_File {
 		let t = PullRequestDiffList_File._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<ul>
-	<li data-set="this">
-	</li>
-</ul>`;
-			t = d.firstElementChild.childNodes[1] as HTMLUListElement;
+			d.innerHTML = `<ul><li data-set="this">
+	</li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
 			PullRequestDiffList_File._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
@@ -173,19 +140,14 @@ export class RepoFileEditLink {
 		let t = RepoFileEditLink._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<ul>
-	<li class="edit-link" data-set="this" data-event="click">
-		<span class="file-dirty-tag"><i class="fa fa-pencil"> </i></span>
-		<a href="#"><span> </span></a>
-	</li>
-</ul>`;
-			t = d.firstElementChild.childNodes[1] as HTMLUListElement;
+			d.innerHTML = `<ul><li class="edit-link" data-set="this" data-event="click"><span class="file-dirty-tag"><i class="fa fa-pencil"> </i></span><a href="#"><span> </span></a></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
 			RepoFileEditLink._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
-			editing: n.childNodes[1].childNodes[0] as HTMLUnknownElement,
-			name: n.childNodes[3].childNodes[0] as HTMLSpanElement,
+			editing: n.childNodes[0].childNodes[0] as HTMLUnknownElement,
+			name: n.childNodes[1].childNodes[0] as HTMLSpanElement,
 		};
 		this.el = n;
 	}
@@ -198,16 +160,38 @@ export class RepoFileEditor_codemirror {
 		let t = RepoFileEditor_codemirror._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="repo-file-editor-workspace">
-	<div class="repo-file-editor">
-	</div>
-</div>`;
+			d.innerHTML = `<div class="repo-file-editor-workspace"><div class="repo-file-editor">
+	</div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			RepoFileEditor_codemirror._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			editor: n.childNodes[1] as HTMLDivElement,
+			editor: n.childNodes[0] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoPageEditor_NewFileDialog {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoPageEditor_NewFileDialog;
+	constructor() {
+		let t = RepoPageEditor_NewFileDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal=""><div class="content"><div class="error">
+		</div><fieldset><label>
+				Enter the full path to your new file.
+				<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			</label></fieldset><button class="btn" data-event="click">Create File</button></div><button class="close-button" aria-label="Close popup" type="button" data-close=""><span aria-hidden="true">×</span></button></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoPageEditor_NewFileDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			error: n.childNodes[0].childNodes[0] as HTMLDivElement,
+			filename: n.childNodes[0].childNodes[1].childNodes[0].childNodes[1] as HTMLInputElement,
 		};
 		this.el = n;
 	}

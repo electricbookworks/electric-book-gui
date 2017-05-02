@@ -2,15 +2,20 @@
 {{template "_nav_main.html" .}}
 
 <main id="new-editor">
-	<nav>
-		<ul id="all-files-editor" data-instance="AllFilesList">
+	<nav id="new-editor-files-nav">
+		<div class="file-actions action-group">
+			<button id="repo-new-file" class="btn">New File</button>
+			<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
+		</div>
+		<div class="file-container">
+			<ul id="all-files-editor" data-instance="AllFilesList">
 		</ul>
+		</div>
 	</nav>
 
 	<section class="section-editor" id="file-editors">
 		<header class="header-split">
 			<div class="action-group primary" id="editor-actions">
-				<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
 				<button data-event="click:save" data-set="save" class="btn">Save</button>
 				<button data-event="click:undo" data-set="undo" class="btn">Undo</button>
 				<button data-event="click:delete" data-set="delete" title="Delete" class="btn">Delete</button>
