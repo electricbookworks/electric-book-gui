@@ -8,6 +8,8 @@ import {FileInfo} from './FS/FileInfo';
 import {FileState} from './FS/FileState';
 import {AllFiles_File} from './AllFiles_File';
 import {RepoFileModel} from './RepoFileModel';
+import {RepoFileModelOptions} from './RepoFileModelOptions';
+import {RepoFileModelCache} from './RepoFileModelCache';
 
 export class AllFilesList {
 	protected api: API;
@@ -17,7 +19,8 @@ export class AllFilesList {
 		protected repoOwner:string, 
 		protected repoName:string,
 		protected volume:Volume,
-		protected editor: RepoFileEditorCM) {
+		protected editor: RepoFileEditorCM,
+		protected fileCache: RepoFileModelCache) {
 		this.api = EBW.API();
 		if (``==this.repoOwner) {
 			this.repoOwner = parent.getAttribute(`repo-owner`);
@@ -29,8 +32,7 @@ export class AllFilesList {
 		this.files = new Map<string,AllFiles_File>();
 	}
 	volumeChange(volume: Volume, fileInfo: FileInfo) {
-		console.log(`volumeChange: fileInfo = `, fileInfo.Name());
-		console.log(`fileInfo = `, fileInfo);
+		console.log(`volumeChange -- fileInfo = `, fileInfo);
 		// If fileInfo==FileState.Exists,
 		// we check whether we already have this element,
 		// otherwise we need to add it to our list.
@@ -66,8 +68,7 @@ export class AllFilesList {
 		let f = new AllFiles_File(this.parent, fileInfo, {
 			clickName: (evt)=>{
 				console.log(`clicked ${fileInfo.Name()}`);
-				let m = new RepoFileModel(this.repoOwner,
-					this.repoName, fileInfo);
+				let m = this.fileCache.Create(fileInfo);
 				this.editor.setFile(m);
 			}
 		});

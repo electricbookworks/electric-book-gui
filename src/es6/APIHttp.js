@@ -89,12 +89,20 @@ class API {
 		return this._rpc("Version",  arguments );
 	}
 	
-	DeleteFile(repoOwner,repoName,path) {
-		return this._rpc("DeleteFile",  arguments );
+	RenameFile(repoOwner,repoName,fromPath,toPath) {
+		return this._rpc("RenameFile",  arguments );
+	}
+	
+	RemoveFile(repoOwner,repoName,path) {
+		return this._rpc("RemoveFile",  arguments );
 	}
 	
 	ListFiles(repoOwner,repoName,pathregex) {
 		return this._rpc("ListFiles",  arguments );
+	}
+	
+	FileExists(repoOwner,repoName,path) {
+		return this._rpc("FileExists",  arguments );
 	}
 	
 	ListAllRepoFiles(repoOwner,repoName) {

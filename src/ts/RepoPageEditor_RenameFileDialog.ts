@@ -1,19 +1,20 @@
 import {EBW} from './EBW';
 import {Eventify} from './Eventify';
-import {Volume} from './Volume';
+import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationRevealDialog';
 import {RepoPageEditor_NewFileDialog as Template} from './Templates';
 import {RepoFileModel} from './RepoFileModel';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
+import {Volume} from './Volume';
 
 import jQuery = require('jquery');
 
 /**
- * RepoPageEditor_NewFileDialog displays a new file
+ * RepoPageEditor_RenameFileDialog displays a Rename file
  * dialog on the RepoPageEditor page.
- *
  */
-export class RepoPageEditor_NewFileDialog extends Template {
+export class RepoPageEditor_RenameFileDialog extends Template {
 	protected $el : any;
+	protected dialog : Dialog;
 	constructor(
 		protected repoOwner:string,
 		protected repoName:string,
@@ -22,9 +23,6 @@ export class RepoPageEditor_NewFileDialog extends Template {
 		protected editor: RepoFileEditorCM,
 	) {
 		super();
-		document.body.appendChild(this.el);
-		this.$el = jQuery(this.el);
-		new Foundation.Reveal(this.$el);
 		Eventify(this.el, {
 			"click": (evt)=>{
 				let filename = this.$.filename.value;
@@ -33,7 +31,8 @@ export class RepoPageEditor_NewFileDialog extends Template {
 					return;
 				}
 				this.volume.Write(filename);
-				this.$el.foundation('close');
+				this.volume.Purge(filename);
+				this.dialog.Close();
 				let m = new RepoFileModel(
 					this.repoOwner,
 					this.repoName, 
@@ -45,14 +44,16 @@ export class RepoPageEditor_NewFileDialog extends Template {
 
 			}
 		});
-		openElement.addEventListener('click', (evt)=>{
-			evt.preventDefault();
-			evt.stopPropagation();
-			this.$el.foundation('open');
-		});
-		this.$el.bind('open.zf.reveal', (evt)=>{
-			this.$.filename.value = '';
-			this.$.filename.focus();
-		});
+		dialog = new Dialog(openElement, this.el);
+		dialog.Events.add( (act)=>{
+			switch (act) {
+				case DialogEvents.Opened:
+					this.$.filename.value = '';
+					this.$.filename.focus();
+					break;
+				case DialogEvents.Closed:
+					break;
+			}
+		});		
 	}
 }

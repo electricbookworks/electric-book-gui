@@ -26,6 +26,19 @@ export class Volume {
 	Exists(path:string): boolean {
 		return this.files.has(path);
 	}
+	Rename(from:string, to:string) : Promise<void> {
+		if (this.files.has(to)) {
+			return Promise.reject(`File ${to} already exists.`);
+		}
+		if (!this.files.has(from)) {
+			return Promise.reject(`There is on file ${from}.`);
+		}
+		let f = this.files.get(from);
+		f.Rename(to);
+		this.files.delete(from);
+		this.files.add(to, f);
+		return Promise.resolve<void>();
+	}
 	// Write creates a file at the named path, or updates
 	// the files state to FileState.Changed if the file
 	// already exists.

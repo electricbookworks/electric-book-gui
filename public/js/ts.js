@@ -43,7 +43,7 @@ var APIWs = (function () {
                 console.error("Failed to find promise for " + evt.data);
                 return;
             }
-            _this.live["delete"](id);
+            _this.live.delete(id);
             var resolve = promises[0], reject = promises[1];
             if (res.error) {
                 _this.reject(reject, res.error);
@@ -75,13 +75,6 @@ var APIWs = (function () {
     APIWs.prototype.rpc = function (method, params) {
         var _this = this;
         var id = this.id++;
-        // // params comes in as an 'arguments' object, so we need to convert
-        // // it to an array
-        // params = Array.prototype.slice.call(params);
-        // // let p = [];
-        // // for (let i=0; i<p.length; i++) {
-        // // 	p[i] = params[i]
-        // // }
         var data = JSON.stringify({ id: id, method: method, params: params });
         this.live.set(id, [undefined, undefined]);
         return new Promise(function (resolve, reject) {
@@ -97,11 +90,17 @@ var APIWs = (function () {
     APIWs.prototype.Version = function () {
         return this.rpc("Version", []);
     };
-    APIWs.prototype.DeleteFile = function (repoOwner, repoName, path) {
-        return this.rpc("DeleteFile", [repoOwner, repoName, path]);
+    APIWs.prototype.RenameFile = function (repoOwner, repoName, fromPath, toPath) {
+        return this.rpc("RenameFile", [repoOwner, repoName, fromPath, toPath]);
+    };
+    APIWs.prototype.RemoveFile = function (repoOwner, repoName, path) {
+        return this.rpc("RemoveFile", [repoOwner, repoName, path]);
     };
     APIWs.prototype.ListFiles = function (repoOwner, repoName, pathregex) {
         return this.rpc("ListFiles", [repoOwner, repoName, pathregex]);
+    };
+    APIWs.prototype.FileExists = function (repoOwner, repoName, path) {
+        return this.rpc("FileExists", [repoOwner, repoName, path]);
     };
     APIWs.prototype.ListAllRepoFiles = function (repoOwner, repoName) {
         return this.rpc("ListAllRepoFiles", [repoOwner, repoName]);
@@ -179,7 +178,7 @@ var AddNewBookDialog$1 = (function () {
             newBook: n.childNodes[1],
             repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1],
             collaborate: n.childNodes[2],
-            collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1]
+            collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
         };
         this.el = n;
     }
@@ -196,7 +195,7 @@ var AllFiles_File = (function () {
         }
         var n = t.cloneNode(true);
         this.$ = {
-            name: n.childNodes[0]
+            name: n.childNodes[0],
         };
         this.el = n;
     }
@@ -213,7 +212,7 @@ var MergeEditor = (function () {
         }
         var n = t.cloneNode(true);
         this.$ = {
-            mergely: n.childNodes[1]
+            mergely: n.childNodes[1],
         };
         this.el = n;
     }
@@ -245,7 +244,7 @@ var RepoFileEditor_codemirror = (function () {
         }
         var n = t.cloneNode(true);
         this.$ = {
-            editor: n.childNodes[0]
+            editor: n.childNodes[0],
         };
         this.el = n;
     }
@@ -263,7 +262,7 @@ var RepoPageEditor_NewFileDialog = (function () {
         var n = t.cloneNode(true);
         this.$ = {
             error: n.childNodes[0].childNodes[0],
-            filename: n.childNodes[0].childNodes[1].childNodes[0].childNodes[1]
+            filename: n.childNodes[0].childNodes[1].childNodes[0].childNodes[1],
         };
         this.el = n;
     }
@@ -288,7 +287,6 @@ function QuerySelectorAllIterate(el, query) {
     }
     return els;
 }
-//# sourceMappingURL=querySelectorAll-extensions.js.map
 
 function Eventify(el, methods) {
     for (var _i = 0, _a = QuerySelectorAllIterate(el, "[data-event]"); _i < _a.length; _i++) {
@@ -313,7 +311,6 @@ function Eventify(el, methods) {
         }
     }
 }
-//# sourceMappingURL=Eventify.js.map
 
 var AddNewBookDialog$$1 = (function (_super) {
     tslib_1.__extends(AddNewBookDialog$$1, _super);
@@ -361,17 +358,11 @@ var AddNewBookDialog$$1 = (function (_super) {
 
 var FileState;
 (function (FileState) {
-    // This is a file that exists on the FS, but hasn't changed
     FileState[FileState["Exists"] = 1] = "Exists";
-    // A file that has been written to.
     FileState[FileState["Changed"] = 2] = "Changed";
-    // A file that has been Removed, but the removal isn't yet synchronized
     FileState[FileState["Removed"] = 4] = "Removed";
-    // A file that is gone - it should be removed entirely.
     FileState[FileState["Purged"] = 8] = "Purged";
 })(FileState || (FileState = {}));
-
-//# sourceMappingURL=FileState.js.map
 
 function AddToParent(parent, el) {
     if (!parent) {
@@ -383,7 +374,6 @@ function AddToParent(parent, el) {
     }
     parent.appendChild(el);
 }
-//# sourceMappingURL=DOM.js.map
 
 var AllFiles_File$1 = (function (_super) {
     tslib_1.__extends(AllFiles_File$$1, _super);
@@ -417,130 +407,14 @@ var AllFiles_File$1 = (function (_super) {
     return AllFiles_File$$1;
 }(AllFiles_File));
 
-var _repoFileModelCache = {};
-/**
- * RepoFileModel provides a wrapper around a file on the
- * server and a local copy of the file stored in the browser's
- * sessionStorage.
- *
- * The RepoFileModel class has
- * Dirty and Editing signals
- * that can be mapped to be notified when
- * the file is editing or
- * when the file contents on the browser are Dirty,
- * and should be
- * updated to the server.
- *
- * RepoFileModel is essentially static for every
- * repoOwner, repoName and file name combination.
- *
- */
-var RepoFileModel = (function () {
-    function RepoFileModel(repoOwner, repoName, fileInfo, options) {
-        if (options === void 0) { options = {}; }
-        this.repoOwner = repoOwner;
-        this.repoName = repoName;
-        this.fileInfo = fileInfo;
-        this.options = options;
-        var cacheKey = repoOwner + "/" + repoName + ":/" + this.Path();
-        var fm = _repoFileModelCache[cacheKey];
-        if (fm) {
-            return fm;
-        }
-        this.DirtySignal = new signals.Signal();
-        this.EditingSignal = new signals.Signal();
-        _repoFileModelCache[cacheKey] = this;
-        return this;
-    }
-    RepoFileModel.prototype.Path = function () {
-        return this.fileInfo.Name();
-    };
-    RepoFileModel.prototype.storageKey = function () {
-        return this.repoOwner + "/" + this.repoName + ":" + this.Path();
-    };
-    RepoFileModel.prototype.SetEditing = function (editing) {
-        this.editing = editing;
-        this.EditingSignal.dispatch(this, editing);
-    };
-    RepoFileModel.prototype.IsEditing = function () {
-        return this.editing;
-    };
-    RepoFileModel.prototype.IsDirty = function (t) {
-        if (t === void 0) { t = false; }
-        if (this.options.newFile) {
-            return true;
-        }
-        if (!t) {
-            t = sessionStorage.getItem(this.storageKey());
-        }
-        var orig = this.Original();
-        return (orig != t);
-    };
-    RepoFileModel.prototype.Save = function (t) {
-        var _this = this;
-        if (t === void 0) { t = false; }
-        if (!t) {
-            t = sessionStorage.getItem(this.storageKey());
-        }
-        if (!this.IsDirty(t)) {
-            return Promise.resolve();
-        }
-        return new Promise(function (resolve, reject) {
-            EBW.API().UpdateFile(_this.repoOwner, _this.repoName, _this.Path(), t).then(function (res) {
-                _this.SetOriginal(t);
-                _this.SetText(t);
-                _this.options.newFile = false;
-                resolve();
-            })["catch"](function (err) {
-                EBW.Error(err);
-                reject(err);
-            });
-        });
-    };
-    RepoFileModel.prototype.GetText = function () {
-        var _this = this;
-        var t = sessionStorage.getItem(this.storageKey());
-        if (t) {
-            return Promise.resolve(t);
-        }
-        if (this.options.newFile) {
-            return Promise.resolve('');
-        }
-        return EBW.API()
-            .GetFileString(this.repoOwner, this.repoName, this.Path())
-            .then(function (_a) {
-            var text = _a[0];
-            _this.SetOriginal(text);
-            return Promise.resolve(text);
-        });
-    };
-    RepoFileModel.prototype.SetText = function (t) {
-        sessionStorage.setItem(this.storageKey(), t);
-        var dirty = this.IsDirty(t);
-        this.DirtySignal.dispatch(this, dirty);
-        var state = dirty ? FileState.Changed : FileState.Exists;
-        this.fileInfo.SetState(state);
-    };
-    RepoFileModel.prototype.Original = function () {
-        if (this.options.newFile) {
-            return '';
-        }
-        return sessionStorage.getItem(this.storageKey() + '-original');
-    };
-    RepoFileModel.prototype.SetOriginal = function (t) {
-        sessionStorage.setItem(this.storageKey() + '-original', t);
-    };
-    return RepoFileModel;
-}());
-
-// import {Directory} from './Directory';
 var AllFilesList = (function () {
-    function AllFilesList(parent, repoOwner, repoName, volume, editor) {
+    function AllFilesList(parent, repoOwner, repoName, volume, editor, fileCache) {
         this.parent = parent;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.volume = volume;
         this.editor = editor;
+        this.fileCache = fileCache;
         this.api = EBW.API();
         if ("" == this.repoOwner) {
             this.repoOwner = parent.getAttribute("repo-owner");
@@ -552,19 +426,8 @@ var AllFilesList = (function () {
         this.files = new Map();
     }
     AllFilesList.prototype.volumeChange = function (volume, fileInfo) {
-        console.log("volumeChange: fileInfo = ", fileInfo.Name());
-        console.log("fileInfo = ", fileInfo);
-        // If fileInfo==FileState.Exists,
-        // we check whether we already have this element,
-        // otherwise we need to add it to our list.
-        // If fileInfo==FileState.Changed, we also check
-        // whether we have the element, since Changed can
-        // mark a creation.
-        // For Purged, the AllFiles_File will handle the
-        // state change itself, but we need to remove the
-        // element from our tracking list. 
+        console.log("volumeChange -- fileInfo = ", fileInfo);
         var f = this.files.get(fileInfo.Name());
-        // We only
         switch (fileInfo.State()) {
             case FileState.Exists:
                 if (!f) {
@@ -580,7 +443,7 @@ var AllFilesList = (function () {
                 break;
             case FileState.Purged:
                 if (f) {
-                    this.files["delete"](fileInfo.Name());
+                    this.files.delete(fileInfo.Name());
                 }
                 break;
         }
@@ -590,7 +453,7 @@ var AllFilesList = (function () {
         var f = new AllFiles_File$1(this.parent, fileInfo, {
             clickName: function (evt) {
                 console.log("clicked " + fileInfo.Name());
-                var m = new RepoFileModel(_this.repoOwner, _this.repoName, fileInfo);
+                var m = _this.fileCache.Create(fileInfo);
                 _this.editor.setFile(m);
             }
         });
@@ -613,7 +476,8 @@ var PrintListener = (function () {
         EBW.API().PrintPdfEndpoint(repoOwner, repoName, book).then(function (_a) {
             var url = _a[0];
             _this.startListener(url);
-        })["catch"](EBW.Error);
+        })
+            .catch(EBW.Error);
     }
     PrintListener.prototype.startListener = function (key) {
         var _this = this;
@@ -627,7 +491,6 @@ var PrintListener = (function () {
             console.log("tick received: ", e);
         });
         sse.addEventListener("info", function (e) {
-            // console.log(`INFO on printListener: `, e.data);
             var data = JSON.parse(e.data);
             EBW.Toast("Printing: ", e.data);
         });
@@ -682,18 +545,19 @@ var EditorCodeMirror = (function () {
 
 var RepoFileEditorCM = (function (_super) {
     tslib_1.__extends(RepoFileEditorCM, _super);
-    function RepoFileEditorCM(parent) {
+    function RepoFileEditorCM(parent, callbacks) {
         var _this = _super.call(this) || this;
         _this.parent = parent;
+        _this.callbacks = callbacks;
         _this.file = false;
         Eventify(document.getElementById('editor-actions'), {
             'save': function (evt) {
                 evt.preventDefault();
                 _this.file.Save(_this.editor.getValue())
                     .then(function () {
-                    // this.$.save.disabled = true;
                     EBW.Toast("Document saved.");
-                })["catch"](function (err) {
+                })
+                    .catch(function (err) {
                     console.error(err);
                     EBW.Error(err);
                 });
@@ -714,19 +578,19 @@ var RepoFileEditorCM = (function (_super) {
                         .then(function (res) {
                         _this.file = null;
                         _this.setFile(null);
-                    })["catch"](function (err) {
+                    })
+                        .catch(function (err) {
                         EBW.Error(err);
                     });
                 }
+            },
+            'rename': function (evt) {
+                evt.preventDefault();
+                _this.callbacks.Rename(_this.file);
             }
         });
         _this.editor = new EditorCodeMirror(_this.$.editor);
         _this.parent.appendChild(_this.el);
-        // this.editor.getSession().on('change', (evt)=>{
-        // 	console.log(`editor-on-change: justLoaded = ${this.justLoaded}`);
-        // 	this.$.save.disabled = this.justLoaded;
-        // 	this.justLoaded = false;
-        // });
         sessionStorage.clear();
         return _this;
     }
@@ -737,13 +601,12 @@ var RepoFileEditorCM = (function (_super) {
         var _this = this;
         if (this.file) {
             if (this.file == file) {
-                return; // Cannot set to the file we're currently editing
+                return;
             }
             this.file.SetText(this.editor.getValue());
             this.file.SetEditing(false);
         }
         if (!file) {
-            // @TODO Need to catch New Files here... ?
             this.setText('Please select a file to edit.');
             return;
         }
@@ -756,12 +619,124 @@ var RepoFileEditorCM = (function (_super) {
                 e.textContent = file.path;
             }
             _this.setText(t);
-        })["catch"](function (err) {
+        })
+            .catch(function (err) {
             EBW.Error(err);
         });
     };
     return RepoFileEditorCM;
 }(RepoFileEditor_codemirror));
+
+var RepoFileModel = (function () {
+    function RepoFileModel(repoOwner, repoName, fileInfo, options) {
+        if (options === void 0) { options = {}; }
+        this.repoOwner = repoOwner;
+        this.repoName = repoName;
+        this.fileInfo = fileInfo;
+        this.options = options;
+        this.DirtySignal = new signals.Signal();
+        this.EditingSignal = new signals.Signal();
+        return this;
+    }
+    RepoFileModel.prototype.Rename = function (fromPath, toPath) {
+        var _this = this;
+        var origKey = this.originalKey();
+        var storeKey = this.storageKey();
+        var origText = this.Original();
+        return this.GetText()
+            .then(function (text) {
+            _this.fileInfo.Rename(toPath);
+            _this.SetOriginal(origText);
+            _this.SetText(text);
+            sessionStorage.removeItem(origKey);
+            sessionStorage.removeItem(storeKey);
+            return Promise.resolve();
+        });
+    };
+    RepoFileModel.prototype.Path = function () {
+        return this.fileInfo.Name();
+    };
+    RepoFileModel.prototype.storageKey = function () {
+        return this.repoOwner + "/" + this.repoName + "/local:" + this.Path();
+    };
+    RepoFileModel.prototype.originalKey = function () {
+        return this.repoOwner + "/" + this.repoName + "/original:" + this.Path();
+    };
+    RepoFileModel.prototype.SetEditing = function (editing) {
+        this.editing = editing;
+        this.EditingSignal.dispatch(this, editing);
+    };
+    RepoFileModel.prototype.IsEditing = function () {
+        return this.editing;
+    };
+    RepoFileModel.prototype.IsDirty = function (t) {
+        if (t === void 0) { t = false; }
+        if (this.options.newFile) {
+            return true;
+        }
+        if (!t) {
+            t = sessionStorage.getItem(this.storageKey());
+        }
+        var orig = this.Original();
+        return (orig != t);
+    };
+    RepoFileModel.prototype.Save = function (t) {
+        var _this = this;
+        if (t === void 0) { t = false; }
+        if (!t) {
+            t = sessionStorage.getItem(this.storageKey());
+        }
+        if (!this.IsDirty(t)) {
+            return Promise.resolve();
+        }
+        return new Promise(function (resolve, reject) {
+            EBW.API().UpdateFile(_this.repoOwner, _this.repoName, _this.Path(), t).then(function (res) {
+                _this.SetOriginal(t);
+                _this.SetText(t);
+                _this.options.newFile = false;
+                resolve();
+            })
+                .catch(function (err) {
+                EBW.Error(err);
+                reject(err);
+            });
+        });
+    };
+    RepoFileModel.prototype.GetText = function () {
+        var _this = this;
+        var t = sessionStorage.getItem(this.storageKey());
+        if (t) {
+            return Promise.resolve(t);
+        }
+        if (this.options.newFile) {
+            return Promise.resolve('');
+        }
+        return EBW.API()
+            .GetFileString(this.repoOwner, this.repoName, this.Path())
+            .then(function (_a) {
+            var text = _a[0];
+            _this.SetOriginal(text);
+            return Promise.resolve(text);
+        });
+    };
+    RepoFileModel.prototype.SetText = function (t) {
+        sessionStorage.setItem(this.storageKey(), t);
+        var dirty = this.IsDirty(t);
+        this.DirtySignal.dispatch(this, dirty);
+        var state = dirty ? FileState.Changed : FileState.Exists;
+        this.fileInfo.SetState(state);
+    };
+    RepoFileModel.prototype.Original = function () {
+        if (this.options.newFile) {
+            return '';
+        }
+        return sessionStorage.getItem(this.originalKey());
+    };
+    RepoFileModel.prototype.SetOriginal = function (t) {
+        sessionStorage.setItem(this.originalKey(), t);
+    };
+    return RepoFileModel;
+}());
 
 var RepoPageEditor_NewFileDialog$1 = (function (_super) {
     tslib_1.__extends(RepoPageEditor_NewFileDialog$$1, _super);
@@ -802,6 +777,56 @@ var RepoPageEditor_NewFileDialog$1 = (function (_super) {
     }
     return RepoPageEditor_NewFileDialog$$1;
 }(RepoPageEditor_NewFileDialog));
+
+var RepoFileModelCache = (function () {
+    function RepoFileModelCache(repoOwner, repoName) {
+        this.repoOwner = repoOwner;
+        this.repoName = repoName;
+        this.cache = new Map();
+    }
+    RepoFileModelCache.instance = function () {
+        if (!RepoFileModelCache.singleton) {
+            alert("cannot call RepoFileModelCache before calling initialize");
+            debugger;
+        }
+        return new RepoFileModelCache();
+    };
+    RepoFileModelCache.initialize = function (repoOwner, repoName) {
+        RepoFileModelCache.singleton = new RepoFileModelCache(repoOwner, repoName);
+        return RepoFileModelCache.singleton;
+    };
+    RepoFileModelCache.prototype.Get = function (fi, options) {
+        if (options === void 0) { options = {}; }
+        var cacheKey = this.repoOwner + "/" + this.repoName + ":" + fi.Path();
+        var fm = this.cache.get(cacheKey);
+        if (fm) {
+            return fm;
+        }
+        fm = new RepoFileModel(this.repoOwner, this.repoName, fi, options);
+        this.cache.set(cacheKey, fm);
+        return fm;
+    };
+    RepoFileModelCache.prototype.Rename = function (from, to) {
+        var _this = this;
+        var keyPrefix = this.repoOwner + "/" + this.repoName + ":";
+        var fromKey = keyPrefix + from;
+        var toKey = keyPrefix + to;
+        if (this.cache.has(toKey)) {
+            return Promise.reject("Destination file already exists");
+        }
+        if (!this.cache.has(fromKey)) {
+            return Promise.reject("Source file does not exist");
+        }
+        var rpm = this.cache.get(fromKey);
+        return rpm.Rename(from, to)
+            .then(function () {
+            _this.cache.add(toKey, rpm);
+            _this.cache.delete(fromKey);
+            return Promise.resolve();
+        });
+    };
+    return RepoFileModelCache;
+}());
 
 var File = (function () {
     function File(parent, name) {
@@ -901,9 +926,12 @@ var FileInfo = (function () {
     FileInfo.prototype.State = function () {
         return this.state;
     };
-    // Name returns the full pathed name of the file.
     FileInfo.prototype.Name = function () {
         return this.name;
+    };
+    FileInfo.prototype.Rename = function (to) {
+        this.name = to;
+        this.Listener.dispatch(this);
     };
     return FileInfo;
 }());
@@ -913,10 +941,6 @@ var Volume = (function () {
         this.files = new Map();
         this.Events = new signals.Signal();
     }
-    // Get returns the FileInfo for the file at the 
-    // named path, or undefined if there is no such
-    // file at the named path.
-    // To create a file, use Write.
     Volume.prototype.Get = function (path) {
         var f = this.files.get(path);
         if (f) {
@@ -924,13 +948,22 @@ var Volume = (function () {
         }
         return undefined;
     };
-    // Exists returns true if the given file exists.
     Volume.prototype.Exists = function (path) {
         return this.files.has(path);
     };
-    // Write creates a file at the named path, or updates
-    // the files state to FileState.Changed if the file
-    // already exists.
+    Volume.prototype.Rename = function (from, to) {
+        if (this.files.has(to)) {
+            return Promise.reject("File " + to + " already exists.");
+        }
+        if (!this.files.has(from)) {
+            return Promise.reject("There is on file " + from + ".");
+        }
+        var f = this.files.get(from);
+        f.Rename(to);
+        this.files.delete(from);
+        this.files.add(to, f);
+        return Promise.resolve();
+    };
     Volume.prototype.Write = function (path) {
         if (this.files.has(path)) {
             var fi_1 = this.files.get(path);
@@ -942,8 +975,6 @@ var Volume = (function () {
         this.files.set(path, fi);
         this.Events.dispatch(this, fi);
     };
-    // Remove sets the state of the file at the given
-    // path to FileState.Removed
     Volume.prototype.Remove = function (path) {
         if (!this.files.has(path)) {
             return;
@@ -952,20 +983,14 @@ var Volume = (function () {
         fi.SetState(FileState.Removed);
         this.Events.dispatch(this, fi);
     };
-    // Purge purges the file at the given path. Unlike
-    // Remove, which simply marks a file as 'deleted',
-    // Purge actually removes the file entirely, including
-    // removing the record that we have of the file.
     Volume.prototype.Purge = function (path) {
         var fi = this.files.get(path);
         if (fi) {
             fi.SetState(FileState.Purged);
-            this.files["delete"](path);
+            this.files.delete(path);
             this.Events.dispatch(this, fi);
         }
     };
-    // FromJS adds files to the Volume from the Directory
-    // and File objects serialized in the given js object.
     Volume.prototype.FromJS = function (js) {
         var d = Directory.FromJS(undefined, js);
         this.files = new Map();
@@ -1039,18 +1064,10 @@ var RepoEditorPage = (function () {
         this.repoName = repoName;
         this.editor = new RepoFileEditorCM(document.getElementById('editor'));
         this.volume = new VolumeElement(document.getElementById("volume-element"));
-        new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
+        this.fileCache = RepoFileModelCache.initialize(this.repoOwner, this.repoName);
+        new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor, this.fileCache);
         new RepoPageEditor_NewFileDialog$1(this.repoOwner, this.repoName, document.getElementById('repo-new-file'), this.volume, this.editor);
         this.volume.Load();
-        //new PullRequestList(document.getElementById('pull-request-list'), repo);
-        // window.addEventListener('beforeunload', evt=> {
-        // 	// transfer editor to file text
-        // 	this.editor.setFile(null);
-        // 	if (this.files.IsDirty()) {
-        // 		evt.returnValue='confirm';
-        // 		evt.stopPropagation();
-        // 	}
-        // });
         document.getElementById("repo-print").addEventListener('click', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
@@ -1091,7 +1108,8 @@ var MergeEditor$1 = (function (_super) {
         Eventify(_this.el, {
             'save': function (evt) {
                 evt.preventDefault();
-                model.Update(_this.get())["catch"](function (err) {
+                model.Update(_this.get())
+                    .catch(function (err) {
                     console.log("Error on the save function");
                     EBW.Error(err);
                 });
@@ -1099,7 +1117,8 @@ var MergeEditor$1 = (function (_super) {
         });
         AddToParent(_this.parent, _this.el);
         model.GetContent()
-            .then(function (args) { return _this.mergely(args); })["catch"](EBW.Error);
+            .then(function (args) { return _this.mergely(args); })
+            .catch(EBW.Error);
         return _this;
     }
     MergeEditor$$1.prototype.get = function () {
@@ -1117,13 +1136,11 @@ var MergeEditor$1 = (function (_super) {
             cmsettings: {
                 readOnly: false,
                 lineNumbers: true,
-                wrap_lines: true
+                wrap_lines: true,
             },
             rhs_cmsettings: {},
-            // editor_height: "40em",
             autoresize: true,
             editor_height: "100%",
-            // editor_width: "48%",
             wrap_lines: true,
             lhs: function (setValue) {
                 setValue(local);
@@ -1232,8 +1249,6 @@ var EBW = (function () {
             this.api = new APIWs();
             console.log("Activating foundation on the document");
             jQuery(document).foundation();
-            /* TODO: This should actually use a Router
-               to determine what content we have. */
             AddNewBookDialog$$1.instantiate();
             RepoEditorPage.instantiate();
             PullRequestMergePage.instantiate();
@@ -1260,9 +1275,6 @@ var EBW = (function () {
         var r = prompt(msg);
         return Promise.resolve("" == r ? false : r);
     };
-    // flatten takes returns a function that accepts an 
-    // array of arguments, and calls the callback function
-    // with each array element as a distinct parameter.
     EBW.flatten = function (callback, context) {
         return function (argsArray) {
             callback.apply(context, argsArray);

@@ -2,6 +2,7 @@ import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {RepoPageEditor_NewFileDialog} from './RepoPageEditor_NewFileDialog';
+import {RepoFileModelCache} from './RepoFileModelCache';
 import {EBW} from './EBW';
 import {Volume} from './FS/Volume';
 import {VolumeElement} from './VolumeElement';
@@ -13,6 +14,7 @@ import {VolumeElement} from './VolumeElement';
 export class RepoEditorPage {
 	protected editor: RepoFileEditorCM;
 	protected volume: VolumeElement;
+	protected fileCache: RepoFileModelCache;
 
 	constructor(
 		protected repoOwner:string, 
@@ -23,8 +25,9 @@ export class RepoEditorPage {
 		this.repoName = repoName;
 		this.editor = new RepoFileEditorCM(document.getElementById('editor'));
 		this.volume = new VolumeElement(document.getElementById(`volume-element`));
+		this.fileCache = RepoFileModelCache.initialize(this.repoOwner, this.repoName);
 
-		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor);
+		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor, this.fileCache);
 
 		new RepoPageEditor_NewFileDialog(
 			this.repoOwner,

@@ -1,13 +1,8 @@
 import {EBW} from './EBW';
 import {FileInfo} from './FS/FileInfo';
 import {FileState} from './FS/FileState';
+import {RepoFileModelOptions} from './RepoFileModelOptions';
 import signals = require('signals');
-
-let _repoFileModelCache = {};
-
-interface RepoFileModelOptions {
-	newFile?: boolean,
-}
 
 /**
  * RepoFileModel provides a wrapper around a file on the
@@ -16,14 +11,11 @@ interface RepoFileModelOptions {
  * 
  * The RepoFileModel class has 
  * Dirty and Editing signals
- * that can be mapped to be notified when 
+ * that notify when 
  * the file is editing or
  * when the file contents on the browser are Dirty, 
  * and should be 
  * updated to the server.
- *
- * RepoFileModel is essentially static for every
- * repoOwner, repoName and file name combination.
  *
  */
 export class RepoFileModel {
@@ -31,25 +23,43 @@ export class RepoFileModel {
 	protected EditingSignal : signals.Signal;
 	protected editing: boolean;
 
-	constructor(protected repoOwner:string,
-	 protected repoName:string, 
-	 protected fileInfo:FileInfo,
-	 protected options:RepoFileModelOptions={}) {
-		let cacheKey = `${repoOwner}/${repoName}:/${this.Path()}`;
-		let fm = _repoFileModelCache[cacheKey];
-		if (fm) {
-			return fm;
-		}
+	constructor(
+		protected repoOwner:string,
+		protected repoName:string, 
+		protected fileInfo:FileInfo,
+		protected options:RepoFileModelOptions={}) 
+	{
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
-		_repoFileModelCache[cacheKey] = this;
 		return this;
+	}
+	Rename(fromPath:string, toPath:string):Promise<void> {
+		let origKey:string = this.originalKey();
+		let storeKey:string = this.storageKey();
+		let origText = this.Original();
+		return this.GetText()
+		.then(
+			(text)=>{
+				this.fileInfo.Rename(toPath);
+				this.SetOriginal(origText);
+				this.SetText(text);
+				// Since we've changed our name,
+				// our key will have changed, so removing
+				// the pre-name-change keys won't affect
+				// us
+				sessionStorage.removeItem(origKey);
+				sessionStorage.removeItem(storeKey);				
+				return Promise.resolve<void>();
+			});
 	}
 	Path() : string {
 		return this.fileInfo.Name();
 	}
 	storageKey() : string {
-		return `${this.repoOwner}/${this.repoName}:${this.Path()}`;
+		return `${this.repoOwner}/${this.repoName}/local:${this.Path()}`;
+	}
+	originalKey() : string {
+		return `${this.repoOwner}/${this.repoName}/original:${this.Path()}`;
 	}
 	SetEditing(editing: boolean):void {
 		this.editing = editing;
@@ -120,9 +130,9 @@ export class RepoFileModel {
 		if (this.options.newFile) {
 			return '';
 		}
-		return sessionStorage.getItem(this.storageKey() + '-original');
+		return sessionStorage.getItem(this.originalKey());
 	}
 	SetOriginal(t:string) : void {
-		sessionStorage.setItem(this.storageKey() + '-original', t);
+		sessionStorage.setItem(this.originalKey(), t);
 	}
 }

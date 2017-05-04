@@ -19,13 +19,20 @@ func (rpc *API) Version() string {
 	return "API v 0.1"
 }
 
-func (rpc *API) DeleteFile(repoOwner, repoName, path string) error {
+func (rpc *API) RenameFile(repoOwner, repoName, fromPath, toPath string) error {
+	return git.FileRenameInWorkingDir(rpc.Client, repoOwner, repoName, fromPath, toPath)
+}
+func (rpc *API) RemoveFile(repoOwner, repoName, path string) error {
 	return git.DeleteFile(rpc.Client, rpc.User, repoOwner, repoName, path)
 }
 
 // ListFiles returns a list of the files with the pathregex in the repo.
 func (rpc *API) ListFiles(repoOwner, repoName, pathregex string) ([]string, error) {
 	return git.ListFiles(rpc.Client, rpc.User, repoOwner, repoName, pathregex)
+}
+
+func (rpc *API) FileExists(repoOwner, repoName, path string) (bool, error) {
+	return git.FileExistsInWorkingDir(rpc.Client, repoOwner, repoName, path)
 }
 
 // ListAllRepoFiles lists all the repo files that are in the repo

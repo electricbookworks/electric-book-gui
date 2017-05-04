@@ -100,12 +100,20 @@ export class APIWs {
 		return this.rpc("Version",  [] );
 	}
 	
-	DeleteFile (repoOwner:string,repoName:string,path:string) {
-		return this.rpc("DeleteFile",  [repoOwner,repoName,path] );
+	RenameFile (repoOwner:string,repoName:string,fromPath:string,toPath:string) {
+		return this.rpc("RenameFile",  [repoOwner,repoName,fromPath,toPath] );
+	}
+	
+	RemoveFile (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("RemoveFile",  [repoOwner,repoName,path] );
 	}
 	
 	ListFiles (repoOwner:string,repoName:string,pathregex:string) {
 		return this.rpc("ListFiles",  [repoOwner,repoName,pathregex] );
+	}
+	
+	FileExists (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("FileExists",  [repoOwner,repoName,path] );
 	}
 	
 	ListAllRepoFiles (repoOwner:string,repoName:string) {

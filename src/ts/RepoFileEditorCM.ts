@@ -3,11 +3,18 @@ import {RepoFileEditor_codemirror} from './Templates';
 import {EditorCodeMirror} from './EditorCodeMirror';
 import {EBW} from './EBW';
 
+interface RepoFileEditorCallbacks {
+	Rename: (evt:any)=>void;
+}
 export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	protected editor : EditorCodeMirror;
 	protected file: any;
 
-	constructor(protected parent:HTMLElement) {
+
+	constructor(
+		protected parent:HTMLElement,
+		protected callbacks: RepoFileEditorCallbacks
+		) {
 		super();
 		this.file = false;
 
@@ -47,6 +54,10 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 						EBW.Error(err);
 					});
 				}
+			},
+			'rename': (evt)=>{
+				evt.preventDefault();
+				this.callbacks.Rename(this.file);
 			}
 		});
 

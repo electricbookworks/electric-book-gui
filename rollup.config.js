@@ -16,6 +16,7 @@ export default {
 			noImplicitAny: true,
 			noEmitHelpers: false,
 			importHelpers: true,
+			target: "es5",
 			lib: ["esnext"],
 			paths: {
 				"tslib": ["public/bower_components/tslib/tslib.d.ts"]

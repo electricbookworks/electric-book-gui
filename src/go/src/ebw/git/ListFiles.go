@@ -142,7 +142,8 @@ func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 	}
 }
 
-// UpdateFile updates the given file with the given content,
+// UpdateFile updates the given file with the given
+// content,
 // and adds it to the
 // git staging area, ready for the next commit.
 func UpdateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
@@ -219,4 +220,53 @@ func ListFiles(client *Client, user, repoOwner, repoName, pathRegexp string) ([]
 		return nil
 	})
 	return files, err
+}
+
+func FileExistsInWorkingDir(client *Client, repoOwner, repoName, path string) (bool, error) {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return false, err
+	}
+	_, err = os.Stat(filepath.Join(repoDir, path))
+	if nil == err {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, util.Error(err)
+}
+
+func FileRenameInWorkingDir(client *Client, repoOwner, repoName, fromPath, toPath string) error {
+	if fromPath==toPath {
+		return nil
+	}
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	from := filepath.Join(repoDir, fromPath)
+	to := filepath.Join(repoDir, toPath)
+	// TODO: Should check that both from and to remain
+	// without our repoDir...
+	exists, err := util.FileExists(to)
+	if nil != err {
+		return err
+	}
+	if exists {
+		return fmt.Errorf(`Destination file %s already exists`, toPath)
+	}
+	exists, err = util.FileExists(from)
+	if nil != err {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf(`Source file %s does not exist`, fromPath)
+	}
+	}
+	if err := runGitDir(repoDir, []string{`mv`, from, to}); nil != err {
+		glog.Errorf(`ERROR running git mv %s %s: %`, from, to, err.Error())
+		return err
+	}
+	return nil
 }

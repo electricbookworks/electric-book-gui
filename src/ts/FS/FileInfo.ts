@@ -27,4 +27,10 @@ export class FileInfo {
 	Name() : string {
 		return this.name;
 	}
+
+	// Rename renames the file
+	Rename(to:string) {
+		this.name = to;
+		this.Listener.dispatch(this);
+	}
 };
