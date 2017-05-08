@@ -33,12 +33,16 @@ export class EBW {
 		debugger;
 		alert(err);
 	}
+	static Alert(msg:string) : Promise<void> {
+		alert(msg);
+		return Promise.resolve();
+	}
 	static Toast(msg : string, ...args:string[]) : void {
 		Toast.Show(msg + args.join(' '));
 	}
-	static Prompt(msg: string) : Promise<string|boolean> {
-		let r : string|boolean = prompt(msg);
-		return Promise.resolve(``==r ? false : r);
+	static Prompt(msg: string) : Promise<string> {
+		let r : string = prompt(msg);
+		return Promise.resolve<string>(r);
 	}
 	// flatten takes returns a function that accepts an 
 	// array of arguments, and calls the callback function

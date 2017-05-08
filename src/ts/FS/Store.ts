@@ -17,17 +17,24 @@ class store implements storageInterface {
 		this.s.delete(k);
 	}
 	getItem(k:string):string {
+		// console.log(`store::getItem(${k}) = `, this.s.get(k));
 		return this.s.get(k);
 	}
 	setItem(k:string, v:string) {
+		// console.log(`store::setItem ${k} = ${v}`);
 		this.s.set(k,v);
 	}
 }
 
+var singleton: store;
+
 export function Store() : storageInterface {
-	if (sessionStorage) {
+	if ('undefined'!=typeof sessionStorage) {
 		return sessionStorage;
 	}
-	return new store();
+	if (!singleton) {
+		singleton = new store();
+	}
+	return singleton;
 }
 

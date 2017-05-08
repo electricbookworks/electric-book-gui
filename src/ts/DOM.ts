@@ -1,4 +1,4 @@
-export function AddToParent(parent:(HTMLElement)=>void|HTMLElement|undefined, el: HTMLElement) {
+export function AddToParent(parent:((el:HTMLElement)=>void)|HTMLElement|undefined, el: HTMLElement) {
 	if (!parent) {
 		return;
 	}

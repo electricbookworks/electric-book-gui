@@ -14,7 +14,7 @@ export class AllFiles_File extends Template {
 		this.$.name.textContent = fileInfo.Name();
 		Eventify(this.el, events);
 		fileInfo.Listener.add(this.FileEvent, this);
-		AddToParent(parent, this.el);
+		AddToParent(parent, this.el as HTMLElement);
 	}
 	FileEvent(fileInfo:FileInfo): void {
 		console.log(`FileEvent in _File: ${fileInfo.Name()}, state = `, fileInfo.State());
@@ -25,11 +25,11 @@ export class AllFiles_File extends Template {
 			case FileState.Changed:
 				this.el.classList.add('changed');
 				break;
-			case FileState.Removed:
+			case FileState.Deleted:
 				this.el.classList.remove('changed');
 				this.el.classList.add('removed');
 				break;
-			case FileState.Purged:
+			case FileState.NotExist:
 				this.el.remove();
 				break;
 		}

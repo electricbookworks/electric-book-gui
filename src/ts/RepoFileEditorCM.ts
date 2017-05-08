@@ -19,7 +19,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		this.file = false;
 
 		Eventify(document.getElementById('editor-actions'), {
-			'save': (evt)=>{
+			'save': (evt:any)=>{
 				evt.preventDefault();
 				this.file.Save(this.editor.getValue())
 				.then(
@@ -28,12 +28,12 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 						EBW.Toast(`Document saved.`);
 					})
 				.catch(
-					(err)=>{
+					(err:any)=>{
 						console.error(err);
 						EBW.Error(err)
 					});
 			},
-			'undo': (evt)=> {
+			'undo': (evt:any)=> {
 				evt.preventDefault();
 				if (confirm(`Undo the changes you've just made to ${this.file.Path()}?`)) {
 					let orig = this.file.Original();
@@ -42,20 +42,20 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 					this.file.SetText(this.file.Original());
 				}
 			},
-			'delete': (evt)=> {
+			'delete': (evt:any)=> {
 				evt.preventDefault();
 				if (confirm(`Are you sure you want to delete ${this.file.Path()}?`)) {
 					this.file.Delete()
-					.then( (res)=> {
+					.then( (res:any)=> {
 						this.file = null;
 						this.setFile(null);
 					})
-					.catch( (err)=>{
+					.catch( (err:any)=>{
 						EBW.Error(err);
 					});
 				}
 			},
-			'rename': (evt)=>{
+			'rename': (evt:any)=>{
 				evt.preventDefault();
 				this.callbacks.Rename(this.file);
 			}
@@ -70,10 +70,10 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		// });
 		sessionStorage.clear();
 	}
-	setText(text){
-		this.editor.setValue(new String(text));
+	setText(text:string){
+		this.editor.setValue(text);
 	}
-	setFile(file) {
+	setFile(file:any) {
 		if (this.file) {
 			if (this.file==file) {
 				return;	// Cannot set to the file we're currently editing
@@ -88,7 +88,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		}
 		file.GetText()
 		.then(
-			(t)=>{
+			(t:string)=>{
 				this.file = file;
 				this.file.SetEditing(true);
 				for (let e of document.querySelectorAll('[ebw-current-filename]')) {
@@ -97,7 +97,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				this.setText(t);
 			})
 		.catch(
-			(err)=>{
+			(err:any)=>{
 				EBW.Error(err);
 			});
 	}

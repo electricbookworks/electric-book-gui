@@ -1,4 +1,5 @@
 import {Volume} from './FS/Volume';
+import {EBW} from './EBW';
 
 export class VolumeElement extends Volume {
 	protected repoOwner:string;
@@ -28,8 +29,8 @@ export class VolumeElement extends Volume {
 			this.FromJS(JSON.parse(content));
 			return Promise.resolve();
 		}
-		this.api.ListAllRepoFiles(this.repoOwner, this.repoName)
-		.then( ([js])=>{
+		EBW.API().ListAllRepoFiles(this.repoOwner, this.repoName)
+		.then( ([js]:any[])=>{
 			this.FromJS(js);
 			return Promise.resolve();
 		});

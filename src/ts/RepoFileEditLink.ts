@@ -1,20 +1,21 @@
 import {Eventify} from './Eventify';
 import {RepoFileModel} from './RepoFileModel';
-import {Templates} from './Templates';
+import {RepoFileEditLink as Template} from './Templates';
 
-export class RepoFileEditLink {
-	protected el:Templates.EL.RepoFileEditLink;
-	protected $:Templates.R.RepoFileEditLink;
-
-	constructor(protected parent:HTMLElement, protected file:RepoFileModel, click) {
-		[this.el, this.$] = Templates.T.RepoFileEditLink();
-		this.$.name.textContent = this.file.path();
+export class RepoFileEditLink extends Template {
+	constructor(
+		protected parent:HTMLElement, 
+		protected file:RepoFileModel, 
+		protected click:any) 
+	{
+		super();
+		this.$.name.textContent = this.file.Path();
 		this.click = click;
-		this.file.EditingSignal.add( (f,editing)=> {
+		this.file.EditingSignal.add( (f:RepoFileModel,editing:boolean)=> {
 			this.SetEditing(editing);
 		});
 		this.SetEditing(false);
-		this.file.DirtySignal.add( (f,dirty)=>{
+		this.file.DirtySignal.add( (f:RepoFileModel,dirty:boolean)=>{
 			if (dirty) {
 				this.el.classList.add('file-dirty');
 			} else {
@@ -22,7 +23,7 @@ export class RepoFileEditLink {
 			}
 		});
 		Eventify(this.el, {
-			'click': (evt)=>{
+			'click': (evt:any)=>{
 				evt.preventDefault();
 				this.click(this, this.file);
 			}

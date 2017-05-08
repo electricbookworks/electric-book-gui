@@ -48,10 +48,10 @@ export class FSSession {
 		let c = this.get(path);
 		if (!c) {
 			console.log(`Tried to remove ${path} which does not appear to exist`);
-			return Promise.resolve<void>();
+			return Promise.resolve();
 		}
 		this.set(new FileContent(path, FileStat.Deleted, c.Content));
-		return Promise.resolve<void>();
+		return Promise.resolve();
 	}
 
 	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
@@ -77,5 +77,8 @@ export class FSSession {
 	}
 	RepoOwnerName():[string,string] {
 		return [this.repoOwner, this.repoName];
+	}
+	Revert(path:string): Promise<FileContent> {
+		return Promise.reject<FileContent>(`FSSession doesn't support Revert`);
 	}
 }

@@ -1,12 +1,9 @@
-import {expect} from 'chai';
+import {assert} from 'chai';
 
 function helloworld() {
 	return "hi world";
 }
 
-describe("helloworld function", ()=>{
-	it('should return "hi world"', ()=>{
-		const result = helloworld();
-		expect(result).to.equal('hi world');
-	});
-});
+(function(){ 
+	assert.equal(helloworld(),`hi world`, `Doesn't seem to have worked`);
+})();

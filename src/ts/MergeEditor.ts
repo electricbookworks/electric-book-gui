@@ -14,7 +14,7 @@ export class MergeEditor extends Template {
 	{
 		super();
 		Eventify(this.el, {
-			'save': (evt)=>{
+			'save': (evt:any)=>{
 				evt.preventDefault();
 				model.Update(this.get())
 				.catch( err=>{
@@ -34,7 +34,7 @@ export class MergeEditor extends Template {
 		let cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
 		return cm.getDoc().getValue();
 	}
-	mergely([local, remote, diff]) : void {
+	mergely([local, remote, diff]:[string,string,string]) : void {
 		this.$.mergely.textContent= ``;
 		this.mergelyDiv = document.createElement(`div`) as HTMLDivElement;
 		this.$.mergely.appendChild(this.mergelyDiv);
@@ -53,16 +53,16 @@ export class MergeEditor extends Template {
 			editor_height: "100%",
 			// editor_width: "48%",
 			wrap_lines: true,
-			lhs: function(setValue) {
+			lhs: function(setValue:(v:string)=>void) {
 				setValue(local);
 			},
-			rhs: function(setValue) {
+			rhs: function(setValue:(v:string)=>void) {
 				setValue(remote);
 			},
-			height: (h)=>{
+			height: (h:number)=>{
 				return this.$.mergely.clientHeight + "px";
 			},
-			width: (w)=>{
+			width: (w:number)=>{
 				return this.$.mergely.clientWidth + "px";
 			}
 		});

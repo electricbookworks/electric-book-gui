@@ -1,4 +1,4 @@
-import {EBW} from './EBW';
+import {EBW} from '../EBW';
 import {FS,FileStat,FileContent} from './FS';
 
 /**
@@ -12,13 +12,12 @@ export class FileContentRemote {
 	{
 	}
 	Stat(path:string) : Promise<FileStat> {
-		return 
-			EBW.API()
+		return EBW.API()
 			.FileExists(this.repoOwner, this.repoName, path)
 			.then(
-				(exists)=>{
+				(exists:boolean)=>{
 					// Remote system is definitive
-					return Promise<FileStat>( exists ? FileStat.Exists : FileStat.NotExist);
+					return Promise.resolve<FileStat>( exists ? FileStat.Exists : FileStat.NotExist);
 				}) as Promise<FileStat>;
 	}
 	Read(path:string) :Promise<FileContent> {
@@ -49,12 +48,15 @@ export class FileContentRemote {
 			});
 	}
 	Remove(path:string) : Promise<void> {
-		return EBW.API().DeleteFile(this.repoOwner, this.repoName, path);
+		return EBW.API().RemoveFile(this.repoOwner, this.repoName, path);
 	}
 	Sync() : Promise<void> {
 		return Promise.reject(`FSRemote doesn't support Sync()`);
 	}
 	RepoOwnerName() : [string,string] {
 		return [this.repoOwner, this.repoName];
+	}
+	Revert(path:string):Promise<FileContent> {
+		return Promise.reject(`FSRemove doesn't support Revert`);
 	}
 }

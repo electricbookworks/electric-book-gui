@@ -1,4 +1,5 @@
 import {EBW} from './EBW';
+import EventSource = require('./sse');
 
 export class PrintListener {
 	constructor(protected repoOwner:string, 
@@ -20,20 +21,20 @@ export class PrintListener {
 		let sse = new EventSource(url);
 		sse.addEventListener(`open`, function() {
 		});
-		sse.addEventListener('tick', function(e) {
+		sse.addEventListener('tick', function(e:any) {
 			console.log(`tick received: `, e);
 		});
-		sse.addEventListener(`info`, function(e) {
+		sse.addEventListener(`info`, function(e:any) {
 			// console.log(`INFO on printListener: `, e.data);
 			let data = JSON.parse(e.data);
 			EBW.Toast(`Printing: `, e.data);
 		});
-		sse.addEventListener(`error`, function(e) {
+		sse.addEventListener(`error`, function(e:any) {
 			let err = JSON.parse(e.data);
 			EBW.Error(err);
 			sse.close();
 		});
-		sse.addEventListener(`output`, e=> {
+		sse.addEventListener(`output`, (e:any)=> {
 			let data = JSON.parse(e.data);
 			let url = document.location.protocol +
 				 "//" +
@@ -42,16 +43,16 @@ export class PrintListener {
 			EBW.Toast(`Your PDF is ready: opening in a new window.`);
 			window.open(url, `${this.repoOwner}-${this.repoName}-pdf`);
 		});
-		sse.addEventListener(`done`, function(e) {
+		sse.addEventListener(`done`, function(e:any) {
 			sse.close();
 		});
-		sse.onmessage = (e)=>{
+		sse.onmessage = (e:any)=>{
 			this.onmessage(e);
 		}
 		sse.onerror = EBW.Error;
 
 	}
-	onmessage(e) {
+	onmessage(e:any) {
 		console.log(`PrintListener.onmessage: `, e);
 	}
 }

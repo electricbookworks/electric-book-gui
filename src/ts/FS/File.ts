@@ -14,7 +14,7 @@ export class File {
 		return new File(parent, js.N);
 	}
 	Debug() {
-		console.log(this.path());
+		console.log(this.Path());
 	}
 	Path() : string {
 		let p = this._parent ? this._parent.Path() : ``;

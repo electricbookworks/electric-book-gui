@@ -8,7 +8,7 @@ export class Volume {
 	protected files: Map<string,FileInfo>;
 	public Events: signals.Signal;
 	constructor() {
-		this.files = new Map<string,FileState>();
+		this.files = new Map<string,FileInfo>();
 		this.Events = new signals.Signal();
 	}
 	// Get returns the FileInfo for the file at the 
@@ -36,8 +36,8 @@ export class Volume {
 		let f = this.files.get(from);
 		f.Rename(to);
 		this.files.delete(from);
-		this.files.add(to, f);
-		return Promise.resolve<void>();
+		this.files.set(to, f);
+		return Promise.resolve();
 	}
 	// Write creates a file at the named path, or updates
 	// the files state to FileState.Changed if the file
@@ -60,7 +60,7 @@ export class Volume {
 			return;
 		}
 		let fi = this.files.get(path);
-		fi.SetState(FileState.Removed);
+		fi.SetState(FileState.Deleted);
 		this.Events.dispatch(this, fi);
 	}
 	// Purge purges the file at the given path. Unlike
@@ -70,7 +70,7 @@ export class Volume {
 	Purge(path:string) {
 		let fi = this.files.get(path);
 		if (fi) {
-			fi.SetState(FileState.Purged);
+			fi.SetState(FileState.NotExist);
 			this.files.delete(path);
 			this.Events.dispatch(this, fi);
 		}
@@ -79,7 +79,7 @@ export class Volume {
 	// and File objects serialized in the given js object.
 	FromJS(js : any) {
 		let d = Directory.FromJS(undefined, js);
-		this.files = new Map<string,FileState>();
+		this.files = new Map<string,FileInfo>();
 		let filter = function(n:string):boolean {
 			if ("."==n.substr(0,1)) {
 				return false;

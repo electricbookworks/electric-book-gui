@@ -27,8 +27,7 @@ export class FSCache {
 	}
 
 	Stat(path:string): Promise<FileStat> {
-		return
-			this.cache.Stat(path)
+		return this.cache.Stat(path)
 			.then( 
 				(s:FileStat)=>{
 					if (FileStat.NotExist==s) {
@@ -39,7 +38,7 @@ export class FSCache {
 	}
 
 	Read(path:string) : Promise<FileContent> {
-		this.cache.Stat(path)
+		return this.cache.Stat(path)
 		.then(
 			(s:FileStat)=>{
 				switch (s) {
@@ -63,16 +62,14 @@ export class FSCache {
 	}
 
 	Write(path:string, stat:FileStat, content?: string): Promise<FileContent> {
-		return this.source.Write(path, stat, content)
-		.then(
+		return this.source.Write(path, stat, content).then(
 			()=>{
 				return this.cache.Write(path,stat,content);
 			});
 	}
 
 	Remove(path:string) : Promise<void> {
-		return this.source.Remove(path)
-		.then(
+		return this.source.Remove(path).then(
 			()=>{
 				return this.cache.Remove(path);
 			}
@@ -80,24 +77,20 @@ export class FSCache {
 	}
 
 	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
-		return this.source.Rename(fromPath, toPath)
-		.then(
+		return this.source.Rename(fromPath, toPath).then(
 			()=>{
 				return this.cache.Rename(fromPath, toPath);
 			});
 	}
 
 	Revert(path:string) : Promise<FileContent> {
-		return this.cache.Read(path)
-		.then(
+		return this.cache.Read(path).then(
 			(c:FileContent)=>{
 				return this.source.Read(c.OriginalName());
-			})
-		.then(
+			}).then(
 			(c:FileContent)=>{
 				return this.cache.Write(path, c.Stat, c.Content)
-			})
-		.then(
+			}).then(
 			()=>{
 				return this.cache.Read(path);
 			});

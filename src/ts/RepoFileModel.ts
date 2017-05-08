@@ -19,8 +19,8 @@ import signals = require('signals');
  *
  */
 export class RepoFileModel {
-	protected DirtySignal: signals.Signal;
-	protected EditingSignal : signals.Signal;
+	public DirtySignal: signals.Signal;
+	public EditingSignal : signals.Signal;
 	protected editing: boolean;
 
 	constructor(
@@ -49,7 +49,7 @@ export class RepoFileModel {
 				// us
 				sessionStorage.removeItem(origKey);
 				sessionStorage.removeItem(storeKey);				
-				return Promise.resolve<void>();
+				return Promise.resolve();
 			});
 	}
 	Path() : string {
@@ -85,7 +85,7 @@ export class RepoFileModel {
 		if (!this.IsDirty(t)) {
 			return Promise.resolve();
 		}
-		return new Promise( (resolve,reject)=> {
+		return new Promise<void>( (resolve,reject)=> {
 			EBW.API().UpdateFile(this.repoOwner, this.repoName, this.Path(), t as string).then(
 				(res)=>{
 					this.SetOriginal(t as string);

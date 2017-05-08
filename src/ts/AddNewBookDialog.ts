@@ -47,7 +47,7 @@ export class AddNewBookDialog extends addNewBookDialog {
 	static instantiate() {
 		document.querySelectorAll(`[data-instance='AddNewBookDialog']`).forEach( function(el) {
 			console.log(`qsa.forEach(`, el, `)`);
-			new AddNewBookDialog(el);
+			new AddNewBookDialog(el as HTMLElement);
 		});
 	}
 }

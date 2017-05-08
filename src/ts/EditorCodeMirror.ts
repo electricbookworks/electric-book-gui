@@ -1,3 +1,5 @@
+import CodeMirror = require('codemirror');// from 'codemirror';
+
 export class EditorCodeMirror {
 	protected cm : any;
 	constructor(parent:HTMLElement) {

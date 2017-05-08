@@ -1,4 +1,3 @@
-import {AllFilesEditor} from './AllFilesEditor';
 import {API} from './API';
 // import {Directory} from './Directory';
 import {EBW} from './EBW';
@@ -55,9 +54,9 @@ export class AllFilesList {
 					this.newFile(fileInfo);
 				}
 				break;
-			case FileState.Removed:
+			case FileState.Deleted:
 				break;
-			case FileState.Purged:
+			case FileState.NotExist:
 				if (f) {
 					this.files.delete(fileInfo.Name());
 				}
@@ -66,7 +65,7 @@ export class AllFilesList {
 	}
 	newFile(fileInfo:FileInfo) : AllFiles_File {
 		let f = new AllFiles_File(this.parent, fileInfo, {
-			clickName: (evt)=>{
+			clickName: (evt:any)=>{
 				console.log(`clicked ${fileInfo.Name()}`);
 				let m = this.fileCache.Create(fileInfo);
 				this.editor.setFile(m);

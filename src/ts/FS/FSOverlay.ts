@@ -1,28 +1,28 @@
 import {FS,FileStat,FileContent} from './FS';
 
 export class FSOverlay {
+	protected changes : Set<string>;
 	constructor(protected below:FS, protected above:FS) {
-
+		this.changes = new Set<string>();
 	}
 
 	RepoOwnerName():[string,string] {
-		this.below.RepoOwnerName();
+		return this.below.RepoOwnerName();
 	}
 
 	Stat(path:string): Promise<FileStat> {
-		return
-			this.above.Stat(path)
+		return this.above.Stat(path)
 			.then( 
 				(s:FileStat)=>{
 					if (FileStat.NotExist==s) {
 						return this.below.Stat(path);
 					}
 					return Promise.resolve<FileStat>(s);
-				})
+				});
 	}
 
 	Read(path:string) : Promise<FileContent> {
-		this.above.Stat(path)
+		return this.above.Stat(path)
 		.then(
 			(s:FileStat)=>{
 				switch (s) {
@@ -59,7 +59,7 @@ export class FSOverlay {
 		.then(
 			()=>{
 				this.changes.add(path);
-				return Promise.resolve<void>();
+				return Promise.resolve();
 			}
 		);
 	}

@@ -1,20 +1,20 @@
 import {EBW} from './EBW';
 import {Eventify} from './Eventify';
-import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationRevealDialog';
-import {RepoPageEditor_NewFileDialog as Template} from './Templates';
+import {Volume} from './FS/Volume';
+import {RepoEditorPage_NewFileDialog as Template} from './Templates';
 import {RepoFileModel} from './RepoFileModel';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
-import {Volume} from './Volume';
 
+import Foundation = require('foundation-sites');
 import jQuery = require('jquery');
 
 /**
- * RepoPageEditor_RenameFileDialog displays a Rename file
+ * RepoEditorPage_NewFileDialog displays a new file
  * dialog on the RepoPageEditor page.
+ *
  */
-export class RepoPageEditor_RenameFileDialog extends Template {
+export class RepoEditorPage_NewFileDialog extends Template {
 	protected $el : any;
-	protected dialog : Dialog;
 	constructor(
 		protected repoOwner:string,
 		protected repoName:string,
@@ -23,16 +23,18 @@ export class RepoPageEditor_RenameFileDialog extends Template {
 		protected editor: RepoFileEditorCM,
 	) {
 		super();
+		document.body.appendChild(this.el);
+		this.$el = jQuery(this.el);
+		Foundation.Reveal(this.$el);
 		Eventify(this.el, {
-			"click": (evt)=>{
+			"click": (evt:any)=>{
 				let filename = this.$.filename.value;
 				if(this.volume.Exists(filename)) {
-					alert(`A file named ${filename} already exists`);
+					EBW.Alert(`A file named ${filename} already exists`);
 					return;
 				}
 				this.volume.Write(filename);
-				this.volume.Purge(filename);
-				this.dialog.Close();
+				this.$el.foundation('close');
 				let m = new RepoFileModel(
 					this.repoOwner,
 					this.repoName, 
@@ -40,20 +42,18 @@ export class RepoPageEditor_RenameFileDialog extends Template {
 					{newFile:true});
 				this.editor.setFile(m);				
 			},
-			"change": (evt)=>{
+			"change": (evt:any)=>{
 
 			}
 		});
-		dialog = new Dialog(openElement, this.el);
-		dialog.Events.add( (act)=>{
-			switch (act) {
-				case DialogEvents.Opened:
-					this.$.filename.value = '';
-					this.$.filename.focus();
-					break;
-				case DialogEvents.Closed:
-					break;
-			}
-		});		
+		openElement.addEventListener('click', (evt:any)=>{
+			evt.preventDefault();
+			evt.stopPropagation();
+			this.$el.foundation('open');
+		});
+		this.$el.bind('open.zf.reveal', (evt:any)=>{
+			this.$.filename.value = '';
+			this.$.filename.focus();
+		});
 	}
 }

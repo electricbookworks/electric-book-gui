@@ -1,7 +1,7 @@
 import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
-import {RepoPageEditor_NewFileDialog} from './RepoPageEditor_NewFileDialog';
+import {RepoEditorPage_NewFileDialog} from './RepoEditorPage_NewFileDialog';
 import {RepoFileModelCache} from './RepoFileModelCache';
 import {EBW} from './EBW';
 import {Volume} from './FS/Volume';
@@ -23,13 +23,14 @@ export class RepoEditorPage {
 	) {
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
-		this.editor = new RepoFileEditorCM(document.getElementById('editor'));
+		this.editor = undefined;
+		//this.editor = new RepoFileEditorCM(document.getElementById('editor'), );
 		this.volume = new VolumeElement(document.getElementById(`volume-element`));
 		this.fileCache = RepoFileModelCache.initialize(this.repoOwner, this.repoName);
 
 		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor, this.fileCache);
 
-		new RepoPageEditor_NewFileDialog(
+		new RepoEditorPage_NewFileDialog(
 			this.repoOwner,
 			this.repoName,
 			document.getElementById('repo-new-file'),

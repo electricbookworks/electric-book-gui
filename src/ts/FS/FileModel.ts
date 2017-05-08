@@ -1,4 +1,4 @@
-import {EBW} from './EBW';
+import {EBW} from '../EBW';
 import {FileStat, FileContent, FS} from './FS';
 import signals = require('signals');
 
@@ -65,7 +65,7 @@ export class FileModel {
 			.then(
 				(fc)=>{
 					this.DirtySignal.dispatch(this, this.checkDirty(fc.Stat));
-					return Promise.Resolve<FileStat>(fc.Stat);
+					return Promise.resolve<FileStat>(fc.Stat);
 				}
 
 			);
@@ -76,9 +76,9 @@ export class FileModel {
 	Revert():Promise<FileContent> {
 		return this.FS.Revert(this.name)
 		.then(
-			(fc)=>{
-				this.DirtySignal.dispatch(this, checkDirty(fc.Stat));
-				return Promise.Resolve<FileContent>(fc);
+			(fc:FileContent)=>{
+				this.DirtySignal.dispatch(this, this.checkDirty(fc.Stat));
+				return Promise.resolve<FileContent>(fc);
 			})
 	}
 }

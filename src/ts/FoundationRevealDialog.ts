@@ -1,7 +1,8 @@
-import {FoundationRevealDialog as Template} from './FoundationRevealDialog';
+import {FoundationRevealDialog as Template} from './Templates';
 
 import jQuery = require('jquery');
 import signals = require('signals');
+import Foundation = require('foundation-sites');
 
 export enum DialogEvents {
 	Opened = 1,
@@ -25,16 +26,16 @@ export class FoundationRevealDialog extends Template {
 		super();
 		this.Events = new signals.Signal();
 		this.$el = jQuery(this.el);
-		new Foundation.Reveal(this.$el);		
+		Foundation.Reveal(this.$el);		
 		openElement.addEventListener('click', (evt)=>{
 			evt.preventDefault();
 			evt.stopPropagation();
 			this.$el.foundation('open');
 		});
-		this.$el.bind('open.zf.reveal', (evt)=>{
+		this.$el.bind('open.zf.reveal', (evt:any)=>{
 			this.Events.dispatch(DialogEvents.Opened);
 		});
-		this.$el.bind('closed.zf.reveal', (evt)=>{
+		this.$el.bind('closed.zf.reveal', (evt:any)=>{
 			this.Events.dispatch(DialogEvents.Closed);
 		});
 		if (content) {

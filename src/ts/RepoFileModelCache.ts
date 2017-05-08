@@ -1,3 +1,4 @@
+import {FileInfo} from './FS/FileInfo';
 import {RepoFileModel} from './RepoFileModel';
 import {RepoFileModelOptions} from './RepoFileModelOptions';
 
@@ -7,21 +8,24 @@ export class RepoFileModelCache {
 	protected constructor(protected repoOwner:string, protected repoName:string) {
 		this.cache = new Map<string,RepoFileModel>();
 	}
-	public static instance() :RepoFileModelCache {
+	public static instance() : RepoFileModelCache {
 		if (!RepoFileModelCache.singleton) {
 			alert(`cannot call RepoFileModelCache before calling initialize`);
 			debugger;
 		}
-		return new RepoFileModelCache();
+		return this.singleton;
 	}
 	public static initialize(repoOwner:string,repoName:string) : RepoFileModelCache {
 		RepoFileModelCache.singleton =  new RepoFileModelCache(repoOwner, repoName);
 		return RepoFileModelCache.singleton;
 	}
+	public Create(fi:FileInfo):RepoFileModel {
+		return this.Get(fi, {newFile:true});
+	}
 	public Get(fi: FileInfo, 
 		options:RepoFileModelOptions={}) : RepoFileModel
 	{
-		let cacheKey = `${this.repoOwner}/${this.repoName}:${fi.Path()}`;
+		let cacheKey = `${this.repoOwner}/${this.repoName}:${fi.Name()}`;
 		let fm = this.cache.get(cacheKey);
 		if (fm) {
 			return fm;
@@ -45,9 +49,9 @@ export class RepoFileModelCache {
 		return rpm.Rename(from,to)
 		.then(
 			()=>{
-				this.cache.add(toKey, rpm);
+				this.cache.set(toKey, rpm);
 				this.cache.delete(fromKey);
-				return Promise.resolve<void>();
+				return Promise.resolve();
 			}
 		);
 	}

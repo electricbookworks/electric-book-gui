@@ -3,7 +3,7 @@ import {FS,FileStat,FileContent} from './FS';
 
 export class FileModelCache {
 	protected static singleton: FileModelCache;
-	protected cache: Map<string, FileModelCache>;
+	protected cache: Map<string, FileModel>;
 	protected key: string;
 	protected constructor(repoOwner:string,repoName:string,protected FS:FS) {
 		this.cache = new Map<string,FileModel>();
@@ -16,8 +16,8 @@ export class FileModelCache {
 		}
 		return FileModelCache.singleton;
 	}
-	public static initialize(repoOwner:string,repoName:string) : FileModelCache {
-		FileModelCache.singleton =  new FileModelCache(repoOwner, repoName);
+	public static initialize(repoOwner:string,repoName:string, fs:FS) : FileModelCache {
+		FileModelCache.singleton =  new FileModelCache(repoOwner, repoName, fs);
 		return FileModelCache.singleton;
 	}
 	public Get(path:string) : FileModel
@@ -44,9 +44,9 @@ export class FileModelCache {
 		return fm.Rename(from,to)
 		.then(
 			()=>{
-				this.cache.add(toKey, fm);
+				this.cache.set(toKey, fm);
 				this.cache.delete(fromKey);
-				return Promise.resolve<void>();
+				return Promise.resolve();
 			}
 		);
 	}

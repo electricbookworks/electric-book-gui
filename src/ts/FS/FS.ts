@@ -21,7 +21,7 @@ export class FileContent {
 	}
 	static FromJS(json:string) {
 		let js = JSON.parse(json);
-		return new FileContent(js.name, js.state, js.content);
+		return new FileContent(js.Name, js.Stat, js.Content);
 	}
 	OriginalName() : string {
 		if (this.Original) {
@@ -38,6 +38,7 @@ export interface FS {
 	Remove(path:string):Promise<void>;
 	Rename(fromPath:string,toPath:string)
 	:Promise<FileContent>;
+	Revert(path:string): Promise<FileContent>;
 	Sync():Promise<void>;
 	RepoOwnerName():[string,string];
 }
