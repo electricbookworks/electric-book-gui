@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "public/js/ts.js",
+        "sourceMap": true,
+        "target": "esnext",
+        "moduleResolution": "node",
+        "module": "none",
+        "types" : [ "core-js" ]
+    },
+    "include": [
+        "src/ts/**/*.ts"
+    ],
+    "exclude": [
+        // "node_modules"
+    ]
+}

@@ -18,6 +18,7 @@ export default {
 			importHelpers: true,
 			target: "es5",
 			lib: ["esnext"],
+			"types": ["core-js"],
 			paths: {
 				"tslib": ["public/bower_components/tslib/tslib.d.ts"]
 			}

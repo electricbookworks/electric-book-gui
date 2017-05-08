@@ -16,6 +16,10 @@ export class FileContentOverlay {
 	}
 
 	Exists(path:string, fromCacheOnly:boolean=false) : Promise<boolean> {
+		// THIS IS TRICKY, BECAUSE I MIGHT HAVE DELETED LOCALLY,
+		// BUT THE FILE STILL REMAINS IN SOURCE
+		// SO I NEED TO CHECK MY FILESTATES FIRST, TO DETERMINE
+		// WHETHER THIS IS A FILE THAT I MIGHT HAVE DELETED HERE...
 		return this.cache.Exists(
 			(e)=>{
 				// If our local cache doesn't know about import

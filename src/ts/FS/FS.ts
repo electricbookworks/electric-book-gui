@@ -39,6 +39,7 @@ export interface FS {
 	Rename(fromPath:string,toPath:string)
 	:Promise<FileContent>;
 	Sync():Promise<void>;
+	RepoOwnerName():[string,string];
 }
 
 export class FSBase {

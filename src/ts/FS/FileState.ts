@@ -3,8 +3,6 @@ export enum FileState {
 	// This is a file that exists on the FS, 
 	// but hasn't changed.
 	Exists = 1,
-	// Same as Exists
-	Synced = 1,
 	// A file that has been changed, but not
 	// not 'Synced'.
 	Changed= 2,

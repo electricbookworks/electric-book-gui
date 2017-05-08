@@ -22,6 +22,10 @@ export class FSCache {
 		this.cache = new FSSession(`source-cache`, this.repoOwner, this.repoName);
 	}
 
+	RepoOwnerName():[string,string] {
+		return [this.repoOwner, this.repoName];
+	}
+
 	Stat(path:string): Promise<FileStat> {
 		return
 			this.cache.Stat(path)
@@ -91,7 +95,7 @@ export class FSCache {
 			})
 		.then(
 			(c:FileContent)=>{
-				return this.cache.Write(path, c.FileStat, c.Content)
+				return this.cache.Write(path, c.Stat, c.Content)
 			})
 		.then(
 			()=>{

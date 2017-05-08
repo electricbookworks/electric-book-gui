@@ -12,7 +12,7 @@ export class FileModel {
 	protected editing: boolean;
 
 	constructor(
-		protected name: string
+		protected name: string,
 		protected FS: FS) 
 	{
 		this.DirtySignal = new signals.Signal();
@@ -49,7 +49,7 @@ export class FileModel {
 		case FileStat.New:
 			return true;
 		case FileStat.NotExist:
-			throw(new Error(`File ${this.Path()} doesn't seem to exist`);
+			throw(new Error(`File ${this.Path()} doesn't seem to exist`));
 		}
 	}
 	IsDirty(fc:FileContent):Promise<boolean> {
@@ -72,5 +72,13 @@ export class FileModel {
 	}
 	Read(t:string):Promise<FileContent> {
 		return this.FS.Read(t);
+	}
+	Revert():Promise<FileContent> {
+		return this.FS.Revert(this.name)
+		.then(
+			(fc)=>{
+				this.DirtySignal.dispatch(this, checkDirty(fc.Stat));
+				return Promise.Resolve<FileContent>(fc);
+			})
 	}
 }

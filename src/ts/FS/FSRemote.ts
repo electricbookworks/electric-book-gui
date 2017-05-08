@@ -27,8 +27,7 @@ export class FileContentRemote {
 		.then(
 			(content)=>{
 				return new FileContent(path, FileStat.Exists, content);
-			})
-			as Promise<FileContent>;
+			});
 	}
 	Write(path:string, stat:FileStat, content: string): Promise<FileContent> {
 		if (stat!=FileStat.Exists) {
@@ -50,10 +49,12 @@ export class FileContentRemote {
 			});
 	}
 	Remove(path:string) : Promise<void> {
-		return EBW.API().DeleteFile(this.repoOwner, this.repoName, path) 
-			as Promise<void>;
+		return EBW.API().DeleteFile(this.repoOwner, this.repoName, path);
 	}
 	Sync() : Promise<void> {
 		return Promise.reject(`FSRemote doesn't support Sync()`);
+	}
+	RepoOwnerName() : [string,string] {
+		return [this.repoOwner, this.repoName];
 	}
 }

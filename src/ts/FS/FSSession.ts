@@ -1,9 +1,10 @@
 import {FileStat, FileContent, FS} from './FS';
+import {Store} from './Store';
 
 export class FSSession {
 	protected key: string;
 	constructor(
-		protected name: string
+		protected name: string,
 		protected repoOwner:string, 
 		protected repoName:string) 
 	{
@@ -12,31 +13,30 @@ export class FSSession {
 			encodeURIComponent(this.repoName) + `:`;
 	}
 	protected get(path:string) : FileContent {
-		let js = sessionStorage.getItem(this.key+path);
+		let js = Store().getItem(this.key+path);
 		if (!js) {
 			return undefined;
 		}
 		return FileContent.FromJS(js);				
 	}
 	protected set(c : FileContent) {
-		sessionStorage.setItem(this.key+c.Name, c.Serialize());
+		Store().setItem(this.key+c.Name, c.Serialize());
 	}
 	protected delete(path:string) {
-		sessionStorage.deleteItem(this.key+path);
+		Store().removeItem(this.key+path);
 	}
 
 	Stat(path:string) : Promise<FileStat> {
 		let c = this.get(path);
-		Promise.resolve<FileStat>( c ? c.Stat : FileStat.NotExist);
+		return Promise.resolve<FileStat>( c ? c.Stat : FileStat.NotExist);
 	}
 
-	Read(path:string) : Promise<string> {
+	Read(path:string) : Promise<FileContent> {
 		let c = this.get(path);
 		if (!c) {
 			return Promise.reject(`${path} does not exist`);
 		}
-		// NOTE that c.Content COULD BE UNDEFINED
-		return Promise.resolve<string>(c.Content);
+		return Promise.resolve<FileContent>(c);
 	}
 
 	Write(path:string, stat: FileStat, content?: string): Promise<FileContent> {
@@ -44,7 +44,6 @@ export class FSSession {
 		this.set(f);
 		return Promise.resolve<FileContent>(f);
 	}
-
 	Remove(path:string) : Promise<void> {
 		let c = this.get(path);
 		if (!c) {
@@ -75,5 +74,8 @@ export class FSSession {
 
 	Sync():Promise<void> {
 		return Promise.reject(`FSSession doesn't support Sync`);
+	}
+	RepoOwnerName():[string,string] {
+		return [this.repoOwner, this.repoName];
 	}
 }
