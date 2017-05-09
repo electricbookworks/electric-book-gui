@@ -3940,6 +3940,8 @@ body {
           #new-editor #new-editor-files-nav .file-container #all-files-editor .allfiles-file.removed {
             color: red;
             text-decoration: line-through; }
+          #new-editor #new-editor-files-nav .file-container #all-files-editor .allfiles-file.ignore {
+            display: none; }
   #new-editor #file-editors {
     position: absolute;
     top: 0;
@@ -3951,6 +3953,15 @@ body {
     justify-content: space-between;
     align-items: stretch;
     max-height: 100% !important; }
+    #new-editor #file-editors .header-split {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between; }
+      #new-editor #file-editors .header-split .file-title {
+        padding-left: 2em; }
+        #new-editor #file-editors .header-split .file-title span[ebw-bind="current-filename"] {
+          font-weight: bold; }
     #new-editor #file-editors .editor {
       flex-grow: 1;
       position: relative; }

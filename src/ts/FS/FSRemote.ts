@@ -2,10 +2,10 @@ import {EBW} from '../EBW';
 import {FS,FileStat,FileContent} from './FS';
 
 /**
- * FSRemote are files stored on a remote
+ * FSRemote is a FileSystem stored on a remote
  * server.
  */
-export class FileContentRemote {
+export class FSRemote {
 	constructor(
 		protected repoOwner:string, 
 		protected repoName:string) 
@@ -15,7 +15,7 @@ export class FileContentRemote {
 		return EBW.API()
 			.FileExists(this.repoOwner, this.repoName, path)
 			.then(
-				(exists:boolean)=>{
+				([exists]:[boolean])=>{
 					// Remote system is definitive
 					return Promise.resolve<FileStat>( exists ? FileStat.Exists : FileStat.NotExist);
 				}) as Promise<FileStat>;
@@ -24,19 +24,19 @@ export class FileContentRemote {
 		return EBW.API()
 		.GetFileString(this.repoOwner, this.repoName, path)
 		.then(
-			(content)=>{
+			([content]:[string])=>{
 				return new FileContent(path, FileStat.Exists, content);
 			});
 	}
-	Write(path:string, stat:FileStat, content: string): Promise<FileContent> {
-		if (stat!=FileStat.Exists) {
-			return Promise.reject(`FSRemote only supports fileStat values of FileStat.Exists`);
+	Write(path:string, stat:FileStat, content?: string): Promise<FileContent> {
+		if ('undefined' == typeof content) {
+			return Promise.reject(`FSRemote cannot write file ${path} without content.`);
 		}
 		return EBW.API()
 		.UpdateFile(this.repoOwner, this.repoName, path, content)
 		.then(
 			()=>{
-				return new FileContent(path, stat, content);
+				return new FileContent(path, FileStat.Exists, content);
 			}
 		);
 	}
@@ -47,10 +47,15 @@ export class FileContentRemote {
 				return this.Read(toPath);
 			});
 	}
-	Remove(path:string) : Promise<void> {
-		return EBW.API().RemoveFile(this.repoOwner, this.repoName, path);
+	Remove(path:string, stat?:FileStat) : Promise<FileContent> {
+		return EBW.API().RemoveFile(this.repoOwner, this.repoName, path)
+		.then(
+			()=>{
+				return Promise.resolve<FileContent>(new FileContent(path, FileStat.NotExist));
+			}
+		);
 	}
-	Sync() : Promise<void> {
+	Sync(path?:string) : Promise<void> {
 		return Promise.reject(`FSRemote doesn't support Sync()`);
 	}
 	RepoOwnerName() : [string,string] {

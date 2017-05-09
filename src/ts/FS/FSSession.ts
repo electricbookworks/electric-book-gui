@@ -6,7 +6,8 @@ export class FSSession {
 	constructor(
 		protected name: string,
 		protected repoOwner:string, 
-		protected repoName:string) 
+		protected repoName:string,
+		protected defaultRemoveStat:FileStat = FileStat.Deleted) 
 	{
 		this.key = encodeURIComponent(this.name) + `:` +
 			encodeURIComponent(this.repoOwner) + `:` +
@@ -20,6 +21,10 @@ export class FSSession {
 		return FileContent.FromJS(js);				
 	}
 	protected set(c : FileContent) {
+		if (c.Stat==FileStat.NotExist) {
+			this.delete(c.Name);
+			return;
+		}
 		Store().setItem(this.key+c.Name, c.Serialize());
 	}
 	protected delete(path:string) {
@@ -44,14 +49,19 @@ export class FSSession {
 		this.set(f);
 		return Promise.resolve<FileContent>(f);
 	}
-	Remove(path:string) : Promise<void> {
+
+	Remove(path:string, stat?:FileStat) : Promise<FileContent> {
 		let c = this.get(path);
 		if (!c) {
 			console.log(`Tried to remove ${path} which does not appear to exist`);
-			return Promise.resolve();
+			return Promise.resolve<FileContent>(new FileContent(path, FileStat.NotExist));
 		}
-		this.set(new FileContent(path, FileStat.Deleted, c.Content));
-		return Promise.resolve();
+		if (!stat) {
+			stat = this.defaultRemoveStat;
+		}
+		let fc = new FileContent(path, stat, c.Content);
+		this.set(fc);
+		return Promise.resolve<FileContent>(fc);
 	}
 
 	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
@@ -68,17 +78,22 @@ export class FSSession {
 		}
 		t = new FileContent(toPath, FileStat.Changed, f.Content, f);
 		this.set(t);
-		this.delete(fromPath);
+
+		f = new FileContent(fromPath, this.defaultRemoveStat, f.Content);
+		this.set(f);
+
 		return Promise.resolve<FileContent>(t);
 	}
 
-	Sync():Promise<void> {
+	Sync(path?:string):Promise<void> {
 		return Promise.reject(`FSSession doesn't support Sync`);
 	}
+
 	RepoOwnerName():[string,string] {
 		return [this.repoOwner, this.repoName];
 	}
+	
 	Revert(path:string): Promise<FileContent> {
-		return Promise.reject<FileContent>(`FSSession doesn't support Revert`);
+		return Promise.reject(`FSSession doesn't support Revert`);
 	}
 }

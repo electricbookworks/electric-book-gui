@@ -4,7 +4,8 @@ import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationReveal
 import {RepoEditorPage_RenameFileDialog as Template} from './Templates';
 import {RepoFileModel} from './RepoFileModel';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
-import {Volume} from './FS/Volume';
+import {FS,FileContent, FileStat} from './FS/FS';
+import {FSFileEdit} from './FS/FSFileEdit';
 
 import jQuery = require('jquery');
 
@@ -15,30 +16,23 @@ import jQuery = require('jquery');
 export class RepoEditorPage_RenameFileDialog extends Template {
 	protected $el : any;
 	protected dialog : Dialog;
+	protected repoOwner: string;
+	protected repoName: string;
 	constructor(
-		protected repoOwner:string,
-		protected repoName:string,
 		openElement:HTMLElement, 
-		protected volume:Volume,
-		protected editor: RepoFileEditorCM,
+		protected FS: FS,
+		protected editor: RepoFileEditorCM
 	) {
 		super();
+		[this.repoOwner, this.repoName] = this.FS.RepoOwnerName();
 		Eventify(this.el, {
 			"click": (evt:any)=>{
-				let filename = this.$.filename.value;
-				if(this.volume.Exists(filename)) {
-					EBW.Alert(`A file named ${filename} already exists`);
-					return;
-				}
-				this.volume.Write(filename);
-				this.volume.Purge(filename);
-				this.dialog.Close();
-				let m = new RepoFileModel(
-					this.repoOwner,
-					this.repoName, 
-					this.volume.Get(filename),
-					{newFile:true});
-				this.editor.setFile(m);				
+				let toName = this.$.filename.value;
+				this.editor.File().Rename(toName)
+				.then(
+					(fc:FileContent)=>{
+						this.dialog.Close();
+					});
 			},
 			"change": (evt:any)=>{
 
@@ -50,10 +44,11 @@ export class RepoEditorPage_RenameFileDialog extends Template {
 				case DialogEvents.Opened:
 					this.$.filename.value = '';
 					this.$.filename.focus();
+					this.$.current_name.innerText = this.editor.File().Name();
 					break;
 				case DialogEvents.Closed:
 					break;
 			}
-		});		
+		});
 	}
 }

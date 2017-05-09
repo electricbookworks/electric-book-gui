@@ -44,6 +44,9 @@ export class EBW {
 		let r : string = prompt(msg);
 		return Promise.resolve<string>(r);
 	}
+	static Confirm(msg:string) : Promise<boolean> {
+		return Promise.resolve<boolean>(confirm(msg));
+	}
 	// flatten takes returns a function that accepts an 
 	// array of arguments, and calls the callback function
 	// with each array element as a distinct parameter.

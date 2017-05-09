@@ -2,21 +2,22 @@ import {Eventify} from './Eventify';
 import {RepoFileEditor_codemirror} from './Templates';
 import {EditorCodeMirror} from './EditorCodeMirror';
 import {EBW} from './EBW';
+import {FileContent} from './FS/FS';
+import {FSFileEdit} from './FS/FSFileEdit';
 
 interface RepoFileEditorCallbacks {
-	Rename: (evt:any)=>void;
+	Rename: ()=>void;
 }
+
 export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	protected editor : EditorCodeMirror;
-	protected file: any;
-
+	protected file: FSFileEdit;
 
 	constructor(
 		protected parent:HTMLElement,
 		protected callbacks: RepoFileEditorCallbacks
 		) {
 		super();
-		this.file = false;
 
 		Eventify(document.getElementById('editor-actions'), {
 			'save': (evt:any)=>{
@@ -35,29 +36,25 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			},
 			'undo': (evt:any)=> {
 				evt.preventDefault();
-				if (confirm(`Undo the changes you've just made to ${this.file.Path()}?`)) {
-					let orig = this.file.Original();
-					this.file.SetText(orig);
-					this.setText(orig);
-					this.file.SetText(this.file.Original());
-				}
+				// if (confirm(`Undo the changes you've just made to ${this.file.Path()}?`)) {
+				// 	let orig = this.file.Original();
+				// 	this.file.SetText(orig);
+				// 	this.setText(orig);
+				// 	this.file.SetText(this.file.Original());
+				// }
 			},
 			'delete': (evt:any)=> {
 				evt.preventDefault();
-				if (confirm(`Are you sure you want to delete ${this.file.Path()}?`)) {
-					this.file.Delete()
-					.then( (res:any)=> {
-						this.file = null;
-						this.setFile(null);
+				EBW.Confirm(`Are you sure you want to delete ${this.file.Name()}?`)
+				.then(
+					()=>{
+						return this.file.Remove()
+						.then( (fc:FileContent)=> {
+							this.file = undefined;
+							this.setFile(undefined);
+						});
 					})
-					.catch( (err:any)=>{
-						EBW.Error(err);
-					});
-				}
-			},
-			'rename': (evt:any)=>{
-				evt.preventDefault();
-				this.callbacks.Rename(this.file);
+				.catch( EBW.Error );
 			}
 		});
 
@@ -71,19 +68,28 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		sessionStorage.clear();
 	}
 	setText(text:string){
+		if ('string'!=typeof text) {
+			debugger;
+		}
 		this.editor.setValue(text);
 	}
-	setFile(file:any) {
+	setFile(file:FSFileEdit) {
+		/**
+		 * @TODO NEED TO SAVE THE UNDO HISTORY AND POSSIBLY
+		 * RESTORE THE UNDO HISTORY FOR THE EDITOR
+		 */
 		if (this.file) {
-			if (this.file==file) {
-				return;	// Cannot set to the file we're currently editing
+			if (this.file.Name()==file.Name()) {
+				// Cannot set to the file we're currently editing
+				return;
 			}
 			this.file.SetText(this.editor.getValue());
 			this.file.SetEditing(false);
 		}
-		if (!file) {
-			// @TODO Need to catch New Files here... ?
+		if ('undefined'==typeof file) {
+			this.file = undefined;
 			this.setText('Please select a file to edit.');
+			this.setBoundFilenames();
 			return;
 		}
 		file.GetText()
@@ -91,14 +97,26 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			(t:string)=>{
 				this.file = file;
 				this.file.SetEditing(true);
-				for (let e of document.querySelectorAll('[ebw-current-filename]')) {
-					e.textContent = file.path;
-				}
+				this.setBoundFilenames();
 				this.setText(t);
 			})
 		.catch(
 			(err:any)=>{
 				EBW.Error(err);
 			});
+	}
+	File() : FSFileEdit {
+		return this.file;
+	}
+	protected setBoundFilenames() {
+		let filename = 'CHOOSE A FILE';
+		if (this.file) {
+			filename = this.file.Name();
+		}
+		let list = document.querySelectorAll('[ebw-bind="current-filename"]');
+		for (let i = 0; i<list.length; i++) {
+			let e = list.item(i) as HTMLElement;
+			e.textContent = filename;
+		}
 	}
 }

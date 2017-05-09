@@ -15,9 +15,13 @@
 
 	<section class="section-editor" id="file-editors">
 		<header class="header-split">
+			<div class="file-title">
+				Editing <span ebw-bind="current-filename">CHOOSE A FILE</span>
+			</div>
 			<div class="action-group primary" id="editor-actions">
 				<button data-event="click:save" data-set="save" class="btn">Save</button>
 				<button data-event="click:undo" data-set="undo" class="btn">Undo</button>
+				<button id="repo-rename-file" class="btn">Rename</button>
 				<button data-event="click:delete" data-set="delete" title="Delete" class="btn">Delete</button>
 			</div>
 		</header>
@@ -30,14 +34,16 @@
 		   <button disabled class="btn">epub</button>
 		</div>
 	</section>
-
-	<script type="text/hidden" id="volume-element">
-	{{- .RepoFiles -}}
+	<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+new RepoEditorPage(
+	{{.RepoOwner}},
+	{{.RepoName}},
+	document.querySelector('[data-instance="AllFilesList"]'),
+	{{.RepoFiles}},
+	{{.ProseIgnoreFilter}});
+});
 	</script>
-	<script type="text/hidden" id="filesystem">
-	{{- .RepoFiles -}}
-	</script>
-	<script id="repo-editor-page" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}"></script>
 </main>
 
 {{template "_footer.html" .}}

@@ -1,8 +1,9 @@
+/// <reference path="./typescript-foundation.d.ts" />
+import * as TSFoundation from 'TSFoundation';
 import {FoundationRevealDialog as Template} from './Templates';
 
 import jQuery = require('jquery');
 import signals = require('signals');
-import Foundation = require('foundation-sites');
 
 export enum DialogEvents {
 	Opened = 1,
@@ -26,12 +27,16 @@ export class FoundationRevealDialog extends Template {
 		super();
 		this.Events = new signals.Signal();
 		this.$el = jQuery(this.el);
-		Foundation.Reveal(this.$el);		
-		openElement.addEventListener('click', (evt)=>{
-			evt.preventDefault();
-			evt.stopPropagation();
-			this.$el.foundation('open');
-		});
+		// Comment here
+		TSFoundation.Reveal(this.$el);
+
+		if (openElement) {
+			openElement.addEventListener('click', (evt)=>{
+				evt.preventDefault();
+				evt.stopPropagation();
+				this.$el.foundation('open');
+			});
+		}
 		this.$el.bind('open.zf.reveal', (evt:any)=>{
 			this.Events.dispatch(DialogEvents.Opened);
 		});
@@ -41,7 +46,11 @@ export class FoundationRevealDialog extends Template {
 		if (content) {
 			this.Set(content);
 		}
-		document.body.appendChild(this.el);
+		if (document.body.firstChild) {
+			document.body.insertBefore(this.el, document.body.firstChild);
+		} else {
+			document.body.appendChild(this.el);
+		}
 	}
 	// Set the content of the dialog to the given
 	// element.

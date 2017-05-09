@@ -10,6 +10,7 @@ import (
 	"github.com/golang/glog"
 	// "github.com/google/go-github/github"
 
+	"ebw/book"
 	"ebw/config"
 	"ebw/git"
 	"ebw/util"
@@ -93,14 +94,20 @@ func repoView(c *Context) error {
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
-	c.D[`Path`], err = git.RepoDir(client.Username, repoOwner, repoName)
+	repoDir, err := git.RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
+	c.D[`Path`] = repoDir
 	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
+	proseConfig, err := book.ReadProse(repoDir)
+	if nil != err {
+		return err
+	}
+	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
 
 	return c.Render(`repo_view.html`, nil)
 }

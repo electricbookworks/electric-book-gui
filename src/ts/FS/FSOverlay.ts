@@ -27,13 +27,13 @@ export class FSOverlay {
 			(s:FileStat)=>{
 				switch (s) {
 					case FileStat.Exists:
-						//fallthrough
+						return this.readAndCachePath(path);
 					case FileStat.Changed:
 						//fallthrough
 					case FileStat.New:
 						//fallthrough
 					case FileStat.Deleted:
-						return this.above.Read(path);						
+						return this.above.Read(path);					
 					case FileStat.NotExist:
 						return this.below.Read(path)
 						.then(
@@ -44,22 +44,38 @@ export class FSOverlay {
 				}
 			});
 	}
+	protected readAndCachePath(path:string) : Promise<FileContent> {
+		return this.above.Read(path)
+		.then(
+			(fc:FileContent)=>{
+				if (fc.Content) {
+					return Promise.resolve<FileContent>(fc);
+				}
+				return this.below.Read(path)
+				.then(
+					(fc:FileContent)=>{
+						return this.above.Write(path, fc.Stat, fc.Content);
+					});
+			});		
+	}
 
 	Write(path:string, stat:FileStat, content?: string): Promise<FileContent> {
 		return this.above.Write(path, stat, content)
 		.then(
-			(fc)=>{
-				this.changes.add(path);
-				return Promise.resolve(fc)
+			(fc:FileContent)=>{
+				if (!(fc.Stat==FileStat.Exists || fc.Stat==FileStat.NotExist)) {
+					this.changes.add(path);
+				}
+				return Promise.resolve<FileContent>(fc)
 			});
 	}
 
-	Remove(path:string) : Promise<void> {
-		return this.above.Remove(path)
+	Remove(path:string, stat?:FileStat) : Promise<FileContent> {
+		return this.above.Remove(path,stat)
 		.then(
-			()=>{
+			(fc:FileContent)=>{
 				this.changes.add(path);
-				return Promise.resolve();
+				return Promise.resolve<FileContent>(fc);
 			}
 		);
 	}
@@ -67,7 +83,7 @@ export class FSOverlay {
 	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
 		return this.above.Rename(fromPath, toPath)
 		.then(
-			(fc)=>{
+			(fc:FileContent)=>{
 				this.changes.add(fromPath);
 				this.changes.add(toPath);
 				return Promise.resolve<FileContent>(fc);
@@ -85,7 +101,7 @@ export class FSOverlay {
 				return this.above.Write(path, c.Stat, c.Content)
 			})
 		.then(
-			()=>{
+			(fc:FileContent)=>{
 				// Unless it's a renamed file,
 				// we're going to undo any
 				// changes on the file...
@@ -95,7 +111,7 @@ export class FSOverlay {
 				return this.above.Read(path);
 			});
 	}
-	Sync() : Promise<void> {
-		return Promise.reject(`FSCache doesn't implement Sync()`);
+	Sync(path?:string) : Promise<void> {
+		return Promise.reject(`FSOverlay.Sync is not yet implemented`);
 	}	
 }

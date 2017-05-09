@@ -69,6 +69,7 @@
     "rollup-stream": "^1.19.0",
     "rollup-watch": "^3.2.2",
     "run-sequence": "^1.2.2",
+    "typedoc": "https://github.com/DatenMetzgerX/typedoc/tarball/typescript-2-build",
     "typescript": "^2.3.1"
   }
 }

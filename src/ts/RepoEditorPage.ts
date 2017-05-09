@@ -2,10 +2,20 @@ import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {RepoEditorPage_NewFileDialog} from './RepoEditorPage_NewFileDialog';
+import {RepoEditorPage_RenameFileDialog} from './RepoEditorPage_RenameFileDialog';
 import {RepoFileModelCache} from './RepoFileModelCache';
 import {EBW} from './EBW';
 import {Volume} from './FS/Volume';
 import {VolumeElement} from './VolumeElement';
+
+import {FileContent,FileStat,FS} from './FS/FS';
+import {FSNotify} from './FS/FSNotify';
+import {FSSession} from './FS/FSSession';
+import {FSRemote} from './FS/FSRemote';
+import {FSReadCache} from './FS/FSReadCache';
+
+import {FSFileList} from './FSFileList';
+import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
 
 /**
  * RepoEditorPage is the JS controller for the page that allows
@@ -16,38 +26,42 @@ export class RepoEditorPage {
 	protected volume: VolumeElement;
 	protected fileCache: RepoFileModelCache;
 
+	protected FS: FSNotify;
+
 	constructor(
 		protected repoOwner:string, 
 		protected repoName:string,
-		allFilesListEl: HTMLElement
+		filesList: HTMLElement,
+		filesJson: any,
+		protected proseIgnoreFunction: (name:string)=>boolean
 	) {
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
 		this.editor = undefined;
-		//this.editor = new RepoFileEditorCM(document.getElementById('editor'), );
-		this.volume = new VolumeElement(document.getElementById(`volume-element`));
-		this.fileCache = RepoFileModelCache.initialize(this.repoOwner, this.repoName);
+		this.editor = new RepoFileEditorCM(document.getElementById('editor'), {
+			Rename: ():void=>{
+				return;
+			}
+		});
 
-		new AllFilesList(allFilesListEl, repoOwner, repoName, this.volume, this.editor, this.fileCache);
+		let remoteFS = new FSReadCache(new FSRemote(this.repoOwner, this.repoName));
+		let localFS = new FSSession(`temp-rootf`, this.repoOwner, this.repoName);
+
+		this.FS = new FSNotify(remoteFS);
+		
+		new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
 
 		new RepoEditorPage_NewFileDialog(
-			this.repoOwner,
-			this.repoName,
 			document.getElementById('repo-new-file'),
-			this.volume,
+			this.FS,
+			this.editor);
+		new RepoEditorPage_RenameFileDialog(
+			document.getElementById(`repo-rename-file`),
+			this.FS,
 			this.editor);
 		
-		this.volume.Load();
+		FSPrimeFromJS(this.FS, filesJson);
 
-		//new PullRequestList(document.getElementById('pull-request-list'), repo);
-		// window.addEventListener('beforeunload', evt=> {
-		// 	// transfer editor to file text
-		// 	this.editor.setFile(null);
-		// 	if (this.files.IsDirty()) {
-		// 		evt.returnValue='confirm';
-		// 		evt.stopPropagation();
-		// 	}
-		// });
 		document.getElementById(`repo-print`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			console.log(`Starting printing...`);
@@ -61,18 +75,35 @@ export class RepoEditorPage {
 			console.log(`URL = ${jekyllUrl}`);
 			window.open(jekyllUrl, `${this.repoOwner}-${this.repoName}-jekyll`);
 		});
+		/**
+		 * @TODO
+		 * Need to catch any attempt to leave RepoEditorPage and
+		 * check that the user has saved any changes.
+		 */
 	}
 	static instantiate() {
 		let el = document.getElementById(`repo-editor-page`);
 		if (el) {
+			console.error(`RepoEditorPage should be constructed directly to receive ProseIgnoreFunction`);
+			debugger;
 			console.log(`Instantiating RepoEditorPage`);
 			let repoOwner = el.getAttribute('repo-owner');
 			let repoName = el.getAttribute('repo-name');
-			let volumeEL = document.getElementById(`volume-element`);
-			let volume = new VolumeElement()
-			let allFilesList = document.querySelector(`[data-instance='AllFilesList']`);
+			// let volume = new VolumeElement()
+			// let allFilesList = document.querySelector(`[data-instance='AllFilesList']`);
 
-			new RepoEditorPage(repoOwner, repoName, document.querySelector(`[data-instance='AllFilesList']`) as HTMLElement);
+			let filesList = document.querySelector(`[data-instance='AllFilesList']`);
+			let primeFSel = document.getElementById(`volume-element`);
+			let primeFSjs = JSON.parse(primeFSel.innerText);
+			new RepoEditorPage(repoOwner, repoName, 
+				filesList as HTMLElement,
+				primeFSjs, 
+				function(name:string) {
+					return false;
+				}
+			);
 		}
 	}
 }
+
+window.RepoEditorPage = RepoEditorPage;

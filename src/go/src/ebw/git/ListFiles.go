@@ -135,7 +135,7 @@ func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 		if !exists {
 			return nil // doesn't exist => already deleted!
 		}
-		if err := runGitDir(root, []string{`rm`, path}); nil != err {
+		if err := runGitDir(root, []string{`rm`, `-f`, path}); nil != err {
 			return err
 		}
 		return nil

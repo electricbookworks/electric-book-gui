@@ -45,10 +45,12 @@ export class AddNewBookDialog extends addNewBookDialog {
 		parent.appendChild(this.el);
 	}
 	static instantiate() {
-		document.querySelectorAll(`[data-instance='AddNewBookDialog']`).forEach( function(el) {
+		let list = document.querySelectorAll(`[data-instance='AddNewBookDialog']`);
+		for (let i=0; i<list.length; i++) {
+			let el = list.item(i) as HTMLElement;
 			console.log(`qsa.forEach(`, el, `)`);
-			new AddNewBookDialog(el as HTMLElement);
-		});
+			new AddNewBookDialog(el);
+		}
 	}
 }
 

@@ -7,6 +7,7 @@ import signals = require('signals');
 export class Volume {
 	protected files: Map<string,FileInfo>;
 	public Events: signals.Signal;
+	
 	constructor() {
 		this.files = new Map<string,FileInfo>();
 		this.Events = new signals.Signal();
@@ -37,6 +38,7 @@ export class Volume {
 		f.Rename(to);
 		this.files.delete(from);
 		this.files.set(to, f);
+		// Should we issue Events for each FileInfo struct?
 		return Promise.resolve();
 	}
 	// Write creates a file at the named path, or updates

@@ -6,9 +6,10 @@ export default {
 	moduleName: 'EBW',
 	dest: 'public/js/ts.js',
 	sourceMap: true,
-	external: ['tslib'],
+	external: ['tslib','TSFoundation'],
 	globals: {
-		'tslib':'tslib'
+		'tslib':'tslib',
+		'TSFoundation':'TSFoundation'
 	},
 	plugins: [
 		typescript({

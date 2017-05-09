@@ -52,6 +52,9 @@
 						color: red;
 						text-decoration: line-through;
 					}
+					&.ignore {
+						display: none;
+					}
 				}
 			}
 		}
@@ -70,7 +73,18 @@
 		align-items: stretch;
 
 		max-height: 100% !important;
-
+		.header-split {
+			display: flex;
+			flex-direction: row;
+			align-items: baseline;
+			justify-content: space-between;
+			.file-title {
+				padding-left: 2em;
+				span[ebw-bind="current-filename"] {
+					font-weight: bold;
+				}
+			}
+		}
 		.editor {
 			flex-grow: 1;
 			position: relative;

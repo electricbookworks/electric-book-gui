@@ -2,6 +2,7 @@
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
 	export type AllFiles_File =	HTMLUListElement;
+	export type FSFileList_File =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLUListElement;
@@ -24,6 +25,9 @@ export namespace R {
 	export interface AllFiles_File {
 		name: HTMLDivElement,
 		};
+	export interface FSFileList_File {
+		name: HTMLDivElement,
+		};
 	export interface FoundationRevealDialog {
 		content: HTMLDivElement,
 		};
@@ -33,7 +37,6 @@ export namespace R {
 	export interface PullRequestDiffList_File {
 		};
 	export interface RepoEditorPage_NewFileDialog {
-		error: HTMLDivElement,
 		filename: HTMLInputElement,
 		};
 	export interface RepoEditorPage_RenameFileDialog {
@@ -95,6 +98,26 @@ export class AllFiles_File {
 		</div></li></ul>`;
 			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
 			AllFiles_File._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
+			name: n.childNodes[0] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class FSFileList_File {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.FSFileList_File;
+	constructor() {
+		let t = FSFileList_File._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul><li data-set="this" class="allfiles-file"><div data-event="click:clickFile">NAME
+		</div></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
+			FSFileList_File._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
@@ -170,18 +193,16 @@ export class RepoEditorPage_NewFileDialog {
 		let t = RepoEditorPage_NewFileDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal=""><div class="content"><div class="error">
-		</div><fieldset><label>
-				Enter the full path to your new file.
-				<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
-			</label></fieldset><button class="btn" data-event="click">Create File</button></div><button class="close-button" aria-label="Close popup" type="button" data-close=""><span aria-hidden="true">×</span></button></div>`;
+			d.innerHTML = `<div><fieldset><label>
+			Enter the full path to your new file.
+			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+		</label></fieldset><button class="btn" data-event="click">Create File</button></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			RepoEditorPage_NewFileDialog._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			error: n.childNodes[0].childNodes[0] as HTMLDivElement,
-			filename: n.childNodes[0].childNodes[1].childNodes[0].childNodes[1] as HTMLInputElement,
+			filename: n.childNodes[0].childNodes[0].childNodes[1] as HTMLInputElement,
 		};
 		this.el = n;
 	}
@@ -198,7 +219,7 @@ export class RepoEditorPage_RenameFileDialog {
 	</div><fieldset><div>Renaming <span> </span></div><label>
 			Enter the full path to your new file.
 			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
-		</label></fieldset><button class="btn" data-event="click">Create File</button></div>`;
+		</label></fieldset><button class="btn" data-event="click">Rename</button></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			RepoEditorPage_RenameFileDialog._template = t;
 		}
