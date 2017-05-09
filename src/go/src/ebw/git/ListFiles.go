@@ -238,7 +238,7 @@ func FileExistsInWorkingDir(client *Client, repoOwner, repoName, path string) (b
 }
 
 func FileRenameInWorkingDir(client *Client, repoOwner, repoName, fromPath, toPath string) error {
-	if fromPath==toPath {
+	if fromPath == toPath {
 		return nil
 	}
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
@@ -262,7 +262,6 @@ func FileRenameInWorkingDir(client *Client, repoOwner, repoName, fromPath, toPat
 	}
 	if !exists {
 		return fmt.Errorf(`Source file %s does not exist`, fromPath)
-	}
 	}
 	if err := runGitDir(repoDir, []string{`mv`, from, to}); nil != err {
 		glog.Errorf(`ERROR running git mv %s %s: %`, from, to, err.Error())
