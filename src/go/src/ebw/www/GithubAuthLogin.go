@@ -13,6 +13,9 @@ import (
 	"ebw/config"
 	"ebw/git"
 	"ebw/util"
+	"github.com/google/go-github/github"
+	"golang.org/x/oauth2"
+	"regexp"
 )
 
 type githubToken struct {
@@ -66,17 +69,31 @@ func githubAuth(c *Context) error {
 	if nil != err {
 		return err
 	}
+
 	defer res.Body.Close()
 	token := &githubToken{}
 	if err := json.NewDecoder(res.Body).Decode(&token); nil != err {
 		return err
 	}
-
 	http.SetCookie(c.W, &http.Cookie{
 		Name:  git.GithubTokenCookie,
 		Value: token.AccessToken,
 		Path:  "/",
 	})
+
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: token.AccessToken},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+	gc := github.NewClient(tc)
+
+	user, _, err := gc.Users.Get(c.Context(), "")
+	for _, username := range config.Config.AllowedUsers {
+		r := regexp.MustCompile(username)
+		if (r.MatchString(user.GetName())) {
+			return c.Redirect(`/`)
+		}
+	}
 	return c.Redirect(`/`)
 }
 
