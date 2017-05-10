@@ -19,13 +19,13 @@ export class FSFileEdit {
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
 	}
-	Rename(toPath:string):Promise<FileContent> {
+	Rename(toPath:string):Promise<[FileContent,FileContent]> {
 		return this.FS.Rename(this.fc.Name,toPath)
 		.then(
-			(fc:FileContent)=>{
-				this.fc = fc;
+			([fOld, fNew]:[FileContent,FileContent])=>{
+				this.fc = fNew;
 				this.signalDirty();
-				return Promise.resolve<FileContent>(fc);
+				return Promise.resolve<[FileContent,FileContent]>([fOld, fNew]);
 			});
 	}
 	Remove(): Promise<FileContent> {
@@ -48,15 +48,13 @@ export class FSFileEdit {
 		return this.editing;
 	}
 	IsDirty():Promise<boolean> {
-		return Promise.resolve<boolean>(this.isDirty());
-	}
-	protected isDirty():boolean {
-		return this.fc.Stat == FileStat.Changed ||
-			this.fc.Stat == FileStat.Deleted ||
-			this.fc.Stat == FileStat.New;
+		return this.FS.IsDirty(this.fc.Name);
 	}
 	protected signalDirty() {
-		this.DirtySignal.dispatch(this, this.isDirty());
+		this.IsDirty().then(
+			(dirty:boolean)=>{
+				this.DirtySignal.dispatch(this, dirty);
+			})
 	}
 	Save(t:string):Promise<FileContent> {
 		return this.FS.Write(this.fc.Name, FileStat.Changed, t)

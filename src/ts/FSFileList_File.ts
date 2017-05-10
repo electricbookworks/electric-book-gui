@@ -9,6 +9,9 @@ import signals = require('signals');
 /**
  * FSFileList_File implements a single file element in the 
  * list of files in the FileSystem.
+ *
+ * It doesn't listen directly to the FS, but rather gets the
+ * FSFileList to trigger it's FSEvent method.
  */
 export class FSFileList_File extends Template {
 	constructor(
@@ -24,7 +27,8 @@ export class FSFileList_File extends Template {
 		}
 		this.$.name.textContent = this.file.Name;
 		Eventify(this.el, events);
-		this.FS.Listeners.add(this.FSEvent, this);
+		// This method will be triggered by FSFileList.
+		// this.FS.Listeners.add(this.FSEvent, this);
 		AddToParent(parent, this.el as HTMLElement);
 	}
 	FSEvent(path:string, fc:FileContent): void {
@@ -35,7 +39,15 @@ export class FSFileList_File extends Template {
 		console.log(`FileEvent in _File: ${fc.Name}, state = `, fc.Stat);
 		switch (fc.Stat) {
 			case FileStat.Changed:
-				this.el.classList.add('changed');
+				this.FS.IsDirty(this.file.Name)
+				.then(
+					(dirty)=>{
+						if (dirty) {
+							this.el.classList.add('changed');
+						} else {
+							this.el.classList.remove('changed');
+						}
+					});
 				break;
 			case FileStat.Deleted:
 				this.el.classList.remove('changed');

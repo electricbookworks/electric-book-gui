@@ -64,7 +64,7 @@ export class FSSession {
 		return Promise.resolve<FileContent>(fc);
 	}
 
-	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
+	Rename(fromPath:string, toPath:string) : Promise<[FileContent,FileContent]> {
 		if (fromPath==toPath) {
 			return Promise.reject(`Renaming isn't changing name`);
 		}
@@ -82,10 +82,10 @@ export class FSSession {
 		f = new FileContent(fromPath, this.defaultRemoveStat, f.Content);
 		this.set(f);
 
-		return Promise.resolve<FileContent>(t);
+		return Promise.resolve<[FileContent,FileContent]>([f,t]);
 	}
 
-	Sync(path?:string):Promise<void> {
+	Sync(path?:string):Promise<FileContent[]> {
 		return Promise.reject(`FSSession doesn't support Sync`);
 	}
 
@@ -96,4 +96,6 @@ export class FSSession {
 	Revert(path:string): Promise<FileContent> {
 		return Promise.reject(`FSSession doesn't support Revert`);
 	}
+	IsDirty(path:string):Promise<boolean> { return Promise.reject(`FSSession doesn't support IsDirty`); }
+
 }

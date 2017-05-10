@@ -2,7 +2,6 @@ import {EBW} from './EBW';
 import {Eventify} from './Eventify';
 import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationRevealDialog';
 import {RepoEditorPage_RenameFileDialog as Template} from './Templates';
-import {RepoFileModel} from './RepoFileModel';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {FS,FileContent, FileStat} from './FS/FS';
 import {FSFileEdit} from './FS/FSFileEdit';
@@ -30,7 +29,7 @@ export class RepoEditorPage_RenameFileDialog extends Template {
 				let toName = this.$.filename.value;
 				this.editor.File().Rename(toName)
 				.then(
-					(fc:FileContent)=>{
+					(fc:FileContent[])=>{
 						this.dialog.Close();
 					});
 			},

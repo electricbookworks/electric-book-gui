@@ -40,11 +40,16 @@ export class FSRemote {
 			}
 		);
 	}
-	Rename(fromPath:string, toPath: string): Promise<FileContent> {
+	Rename(fromPath:string, toPath: string): Promise<[FileContent,FileContent]> {
 		return EBW.API().RenameFile(this.repoOwner, this.repoName, fromPath, toPath)
 		.then(
-			()=>{
-				return this.Read(toPath);
+			()=>{				
+				return this.Read(toPath)
+				.then(
+					(fNew:FileContent)=>{
+						let fOld = new FileContent(fromPath, FileStat.NotExist);
+						return Promise.resolve<[FileContent,FileContent]>([fOld, fNew]);
+					})
 			});
 	}
 	Remove(path:string, stat?:FileStat) : Promise<FileContent> {
@@ -55,7 +60,7 @@ export class FSRemote {
 			}
 		);
 	}
-	Sync(path?:string) : Promise<void> {
+	Sync(path?:string) :Promise<FileContent[]> {
 		return Promise.reject(`FSRemote doesn't support Sync()`);
 	}
 	RepoOwnerName() : [string,string] {
@@ -64,4 +69,6 @@ export class FSRemote {
 	Revert(path:string):Promise<FileContent> {
 		return Promise.reject(`FSRemove doesn't support Revert`);
 	}
+	IsDirty(path:string):Promise<boolean> { return Promise.reject(`FSRemote doesn't support IsDirty`); }
+
 }

@@ -72,7 +72,7 @@ export interface FS {
 	 * Rename renames a file, and returns the FileContent for
 	 * the renamed file.
 	 */
-	Rename(fromPath:string,toPath:string):Promise<FileContent>;
+	Rename(fromPath:string,toPath:string):Promise<[FileContent,FileContent]>;
 	/**
 	 * Returns the RepoOwner and RepoName's provided for the
 	 * filesystem.
@@ -93,11 +93,18 @@ export interface FS {
 	 * synchronizes a caching filesystem with an underlying
 	 * filesystem.
 	 */
-	Sync(path?:string):Promise<void>;
+	Sync(path?:string):Promise<FileContent[]>;
 	/** 
 	 * Write writes the file. If the content parameter is
 	 * not provided, the existence of the file is marked with some
 	 * FS's, but its content isn't recorded.
 	 */
 	Write(path:string, stat:FileStat, content?:string):Promise<FileContent>;
+	/**
+	 * IsDirty reports whether the given file path is 
+	 * dirty. Some file systems don't support Dirty, since they
+	 * are entirely commit-based, while others, such as FSOverlay,
+	 * permit a sense of a Dirty file.
+	 */
+	IsDirty(path:string):Promise<boolean>;
 }

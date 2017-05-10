@@ -29,12 +29,13 @@ export class FSNotify {
 				return Promise.resolve<FileContent>(fc);
 			});
 	}
-	Rename(fromPath:string,toPath:string) : Promise<FileContent> {
+	Rename(fromPath:string,toPath:string) : Promise<[FileContent,FileContent]> {
 		return this.source.Rename(fromPath, toPath)
 		.then(
-			(fc:FileContent)=>{
-				this.Listeners.dispatch(fromPath, fc);
-				return Promise.resolve<FileContent>(fc);
+			([fOld, fNew]:[FileContent,FileContent])=>{
+				this.Listeners.dispatch(fromPath, fOld);
+				this.Listeners.dispatch(toPath, fNew);
+				return Promise.resolve<[FileContent,FileContent]>([fOld,fNew]);
 			});
 	}
 	Revert(path:string): Promise<FileContent> {
@@ -49,8 +50,9 @@ export class FSNotify {
 	//======= all methods below this point simply pass their calls
 	//======= to the underlying FS, and don't require notification.
 	//=============================================================
-	Sync(path?:string):Promise<void> { return this.source.Sync(); }
+	Sync(path?:string):Promise<FileContent[]> { return this.source.Sync(); }
 	RepoOwnerName():[string,string] { return this.source.RepoOwnerName(); }	
 	Stat(path:string) : Promise<FileStat> { return this.source.Stat(path); }
 	Read(path:string) : Promise<FileContent> { return this.source.Read(path); }
+	IsDirty(path:string):Promise<boolean> { return this.source.IsDirty(path); }
 }

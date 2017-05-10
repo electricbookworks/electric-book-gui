@@ -25,6 +25,9 @@ export class FSFileList {
 		this.files = new Map<string,FSFileList_File>();
 	}
 	FSEvent(path:string, fc:FileContent) {
+		if (!fc) {
+			debugger;
+		}
 		console.log(`FSFileList.FSEvent -- fileContent = `, fc);
 		let f = this.files.get(fc.Name);
 		switch (fc.Stat) {
@@ -45,6 +48,10 @@ export class FSFileList {
 					this.files.delete(fc.Name);
 				}
 				break;
+		}
+		// Trigger the FSFileList_File FSEvent callback.
+		if (f) {
+			f.FSEvent(path, fc);
 		}
 	}
 	newFile(fc:FileContent) : FSFileList_File {

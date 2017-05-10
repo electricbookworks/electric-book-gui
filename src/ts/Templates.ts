@@ -1,14 +1,12 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
-	export type AllFiles_File =	HTMLUListElement;
 	export type FSFileList_File =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLUListElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
-	export type RepoFileEditLink =	HTMLUListElement;
 	export type RepoFileEditor_codemirror =	HTMLDivElement;
 	
 }
@@ -21,9 +19,6 @@ export namespace R {
 		repo_name: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
-		};
-	export interface AllFiles_File {
-		name: HTMLDivElement,
 		};
 	export interface FSFileList_File {
 		name: HTMLDivElement,
@@ -43,10 +38,6 @@ export namespace R {
 		error: HTMLDivElement,
 		current_name: HTMLSpanElement,
 		filename: HTMLInputElement,
-		};
-	export interface RepoFileEditLink {
-		editing: HTMLUnknownElement,
-		name: HTMLSpanElement,
 		};
 	export interface RepoFileEditor_codemirror {
 		editor: HTMLDivElement,
@@ -82,26 +73,6 @@ export class AddNewBookDialog {
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[2] as HTMLDivElement,
 			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
-		};
-		this.el = n;
-	}
-}
-export class AllFiles_File {
-	public static _template : HTMLUListElement;
-	public el : HTMLUListElement;
-	public $ : R.AllFiles_File;
-	constructor() {
-		let t = AllFiles_File._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<ul><li data-set="this" class="allfiles-file"><div data-event="click:clickName">NAME
-		</div></li></ul>`;
-			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
-			AllFiles_File._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUListElement;
-		this.$ = {
-			name: n.childNodes[0] as HTMLDivElement,
 		};
 		this.el = n;
 	}
@@ -228,26 +199,6 @@ export class RepoEditorPage_RenameFileDialog {
 			error: n.childNodes[0] as HTMLDivElement,
 			current_name: n.childNodes[1].childNodes[0].childNodes[1] as HTMLSpanElement,
 			filename: n.childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
-		};
-		this.el = n;
-	}
-}
-export class RepoFileEditLink {
-	public static _template : HTMLUListElement;
-	public el : HTMLUListElement;
-	public $ : R.RepoFileEditLink;
-	constructor() {
-		let t = RepoFileEditLink._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<ul><li class="edit-link" data-set="this" data-event="click"><span class="file-dirty-tag"><i class="fa fa-pencil"> </i></span><a href="#"><span> </span></a></li></ul>`;
-			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
-			RepoFileEditLink._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUListElement;
-		this.$ = {
-			editing: n.childNodes[0].childNodes[0] as HTMLUnknownElement,
-			name: n.childNodes[1].childNodes[0] as HTMLSpanElement,
 		};
 		this.el = n;
 	}

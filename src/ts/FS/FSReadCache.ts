@@ -74,13 +74,18 @@ export class FSReadCache {
 		);
 	}
 
-	Rename(fromPath:string, toPath:string) : Promise<FileContent> {
+	Rename(fromPath:string, toPath:string) : Promise<[FileContent,FileContent]> {
 		return this.source.Rename(fromPath, toPath).then(
-			(fc:FileContent)=>{
-				// TODO: Consider whether this shouldn't just
-				// remove fromPath from the cache and 
-				// update toPath ... ?
-				return this.cache.Rename(fromPath, toPath);
+			([fOld, fNew]:[FileContent,FileContent])=>{
+				return this.cache.Write(toPath, fNew.Stat, fNew.Content)
+				.then(
+					(_:FileContent)=>{
+						return this.cache.Remove(fromPath, fOld.Stat);
+					})
+				.then(
+					(_:FileContent)=>{
+						return Promise.resolve<[FileContent,FileContent]>([fOld,fNew]);
+					});
 			});
 	}
 
@@ -103,7 +108,7 @@ export class FSReadCache {
 				});
 	}
 
-	Sync(path?:string) : Promise<void> {
+	Sync(path?:string) : Promise<FileContent[]> {
 		return this.source.Sync(path);
 	}
 
@@ -116,4 +121,6 @@ export class FSReadCache {
 				return this.cache.Write(fc.Name, fc.Stat, fc.Content);
 			});
 	}	
+	IsDirty(path:string):Promise<boolean> { return Promise.reject(`FSReadCache doesn't support IsDirty`); }
+
 }

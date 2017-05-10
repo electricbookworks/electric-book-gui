@@ -1,18 +1,15 @@
-import {AllFilesList} from './AllFilesList';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {RepoEditorPage_NewFileDialog} from './RepoEditorPage_NewFileDialog';
 import {RepoEditorPage_RenameFileDialog} from './RepoEditorPage_RenameFileDialog';
-import {RepoFileModelCache} from './RepoFileModelCache';
 import {EBW} from './EBW';
-import {Volume} from './FS/Volume';
-import {VolumeElement} from './VolumeElement';
 
 import {FileContent,FileStat,FS} from './FS/FS';
 import {FSNotify} from './FS/FSNotify';
-import {FSSession} from './FS/FSSession';
+import {FSOverlay} from './FS/FSOverlay';
 import {FSRemote} from './FS/FSRemote';
 import {FSReadCache} from './FS/FSReadCache';
+import {FSSession} from './FS/FSSession';
 
 import {FSFileList} from './FSFileList';
 import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
@@ -20,12 +17,10 @@ import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
 /**
  * RepoEditorPage is the JS controller for the page that allows
  * editing of a repo.
+ *
  */
 export class RepoEditorPage {
 	protected editor: RepoFileEditorCM;
-	protected volume: VolumeElement;
-	protected fileCache: RepoFileModelCache;
-
 	protected FS: FSNotify;
 
 	constructor(
@@ -46,8 +41,8 @@ export class RepoEditorPage {
 
 		let remoteFS = new FSReadCache(new FSRemote(this.repoOwner, this.repoName));
 		let localFS = new FSSession(`temp-rootf`, this.repoOwner, this.repoName);
-
-		this.FS = new FSNotify(remoteFS);
+		let overlayFS = new FSOverlay(remoteFS, localFS);
+		this.FS = new FSNotify(overlayFS);
 		
 		new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
 

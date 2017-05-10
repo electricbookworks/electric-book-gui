@@ -720,10 +720,11 @@ var FSFileEdit = (function () {
     FSFileEdit.prototype.Rename = function (toPath) {
         var _this = this;
         return this.FS.Rename(this.fc.Name, toPath)
-            .then(function (fc) {
-            _this.fc = fc;
+            .then(function (_a) {
+            var fOld = _a[0], fNew = _a[1];
+            _this.fc = fNew;
             _this.signalDirty();
-            return Promise.resolve(fc);
+            return Promise.resolve([fOld, fNew]);
         });
     };
     FSFileEdit.prototype.Remove = function () {
@@ -746,15 +747,13 @@ var FSFileEdit = (function () {
         return this.editing;
     };
     FSFileEdit.prototype.IsDirty = function () {
-        return Promise.resolve(this.isDirty());
-    };
-    FSFileEdit.prototype.isDirty = function () {
-        return this.fc.Stat == FileStat.Changed ||
-            this.fc.Stat == FileStat.Deleted ||
-            this.fc.Stat == FileStat.New;
+        return this.FS.IsDirty(this.fc.Name);
     };
     FSFileEdit.prototype.signalDirty = function () {
-        this.DirtySignal.dispatch(this, this.isDirty());
+        var _this = this;
+        this.IsDirty().then(function (dirty) {
+            _this.DirtySignal.dispatch(_this, dirty);
+        });
     };
     FSFileEdit.prototype.Save = function (t) {
         var _this = this;
@@ -897,9 +896,11 @@ var FSNotify = (function () {
     FSNotify.prototype.Rename = function (fromPath, toPath) {
         var _this = this;
         return this.source.Rename(fromPath, toPath)
-            .then(function (fc) {
-            _this.Listeners.dispatch(fromPath, fc);
-            return Promise.resolve(fc);
+            .then(function (_a) {
+            var fOld = _a[0], fNew = _a[1];
+            _this.Listeners.dispatch(fromPath, fOld);
+            _this.Listeners.dispatch(toPath, fNew);
+            return Promise.resolve([fOld, fNew]);
         });
     };
     FSNotify.prototype.Revert = function (path) {
@@ -918,7 +919,293 @@ var FSNotify = (function () {
     FSNotify.prototype.RepoOwnerName = function () { return this.source.RepoOwnerName(); };
     FSNotify.prototype.Stat = function (path) { return this.source.Stat(path); };
     FSNotify.prototype.Read = function (path) { return this.source.Read(path); };
+    FSNotify.prototype.IsDirty = function (path) { return this.source.IsDirty(path); };
     return FSNotify;
+}());
+
+var FSOverlay = (function () {
+    function FSOverlay(below, above) {
+        this.below = below;
+        this.above = above;
+        this.changes = new Set();
+    }
+    FSOverlay.prototype.IsDirty = function (path) {
+        var _this = this;
+        return this.above.Stat(path)
+            .then(function (aboveStat) {
+            console.log("FSOverlay.IsDirty(" + path + ") above = " + aboveStat);
+            if (aboveStat == FileStat.Exists || aboveStat == FileStat.NotExist) {
+                return Promise.resolve(false);
+            }
+            if (aboveStat == FileStat.New) {
+                return Promise.resolve(true);
+            }
+            return _this.below.Stat(path)
+                .then(function (belowStat) {
+                console.log("FSOverlay.IsDirty(" + path + ") below = " + belowStat);
+                switch (belowStat) {
+                    case FileStat.NotExist:
+                    //fallthrough
+                    case FileStat.Changed:
+                    //fallthrough
+                    case FileStat.New:
+                    //fallthrough
+                    case FileStat.NotExist:
+                        return Promise.resolve(true);
+                }
+                return Promise.all([_this.above.Read(path), _this.below.Read(path)])
+                    .then(function (fcs) {
+                    var aboveC = fcs[0], belowC = fcs[1];
+                    console.log("FSOverlay.IsDirty(" + path + "): aboveC =");
+                    console.log(aboveC);
+                    console.log("belowC = ");
+                    console.log(belowC);
+                    console.log("Resolving aboveC.Content!=belowC.Content = ", aboveC.Content != belowC.Content);
+                    if (!aboveC.Content) {
+                        return Promise.resolve(false);
+                    }
+                    return Promise.resolve(aboveC.Content != belowC.Content);
+                });
+            });
+        });
+    };
+    FSOverlay.prototype.RepoOwnerName = function () {
+        return this.below.RepoOwnerName();
+    };
+    FSOverlay.prototype.Stat = function (path) {
+        var _this = this;
+        return this.above.Stat(path)
+            .then(function (s) {
+            if (FileStat.NotExist == s) {
+                return _this.below.Stat(path);
+            }
+            return Promise.resolve(s);
+        });
+    };
+    FSOverlay.prototype.Read = function (path) {
+        var _this = this;
+        return this.above.Stat(path)
+            .then(function (s) {
+            switch (s) {
+                case FileStat.Exists:
+                    return _this.readAndCachePath(path);
+                case FileStat.Changed:
+                //fallthrough
+                case FileStat.New:
+                //fallthrough
+                case FileStat.Deleted:
+                    return _this.above.Read(path);
+                case FileStat.NotExist:
+                    return _this.below.Read(path)
+                        .then(function (c) {
+                        _this.above.Write(path, c.Stat, c.Content);
+                        return Promise.resolve(c);
+                    });
+            }
+        });
+    };
+    FSOverlay.prototype.readAndCachePath = function (path) {
+        var _this = this;
+        return this.above.Read(path)
+            .then(function (fc) {
+            if (fc.Content) {
+                return Promise.resolve(fc);
+            }
+            return _this.below.Read(path)
+                .then(function (fc) {
+                return _this.above.Write(path, fc.Stat, fc.Content);
+            });
+        });
+    };
+    FSOverlay.prototype.Write = function (path, stat, content) {
+        var _this = this;
+        return this.above.Write(path, stat, content)
+            .then(function (fc) {
+            console.log("FSOverlay.Write(" + path + "): stat = " + stat);
+            if (!(fc.Stat == FileStat.Exists || fc.Stat == FileStat.NotExist)) {
+                _this.changes.add(path);
+            }
+            return Promise.resolve(fc);
+        });
+    };
+    FSOverlay.prototype.Remove = function (path, stat) {
+        var _this = this;
+        return this.above.Remove(path, stat)
+            .then(function (fc) {
+            _this.changes.add(path);
+            return Promise.resolve(fc);
+        });
+    };
+    FSOverlay.prototype.Rename = function (fromPath, toPath) {
+        var _this = this;
+        return this.above.Rename(fromPath, toPath)
+            .then(function (_a) {
+            var fOld = _a[0], fNew = _a[1];
+            console.log("FSOverlay.Rename.then : fOld, fNew = ", fOld, fNew);
+            _this.changes.add(fromPath);
+            _this.changes.add(toPath);
+            return Promise.resolve([fOld, fNew]);
+        });
+    };
+    FSOverlay.prototype.Revert = function (path) {
+        var _this = this;
+        return this.above.Read(path)
+            .then(function (c) {
+            return _this.below.Read(c.OriginalName());
+        })
+            .then(function (c) {
+            return _this.above.Write(path, c.Stat, c.Content);
+        })
+            .then(function (fc) {
+            // We're reverted path, so it's not longer
+            // changed.
+            _this.changes.delete(path);
+            return _this.above.Read(path);
+        });
+    };
+    FSOverlay.prototype.Sync = function (path) {
+        var _this = this;
+        // If we're given a path name, then we work with
+        // that path only. If we' are not given a path,
+        // we synchronised all changed files.
+        if (path) {
+            return this.above.Read(path)
+                .then(function (fc) {
+                switch (fc.Stat) {
+                    case FileStat.New:
+                    // fallthrough
+                    case FileStat.Changed:
+                        return _this.below.Write(fc.Name, fc.Stat, fc.Content);
+                    case FileStat.Deleted:
+                    // fallthrough
+                    case FileStat.NotExist:
+                        return _this.below.Remove(fc.Name, fc.Stat);
+                }
+                return Promise.resolve(fc);
+            })
+                .then(function (fc) {
+                return _this.above.Write(fc.Name, fc.Stat, fc.Content);
+            })
+                .then(function (fc) {
+                _this.changes.delete(path);
+                return Promise.resolve([fc]);
+            });
+        }
+        // We do two passes through our changes list, first
+        // doing all Writes then doing all Deletes. Therefore,
+        // if any writes fail, the deletes aren't executed, which
+        // can be valuable when managing renames.
+        var writePromises = new Array();
+        var _loop_1 = function (p) {
+            writePromises.push(this_1.above.Read(p)
+                .then(function (fc) {
+                if (fc.Stat == FileStat.New || fc.Stat == FileStat.Changed) {
+                    return _this.below.Write(p, fc.Stat, fc.Content);
+                }
+                else {
+                    return Promise.resolve(fc);
+                }
+            })
+                .then(function (fc) {
+                if (fc) {
+                    return _this.above.Write(p, fc.Stat, fc.Content);
+                }
+                else {
+                    return Promise.resolve(fc);
+                }
+            }));
+        };
+        var this_1 = this;
+        for (var _i = 0, _a = this.changes; _i < _a.length; _i++) {
+            var p = _a[_i];
+            _loop_1(p);
+        }
+        return Promise.all(writePromises)
+            .then(function (fcsP) {
+            var removePromises = [];
+            for (var _i = 0, fcsP_1 = fcsP; _i < fcsP_1.length; _i++) {
+                var fc = fcsP_1[_i];
+                if (fc.Stat == FileStat.Deleted || fc.Stat == FileStat.NotExist) {
+                    removePromises.push(_this.below.Remove(fc.Name)
+                        .then(function (fc) {
+                        return _this.above.Remove(fc.Name, fc.Stat);
+                    }));
+                }
+                else {
+                    removePromises.push(Promise.resolve(fc));
+                }
+            }
+            return Promise.all(removePromises);
+        })
+            .then(function (fcs) {
+            // We're synced, so there are not more changes
+            _this.changes.clear();
+            return Promise.resolve(fcs);
+        });
+    };
+    return FSOverlay;
+}());
+
+var FSRemote = (function () {
+    function FSRemote(repoOwner, repoName) {
+        this.repoOwner = repoOwner;
+        this.repoName = repoName;
+    }
+    FSRemote.prototype.Stat = function (path) {
+        return EBW.API()
+            .FileExists(this.repoOwner, this.repoName, path)
+            .then(function (_a) {
+            var exists = _a[0];
+            // Remote system is definitive
+            return Promise.resolve(exists ? FileStat.Exists : FileStat.NotExist);
+        });
+    };
+    FSRemote.prototype.Read = function (path) {
+        return EBW.API()
+            .GetFileString(this.repoOwner, this.repoName, path)
+            .then(function (_a) {
+            var content = _a[0];
+            return new FileContent(path, FileStat.Exists, content);
+        });
+    };
+    FSRemote.prototype.Write = function (path, stat, content) {
+        if ('undefined' == typeof content) {
+            return Promise.reject("FSRemote cannot write file " + path + " without content.");
+        }
+        return EBW.API()
+            .UpdateFile(this.repoOwner, this.repoName, path, content)
+            .then(function () {
+            return new FileContent(path, FileStat.Exists, content);
+        });
+    };
+    FSRemote.prototype.Rename = function (fromPath, toPath) {
+        var _this = this;
+        return EBW.API().RenameFile(this.repoOwner, this.repoName, fromPath, toPath)
+            .then(function () {
+            return _this.Read(toPath)
+                .then(function (fNew) {
+                var fOld = new FileContent(fromPath, FileStat.NotExist);
+                return Promise.resolve([fOld, fNew]);
+            });
+        });
+    };
+    FSRemote.prototype.Remove = function (path, stat) {
+        return EBW.API().RemoveFile(this.repoOwner, this.repoName, path)
+            .then(function () {
+            return Promise.resolve(new FileContent(path, FileStat.NotExist));
+        });
+    };
+    FSRemote.prototype.Sync = function (path) {
+        return Promise.reject("FSRemote doesn't support Sync()");
+    };
+    FSRemote.prototype.RepoOwnerName = function () {
+        return [this.repoOwner, this.repoName];
+    };
+    FSRemote.prototype.Revert = function (path) {
+        return Promise.reject("FSRemove doesn't support Revert");
+    };
+    FSRemote.prototype.IsDirty = function (path) { return Promise.reject("FSRemote doesn't support IsDirty"); };
+    return FSRemote;
 }());
 
 var store = (function () {
@@ -1026,7 +1313,7 @@ var FSSession = (function () {
         this.set(t);
         f = new FileContent(fromPath, this.defaultRemoveStat, f.Content);
         this.set(f);
-        return Promise.resolve(t);
+        return Promise.resolve([f, t]);
     };
     FSSession.prototype.Sync = function (path) {
         return Promise.reject("FSSession doesn't support Sync");
@@ -1037,64 +1324,8 @@ var FSSession = (function () {
     FSSession.prototype.Revert = function (path) {
         return Promise.reject("FSSession doesn't support Revert");
     };
+    FSSession.prototype.IsDirty = function (path) { return Promise.reject("FSSession doesn't support IsDirty"); };
     return FSSession;
-}());
-
-var FSRemote = (function () {
-    function FSRemote(repoOwner, repoName) {
-        this.repoOwner = repoOwner;
-        this.repoName = repoName;
-    }
-    FSRemote.prototype.Stat = function (path) {
-        return EBW.API()
-            .FileExists(this.repoOwner, this.repoName, path)
-            .then(function (_a) {
-            var exists = _a[0];
-            // Remote system is definitive
-            return Promise.resolve(exists ? FileStat.Exists : FileStat.NotExist);
-        });
-    };
-    FSRemote.prototype.Read = function (path) {
-        return EBW.API()
-            .GetFileString(this.repoOwner, this.repoName, path)
-            .then(function (_a) {
-            var content = _a[0];
-            return new FileContent(path, FileStat.Exists, content);
-        });
-    };
-    FSRemote.prototype.Write = function (path, stat, content) {
-        if ('undefined' == typeof content) {
-            return Promise.reject("FSRemote cannot write file " + path + " without content.");
-        }
-        return EBW.API()
-            .UpdateFile(this.repoOwner, this.repoName, path, content)
-            .then(function () {
-            return new FileContent(path, FileStat.Exists, content);
-        });
-    };
-    FSRemote.prototype.Rename = function (fromPath, toPath) {
-        var _this = this;
-        return EBW.API().RenameFile(this.repoOwner, this.repoName, fromPath, toPath)
-            .then(function () {
-            return _this.Read(toPath);
-        });
-    };
-    FSRemote.prototype.Remove = function (path, stat) {
-        return EBW.API().RemoveFile(this.repoOwner, this.repoName, path)
-            .then(function () {
-            return Promise.resolve(new FileContent(path, FileStat.NotExist));
-        });
-    };
-    FSRemote.prototype.Sync = function (path) {
-        return Promise.reject("FSRemote doesn't support Sync()");
-    };
-    FSRemote.prototype.RepoOwnerName = function () {
-        return [this.repoOwner, this.repoName];
-    };
-    FSRemote.prototype.Revert = function (path) {
-        return Promise.reject("FSRemove doesn't support Revert");
-    };
-    return FSRemote;
 }());
 
 var FSReadCache = (function () {
@@ -1149,11 +1380,15 @@ var FSReadCache = (function () {
     };
     FSReadCache.prototype.Rename = function (fromPath, toPath) {
         var _this = this;
-        return this.source.Rename(fromPath, toPath).then(function (fc) {
-            // TODO: Consider whether this shouldn't just
-            // remove fromPath from the cache and 
-            // update toPath ... ?
-            return _this.cache.Rename(fromPath, toPath);
+        return this.source.Rename(fromPath, toPath).then(function (_a) {
+            var fOld = _a[0], fNew = _a[1];
+            return _this.cache.Write(toPath, fNew.Stat, fNew.Content)
+                .then(function (_) {
+                return _this.cache.Remove(fromPath, fOld.Stat);
+            })
+                .then(function (_) {
+                return Promise.resolve([fOld, fNew]);
+            });
         });
     };
     FSReadCache.prototype.Revert = function (path) {
@@ -1185,6 +1420,7 @@ var FSReadCache = (function () {
             return _this.cache.Write(fc.Name, fc.Stat, fc.Content);
         });
     };
+    FSReadCache.prototype.IsDirty = function (path) { return Promise.reject("FSReadCache doesn't support IsDirty"); };
     return FSReadCache;
 }());
 
@@ -1200,10 +1436,6 @@ function AddToParent(parent, el) {
 }
 //# sourceMappingURL=DOM.js.map
 
-/**
- * FSFileList_File implements a single file element in the
- * list of files in the FileSystem.
- */
 var FSFileList_File$1 = (function (_super) {
     tslib_1.__extends(FSFileList_File$$1, _super);
     function FSFileList_File$$1(parent, file, FS, events, ignoreFunction) {
@@ -1216,11 +1448,13 @@ var FSFileList_File$1 = (function (_super) {
         }
         _this.$.name.textContent = _this.file.Name;
         Eventify(_this.el, events);
-        _this.FS.Listeners.add(_this.FSEvent, _this);
+        // This method will be triggered by FSFileList.
+        // this.FS.Listeners.add(this.FSEvent, this);
         AddToParent(parent, _this.el);
         return _this;
     }
     FSFileList_File$$1.prototype.FSEvent = function (path, fc) {
+        var _this = this;
         if (path != this.file.Name) {
             // If path's don't match, this doesn't affect us.
             return;
@@ -1228,7 +1462,15 @@ var FSFileList_File$1 = (function (_super) {
         console.log("FileEvent in _File: " + fc.Name + ", state = ", fc.Stat);
         switch (fc.Stat) {
             case FileStat.Changed:
-                this.el.classList.add('changed');
+                this.FS.IsDirty(this.file.Name)
+                    .then(function (dirty) {
+                    if (dirty) {
+                        _this.el.classList.add('changed');
+                    }
+                    else {
+                        _this.el.classList.remove('changed');
+                    }
+                });
                 break;
             case FileStat.Deleted:
                 this.el.classList.remove('changed');
@@ -1258,6 +1500,9 @@ var FSFileList = (function () {
         this.files = new Map();
     }
     FSFileList.prototype.FSEvent = function (path, fc) {
+        if (!fc) {
+            debugger;
+        }
         console.log("FSFileList.FSEvent -- fileContent = ", fc);
         var f = this.files.get(fc.Name);
         switch (fc.Stat) {
@@ -1278,6 +1523,10 @@ var FSFileList = (function () {
                     this.files.delete(fc.Name);
                 }
                 break;
+        }
+        // Trigger the FSFileList_File FSEvent callback.
+        if (f) {
+            f.FSEvent(path, fc);
         }
     };
     FSFileList.prototype.newFile = function (fc) {
@@ -1424,7 +1673,8 @@ var RepoEditorPage = (function () {
         });
         var remoteFS = new FSReadCache(new FSRemote(this.repoOwner, this.repoName));
         var localFS = new FSSession("temp-rootf", this.repoOwner, this.repoName);
-        this.FS = new FSNotify(remoteFS);
+        var overlayFS = new FSOverlay(remoteFS, localFS);
+        this.FS = new FSNotify(overlayFS);
         new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
         new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
         new RepoEditorPage_RenameFileDialog$1(document.getElementById("repo-rename-file"), this.FS, this.editor);

@@ -1,5 +1,4 @@
 import {Directory} from './Directory';
-import {FileInfo} from './FileInfo';
 import {FS, FileStat, FileContent} from './FS';
 
 // FSPrimeFromJS adds files to the FileSystem from the 

@@ -1,7 +1,6 @@
 import {EBW} from './EBW';
 import {Eventify} from './Eventify';
 import {RepoEditorPage_NewFileDialog as Template} from './Templates';
-import {RepoFileModel} from './RepoFileModel';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationRevealDialog';
 import {FS,FileStat,FileContent} from './FS/FS';
