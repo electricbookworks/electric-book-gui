@@ -75,11 +75,18 @@ func githubAuth(c *Context) error {
 	if err := json.NewDecoder(res.Body).Decode(&token); nil != err {
 		return err
 	}
-	http.SetCookie(c.W, &http.Cookie{
-		Name:  git.GithubTokenCookie,
-		Value: token.AccessToken,
-		Path:  "/",
-	})
+	
+	// HERE WE SET THE ACCESS COOKIE - WHICH MEANS THE
+	// USER IS LOGGED ON...
+	// SO, RATHER:
+	loginUser := func() error {
+		http.SetCookie(c.W, &http.Cookie{
+			Name:  git.GithubTokenCookie,
+			Value: token.AccessToken,
+			Path:  "/",
+		})
+		return c.Redirect(`/`)
+	}
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token.AccessToken},
@@ -90,10 +97,14 @@ func githubAuth(c *Context) error {
 	user, _, err := gc.Users.Get(c.Context(), "")
 	for _, username := range config.Config.AllowedUsers {
 		r := regexp.MustCompile(username)
-		if (r.MatchString(user.GetName())) {
-			return c.Redirect(`/`)
+		if (r.MatchString(user.GetLogin())) {
+			return loginUser()
 		}
 	}
+	c.FlashError(`Not Permitted`,
+		     `Sorry, but ` + user.GetLogin() + ` is not permitted to access this system`, 
+		     map[string]interface{}{})
+	
 	return c.Redirect(`/`)
 }
 
