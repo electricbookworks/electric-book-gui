@@ -29,6 +29,7 @@ type config struct {
 	Print          printserver `yaml:"print"`
 	PrintContainer string      `yaml:"print_container"`
 	PrintUser      string      `yaml:"print_user"`
+	AllowedUsers   []string    `yaml:"allowed_users"`
 	Bind           string      `yaml:"bind"`
 	Rvm            string      `yaml:"rvm"`
 	RubyVersion    string      `yaml:"ruby_version"`

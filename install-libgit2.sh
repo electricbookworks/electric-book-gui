@@ -4,7 +4,7 @@ sudo apt install -y cmake
 # pushd will take us to user/local for installing libgit2
 pushd /usr/local/
 if [[ ! -d libgit2 ]]; then
-	sudo git clone https//github.com/libgit2/libgit2.git
+	sudo git clone https://github.com/libgit2/libgit2.git
 fi
 cd libgit2
 sudo chown -R $USER:$USER .
