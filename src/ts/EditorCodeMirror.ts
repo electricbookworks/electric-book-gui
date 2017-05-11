@@ -19,4 +19,21 @@ export class EditorCodeMirror {
 		this.cm.getDoc().setValue(s);
 		this.cm.refresh();
 	}
+	getHistory() : string {
+		return JSON.stringify(this.cm.getHistory());
+	}
+	setHistory(hist?:string) : void {
+		if (hist) {
+			this.cm.setHistory(JSON.parse(hist));
+		} else {
+			this.cm.clearHistory();
+		}
+	}
+
+	/**
+	 * focus sets the input focus to the editor
+	 */
+	focus() : void {
+		this.cm.focus();
+	}
 }

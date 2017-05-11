@@ -19,10 +19,10 @@
 				Editing <span ebw-bind="current-filename">CHOOSE A FILE</span>
 			</div>
 			<div class="action-group primary" id="editor-actions">
-				<button data-event="click:save" data-set="save" class="btn">Save</button>
-				<button data-event="click:undo" data-set="undo" class="btn">Undo</button>
+				<button class="btn" id="editor-save-button">Save</button>
+				<button id="editor-undo-button" class="btn">Undo</button>
 				<button id="repo-rename-file" class="btn">Rename</button>
-				<button data-event="click:delete" data-set="delete" title="Delete" class="btn">Delete</button>
+				<button id="editor-delete-button" title="Delete" class="btn">Delete</button>
 			</div>
 		</header>
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">

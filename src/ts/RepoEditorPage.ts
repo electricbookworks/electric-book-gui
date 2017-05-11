@@ -33,7 +33,9 @@ export class RepoEditorPage {
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
 		this.editor = undefined;
-		this.editor = new RepoFileEditorCM(document.getElementById('editor'), {
+		this.editor = new RepoFileEditorCM(
+			repoOwner, repoName,
+			document.getElementById('editor'), {
 			Rename: ():void=>{
 				return;
 			}

@@ -5,76 +5,115 @@ import {EBW} from './EBW';
 import {FileContent} from './FS/FS';
 import {FSFileEdit} from './FS/FSFileEdit';
 
+import signals = require('signals');
+
 interface RepoFileEditorCallbacks {
 	Rename: ()=>void;
+}
+
+enum editorEvents {
+	SAVED = 1,
+	CHANGED = 2,
+	LOADED = 3
+}
+
+interface repoFileEditor$ {
+	SaveButton: HTMLButtonElement
+	UndoButton: HTMLButtonElement
+	DeleteButton: HTMLButtonElement
+};
+
+class repoEditorActionBar {
+	protected saveButton: HTMLButtonElement;
+	protected undoButton: HTMLButtonElement;
+	protected deleteButton: HTMLButtonElement;
+
+	constructor(protected editor:RepoFileEditorCM) {
+		this.saveButton = document.getElementById(`editor-save-button`) as HTMLButtonElement;
+		this.saveButton.addEventListener(`click`, (evt)=>{
+			evt.preventDefault();
+			this.editor.saveEditorFile();
+		});
+		this.undoButton = document.getElementById(`editor-undo-button`) as HTMLButtonElement;
+		this.undoButton.addEventListener(`click`, (evt)=>{
+			evt.preventDefault();
+			this.editor.undoEditorFile();
+		});
+		this.deleteButton = document.getElementById(`editor-delete-button`) as HTMLButtonElement;
+		this.deleteButton.addEventListener(`click`, (evt)=>{
+			evt.preventDefault();
+			this.editor.deleteEditorFile();
+		});
+	}
+
 }
 
 export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	protected editor : EditorCodeMirror;
 	protected file: FSFileEdit;
+	protected buttons: repoFileEditor$;
+	protected undoKey: string;
+	public EditEvents: signals.Signal;
 
 	constructor(
+		repoOwner: string,
+		repoName: string,
 		protected parent:HTMLElement,
 		protected callbacks: RepoFileEditorCallbacks
 		) {
 		super();
-
-		Eventify(document.getElementById('editor-actions'), {
-			'save': (evt:any)=>{
-				evt.preventDefault();
-				this.file.Save(this.editor.getValue())
-				.then(
-					(fc:FileContent)=>{
-						console.log(`About to Sync ${this.file.Name()}`);
-						return this.file.Sync();					
-					})
-				.then(
-					(fc:FileContent)=>{
-						// this.$.save.disabled = true;
-						EBW.Toast(`${this.file.Name()} saved.`);
-					})
-				.catch(
-					(err:any)=>{
-						console.error(err);
-						EBW.Error(err)
-					});
-			},
-			'undo': (evt:any)=> {
-				evt.preventDefault();
-				EBW.Confirm(`Undo the changes you've just made to ${this.file.Name()}?`)
-				.then(
-					(b:boolean)=>{
-						if (!b) return;
-						this.file.Revert()
-						.then(
-							(fc:FileContent)=>{
-								this.editor.setValue(fc.Content);
-							});
-					});
-			},
-			'delete': (evt:any)=> {
-				evt.preventDefault();
-				EBW.Confirm(`Are you sure you want to delete ${this.file.Name()}?`)
-				.then(
-					()=>{
-						return this.file.Remove()
-						.then( (fc:FileContent)=> {
-							this.file = undefined;
-							this.setFile(undefined);
-						});
-					})
-				.catch( EBW.Error );
-			}
-		});
+		this.undoKey = `RepoFileEditorCM:UndoHistory:${encodeURIComponent(repoOwner)}:${encodeURIComponent(repoName)}:`;
+		this.EditEvents = new signals.Signal();
+		new repoEditorActionBar(this);
 
 		this.editor = new EditorCodeMirror(this.$.editor);
 		this.parent.appendChild(this.el);
-		// this.editor.getSession().on('change', (evt)=>{
-		// 	console.log(`editor-on-change: justLoaded = ${this.justLoaded}`);
-		// 	this.$.save.disabled = this.justLoaded;
-		// 	this.justLoaded = false;
-		// });
-		sessionStorage.clear();
+	}
+
+	undoEditorFile() {
+		EBW.Confirm(`Undo the changes you've just made to ${this.file.Name()}?`)
+		.then(
+			(b:boolean)=>{
+				if (!b) return;
+				this.file.Revert()
+				.then(
+					(fc:FileContent)=>{
+						this.editor.setValue(fc.Content);
+					});
+			});		
+	}
+
+	deleteEditorFile() {
+		EBW.Confirm(`Are you sure you want to delete ${this.file.Name()}?`)
+		.then(
+			()=>{
+				return this.file.Remove()
+				.then( (fc:FileContent)=> {
+					this.file = undefined;
+					this.setFile(undefined);
+				});
+			})
+		.catch( EBW.Error );
+	}
+
+	saveEditorFile() {
+		this.file.Save(this.editor.getValue())
+		.then(
+			(fc:FileContent)=>{
+				console.log(`About to Sync ${this.file.Name()}`);
+				return this.file.Sync();					
+			})
+		.then(
+			(fc:FileContent)=>{
+				// this.$.save.disabled = true;
+				this.EditEvents.dispatch(`saved`, fc);
+				EBW.Toast(`${this.file.Name()} saved.`);
+			})
+		.catch(
+			(err:any)=>{
+				console.error(err);
+				EBW.Error(err)
+			});		
 	}
 	setText(text:string){
 		if ('string'!=typeof text) {
@@ -82,6 +121,22 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		}
 		this.editor.setValue(text);
 	}
+	/**
+	 * saveHistoryFor saves the history for the given path
+	 */
+	protected saveHistoryFor(path:string) {
+		let key = this.undoKey + path;
+		sessionStorage.setItem(key, this.editor.getHistory());
+	}
+	/**
+	 * restoreHistoryFor restores the history for the given
+	 * path
+	 */
+	protected restoreHistoryFor(path:string) {
+		let key  =this.undoKey + path;
+		this.editor.setHistory(sessionStorage.getItem(key));
+	}
+
 	setFile(file:FSFileEdit) {
 		/**
 		 * @TODO NEED TO SAVE THE UNDO HISTORY AND POSSIBLY
@@ -94,6 +149,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			}
 			this.file.SetText(this.editor.getValue());
 			this.file.SetEditing(false);
+			this.saveHistoryFor(this.file.Name());
 		}
 		if ('undefined'==typeof file) {
 			this.file = undefined;
@@ -108,6 +164,8 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				this.file.SetEditing(true);
 				this.setBoundFilenames();
 				this.setText(t);
+				this.restoreHistoryFor(this.file.Name());
+				this.editor.focus();
 			})
 		.catch(
 			(err:any)=>{
