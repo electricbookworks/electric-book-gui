@@ -8,7 +8,7 @@
         {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
+                <a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/detail">{{.Name}}</a></h2>
 
                 <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s {{if .GetFork}}version{{else}}original{{end}}
                 {{- if .Owner.Company}}

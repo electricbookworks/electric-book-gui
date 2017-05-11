@@ -1,0 +1,80 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+
+{{$repoOwner := .RepoOwner}}
+{{$repoName := .RepoName}}
+{{$repoFiles := .RepoFiles}}
+
+<main class="repo-detail-padding">
+    <section class="repo-detail">
+        <h3><a class="repo-title" href="/">{{.Repo.Name}}</a></h3>
+        {{if .Repo.Description}}
+        <p>{{.Repo.Description}}</p>
+        {{end}}
+        <div class="detail-container">
+            <h6>3 updates to master version</h6>
+            <div class="action-group secondary">
+                <a href="#" class="btn">Update my master version</a>
+            </div>
+            <div class="pull-requests">
+                {{range .PullRequests}}
+                <div class="details">
+                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a></h4>
+                </div>
+                {{end}}
+            </div>
+        </div>
+        <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull">Review submitted edits</a> | <a href="/repo/{{.RepoOwner}}//{{.Repo.Name}}/update">Make my own edits</a>
+        <h3>Edits for review</h3>
+        <div class="detail-container">
+            {{range .PullRequests}}
+            <div class="row">
+                <div class="large-10 small-10 columns">
+                    <h6><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h6>
+                </div>
+                <div class="large-2 small-2 columns">
+                    {{.GetCreatedAt | humantime}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="large-10 small-10 columns">
+                    <a>3 edits in 2 chapters</a>
+                </div>
+                <div class="large-2 small-2 columns">
+                    <a href="pull/{{.GetNumber}}"> View edits</a>
+                </div>
+            </div>
+            {{end}}
+        </div>
+        <div class="row">
+            <div class="large-10 small-10 columns">
+                <h3>Files</h3>
+            </div>
+            <div class="large-2 small-2 columns add-file">
+                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
+            </div>
+        </div>
+        <div class="detail-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Change set</th>
+                    <th>Last updated by</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{ range .RepoFiles.Files}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>Change set description here</td>
+                    <td>Username</td>
+                </tr>
+                {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+{{template "_footer.html" .}}
