@@ -59,6 +59,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
 	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
+	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestView))

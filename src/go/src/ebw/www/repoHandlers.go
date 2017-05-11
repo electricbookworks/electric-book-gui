@@ -103,6 +103,7 @@ func repoView(c *Context) error {
 	if nil != err {
 		return err
 	}
+
 	proseConfig, err := book.ReadProse(repoDir)
 	if nil != err {
 		return err
@@ -110,6 +111,38 @@ func repoView(c *Context) error {
 	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
 
 	return c.Render(`repo_view.html`, nil)
+}
+
+func repoDetails(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+
+	repo, _, err := client.Repositories.Get(c.Context(), repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+
+	prs, err := git.ListPullRequests(client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	c.D[`PullRequests`] = prs
+
+	c.D[`UserName`] = client.Username
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+
+	return c.Render(`repo_detail.html`, map[string]interface{}{
+		"Repo":    repo,
+	})
 }
 
 func repoUpdate(c *Context) error {
