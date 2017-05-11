@@ -69,7 +69,13 @@ export class FSReadCache {
 	Remove(path:string,stat?:FileStat) : Promise<FileContent> {
 		return this.source.Remove(path,stat).then(
 			(fc:FileContent)=>{
-				return this.cache.Remove(path, fc.Stat);
+				console.log(`ReadCache.Remove received ${path}: stat = `, fc.Stat);
+				return this.cache.Remove(path, fc.Stat)
+				.then(
+					(rfc:FileContent)=>{
+						console.log(`ReadCache.Remove returning `, rfc);
+						return Promise.resolve<FileContent>(rfc);
+					})
 			}
 		);
 	}

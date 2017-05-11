@@ -500,13 +500,75 @@ var EditorCodeMirror = (function () {
     return EditorCodeMirror;
 }());
 
-var editorEvents;
-(function (editorEvents) {
-    editorEvents[editorEvents["SAVED"] = 1] = "SAVED";
-    editorEvents[editorEvents["CHANGED"] = 2] = "CHANGED";
-    editorEvents[editorEvents["LOADED"] = 3] = "LOADED";
-})(editorEvents || (editorEvents = {}));
+/**
+ * FileStat provides information on the status of a file
+ * in a given filesystem.
+ */
+/**
+ * FileStat provides information on the status of a file
+ * in a given filesystem.
+ */ var FileStat;
+(function (FileStat) {
+    /** The file exists an is unchanged */
+    FileStat[FileStat["Exists"] = 1] = "Exists";
+    /** The file exists, and has changed */
+    FileStat[FileStat["Changed"] = 2] = "Changed";
+    /** The file is a new file */
+    FileStat[FileStat["New"] = 3] = "New";
+    /** The file is deleted / marked for deletion */
+    FileStat[FileStat["Deleted"] = 4] = "Deleted";
+    /** The file does not exist */
+    FileStat[FileStat["NotExist"] = 5] = "NotExist";
+})(FileStat || (FileStat = {}));
 
+function FileStatString(fs) {
+    switch (fs) {
+        case FileStat.Exists:
+            return "Exists";
+        case FileStat.Changed:
+            return "Changed";
+        case FileStat.New:
+            return "New";
+        case FileStat.Deleted:
+            return "Deleted";
+        case FileStat.NotExist:
+            return "NotExist";
+    }
+    debugger;
+    return "-- ERROR : undefined FileStat ---";
+}
+var FileContent = (function () {
+    function FileContent(Name, Stat, Content, Original) {
+        this.Name = Name;
+        this.Stat = Stat;
+        this.Content = Content;
+        this.Original = Original;
+    }
+    FileContent.prototype.IsContentKnown = function () {
+        return (undefined != typeof this.Content);
+    };
+    FileContent.prototype.Serialize = function () {
+        return JSON.stringify(this);
+    };
+    FileContent.FromJS = function (json) {
+        var js = JSON.parse(json);
+        return new FileContent(js.Name, js.Stat, js.Content);
+    };
+    FileContent.prototype.OriginalName = function () {
+        if (this.Original) {
+            return this.Original.OriginalName();
+        }
+        return this.Name;
+    };
+    return FileContent;
+}());
+
+var EditorEvents;
+(function (EditorEvents) {
+    EditorEvents[EditorEvents["SAVED"] = 1] = "SAVED";
+    EditorEvents[EditorEvents["CHANGED"] = 2] = "CHANGED";
+    EditorEvents[EditorEvents["LOADED"] = 3] = "LOADED";
+})(EditorEvents || (EditorEvents = {}));
 var repoEditorActionBar = (function () {
     function repoEditorActionBar(editor) {
         var _this = this;
@@ -526,9 +588,32 @@ var repoEditorActionBar = (function () {
             evt.preventDefault();
             _this.editor.deleteEditorFile();
         });
+        this.renameButton = document.getElementById("editor-rename-button");
+        this.editor.EditEvents.add(this.EditEvents, this);
     }
+    repoEditorActionBar.prototype.EditEvents = function (ev, file) {
+        if (!file) {
+            this.deleteButton.disabled = true;
+            this.deleteButton.innerText = 'Delete';
+            this.saveButton.disabled = true;
+            this.undoButton.disabled = true;
+            this.renameButton.disabled = true;
+            return;
+        }
+        this.deleteButton.disabled = false;
+        this.saveButton.disabled = false;
+        this.undoButton.disabled = false;
+        this.renameButton.disabled = false;
+        console.log("repoEditorActionBar: file = ", file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file);
+        this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete" : "Delete";
+    };
     return repoEditorActionBar;
 }());
+/**
+ * RepoFileEditorCM is a file editor that wraps what was meant to be
+ * a generic editor, but in actual fact turns out to have some
+ * dependencies upon CodeMirror, and hence isn't entirely generic.
+ */
 var RepoFileEditorCM = (function (_super) {
     tslib_1.__extends(RepoFileEditorCM, _super);
     function RepoFileEditorCM(repoOwner, repoName, parent, callbacks) {
@@ -538,6 +623,7 @@ var RepoFileEditorCM = (function (_super) {
         _this.undoKey = "RepoFileEditorCM:UndoHistory:" + encodeURIComponent(repoOwner) + ":" + encodeURIComponent(repoName) + ":";
         _this.EditEvents = new signals.Signal();
         new repoEditorActionBar(_this);
+        _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
         _this.editor = new EditorCodeMirror(_this.$.editor);
         _this.parent.appendChild(_this.el);
         return _this;
@@ -550,18 +636,49 @@ var RepoFileEditorCM = (function (_super) {
                 return;
             _this.file.Revert()
                 .then(function (fc) {
+                _this.file.SetFileContent(fc);
                 _this.editor.setValue(fc.Content);
+                _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
             });
         });
     };
+    /**
+     * deleteEditorFile handles file deleting and undeleting.
+     */
     RepoFileEditorCM.prototype.deleteEditorFile = function () {
         var _this = this;
+        if (!this.file) {
+            EBW.Alert("Please choose a file before using delete/undelete");
+            return;
+        }
+        if (this.file.IsDeleted()) {
+            this.file.Save(this.editor.getValue(), FileStat.Changed)
+                .then(function (fc) {
+                if (fc.Stat != FileStat.NotExist) {
+                    _this.file.SetFileContent(fc);
+                    _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
+                }
+                else {
+                    _this.file = undefined;
+                    _this.setFile(undefined);
+                    _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+                }
+            });
+            return;
+        }
         EBW.Confirm("Are you sure you want to delete " + this.file.Name() + "?")
             .then(function () {
             return _this.file.Remove()
                 .then(function (fc) {
-                _this.file = undefined;
-                _this.setFile(undefined);
+                if (fc.Stat == FileStat.NotExist) {
+                    _this.file = undefined;
+                    _this.setFile(undefined);
+                    _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+                }
+                else {
+                    _this.file.SetFileContent(fc);
+                    _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
+                }
             });
         })
             .catch(EBW.Error);
@@ -574,9 +691,19 @@ var RepoFileEditorCM = (function (_super) {
             return _this.file.Sync();
         })
             .then(function (fc) {
-            // this.$.save.disabled = true;
-            _this.EditEvents.dispatch("saved", fc);
-            EBW.Toast(_this.file.Name() + " saved.");
+            if (fc.Stat == FileStat.NotExist) {
+                EBW.Toast(_this.file.Name() + " removed");
+                // By presetting file to undefined, we ensure that
+                // setFile doesn't save the file again
+                _this.file = undefined;
+                _this.setFile(undefined);
+                _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+            }
+            else {
+                _this.file.SetFileContent(fc);
+                _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
+                EBW.Toast(_this.file.Name() + " saved.");
+            }
         })
             .catch(function (err) {
             console.error(err);
@@ -606,16 +733,12 @@ var RepoFileEditorCM = (function (_super) {
     };
     RepoFileEditorCM.prototype.setFile = function (file) {
         var _this = this;
-        /**
-         * @TODO NEED TO SAVE THE UNDO HISTORY AND POSSIBLY
-         * RESTORE THE UNDO HISTORY FOR THE EDITOR
-         */
         if (this.file) {
             if (this.file.Name() == file.Name()) {
                 // Cannot set to the file we're currently editing
                 return;
             }
-            this.file.SetText(this.editor.getValue());
+            this.file.Save(this.editor.getValue());
             this.file.SetEditing(false);
             this.saveHistoryFor(this.file.Name());
         }
@@ -623,6 +746,7 @@ var RepoFileEditorCM = (function (_super) {
             this.file = undefined;
             this.setText('Please select a file to edit.');
             this.setBoundFilenames();
+            this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
             return;
         }
         file.GetText()
@@ -633,6 +757,7 @@ var RepoFileEditorCM = (function (_super) {
             _this.setText(t);
             _this.restoreHistoryFor(_this.file.Name());
             _this.editor.focus();
+            _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
         })
             .catch(function (err) {
             EBW.Error(err);
@@ -713,53 +838,6 @@ var FoundationRevealDialog$1 = (function (_super) {
     return FoundationRevealDialog$$1;
 }(FoundationRevealDialog));
 
-/**
- * FileStat provides information on the status of a file
- * in a given filesystem.
- */
-/**
- * FileStat provides information on the status of a file
- * in a given filesystem.
- */ var FileStat;
-(function (FileStat) {
-    /** The file exists an is unchanged */
-    FileStat[FileStat["Exists"] = 1] = "Exists";
-    /** The file exists, and has changed */
-    FileStat[FileStat["Changed"] = 2] = "Changed";
-    /** The file is a new file */
-    FileStat[FileStat["New"] = 3] = "New";
-    /** The file is deleted / marked for deletion */
-    FileStat[FileStat["Deleted"] = 4] = "Deleted";
-    /** The file does not exist */
-    FileStat[FileStat["NotExist"] = 5] = "NotExist";
-})(FileStat || (FileStat = {}));
-
-var FileContent = (function () {
-    function FileContent(Name, Stat, Content, Original) {
-        this.Name = Name;
-        this.Stat = Stat;
-        this.Content = Content;
-        this.Original = Original;
-    }
-    FileContent.prototype.IsContentKnown = function () {
-        return (undefined != typeof this.Content);
-    };
-    FileContent.prototype.Serialize = function () {
-        return JSON.stringify(this);
-    };
-    FileContent.FromJS = function (json) {
-        var js = JSON.parse(json);
-        return new FileContent(js.Name, js.Stat, js.Content);
-    };
-    FileContent.prototype.OriginalName = function () {
-        if (this.Original) {
-            return this.Original.OriginalName();
-        }
-        return this.Name;
-    };
-    return FileContent;
-}());
-
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {
         this.fc = fc;
@@ -767,6 +845,12 @@ var FSFileEdit = (function () {
         this.DirtySignal = new signals.Signal();
         this.EditingSignal = new signals.Signal();
     }
+    FSFileEdit.prototype.SetFileContent = function (fc) {
+        this.fc = fc;
+    };
+    FSFileEdit.prototype.FileContent = function () {
+        return this.fc;
+    };
     FSFileEdit.prototype.Revert = function () {
         var _this = this;
         return this.FS.Revert(this.fc.Name)
@@ -801,6 +885,9 @@ var FSFileEdit = (function () {
         this.editing = editing;
         this.EditingSignal.dispatch(this, editing);
     };
+    FSFileEdit.prototype.IsDeleted = function () {
+        return this.fc.Stat == FileStat.Deleted;
+    };
     FSFileEdit.prototype.IsEditing = function () {
         return this.editing;
     };
@@ -813,9 +900,17 @@ var FSFileEdit = (function () {
             _this.DirtySignal.dispatch(_this, dirty);
         });
     };
-    FSFileEdit.prototype.Save = function (t) {
+    FSFileEdit.prototype.Save = function (t, fs) {
         var _this = this;
-        return this.FS.Write(this.fc.Name, FileStat.Changed, t)
+        // If FileStat is Changed, or Deleted, we want to keep 
+        // that stat.
+        if (!fs) {
+            fs = this.fc.Stat;
+            if (fs == FileStat.New || fs == FileStat.Exists || fs == FileStat.NotExist) {
+                fs = FileStat.Changed;
+            }
+        }
+        return this.FS.Write(this.fc.Name, fs, t)
             .then(function (fc) {
             _this.fc = fc;
             _this.signalDirty();
@@ -824,20 +919,11 @@ var FSFileEdit = (function () {
     };
     FSFileEdit.prototype.Sync = function () {
         var _this = this;
-        return this.FS.IsDirty(this.fc.Name)
-            .then(function (b) {
-            if (!b) {
-                return _this.FS.Read(_this.fc.Name);
-            }
-            return _this.FS.Sync(_this.fc.Name)
-                .then(function (fcs) {
-                var fc = fcs[0];
-                if (!fc) {
-                    debugger;
-                }
-                _this.fc = fc;
-                return Promise.resolve(fc);
-            });
+        return this.FS.Sync(this.fc.Name)
+            .then(function (fcs) {
+            var fc = fcs[0];
+            _this.fc = fc;
+            return Promise.resolve(fc);
         });
     };
     FSFileEdit.prototype.GetText = function () {
@@ -847,15 +933,6 @@ var FSFileEdit = (function () {
             console.log("FSFileEdit.FS.Read returned ", fc);
             _this.fc = fc;
             return Promise.resolve(fc.Content);
-        });
-    };
-    FSFileEdit.prototype.SetText = function (t) {
-        var _this = this;
-        return this.FS.Write(this.fc.Name, FileStat.Changed, t)
-            .then(function (fc) {
-            _this.fc = fc;
-            _this.signalDirty();
-            return Promise.resolve(fc);
         });
     };
     return FSFileEdit;
@@ -987,11 +1064,21 @@ var FSNotify = (function () {
             return Promise.resolve(fc);
         });
     };
+    FSNotify.prototype.Sync = function (path) {
+        var _this = this;
+        return this.source.Sync(path)
+            .then(function (fcs) {
+            for (var _i = 0, fcs_1 = fcs; _i < fcs_1.length; _i++) {
+                var fc = fcs_1[_i];
+                _this.Listeners.dispatch(fc.Name, fc);
+            }
+            return Promise.resolve(fcs);
+        });
+    };
     //=============================================================
     //======= all methods below this point simply pass their calls
     //======= to the underlying FS, and don't require notification.
     //=============================================================
-    FSNotify.prototype.Sync = function (path) { return this.source.Sync(path); };
     FSNotify.prototype.RepoOwnerName = function () { return this.source.RepoOwnerName(); };
     FSNotify.prototype.Stat = function (path) { return this.source.Stat(path); };
     FSNotify.prototype.Read = function (path) { return this.source.Read(path); };
@@ -1009,7 +1096,6 @@ var FSOverlay = (function () {
         var _this = this;
         return this.above.Stat(path)
             .then(function (aboveStat) {
-            console.log("FSOverlay.IsDirty(" + path + ") above = " + aboveStat);
             if (aboveStat == FileStat.Exists || aboveStat == FileStat.NotExist) {
                 return Promise.resolve(false);
             }
@@ -1018,7 +1104,6 @@ var FSOverlay = (function () {
             }
             return _this.below.Stat(path)
                 .then(function (belowStat) {
-                console.log("FSOverlay.IsDirty(" + path + ") below = " + belowStat);
                 switch (belowStat) {
                     case FileStat.NotExist:
                     //fallthrough
@@ -1032,11 +1117,12 @@ var FSOverlay = (function () {
                 return Promise.all([_this.above.Read(path), _this.below.Read(path)])
                     .then(function (fcs) {
                     var aboveC = fcs[0], belowC = fcs[1];
-                    console.log("FSOverlay.IsDirty(" + path + "): aboveC =");
-                    console.log(aboveC);
-                    console.log("belowC = ");
-                    console.log(belowC);
-                    console.log("Resolving aboveC.Content!=belowC.Content = ", aboveC.Content != belowC.Content);
+                    // console.log(`FSOverlay.IsDirty(${path}): aboveC =`);
+                    // console.log(aboveC);
+                    // console.log(`belowC = `);
+                    // console.log(belowC);
+                    // console.log(`Resolving aboveC.Content!=belowC.Content = `,
+                    // aboveC.Content != belowC.Content);
                     if (!aboveC.Content) {
                         return Promise.resolve(false);
                     }
@@ -1454,7 +1540,12 @@ var FSReadCache = (function () {
     FSReadCache.prototype.Remove = function (path, stat) {
         var _this = this;
         return this.source.Remove(path, stat).then(function (fc) {
-            return _this.cache.Remove(path, fc.Stat);
+            console.log("ReadCache.Remove received " + path + ": stat = ", fc.Stat);
+            return _this.cache.Remove(path, fc.Stat)
+                .then(function (rfc) {
+                console.log("ReadCache.Remove returning ", rfc);
+                return Promise.resolve(rfc);
+            });
         });
     };
     FSReadCache.prototype.Rename = function (fromPath, toPath) {
@@ -1534,11 +1625,11 @@ var FSFileList_File$1 = (function (_super) {
     }
     FSFileList_File$$1.prototype.FSEvent = function (path, fc) {
         var _this = this;
+        console.log("In FSFileList_File.FSEvent(" + path + ") - stat = " + fc.Stat);
         if (path != this.file.Name) {
             // If path's don't match, this doesn't affect us.
             return;
         }
-        console.log("FileEvent in _File: " + fc.Name + ", state = ", fc.Stat);
         switch (fc.Stat) {
             case FileStat.Changed:
                 this.FS.IsDirty(this.file.Name)
@@ -1550,6 +1641,7 @@ var FSFileList_File$1 = (function (_super) {
                         _this.el.classList.remove('changed');
                     }
                 });
+                this.el.classList.remove("removed");
                 break;
             case FileStat.Deleted:
                 this.el.classList.remove('changed');
@@ -1595,7 +1687,8 @@ var FSFileList = (function () {
                 }
                 break;
             case FileStat.Deleted:
-                // The filelist_file class will handle this itself
+                // Nothing to do - filelist_file will handle
+                // css style change.
                 break;
             case FileStat.NotExist:
                 if (f) {
@@ -1619,10 +1712,6 @@ var FSFileList = (function () {
                     var edit = new FSFileEdit(fc, _this.FS);
                     _this.editor.setFile(edit);
                 });
-                // TODO :: Need to send a RepoFileModel to the
-                // editor...
-                // let m = this.fileCache.Create(fileInfo);
-                // this.editor.setFile(m);
             }
         }, this.ignoreFunction);
         this.files.set(fc.Name, f);
@@ -1742,6 +1831,7 @@ var RepoEditorPage = (function () {
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.proseIgnoreFunction = proseIgnoreFunction;
+        sessionStorage.clear();
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.editor = undefined;
@@ -1756,7 +1846,7 @@ var RepoEditorPage = (function () {
         this.FS = new FSNotify(overlayFS);
         new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
         new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
-        new RepoEditorPage_RenameFileDialog$1(document.getElementById("repo-rename-file"), this.FS, this.editor);
+        new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
         FSPrimeFromJS(this.FS, filesJson);
         document.getElementById("repo-print").addEventListener('click', function (evt) {
             evt.preventDefault();

@@ -15,6 +15,23 @@ export enum FileStat {
 	NotExist = 5
 };
 
+export function FileStatString(fs:FileStat) : string {
+	switch(fs) {
+		case FileStat.Exists:
+			return "Exists";
+		case FileStat.Changed:
+			return "Changed";
+		case FileStat.New:
+			return "New";
+		case FileStat.Deleted:
+			return "Deleted";
+		case FileStat.NotExist:
+			return "NotExist";
+	}
+	debugger;
+	return "-- ERROR : undefined FileStat ---";
+}
+
 export class FileContent {
 	constructor(
 		public readonly Name:string, 

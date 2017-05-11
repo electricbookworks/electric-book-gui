@@ -2,7 +2,7 @@ import {Eventify} from './Eventify';
 import {RepoFileEditor_codemirror} from './Templates';
 import {EditorCodeMirror} from './EditorCodeMirror';
 import {EBW} from './EBW';
-import {FileContent} from './FS/FS';
+import {FileContent, FileStat, FileStatString} from './FS/FS';
 import {FSFileEdit} from './FS/FSFileEdit';
 
 import signals = require('signals');
@@ -11,22 +11,17 @@ interface RepoFileEditorCallbacks {
 	Rename: ()=>void;
 }
 
-enum editorEvents {
+enum EditorEvents {
 	SAVED = 1,
 	CHANGED = 2,
 	LOADED = 3
 }
 
-interface repoFileEditor$ {
-	SaveButton: HTMLButtonElement
-	UndoButton: HTMLButtonElement
-	DeleteButton: HTMLButtonElement
-};
-
 class repoEditorActionBar {
 	protected saveButton: HTMLButtonElement;
 	protected undoButton: HTMLButtonElement;
 	protected deleteButton: HTMLButtonElement;
+	protected renameButton: HTMLButtonElement;
 
 	constructor(protected editor:RepoFileEditorCM) {
 		this.saveButton = document.getElementById(`editor-save-button`) as HTMLButtonElement;
@@ -44,14 +39,36 @@ class repoEditorActionBar {
 			evt.preventDefault();
 			this.editor.deleteEditorFile();
 		});
+		this.renameButton = document.getElementById(`editor-rename-button`) as HTMLButtonElement;
+		this.editor.EditEvents.add(this.EditEvents, this);
+	}
+	EditEvents(ev:EditorEvents, file:FSFileEdit) : void {
+		if (!file) {
+			this.deleteButton.disabled = true;
+			this.deleteButton.innerText = 'Delete';
+			this.saveButton.disabled = true;
+			this.undoButton.disabled = true;
+			this.renameButton.disabled = true;
+			return;
+		}
+		this.deleteButton.disabled = false;
+		this.saveButton.disabled = false;
+		this.undoButton.disabled = false;
+		this.renameButton.disabled = false;
+		console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
+		this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete": "Delete";
 	}
 
 }
 
+/**
+ * RepoFileEditorCM is a file editor that wraps what was meant to be
+ * a generic editor, but in actual fact turns out to have some
+ * dependencies upon CodeMirror, and hence isn't entirely generic.
+ */
 export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	protected editor : EditorCodeMirror;
 	protected file: FSFileEdit;
-	protected buttons: repoFileEditor$;
 	protected undoKey: string;
 	public EditEvents: signals.Signal;
 
@@ -65,6 +82,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		this.undoKey = `RepoFileEditorCM:UndoHistory:${encodeURIComponent(repoOwner)}:${encodeURIComponent(repoName)}:`;
 		this.EditEvents = new signals.Signal();
 		new repoEditorActionBar(this);
+		this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
 
 		this.editor = new EditorCodeMirror(this.$.editor);
 		this.parent.appendChild(this.el);
@@ -78,19 +96,49 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				this.file.Revert()
 				.then(
 					(fc:FileContent)=>{
+						this.file.SetFileContent(fc);
 						this.editor.setValue(fc.Content);
+						this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 					});
 			});		
 	}
 
+	/**
+	 * deleteEditorFile handles file deleting and undeleting.
+	 */
 	deleteEditorFile() {
+		if (!this.file) {
+			EBW.Alert(`Please choose a file before using delete/undelete`);
+			return;
+		}
+		if (this.file.IsDeleted()) {
+			this.file.Save(this.editor.getValue(), FileStat.Changed)
+			.then(
+				(fc:FileContent)=>{
+					if (fc.Stat!=FileStat.NotExist) {
+						this.file.SetFileContent(fc);
+						this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
+					} else {
+						this.file = undefined;
+						this.setFile(undefined);
+						this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+					}
+				});
+			return;
+		}
 		EBW.Confirm(`Are you sure you want to delete ${this.file.Name()}?`)
 		.then(
 			()=>{
 				return this.file.Remove()
 				.then( (fc:FileContent)=> {
-					this.file = undefined;
-					this.setFile(undefined);
+					if (fc.Stat == FileStat.NotExist) {
+						this.file = undefined;
+						this.setFile(undefined);	
+						this.EditEvents.dispatch(EditorEvents.LOADED, undefined);										
+					} else {
+						this.file.SetFileContent(fc);
+						this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
+					}
 				});
 			})
 		.catch( EBW.Error );
@@ -101,13 +149,22 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		.then(
 			(fc:FileContent)=>{
 				console.log(`About to Sync ${this.file.Name()}`);
-				return this.file.Sync();					
+				return this.file.Sync();				
 			})
 		.then(
 			(fc:FileContent)=>{
-				// this.$.save.disabled = true;
-				this.EditEvents.dispatch(`saved`, fc);
-				EBW.Toast(`${this.file.Name()} saved.`);
+				if (fc.Stat == FileStat.NotExist) {
+					EBW.Toast(`${this.file.Name()} removed`);
+					// By presetting file to undefined, we ensure that
+					// setFile doesn't save the file again
+					this.file = undefined;
+					this.setFile(undefined);	
+					this.EditEvents.dispatch(EditorEvents.LOADED, undefined);										
+				} else {
+					this.file.SetFileContent(fc);
+					this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
+					EBW.Toast(`${this.file.Name()} saved.`);
+				}
 			})
 		.catch(
 			(err:any)=>{
@@ -138,16 +195,12 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	}
 
 	setFile(file:FSFileEdit) {
-		/**
-		 * @TODO NEED TO SAVE THE UNDO HISTORY AND POSSIBLY
-		 * RESTORE THE UNDO HISTORY FOR THE EDITOR
-		 */
 		if (this.file) {
 			if (this.file.Name()==file.Name()) {
 				// Cannot set to the file we're currently editing
 				return;
 			}
-			this.file.SetText(this.editor.getValue());
+			this.file.Save(this.editor.getValue());
 			this.file.SetEditing(false);
 			this.saveHistoryFor(this.file.Name());
 		}
@@ -155,6 +208,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			this.file = undefined;
 			this.setText('Please select a file to edit.');
 			this.setBoundFilenames();
+			this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
 			return;
 		}
 		file.GetText()
@@ -166,6 +220,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				this.setText(t);
 				this.restoreHistoryFor(this.file.Name());
 				this.editor.focus();
+				this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 			})
 		.catch(
 			(err:any)=>{

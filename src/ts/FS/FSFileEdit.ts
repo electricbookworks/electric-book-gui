@@ -19,6 +19,12 @@ export class FSFileEdit {
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
 	}
+	SetFileContent(fc:FileContent):void {
+		this.fc = fc;
+	}
+	FileContent() : FileContent {
+		return this.fc;
+	}
 	Revert():Promise<FileContent> {
 		return this.FS.Revert(this.fc.Name)
 		.then(
@@ -52,6 +58,9 @@ export class FSFileEdit {
 		this.editing = editing;
 		this.EditingSignal.dispatch(this, editing);
 	}
+	IsDeleted():boolean {
+		return this.fc.Stat == FileStat.Deleted;
+	}
 	IsEditing():boolean {
 		return this.editing;
 	}
@@ -64,8 +73,16 @@ export class FSFileEdit {
 				this.DirtySignal.dispatch(this, dirty);
 			})
 	}
-	Save(t:string):Promise<FileContent> {
-		return this.FS.Write(this.fc.Name, FileStat.Changed, t)
+	Save(t:string, fs?:FileStat):Promise<FileContent> {
+		// If FileStat is Changed, or Deleted, we want to keep 
+		// that stat.
+		if (!fs) {
+			fs = this.fc.Stat;
+			if (fs==FileStat.New || fs==FileStat.Exists || fs==FileStat.NotExist) {
+				fs = FileStat.Changed;
+			}
+		}
+		return this.FS.Write(this.fc.Name, fs, t)
 		.then(
 			(fc:FileContent)=>{
 				this.fc = fc;
@@ -73,24 +90,15 @@ export class FSFileEdit {
 				return Promise.resolve<FileContent>(fc);
 			});
 	}
+
 	Sync():Promise<FileContent> {
-		return this.FS.IsDirty(this.fc.Name)
+		return this.FS.Sync(this.fc.Name)
 		.then(
-			(b:boolean)=>{
-				if (!b) {
-					return this.FS.Read(this.fc.Name);
-				}
-				return this.FS.Sync(this.fc.Name)
-				.then(
-					(fcs:FileContent[])=>{
-						let fc = fcs[0];
-						if (!fc) {
-							debugger;
-						}
-						this.fc = fc;
-						return Promise.resolve<FileContent>(fc);
-					});				
-			})
+			(fcs:FileContent[])=>{
+				let fc = fcs[0];
+				this.fc = fc;
+				return Promise.resolve<FileContent>(fc);
+			});				
 	}
 	GetText():Promise<string> {
 		return this.FS.Read(this.fc.Name)
@@ -99,15 +107,6 @@ export class FSFileEdit {
 				console.log(`FSFileEdit.FS.Read returned `, fc);
 				this.fc = fc;
 				return Promise.resolve<string>(fc.Content);
-			});
-	}
-	SetText(t:string) : Promise<FileContent> {
-		return this.FS.Write(this.fc.Name, FileStat.Changed, t)
-		.then(
-			(fc:FileContent)=>{
-				this.fc = fc;
-				this.signalDirty();
-				return Promise.resolve<FileContent>(fc);
 			});
 	}
 }

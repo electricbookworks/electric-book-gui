@@ -30,6 +30,7 @@ export class RepoEditorPage {
 		filesJson: any,
 		protected proseIgnoreFunction: (name:string)=>boolean
 	) {
+		sessionStorage.clear();
 		this.repoOwner = repoOwner;
 		this.repoName = repoName;
 		this.editor = undefined;
@@ -53,7 +54,7 @@ export class RepoEditorPage {
 			this.FS,
 			this.editor);
 		new RepoEditorPage_RenameFileDialog(
-			document.getElementById(`repo-rename-file`),
+			document.getElementById(`editor-rename-button`),
 			this.FS,
 			this.editor);
 		

@@ -46,11 +46,20 @@ export class FSNotify {
 				return Promise.resolve<FileContent>(fc);
 			});
 	}
+	Sync(path?:string):Promise<FileContent[]> { 
+		return this.source.Sync(path)
+		.then(
+			(fcs:FileContent[])=>{
+				for (let fc of fcs) {
+					this.Listeners.dispatch(fc.Name, fc);
+				}
+				return Promise.resolve<FileContent[]>(fcs);
+			});
+	}
 	//=============================================================
 	//======= all methods below this point simply pass their calls
 	//======= to the underlying FS, and don't require notification.
 	//=============================================================
-	Sync(path?:string):Promise<FileContent[]> { return this.source.Sync(path); }
 	RepoOwnerName():[string,string] { return this.source.RepoOwnerName(); }	
 	Stat(path:string) : Promise<FileStat> { return this.source.Stat(path); }
 	Read(path:string) : Promise<FileContent> { return this.source.Read(path); }

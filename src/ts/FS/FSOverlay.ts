@@ -10,7 +10,6 @@ export class FSOverlay {
 		return this.above.Stat(path)
 		.then(
 			(aboveStat:FileStat)=>{
-				console.log(`FSOverlay.IsDirty(${path}) above = ${aboveStat}`);
 				if (aboveStat==FileStat.Exists || aboveStat==FileStat.NotExist) {
 					return Promise.resolve<boolean>(false);
 				}
@@ -20,7 +19,6 @@ export class FSOverlay {
 				return this.below.Stat(path)
 				.then(
 					(belowStat)=>{
-						console.log(`FSOverlay.IsDirty(${path}) below = ${belowStat}`);
 						switch(belowStat) {
 							case FileStat.NotExist:
 							//fallthrough
@@ -35,12 +33,12 @@ export class FSOverlay {
 						.then(
 							(fcs:FileContent[])=>{
 								let [aboveC, belowC] = fcs;
-								console.log(`FSOverlay.IsDirty(${path}): aboveC =`);
-								console.log(aboveC);
-								console.log(`belowC = `);
-								console.log(belowC);
-								console.log(`Resolving aboveC.Content!=belowC.Content = `,
-									aboveC.Content != belowC.Content);
+								// console.log(`FSOverlay.IsDirty(${path}): aboveC =`);
+								// console.log(aboveC);
+								// console.log(`belowC = `);
+								// console.log(belowC);
+								// console.log(`Resolving aboveC.Content!=belowC.Content = `,
+									// aboveC.Content != belowC.Content);
 								if (!aboveC.Content) {
 									return Promise.resolve<boolean>(false);
 								}

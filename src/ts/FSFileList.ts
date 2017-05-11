@@ -41,7 +41,8 @@ export class FSFileList {
 				}
 				break;
 			case FileStat.Deleted:
-				// The filelist_file class will handle this itself
+				// Nothing to do - filelist_file will handle
+				// css style change.
 				break;
 			case FileStat.NotExist:
 				if (f) {
@@ -65,10 +66,6 @@ export class FSFileList {
 						let edit = new FSFileEdit(fc, this.FS);
 						this.editor.setFile(edit);
 					});
-				// TODO :: Need to send a RepoFileModel to the
-				// editor...
-				// let m = this.fileCache.Create(fileInfo);
-				// this.editor.setFile(m);
 			}
 		},
 		this.ignoreFunction);
