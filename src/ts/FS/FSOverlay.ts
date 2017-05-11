@@ -138,6 +138,8 @@ export class FSOverlay {
 	}
 
 	Revert(path:string) : Promise<FileContent> {
+		// @TODO NEED TO CONSIDER THE ISSUES AROUND REVERTING
+		// VIA ORIGINALNAME...
 		return this.above.Read(path)
 		.then(
 			(c:FileContent)=>{
@@ -182,6 +184,7 @@ export class FSOverlay {
 			.then(
 				(fc:FileContent)=>{
 					this.changes.delete(path);
+					console.log(`Returning from FSOverlay single-file sync: fc = `, fc);
 					return Promise.resolve<FileContent[]>([fc]);
 				}
 			);

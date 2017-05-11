@@ -24,9 +24,14 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				evt.preventDefault();
 				this.file.Save(this.editor.getValue())
 				.then(
-					()=>{						
+					(fc:FileContent)=>{
+						console.log(`About to Sync ${this.file.Name()}`);
+						return this.file.Sync();					
+					})
+				.then(
+					(fc:FileContent)=>{
 						// this.$.save.disabled = true;
-						EBW.Toast(`Document saved.`);
+						EBW.Toast(`${this.file.Name()} saved.`);
 					})
 				.catch(
 					(err:any)=>{
@@ -36,12 +41,16 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			},
 			'undo': (evt:any)=> {
 				evt.preventDefault();
-				// if (confirm(`Undo the changes you've just made to ${this.file.Path()}?`)) {
-				// 	let orig = this.file.Original();
-				// 	this.file.SetText(orig);
-				// 	this.setText(orig);
-				// 	this.file.SetText(this.file.Original());
-				// }
+				EBW.Confirm(`Undo the changes you've just made to ${this.file.Name()}?`)
+				.then(
+					(b:boolean)=>{
+						if (!b) return;
+						this.file.Revert()
+						.then(
+							(fc:FileContent)=>{
+								this.editor.setValue(fc.Content);
+							});
+					});
 			},
 			'delete': (evt:any)=> {
 				evt.preventDefault();

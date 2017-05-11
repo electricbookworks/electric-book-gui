@@ -18,7 +18,7 @@
 	</div>
 	{{end}}
 </nav>
-{{if .UserName -}}{{if .Flashes -}}
+{{if .Flashes -}}
 <div id="flashes" class="constrain-page flashes">
 {{range .Flashes}}
 	<div class="callout flash {{.CSS}}" data-closable>
@@ -30,5 +30,4 @@
 	</div>
 {{- end}}
 </div>
-{{- end}}
 {{- end}}

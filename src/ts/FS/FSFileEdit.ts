@@ -19,6 +19,14 @@ export class FSFileEdit {
 		this.DirtySignal = new signals.Signal();
 		this.EditingSignal = new signals.Signal();
 	}
+	Revert():Promise<FileContent> {
+		return this.FS.Revert(this.fc.Name)
+		.then(
+			(fc:FileContent)=>{
+				this.fc = fc;
+				return Promise.resolve<FileContent>(fc);
+			});
+	}
 	Rename(toPath:string):Promise<[FileContent,FileContent]> {
 		return this.FS.Rename(this.fc.Name,toPath)
 		.then(
@@ -64,6 +72,25 @@ export class FSFileEdit {
 				this.signalDirty();
 				return Promise.resolve<FileContent>(fc);
 			});
+	}
+	Sync():Promise<FileContent> {
+		return this.FS.IsDirty(this.fc.Name)
+		.then(
+			(b:boolean)=>{
+				if (!b) {
+					return this.FS.Read(this.fc.Name);
+				}
+				return this.FS.Sync(this.fc.Name)
+				.then(
+					(fcs:FileContent[])=>{
+						let fc = fcs[0];
+						if (!fc) {
+							debugger;
+						}
+						this.fc = fc;
+						return Promise.resolve<FileContent>(fc);
+					});				
+			})
 	}
 	GetText():Promise<string> {
 		return this.FS.Read(this.fc.Name)

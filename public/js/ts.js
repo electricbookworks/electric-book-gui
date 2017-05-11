@@ -191,23 +191,6 @@ var AddNewBookDialog$1 = (function () {
     }
     return AddNewBookDialog;
 }());
-var AllFiles_File = (function () {
-    function AllFiles_File() {
-        var t = AllFiles_File._template;
-        if (!t) {
-            var d = document.createElement('div');
-            d.innerHTML = "<ul><li data-set=\"this\" class=\"allfiles-file\"><div data-event=\"click:clickName\">NAME\n\t\t</div></li></ul>";
-            t = d.firstElementChild.childNodes[0];
-            AllFiles_File._template = t;
-        }
-        var n = t.cloneNode(true);
-        this.$ = {
-            name: n.childNodes[0],
-        };
-        this.el = n;
-    }
-    return AllFiles_File;
-}());
 var FSFileList_File = (function () {
     function FSFileList_File() {
         var t = FSFileList_File._template;
@@ -510,9 +493,13 @@ var RepoFileEditorCM = (function (_super) {
             'save': function (evt) {
                 evt.preventDefault();
                 _this.file.Save(_this.editor.getValue())
-                    .then(function () {
+                    .then(function (fc) {
+                    console.log("About to Sync " + _this.file.Name());
+                    return _this.file.Sync();
+                })
+                    .then(function (fc) {
                     // this.$.save.disabled = true;
-                    EBW.Toast("Document saved.");
+                    EBW.Toast(_this.file.Name() + " saved.");
                 })
                     .catch(function (err) {
                     console.error(err);
@@ -521,12 +508,15 @@ var RepoFileEditorCM = (function (_super) {
             },
             'undo': function (evt) {
                 evt.preventDefault();
-                // if (confirm(`Undo the changes you've just made to ${this.file.Path()}?`)) {
-                // 	let orig = this.file.Original();
-                // 	this.file.SetText(orig);
-                // 	this.setText(orig);
-                // 	this.file.SetText(this.file.Original());
-                // }
+                EBW.Confirm("Undo the changes you've just made to " + _this.file.Name() + "?")
+                    .then(function (b) {
+                    if (!b)
+                        return;
+                    _this.file.Revert()
+                        .then(function (fc) {
+                        _this.editor.setValue(fc.Content);
+                    });
+                });
             },
             'delete': function (evt) {
                 evt.preventDefault();
@@ -710,6 +700,10 @@ var FileContent = (function () {
     return FileContent;
 }());
 
+/**
+ * FSFileEdit is a wrapper around a file that is being
+ * edited.
+ */
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {
         this.fc = fc;
@@ -717,6 +711,14 @@ var FSFileEdit = (function () {
         this.DirtySignal = new signals.Signal();
         this.EditingSignal = new signals.Signal();
     }
+    FSFileEdit.prototype.Revert = function () {
+        var _this = this;
+        return this.FS.Revert(this.fc.Name)
+            .then(function (fc) {
+            _this.fc = fc;
+            return Promise.resolve(fc);
+        });
+    };
     FSFileEdit.prototype.Rename = function (toPath) {
         var _this = this;
         return this.FS.Rename(this.fc.Name, toPath)
@@ -762,6 +764,24 @@ var FSFileEdit = (function () {
             _this.fc = fc;
             _this.signalDirty();
             return Promise.resolve(fc);
+        });
+    };
+    FSFileEdit.prototype.Sync = function () {
+        var _this = this;
+        return this.FS.IsDirty(this.fc.Name)
+            .then(function (b) {
+            if (!b) {
+                return _this.FS.Read(_this.fc.Name);
+            }
+            return _this.FS.Sync(_this.fc.Name)
+                .then(function (fcs) {
+                var fc = fcs[0];
+                if (!fc) {
+                    debugger;
+                }
+                _this.fc = fc;
+                return Promise.resolve(fc);
+            });
         });
     };
     FSFileEdit.prototype.GetText = function () {
@@ -915,7 +935,7 @@ var FSNotify = (function () {
     //======= all methods below this point simply pass their calls
     //======= to the underlying FS, and don't require notification.
     //=============================================================
-    FSNotify.prototype.Sync = function (path) { return this.source.Sync(); };
+    FSNotify.prototype.Sync = function (path) { return this.source.Sync(path); };
     FSNotify.prototype.RepoOwnerName = function () { return this.source.RepoOwnerName(); };
     FSNotify.prototype.Stat = function (path) { return this.source.Stat(path); };
     FSNotify.prototype.Read = function (path) { return this.source.Read(path); };
@@ -1049,6 +1069,8 @@ var FSOverlay = (function () {
     };
     FSOverlay.prototype.Revert = function (path) {
         var _this = this;
+        // @TODO NEED TO CONSIDER THE ISSUES AROUND REVERTING
+        // VIA ORIGINALNAME...
         return this.above.Read(path)
             .then(function (c) {
             return _this.below.Read(c.OriginalName());
@@ -1088,6 +1110,7 @@ var FSOverlay = (function () {
             })
                 .then(function (fc) {
                 _this.changes.delete(path);
+                console.log("Returning from FSOverlay single-file sync: fc = ", fc);
                 return Promise.resolve([fc]);
             });
         }
@@ -1721,60 +1744,6 @@ var RepoEditorPage = (function () {
     return RepoEditorPage;
 }());
 window.RepoEditorPage = RepoEditorPage;
-
-var FileState;
-(function (FileState) {
-    // This is a file that exists on the FS, 
-    // but hasn't changed.
-    FileState[FileState["Exists"] = 1] = "Exists";
-    // A file that has been changed, but not
-    // not 'Synced'.
-    FileState[FileState["Changed"] = 2] = "Changed";
-    // A New file, much like Changed, but doesn't
-    // exist in the underlying system
-    FileState[FileState["New"] = 4] = "New";
-    // A deleted file that hasn't yet been synced.
-    FileState[FileState["Deleted"] = 8] = "Deleted";
-    // A file that doesn't exist at all. A deleted
-    // file once Sync'd becomes NotExist
-    FileState[FileState["NotExist"] = 16] = "NotExist";
-})(FileState || (FileState = {}));
-
-//# sourceMappingURL=FileState.js.map
-
-var AllFiles_File$1 = (function (_super) {
-    tslib_1.__extends(AllFiles_File$$1, _super);
-    function AllFiles_File$$1(parent, fileInfo, events) {
-        var _this = _super.call(this) || this;
-        _this.fileInfo = fileInfo;
-        _this.$.name.textContent = fileInfo.Name();
-        Eventify(_this.el, events);
-        fileInfo.Listener.add(_this.FileEvent, _this);
-        AddToParent(parent, _this.el);
-        return _this;
-    }
-    AllFiles_File$$1.prototype.FileEvent = function (fileInfo) {
-        console.log("FileEvent in _File: " + fileInfo.Name() + ", state = ", fileInfo.State());
-        switch (fileInfo.State()) {
-            case FileState.Exists:
-                this.el.classList.remove('changed', 'removed');
-                break;
-            case FileState.Changed:
-                this.el.classList.add('changed');
-                break;
-            case FileState.Deleted:
-                this.el.classList.remove('changed');
-                this.el.classList.add('removed');
-                break;
-            case FileState.NotExist:
-                this.el.remove();
-                break;
-        }
-    };
-    return AllFiles_File$$1;
-}(AllFiles_File));
-
-// import {Directory} from './Directory';
 
 var MergeEditor$1 = (function (_super) {
     tslib_1.__extends(MergeEditor$$1, _super);

@@ -4,7 +4,6 @@ import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
 import {RepoEditorPage} from './RepoEditorPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
-import './AllFilesList';
 import {PullRequestMergePage} from './PullRequestMergePage';
 
 export class EBW {
