@@ -28,29 +28,31 @@
         <h3>Edits for review</h3>
         <div class="detail-container">
             {{range .PullRequests}}
-            <div class="row">
-                <div class="large-10 small-10 columns">
-                    <h6><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h6>
+            <div style="margin-bottom: 1em;">
+                <div class="row">
+                    <div class="large-10 small-10 columns">
+                        <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h4>
+                    </div>
+                    <div class="large-2 small-2 columns">
+                        {{.GetCreatedAt | humantime}}
+                    </div>
                 </div>
-                <div class="large-2 small-2 columns">
-                    {{.GetCreatedAt | humantime}}
-                </div>
-            </div>
-            <div class="row">
-                <div class="large-10 small-10 columns">
-                    <a>3 edits in 2 chapters</a>
-                </div>
-                <div class="large-2 small-2 columns">
-                    <a href="pull/{{.GetNumber}}"> View edits</a>
+                <div class="row">
+                    <div class="large-10 small-10 columns">
+                        <a>3 edits in 2 chapters</a>
+                    </div>
+                    <div class="large-2 small-2 columns">
+                        <a href="pull/{{.GetNumber}}"> View edits</a>
+                    </div>
                 </div>
             </div>
             {{end}}
         </div>
         <div class="row">
-            <div class="large-10 small-10 columns">
+            <div class="large-10 medium-10 small-10 columns">
                 <h3>Files</h3>
             </div>
-            <div class="large-2 small-2 columns add-file">
+            <div class="large-2 medium-10 small-2 columns add-file">
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
             </div>
         </div>
