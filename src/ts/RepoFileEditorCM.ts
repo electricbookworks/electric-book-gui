@@ -1,6 +1,7 @@
 import {Eventify} from './Eventify';
-import {RepoFileEditor_codemirror} from './Templates';
+import {RepoFileEditorCM as Template} from './Templates';
 import {EditorCodeMirror} from './EditorCodeMirror';
+import {EditorImage} from './EditorImage';
 import {EBW} from './EBW';
 import {FileContent, FileStat, FileStatString} from './FS/FS';
 import {FSFileEdit} from './FS/FSFileEdit';
@@ -66,8 +67,9 @@ class repoEditorActionBar {
  * a generic editor, but in actual fact turns out to have some
  * dependencies upon CodeMirror, and hence isn't entirely generic.
  */
-export class RepoFileEditorCM extends RepoFileEditor_codemirror {
-	protected editor : EditorCodeMirror;
+export class RepoFileEditorCM extends Template {
+	protected textEditor : EditorCodeMirror;
+	protected imageEditor: EditorImage;
 	protected file: FSFileEdit;
 	protected undoKey: string;
 	public EditEvents: signals.Signal;
@@ -84,7 +86,8 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		new repoEditorActionBar(this);
 		this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
 
-		this.editor = new EditorCodeMirror(this.$.editor);
+		this.textEditor = new EditorCodeMirror(this.$.textEditor);
+		this.imageEditor = new EditorImage(this.$.imageEditor, repoOwner, repoName);
 		this.parent.appendChild(this.el);
 	}
 
@@ -97,7 +100,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				.then(
 					(fc:FileContent)=>{
 						this.file.SetFileContent(fc);
-						this.editor.setValue(fc.Content);
+						this.textEditor.setValue(fc.Content);
 						this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 					});
 			});		
@@ -112,7 +115,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			return;
 		}
 		if (this.file.IsDeleted()) {
-			this.file.Save(this.editor.getValue(), FileStat.Changed)
+			this.file.Save(this.textEditor.getValue(), FileStat.Changed)
 			.then(
 				(fc:FileContent)=>{
 					if (fc.Stat!=FileStat.NotExist) {
@@ -145,7 +148,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	}
 
 	saveEditorFile() {
-		this.file.Save(this.editor.getValue())
+		this.file.Save(this.textEditor.getValue())
 		.then(
 			(fc:FileContent)=>{
 				console.log(`About to Sync ${this.file.Name()}`);
@@ -176,14 +179,14 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 		if ('string'!=typeof text) {
 			debugger;
 		}
-		this.editor.setValue(text);
+		this.textEditor.setValue(text);
 	}
 	/**
 	 * saveHistoryFor saves the history for the given path
 	 */
 	protected saveHistoryFor(path:string) {
 		let key = this.undoKey + path;
-		sessionStorage.setItem(key, this.editor.getHistory());
+		sessionStorage.setItem(key, this.textEditor.getHistory());
 	}
 	/**
 	 * restoreHistoryFor restores the history for the given
@@ -191,7 +194,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 	 */
 	protected restoreHistoryFor(path:string) {
 		let key  =this.undoKey + path;
-		this.editor.setHistory(sessionStorage.getItem(key));
+		this.textEditor.setHistory(sessionStorage.getItem(key));
 	}
 
 	setFile(file:FSFileEdit) {
@@ -200,7 +203,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				// Cannot set to the file we're currently editing
 				return;
 			}
-			this.file.Save(this.editor.getValue());
+			this.file.Save(this.textEditor.getValue());
 			this.file.SetEditing(false);
 			this.saveHistoryFor(this.file.Name());
 		}
@@ -211,6 +214,16 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
 			return;
 		}
+		let imgRegexp = new RegExp(`.*\.(jpg|png|tiff|svg|gif)$`);
+		if (imgRegexp.test(file.Name())) {
+			this.imageEditor.setFile(file);
+			this.showImageEditor();
+			this.file = undefined;
+			this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+			return;
+		}
+		this.showTextEditor();
+
 		file.GetText()
 		.then(
 			(t:string)=>{
@@ -219,7 +232,7 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 				this.setBoundFilenames();
 				this.setText(t);
 				this.restoreHistoryFor(this.file.Name());
-				this.editor.focus();
+				this.textEditor.focus();
 				this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 			})
 		.catch(
@@ -240,5 +253,14 @@ export class RepoFileEditorCM extends RepoFileEditor_codemirror {
 			let e = list.item(i) as HTMLElement;
 			e.textContent = filename;
 		}
+	}
+
+	protected showImageEditor() {
+		this.$.textEditor.style.display='none';
+		this.$.imageEditor.style.display='block';
+	}
+	protected showTextEditor() {
+		this.$.textEditor.style.display='block';
+		this.$.imageEditor.style.display='none';
 	}
 }

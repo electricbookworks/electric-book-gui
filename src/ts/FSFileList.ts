@@ -28,7 +28,7 @@ export class FSFileList {
 		if (!fc) {
 			debugger;
 		}
-		console.log(`FSFileList.FSEvent -- fileContent = `, fc);
+		// console.log(`FSFileList.FSEvent -- fileContent = `, fc);
 		let f = this.files.get(fc.Name);
 		switch (fc.Stat) {
 			case FileStat.New:
@@ -61,8 +61,6 @@ export class FSFileList {
 				this.FS.Read(fc.Name)
 				.then(
 					(fc:FileContent)=>{
-						console.log(`We've got content: `, fc);
-						console.log(`clicked ${fc.Name} - NEED TO SEND TO EDITOR`);
 						let edit = new FSFileEdit(fc, this.FS);
 						this.editor.setFile(edit);
 					});

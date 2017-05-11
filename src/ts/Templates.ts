@@ -1,13 +1,14 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
+	export type EditorImage =	HTMLDivElement;
 	export type FSFileList_File =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLUListElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
-	export type RepoFileEditor_codemirror =	HTMLDivElement;
+	export type RepoFileEditorCM =	HTMLDivElement;
 	
 }
 export namespace R {
@@ -19,6 +20,8 @@ export namespace R {
 		repo_name: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
+		};
+	export interface EditorImage {
 		};
 	export interface FSFileList_File {
 		name: HTMLDivElement,
@@ -39,8 +42,9 @@ export namespace R {
 		current_name: HTMLSpanElement,
 		filename: HTMLInputElement,
 		};
-	export interface RepoFileEditor_codemirror {
-		editor: HTMLDivElement,
+	export interface RepoFileEditorCM {
+		textEditor: HTMLDivElement,
+		imageEditor: HTMLDivElement,
 		};
 	
 }	// end namespace R
@@ -73,6 +77,24 @@ export class AddNewBookDialog {
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[2] as HTMLDivElement,
 			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+		};
+		this.el = n;
+	}
+}
+export class EditorImage {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.EditorImage;
+	constructor() {
+		let t = EditorImage._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div> </div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			EditorImage._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
 		};
 		this.el = n;
 	}
@@ -203,22 +225,24 @@ export class RepoEditorPage_RenameFileDialog {
 		this.el = n;
 	}
 }
-export class RepoFileEditor_codemirror {
+export class RepoFileEditorCM {
 	public static _template : HTMLDivElement;
 	public el : HTMLDivElement;
-	public $ : R.RepoFileEditor_codemirror;
+	public $ : R.RepoFileEditorCM;
 	constructor() {
-		let t = RepoFileEditor_codemirror._template;
+		let t = RepoFileEditorCM._template;
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="repo-file-editor-workspace"><div class="repo-file-editor">
+	</div><div class="repo-image-editor">
 	</div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
-			RepoFileEditor_codemirror._template = t;
+			RepoFileEditorCM._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			editor: n.childNodes[0] as HTMLDivElement,
+			textEditor: n.childNodes[0] as HTMLDivElement,
+			imageEditor: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}

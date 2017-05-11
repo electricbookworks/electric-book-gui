@@ -101,6 +101,9 @@ export class FSFileEdit {
 			});				
 	}
 	GetText():Promise<string> {
+		if (this.fc.Content) {
+			return Promise.resolve<string>(this.fc.Content);
+		}
 		return this.FS.Read(this.fc.Name)
 		.then(
 			(fc:FileContent)=>{

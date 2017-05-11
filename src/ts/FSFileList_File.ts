@@ -32,7 +32,7 @@ export class FSFileList_File extends Template {
 		AddToParent(parent, this.el as HTMLElement);
 	}
 	FSEvent(path:string, fc:FileContent): void {
-		console.log(`In FSFileList_File.FSEvent(${path}) - stat = ${fc.Stat}`)
+		// console.log(`In FSFileList_File.FSEvent(${path}) - stat = ${fc.Stat}`)
 		if (path != this.file.Name) {
 			// If path's don't match, this doesn't affect us.
 			return;

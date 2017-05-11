@@ -191,6 +191,21 @@ var AddNewBookDialog$1 = (function () {
     }
     return AddNewBookDialog;
 }());
+var EditorImage = (function () {
+    function EditorImage() {
+        var t = EditorImage._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div> </div>";
+            t = d.firstElementChild;
+            EditorImage._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {};
+        this.el = n;
+    }
+    return EditorImage;
+}());
 var FSFileList_File = (function () {
     function FSFileList_File() {
         var t = FSFileList_File._template;
@@ -293,22 +308,23 @@ var RepoEditorPage_RenameFileDialog = (function () {
     }
     return RepoEditorPage_RenameFileDialog;
 }());
-var RepoFileEditor_codemirror = (function () {
-    function RepoFileEditor_codemirror() {
-        var t = RepoFileEditor_codemirror._template;
+var RepoFileEditorCM = (function () {
+    function RepoFileEditorCM() {
+        var t = RepoFileEditorCM._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"repo-file-editor-workspace\"><div class=\"repo-file-editor\">\n\t</div></div>";
+            d.innerHTML = "<div class=\"repo-file-editor-workspace\"><div class=\"repo-file-editor\">\n\t</div><div class=\"repo-image-editor\">\n\t</div></div>";
             t = d.firstElementChild;
-            RepoFileEditor_codemirror._template = t;
+            RepoFileEditorCM._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            editor: n.childNodes[0],
+            textEditor: n.childNodes[0],
+            imageEditor: n.childNodes[1],
         };
         this.el = n;
     }
-    return RepoFileEditor_codemirror;
+    return RepoFileEditorCM;
 }());
 
 function QuerySelectorAllIterate(el, query) {
@@ -500,6 +516,38 @@ var EditorCodeMirror = (function () {
     return EditorCodeMirror;
 }());
 
+function AddToParent(parent, el) {
+    if (!parent) {
+        return;
+    }
+    if ('function' == typeof parent) {
+        parent(el);
+        return;
+    }
+    parent.appendChild(el);
+}
+//# sourceMappingURL=DOM.js.map
+
+var EditorImage$1 = (function (_super) {
+    tslib_1.__extends(EditorImage$$1, _super);
+    function EditorImage$$1(parent, repoOwner, repoName) {
+        var _this = _super.call(this) || this;
+        _this.parent = parent;
+        _this.repoOwner = repoOwner;
+        _this.repoName = repoName;
+        AddToParent(parent, _this.el);
+        return _this;
+    }
+    EditorImage$$1.prototype.setFile = function (f) {
+        this.file = f;
+        var L = document.location;
+        var imageUrl = "url('/www/" +
+            (this.repoOwner + "/" + this.repoName + "/" + f.Name() + "')");
+        this.el.style.backgroundImage = imageUrl;
+    };
+    return EditorImage$$1;
+}(EditorImage));
+
 /**
  * FileStat provides information on the status of a file
  * in a given filesystem.
@@ -614,9 +662,9 @@ var repoEditorActionBar = (function () {
  * a generic editor, but in actual fact turns out to have some
  * dependencies upon CodeMirror, and hence isn't entirely generic.
  */
-var RepoFileEditorCM = (function (_super) {
-    tslib_1.__extends(RepoFileEditorCM, _super);
-    function RepoFileEditorCM(repoOwner, repoName, parent, callbacks) {
+var RepoFileEditorCM$1 = (function (_super) {
+    tslib_1.__extends(RepoFileEditorCM$$1, _super);
+    function RepoFileEditorCM$$1(repoOwner, repoName, parent, callbacks) {
         var _this = _super.call(this) || this;
         _this.parent = parent;
         _this.callbacks = callbacks;
@@ -624,11 +672,12 @@ var RepoFileEditorCM = (function (_super) {
         _this.EditEvents = new signals.Signal();
         new repoEditorActionBar(_this);
         _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
-        _this.editor = new EditorCodeMirror(_this.$.editor);
+        _this.textEditor = new EditorCodeMirror(_this.$.textEditor);
+        _this.imageEditor = new EditorImage$1(_this.$.imageEditor, repoOwner, repoName);
         _this.parent.appendChild(_this.el);
         return _this;
     }
-    RepoFileEditorCM.prototype.undoEditorFile = function () {
+    RepoFileEditorCM$$1.prototype.undoEditorFile = function () {
         var _this = this;
         EBW.Confirm("Undo the changes you've just made to " + this.file.Name() + "?")
             .then(function (b) {
@@ -637,7 +686,7 @@ var RepoFileEditorCM = (function (_super) {
             _this.file.Revert()
                 .then(function (fc) {
                 _this.file.SetFileContent(fc);
-                _this.editor.setValue(fc.Content);
+                _this.textEditor.setValue(fc.Content);
                 _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
             });
         });
@@ -645,14 +694,14 @@ var RepoFileEditorCM = (function (_super) {
     /**
      * deleteEditorFile handles file deleting and undeleting.
      */
-    RepoFileEditorCM.prototype.deleteEditorFile = function () {
+    RepoFileEditorCM$$1.prototype.deleteEditorFile = function () {
         var _this = this;
         if (!this.file) {
             EBW.Alert("Please choose a file before using delete/undelete");
             return;
         }
         if (this.file.IsDeleted()) {
-            this.file.Save(this.editor.getValue(), FileStat.Changed)
+            this.file.Save(this.textEditor.getValue(), FileStat.Changed)
                 .then(function (fc) {
                 if (fc.Stat != FileStat.NotExist) {
                     _this.file.SetFileContent(fc);
@@ -683,9 +732,9 @@ var RepoFileEditorCM = (function (_super) {
         })
             .catch(EBW.Error);
     };
-    RepoFileEditorCM.prototype.saveEditorFile = function () {
+    RepoFileEditorCM$$1.prototype.saveEditorFile = function () {
         var _this = this;
-        this.file.Save(this.editor.getValue())
+        this.file.Save(this.textEditor.getValue())
             .then(function (fc) {
             console.log("About to Sync " + _this.file.Name());
             return _this.file.Sync();
@@ -710,35 +759,35 @@ var RepoFileEditorCM = (function (_super) {
             EBW.Error(err);
         });
     };
-    RepoFileEditorCM.prototype.setText = function (text) {
+    RepoFileEditorCM$$1.prototype.setText = function (text) {
         if ('string' != typeof text) {
             debugger;
         }
-        this.editor.setValue(text);
+        this.textEditor.setValue(text);
     };
     /**
      * saveHistoryFor saves the history for the given path
      */
-    RepoFileEditorCM.prototype.saveHistoryFor = function (path) {
+    RepoFileEditorCM$$1.prototype.saveHistoryFor = function (path) {
         var key = this.undoKey + path;
-        sessionStorage.setItem(key, this.editor.getHistory());
+        sessionStorage.setItem(key, this.textEditor.getHistory());
     };
     /**
      * restoreHistoryFor restores the history for the given
      * path
      */
-    RepoFileEditorCM.prototype.restoreHistoryFor = function (path) {
+    RepoFileEditorCM$$1.prototype.restoreHistoryFor = function (path) {
         var key = this.undoKey + path;
-        this.editor.setHistory(sessionStorage.getItem(key));
+        this.textEditor.setHistory(sessionStorage.getItem(key));
     };
-    RepoFileEditorCM.prototype.setFile = function (file) {
+    RepoFileEditorCM$$1.prototype.setFile = function (file) {
         var _this = this;
         if (this.file) {
             if (this.file.Name() == file.Name()) {
                 // Cannot set to the file we're currently editing
                 return;
             }
-            this.file.Save(this.editor.getValue());
+            this.file.Save(this.textEditor.getValue());
             this.file.SetEditing(false);
             this.saveHistoryFor(this.file.Name());
         }
@@ -749,6 +798,15 @@ var RepoFileEditorCM = (function (_super) {
             this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
             return;
         }
+        var imgRegexp = new RegExp(".*.(jpg|png|tiff|svg|gif)$");
+        if (imgRegexp.test(file.Name())) {
+            this.imageEditor.setFile(file);
+            this.showImageEditor();
+            this.file = undefined;
+            this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+            return;
+        }
+        this.showTextEditor();
         file.GetText()
             .then(function (t) {
             _this.file = file;
@@ -756,17 +814,17 @@ var RepoFileEditorCM = (function (_super) {
             _this.setBoundFilenames();
             _this.setText(t);
             _this.restoreHistoryFor(_this.file.Name());
-            _this.editor.focus();
+            _this.textEditor.focus();
             _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
         })
             .catch(function (err) {
             EBW.Error(err);
         });
     };
-    RepoFileEditorCM.prototype.File = function () {
+    RepoFileEditorCM$$1.prototype.File = function () {
         return this.file;
     };
-    RepoFileEditorCM.prototype.setBoundFilenames = function () {
+    RepoFileEditorCM$$1.prototype.setBoundFilenames = function () {
         var filename = 'CHOOSE A FILE';
         if (this.file) {
             filename = this.file.Name();
@@ -777,8 +835,16 @@ var RepoFileEditorCM = (function (_super) {
             e.textContent = filename;
         }
     };
-    return RepoFileEditorCM;
-}(RepoFileEditor_codemirror));
+    RepoFileEditorCM$$1.prototype.showImageEditor = function () {
+        this.$.textEditor.style.display = 'none';
+        this.$.imageEditor.style.display = 'block';
+    };
+    RepoFileEditorCM$$1.prototype.showTextEditor = function () {
+        this.$.textEditor.style.display = 'block';
+        this.$.imageEditor.style.display = 'none';
+    };
+    return RepoFileEditorCM$$1;
+}(RepoFileEditorCM));
 
 var DialogEvents;
 (function (DialogEvents) {
@@ -928,6 +994,9 @@ var FSFileEdit = (function () {
     };
     FSFileEdit.prototype.GetText = function () {
         var _this = this;
+        if (this.fc.Content) {
+            return Promise.resolve(this.fc.Content);
+        }
         return this.FS.Read(this.fc.Name)
             .then(function (fc) {
             console.log("FSFileEdit.FS.Read returned ", fc);
@@ -1594,18 +1663,6 @@ var FSReadCache = (function () {
     return FSReadCache;
 }());
 
-function AddToParent(parent, el) {
-    if (!parent) {
-        return;
-    }
-    if ('function' == typeof parent) {
-        parent(el);
-        return;
-    }
-    parent.appendChild(el);
-}
-//# sourceMappingURL=DOM.js.map
-
 var FSFileList_File$1 = (function (_super) {
     tslib_1.__extends(FSFileList_File$$1, _super);
     function FSFileList_File$$1(parent, file, FS, events, ignoreFunction) {
@@ -1625,7 +1682,7 @@ var FSFileList_File$1 = (function (_super) {
     }
     FSFileList_File$$1.prototype.FSEvent = function (path, fc) {
         var _this = this;
-        console.log("In FSFileList_File.FSEvent(" + path + ") - stat = " + fc.Stat);
+        // console.log(`In FSFileList_File.FSEvent(${path}) - stat = ${fc.Stat}`)
         if (path != this.file.Name) {
             // If path's don't match, this doesn't affect us.
             return;
@@ -1674,7 +1731,7 @@ var FSFileList = (function () {
         if (!fc) {
             debugger;
         }
-        console.log("FSFileList.FSEvent -- fileContent = ", fc);
+        // console.log(`FSFileList.FSEvent -- fileContent = `, fc);
         var f = this.files.get(fc.Name);
         switch (fc.Stat) {
             case FileStat.New:
@@ -1707,8 +1764,6 @@ var FSFileList = (function () {
             clickFile: function (evt) {
                 _this.FS.Read(fc.Name)
                     .then(function (fc) {
-                    console.log("We've got content: ", fc);
-                    console.log("clicked " + fc.Name + " - NEED TO SEND TO EDITOR");
                     var edit = new FSFileEdit(fc, _this.FS);
                     _this.editor.setFile(edit);
                 });
@@ -1835,7 +1890,7 @@ var RepoEditorPage = (function () {
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.editor = undefined;
-        this.editor = new RepoFileEditorCM(repoOwner, repoName, document.getElementById('editor'), {
+        this.editor = new RepoFileEditorCM$1(repoOwner, repoName, document.getElementById('editor'), {
             Rename: function () {
                 return;
             }
