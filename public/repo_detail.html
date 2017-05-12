@@ -18,17 +18,21 @@
             </div>
             <div class="pull-requests">
                 {{range .PullRequests}}
-                <div class="details">
+                <ul class="pull-request-title">
                     <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a></h4>
-                </div>
+                </ul>
                 {{end}}
             </div>
         </div>
-        <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull">Review submitted edits</a> | <a href="/repo/{{.RepoOwner}}//{{.Repo.Name}}/update">Make my own edits</a>
-        <h3>Edits for review</h3>
-        <div class="detail-container">
+    </section>
+    <section class="repo-detail">
+        <div class="edit-links" >
+            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull">Review submitted edits</a> | <a href="/repo/{{.RepoOwner}}//{{.Repo.Name}}/update">Make my own edits</a>
+        </div>
+          <h3>Edits for review</h3>
+        <div class="edits">
             {{range .PullRequests}}
-            <div style="margin-bottom: 1em;">
+            <div class="pull-request-item">
                 <div class="row">
                     <div class="large-10 small-10 columns">
                         <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h4>
@@ -48,15 +52,12 @@
             </div>
             {{end}}
         </div>
-        <div class="row">
-            <div class="large-10 medium-10 small-10 columns">
-                <h3>Files</h3>
-            </div>
-            <div class="large-2 medium-10 small-2 columns add-file">
-                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
-            </div>
+    </section>
+    <section class="repo-detail">
+        <h3>Files</h3>
+        <a class="add-file" href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
         </div>
-        <div class="detail-container">
+        <div class="file-list">
             <table>
                 <thead>
                 <tr>
@@ -75,6 +76,36 @@
                 {{ end }}
                 </tbody>
             </table>
+        </div>
+    </section>
+    <section class="repo-detail">
+        <h3>My Edits</h3>
+        <ol type="1">
+            {{range .PullRequests}}
+            <li>
+                <div>
+                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}}submitted by {{.User.GetLogin}}{{end}}, Make more changes on chapter</h4>
+                </div>
+            </li>
+            {{end}}
+        </ol>
+        <div class="action-group secondary">
+            <a href="#" class="btn">Save these changes as an edit set</a>
+        </div>
+    </section>
+    <section class="repo-detail">
+        <h3>My changes</h3>
+        <ol type="1">
+            {{range .PullRequests}}
+            <li>
+                <div>
+                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}}submitted by {{.User.GetLogin}}{{end}} {{.GetCreatedAt | humantime}}</h4>
+                </div>
+            </li>
+            {{end}}
+        </ol>
+        <div class="action-group secondary">
+            <a href="#" class="btn">Submit these changesfor review</a>
         </div>
     </section>
 </main>
