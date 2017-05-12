@@ -22,33 +22,48 @@
   }
 
   .edits {
+    border: 1px solid $color-lightgray;
     background-color: $color-white;
-    margin-bottom: 1em;
+    margin-bottom: 2em;
+    padding-top: 1em;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+
+    .right {
+      text-align: right;
+      float: right;
+    }
   }
 
   .add-file {
-    margin-top:-40px;
+    margin-top: -40px;
     height: 4em;
     display: flex;
     align-items: center;
     float: right;
-    padding-right: 3em;
+    padding-right: 2em;
+    text-decoration: underline;
   }
 
   .edit-links {
     margin-bottom: 1em;
+    text-decoration: underline;
+    span {
+      border-left: 1px solid $color-lightgray;
+    }
+    a {
+      margin-left: 0.375em;
+      margin-right: 0.375em;
+    }
   }
 
   .pull-request-item {
-    margin-bottom: 1em;
-
     .row {
-      margin-left:0em;
-      margin-right:0em;
+      margin-left: 0em;
+      margin-right: 0em;
     }
+    border-bottom: 1px solid $color-lightgray;
   }
 }
 

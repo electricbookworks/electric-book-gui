@@ -12,7 +12,7 @@
         <p>{{.Repo.Description}}</p>
         {{end}}
         <div class="detail-container">
-            <h6>3 updates to master version</h6>
+            <h6>0 updates to master version available:</h6>
             <div class="action-group secondary">
                 <a href="#" class="btn">Update my master version</a>
             </div>
@@ -27,9 +27,10 @@
     </section>
     <section class="repo-detail">
         <div class="edit-links" >
-            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull">Review submitted edits</a> | <a href="/repo/{{.RepoOwner}}//{{.Repo.Name}}/update">Make my own edits</a>
+            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull">Review submitted edits </a> <span></span><a href="/repo/{{.RepoOwner}}//{{.Repo.Name}}/update">Make my own edits</a>
         </div>
           <h3>Edits for review</h3>
+        {{if .PullRequests}}
         <div class="edits">
             {{range .PullRequests}}
             <div class="pull-request-item">
@@ -37,20 +38,21 @@
                     <div class="large-10 small-10 columns">
                         <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h4>
                     </div>
-                    <div class="large-2 small-2 columns">
+                    <div class="large-2 small-2 columns right">
                         {{.GetCreatedAt | humantime}}
                     </div>
                 </div>
-                <div class="row">
+                <div class="row edit-links">
                     <div class="large-10 small-10 columns">
                         <a>3 edits in 2 chapters</a>
                     </div>
-                    <div class="large-2 small-2 columns">
+                    <div class="large-2 small-2 columns right">
                         <a href="pull/{{.GetNumber}}"> View edits</a>
                     </div>
                 </div>
             </div>
-            {{end}}
+        {{end}}
+        {{end}}
         </div>
     </section>
     <section class="repo-detail">
