@@ -5,6 +5,7 @@
 {{$repoName := .RepoName}}
 {{$repoFiles := .RepoFiles}}
 
+
 <main class="repo-detail-padding">
     <section class="repo-detail">
         <h3><a class="repo-title" href="/">{{.Repo.Name}}</a></h3>
@@ -12,7 +13,7 @@
         <p>{{.Repo.Description}}</p>
         {{end}}
         <div class="detail-container">
-            <h6>0 updates to master version available:</h6>
+            <h6>{{.PrCount}} updates to master version available:</h6>
             <div class="action-group secondary">
                 <a href="#" class="btn">Update my master version</a>
             </div>
@@ -57,7 +58,7 @@
     </section>
     <section class="repo-detail">
         <h3>Files</h3>
-        <a class="add-file" href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
+        <a class="file-item new-file" href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/update"> Add new file</a>
         </div>
         <div class="file-list">
             <table>
@@ -71,7 +72,7 @@
                 <tbody>
                 {{ range .RepoFiles.Files}}
                 <tr>
-                    <td>{{.Name}}</td>
+                    <td><a class="file-item">{{.Name}}</a></td>
                     <td>Change set description here</td>
                     <td>Username</td>
                 </tr>
@@ -97,17 +98,8 @@
     </section>
     <section class="repo-detail">
         <h3>My changes</h3>
-        <ol type="1">
-            {{range .PullRequests}}
-            <li>
-                <div>
-                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}}submitted by {{.User.GetLogin}}{{end}} {{.GetCreatedAt | humantime}}</h4>
-                </div>
-            </li>
-            {{end}}
-        </ol>
         <div class="action-group secondary">
-            <a href="#" class="btn">Submit these changesfor review</a>
+            <a href="#" class="btn">Submit these changes for review</a>
         </div>
     </section>
 </main>

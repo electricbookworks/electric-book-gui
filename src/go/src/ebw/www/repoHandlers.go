@@ -131,6 +131,7 @@ func repoDetails(c *Context) error {
 		return err
 	}
 	c.D[`PullRequests`] = prs
+	c.D[`PrCount`] = len(prs)
 
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
@@ -139,7 +140,6 @@ func repoDetails(c *Context) error {
 	if nil != err {
 		return err
 	}
-
 	return c.Render(`repo_detail.html`, map[string]interface{}{
 		"Repo":    repo,
 	})
