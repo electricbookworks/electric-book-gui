@@ -1,0 +1,79 @@
+.repo-detail {
+  border-bottom: 1px solid $color-lightgray;
+  margin-bottom: 1em;
+
+  .edits {
+    border: 1px solid $color-lightgray;
+    background-color: $color-white;
+    margin-bottom: 2em;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    .right {
+      text-align: right;
+      float: right;
+    }
+  }
+
+  .edit-links {
+    margin-bottom: 1em;
+    text-decoration: underline;
+
+    span {
+      border-left: 1px solid $color-lightgray;
+    }
+
+    a {
+      margin-left: 0.375em;
+      margin-right: 0.375em;
+    }
+  }
+
+  .detail-container {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #eee;
+    border: 1px solid $color-white;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+
+    .row {
+      margin-left: 0em;
+      margin-right: 0em;
+    }
+
+    .pull-request-title {
+      margin-left: 1em;
+    }
+  }
+
+  .file-item {
+    text-decoration: underline;
+  }
+
+  .new-file {
+    margin-top: -40px;
+    height: 4em;
+    display: flex;
+    align-items: center;
+    float: right;
+    padding-right: 2em;
+  }
+
+  .pull-request-item {
+    border-bottom: 1px solid $color-lightgray;
+    
+    .row {
+      margin-left: 0em;
+      margin-right: 0em;
+    }
+  }
+}
+
+.repo-detail-padding {
+  margin: 0 0 3em 0;
+  padding: 0 6em;
+}
