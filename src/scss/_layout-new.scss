@@ -44,3 +44,18 @@ body {
 .l-center {
 	text-align: center;
 }
+
+@mixin section-border() {
+	border-bottom: 3px solid $color-primary;
+}
+
+.todo {
+	border: 3px solid #88f;
+	background-color: white;
+	padding: 2em;
+
+	color: #333;
+	border-radius: 1em;
+	margin: 1em 0 2em 0;
+
+}

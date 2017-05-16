@@ -3816,6 +3816,14 @@ body {
 .l-center {
   text-align: center; }
 
+.todo {
+  border: 3px solid #88f;
+  background-color: white;
+  padding: 2em;
+  color: #333;
+  border-radius: 1em;
+  margin: 1em 0 2em 0; }
+
 .btn {
   background-color: #009E7F;
   color: white;
@@ -4054,6 +4062,51 @@ body {
             flex-grow: 1; }
         #pull-request-view #mergely-container .merge-editor .merge-mergely .CodeMirror {
           height: 100%; }
+
+#repo-detail .title-links {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 1em; }
+
+#repo-detail .repo-detail-section {
+  border-bottom: 3px solid #009E7F;
+  margin-bottom: 1em; }
+  #repo-detail .repo-detail-section .edits {
+    border: 1px solid #ddd;
+    background-color: white;
+    margin-bottom: 2em;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; }
+    #repo-detail .repo-detail-section .edits .right {
+      text-align: right;
+      float: right; }
+  #repo-detail .repo-detail-section .detail-container {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #eee;
+    border: 1px solid white;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05); }
+    #repo-detail .repo-detail-section .detail-container .row {
+      margin-left: 0em;
+      margin-right: 0em; }
+    #repo-detail .repo-detail-section .detail-container .pull-request-title {
+      margin-left: 1em; }
+  #repo-detail .repo-detail-section .file-list {
+    max-height: 20em;
+    overflow-y: scroll; }
+  #repo-detail .repo-detail-section .file-item {
+    text-decoration: underline; }
+  #repo-detail .repo-detail-section .pull-request-item {
+    border-bottom: 1px solid #ddd; }
+    #repo-detail .repo-detail-section .pull-request-item .row {
+      margin-left: 0em;
+      margin-right: 0em; }
 
 .repo-list {
   padding-left: 0;
