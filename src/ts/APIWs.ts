@@ -152,8 +152,8 @@ export class APIWs {
 		return this.rpc("Commit",  [repoOwner,repoName,message] );
 	}
 	
-	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string) {
-		return this.rpc("PrintPdfEndpoint",  [repoOwner,repoName,book] );
+	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string,format:string) {
+		return this.rpc("PrintPdfEndpoint",  [repoOwner,repoName,book,format] );
 	}
 	
 }

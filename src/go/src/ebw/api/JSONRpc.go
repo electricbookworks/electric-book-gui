@@ -76,9 +76,12 @@ func (rpc *API) Commit(repoOwner, repoName, message string) error {
 	return err
 }
 
-func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book string) (string, error) {
+func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (string, error) {
 	if `` == book {
 		book = `book`
+	}
+	if ``==format {
+		format = `print`
 	}
 	pr := &print.PrintRequest{
 		Book:      book,
@@ -86,6 +89,7 @@ func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book string) (string, erro
 		RepoName:  repoName,
 		Username:  rpc.Client.Username,
 		Token:     rpc.Client.Token,
+		PrintOrScreen: format,
 	}
 	return print.MakeEndpoint(pr), nil
 }

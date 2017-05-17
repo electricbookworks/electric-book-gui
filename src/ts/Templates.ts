@@ -5,7 +5,7 @@ export namespace EL {
 	export type FSFileList_File =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
-	export type PullRequestDiffList_File =	HTMLUListElement;
+	export type PullRequestDiffList_File =	HTMLDivElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
 	export type RepoFileEditorCM =	HTMLDivElement;
@@ -160,19 +160,19 @@ export class MergeEditor {
 	}
 }
 export class PullRequestDiffList_File {
-	public static _template : HTMLUListElement;
-	public el : HTMLUListElement;
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
 	public $ : R.PullRequestDiffList_File;
 	constructor() {
 		let t = PullRequestDiffList_File._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<ul><li data-set="this">
-	</li></ul>`;
-			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
+			d.innerHTML = `<div>
+</div>`;
+			t = d.firstElementChild as HTMLDivElement;
 			PullRequestDiffList_File._template = t;
 		}
-		let n = t.cloneNode(true) as HTMLUListElement;
+		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
 		};
 		this.el = n;

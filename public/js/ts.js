@@ -136,8 +136,8 @@ var APIWs = (function () {
     APIWs.prototype.Commit = function (repoOwner, repoName, message) {
         return this.rpc("Commit", [repoOwner, repoName, message]);
     };
-    APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book) {
-        return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book]);
+    APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format) {
+        return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format]);
     };
     return APIWs;
 }());
@@ -262,8 +262,8 @@ var PullRequestDiffList_File = (function () {
         var t = PullRequestDiffList_File._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<ul><li data-set=\"this\">\n\t</li></ul>";
-            t = d.firstElementChild.childNodes[0];
+            d.innerHTML = "<div>\n</div>";
+            t = d.firstElementChild;
             PullRequestDiffList_File._template = t;
         }
         var n = t.cloneNode(true);
@@ -419,16 +419,21 @@ var AddNewBookDialog$$1 = (function (_super) {
 }(AddNewBookDialog$1));
 
 var PrintListener = (function () {
-    function PrintListener(repoOwner, repoName, book) {
+    function PrintListener(repoOwner, repoName, book, format) {
         if (book === void 0) { book = "book"; }
+        if (format === void 0) { format = "print"; }
         var _this = this;
         this.repoOwner = repoOwner;
         this.repoName = repoName;
         this.book = book;
+        this.format = format;
         if ("" == this.book) {
             this.book = "book";
         }
-        EBW.API().PrintPdfEndpoint(repoOwner, repoName, book).then(function (_a) {
+        if (("print" != format) && ("screen" != format)) {
+            EBW.Error("PrintListener format parameter must be either 'print' or 'screen'");
+        }
+        EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format).then(function (_a) {
             var url = _a[0];
             _this.startListener(url);
         })
@@ -1903,12 +1908,18 @@ var RepoEditorPage = (function () {
         new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
         new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
         FSPrimeFromJS(this.FS, filesJson);
-        document.getElementById("repo-print").addEventListener('click', function (evt) {
+        document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
             console.log("Starting printing...");
             EBW.Toast("Printing in progress...");
-            new PrintListener(_this.repoOwner, _this.repoName, "book");
+            new PrintListener(_this.repoOwner, _this.repoName, "book", "print");
+        });
+        document.getElementById("repo-print-screen").addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            EBW.Toast("Printing for screen in progress...");
+            new PrintListener(_this.repoOwner, _this.repoName, "book", "screen");
         });
         document.getElementById("repo-jekyll").addEventListener("click", function (evt) {
             evt.preventDefault();

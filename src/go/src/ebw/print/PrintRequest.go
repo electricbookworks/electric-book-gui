@@ -6,4 +6,5 @@ type PrintRequest struct {
 	RepoName  string
 	Book      string
 	Token     string
+	PrintOrScreen string
 }

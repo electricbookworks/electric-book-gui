@@ -1,6 +1,7 @@
 package git
 
 import (
+	"encoding/json"
 	"crypto/sha1"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +9,8 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/golang/glog"
+	
 	"ebw/util"
 )
 
@@ -19,6 +22,15 @@ type PullRequestDiff struct {
 	LocalHash  string `json:"local_hash"`
 
 	Equal bool `json:"equal"`
+}
+
+func (prd *PullRequestDiff) String() string {
+	r, err := json.Marshal(prd)
+	if nil!=err {
+		glog.Errorf(`Failed JSON marshal of %v: %s`, prd, err.Error())
+		return err.Error()
+	}
+	return string(r)
 }
 
 // HashFile returns the hash of the file at fn

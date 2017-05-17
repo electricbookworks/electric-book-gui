@@ -19,6 +19,18 @@
     - libpixman-1-0
   become: yes
 
+# - name: copy libpng12
+#   become: yes
+#   copy: >
+#     src=libpng12-ubuntu_amd64.deb
+#     dest=/tmp/libpng12.deb
+
+- name: install libpng12
+  become: yes
+  apt: >
+    deb=http://za.archive.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
+    state=present
+
 - name: install prince
   become: yes
   script: install-prince.sh

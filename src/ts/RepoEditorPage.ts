@@ -60,11 +60,16 @@ export class RepoEditorPage {
 		
 		FSPrimeFromJS(this.FS, filesJson);
 
-		document.getElementById(`repo-print`).addEventListener('click', evt=>{
+		document.getElementById(`repo-print-printer`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			console.log(`Starting printing...`);
 			EBW.Toast(`Printing in progress...`);
-			new PrintListener(this.repoOwner, this.repoName, `book`);
+			new PrintListener(this.repoOwner, this.repoName, `book`, `print`);
+		});
+		document.getElementById(`repo-print-screen`).addEventListener(`click`, evt=>{
+			evt.preventDefault(); evt.stopPropagation();
+			EBW.Toast(`Printing for screen in progress...`);
+			new PrintListener(this.repoOwner, this.repoName, `book`, `screen`);
 		});
 		document.getElementById(`repo-jekyll`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();

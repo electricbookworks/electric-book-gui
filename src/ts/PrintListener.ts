@@ -4,11 +4,15 @@ import EventSource = require('./sse');
 export class PrintListener {
 	constructor(protected repoOwner:string, 
 		protected repoName:string, 
-		protected book:string=`book`) {
+		protected book:string=`book`,
+		protected format:string=`print`) {
 		if (``==this.book) {
 			this.book = `book`;
 		}
-		EBW.API().PrintPdfEndpoint(repoOwner, repoName, book).then(
+		if ((`print`!=format) && (`screen`!=format)) {
+			EBW.Error(`PrintListener format parameter must be either 'print' or 'screen'`);
+		}
+		EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format).then(
 			([url])=>{
 				this.startListener(url);
 			})

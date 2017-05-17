@@ -4030,38 +4030,60 @@ body {
 
 #pull-request-view {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: stretch;
-  position: relative; }
-  #pull-request-view #differences {
+  align-items: stretch; }
+  #pull-request-view .pr-topbar {
+    padding: 1em;
+    font-weight: bold;
     flex-grow: 0;
-    width: 15em; }
-  #pull-request-view #mergely-container {
+    border-bottom: 1px solid #009E7F; }
+  #pull-request-view .workspace {
     flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
     position: relative; }
-    #pull-request-view #mergely-container .merge-editor {
-      width: 100%;
-      height: 100%;
+    #pull-request-view .workspace #differences {
+      flex-grow: 0;
+      width: 15em;
+      padding: 0 0 0 1em;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: stretch;
-      flex-wrap: nowrap; }
-      #pull-request-view #mergely-container .merge-editor .merge-mergely {
+      align-items: stretch; }
+      #pull-request-view .workspace #differences #pr-files-list {
         flex-grow: 1; }
-        #pull-request-view #mergely-container .merge-editor .merge-mergely > div {
-          display: flex;
-          flex-direction: row;
-          align-items: stretch;
-          justify-content: space-between; }
-          #pull-request-view #mergely-container .merge-editor .merge-mergely > div > div {
-            float: none;
-            flex-grow: 0; }
-          #pull-request-view #mergely-container .merge-editor .merge-mergely > div > .mergely-column {
-            flex-grow: 1; }
-        #pull-request-view #mergely-container .merge-editor .merge-mergely .CodeMirror {
-          height: 100%; }
+        #pull-request-view .workspace #differences #pr-files-list > div {
+          cursor: pointer; }
+      #pull-request-view .workspace #differences > div:last-child {
+        flex-grow: 0; }
+    #pull-request-view .workspace #mergely-container {
+      flex-grow: 1;
+      position: relative; }
+      #pull-request-view .workspace #mergely-container .merge-editor {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        flex-wrap: nowrap; }
+        #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely {
+          flex-grow: 1; }
+          #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely > div {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            justify-content: space-between; }
+            #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely > div > div {
+              float: none;
+              flex-grow: 0; }
+            #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely > div > .mergely-column {
+              flex-grow: 1; }
+          #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely .CodeMirror {
+            height: 100%; }
 
 #repo-detail .title-links {
   display: flex;

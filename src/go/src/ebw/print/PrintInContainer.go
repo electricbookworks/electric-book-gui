@@ -35,7 +35,7 @@ func cloneContainer(cOld, cNew string) error {
 	return nil
 }
 
-func PrintInContainer(repoPath, book string, C chan PrintMessage) (string, error) {
+func PrintInContainer(repoPath, book, printOrScreen string, C chan PrintMessage) (string, error) {
 	doError := func(err error) error {
 		C <- PrintMessage{Event: `error`, Data: err.Error()}
 		return util.Error(err)

@@ -26,7 +26,7 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?url={{.HTMLURL}}">Manage</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/detail">Manage</a>
               {{if .GetTotalPRs}}
               <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
               {{end}}

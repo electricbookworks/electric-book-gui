@@ -1,49 +1,78 @@
 #pull-request-view {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: space-between;
 	align-items: stretch;
 
-	position: relative;
-
-	#differences {
+	.pr-topbar {
+		padding: 1em;
+		font-weight: bold;
 		flex-grow: 0;
-		width: 15em;
+		border-bottom: 1px solid $color-primary;
 	}
-	#mergely-container {
+	.workspace{
 		flex-grow: 1;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: stretch;
+
 		position: relative;
 
-		.merge-editor {
-			width: 100%;
-			height: 100%;
+		#differences {
+			flex-grow: 0;
+			width: 15em;
+			padding: 0 0 0 1em;
+
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
 			align-items: stretch;
-			flex-wrap: nowrap;
-
-			.merge-mergely {
+			#pr-files-list {
 				flex-grow: 1;
+				&>div {
+					cursor:pointer;
+				}
+			}
+			& > div:last-child {
+				flex-grow: 0;
+			}
+		}
+		#mergely-container {
+			flex-grow: 1;
+			position: relative;
 
-				& > div {
-					display: flex;
-					flex-direction: row;
-					align-items: stretch;
-					justify-content: space-between;
+			.merge-editor {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: stretch;
+				flex-wrap: nowrap;
+
+				.merge-mergely {
+					flex-grow: 1;
+
 					& > div {
-						float:none;
-						flex-grow: 0;
+						display: flex;
+						flex-direction: row;
+						align-items: stretch;
+						justify-content: space-between;
+						& > div {
+							float:none;
+							flex-grow: 0;
+						}
+						& > .mergely-column {
+							flex-grow: 1;
+						}
 					}
-					& > .mergely-column {
-						flex-grow: 1;
+					.CodeMirror {
+						height: 100%;
 					}
-				}
-				.CodeMirror {
-					height: 100%;
-				}
-			}				
-		}	
+				}				
+			}	
+		}
 	}
 }
 

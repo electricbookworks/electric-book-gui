@@ -89,7 +89,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// pdfPath, err := PrintInContainer(repoDir, pr.Book, C)
-		pdfPath, err := PrintLocal(repoDir, pr.Book, C)
+		pdfPath, err := PrintLocal(repoDir, pr.Book, pr.PrintOrScreen, C)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}
 		} else {

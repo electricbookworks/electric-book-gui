@@ -1,3 +1,4 @@
 ---
 dependencies:
  - role: bookworks
+   bookworks_user: root

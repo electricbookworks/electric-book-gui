@@ -1562,12 +1562,14 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 				BOOK string `json:"2"`
 				
+				FORMAT string `json:"3"`
+				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=3 {
+			if len(request.Params)!=4 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "PrintPdfEndpoint")
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "PrintPdfEndpoint")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
@@ -1590,6 +1592,13 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.FORMAT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1624,6 +1633,7 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 		args.REPOOWNER,
 		args.REPONAME,
 		args.BOOK,
+		args.FORMAT,
 		
 				)
 

@@ -146,7 +146,7 @@ class APIWs {
 		return this._rpc("Commit",  arguments );
 	}
 	
-	PrintPdfEndpoint (repoOwner,repoName,book) {
+	PrintPdfEndpoint (repoOwner,repoName,book,format) {
 		return this._rpc("PrintPdfEndpoint",  arguments );
 	}
 	
