@@ -8,7 +8,7 @@
         {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/detail">{{.Name}}</a></h2>
+                <a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
 
                 <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s {{if .GetFork}}version{{else}}original{{end}}
                 {{- if .Owner.Company}}
@@ -26,7 +26,7 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/detail">Manage</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update">Manage</a>
               {{if .GetTotalPRs}}
               <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
               {{end}}

@@ -159,7 +159,7 @@ func repoUpdate(c *Context) error {
 	}
 
 	// redirect the user to repoView
-	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
+	return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 }
 
 func pullRequestClose(c *Context) error {
