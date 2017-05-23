@@ -42,6 +42,25 @@ func HashFile(fn string) (string, error) {
 	return fmt.Sprintf("%x", sha1.Sum(raw)), nil
 }
 
+func GetPathDiff(localRoot, remoteRoot, path string) (*PullRequestDiff, error) {
+	d := &PullRequestDiff{Path:path}
+	localPath, remotePath := filepath.Join(localRoot, path), filepath.Join(remoteRoot,path)
+	localExists, err := util.FileExists(localPath)
+	if nil!=err {
+		return nil, err
+	}
+	remoteExists, err := util.FileExists(remotePath)
+	if nil!=err {
+		return nil, err
+	}
+	if localExists {
+		d.LocalPath = localPath
+	}
+	if remoteExists {
+		d.RemotePath = remotePath
+	}
+	return d, nil
+}
 func GetPathDiffList(localPath, remotePath string, pathRegexp string) ([]*PullRequestDiff, error) {
 	reg, err := regexp.Compile(pathRegexp)
 	if nil != err {

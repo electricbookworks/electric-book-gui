@@ -130,7 +130,7 @@ class APIWs {
 		return this._rpc("ListPullRequests",  arguments );
 	}
 	
-	PullRequestDiffList (repoOwner,repoName,sha,regexp) {
+	PullRequestDiffList (repoOwner,repoName,prNumber) {
 		return this._rpc("PullRequestDiffList",  arguments );
 	}
 	

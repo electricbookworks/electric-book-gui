@@ -213,7 +213,9 @@ func pullRequestView(c *Context) error {
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
 
-	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, int(c.PI(`number`)))
+	pullRequestNumber := int(c.PI(`number`))
+
+	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, pullRequestNumber)
 	if nil != err {
 		return err
 	}
@@ -233,7 +235,7 @@ func pullRequestView(c *Context) error {
 		return err
 	}
 
-	diffs, err := git.PullRequestDiffList(client, client.Username, repoOwner, repoName, *pr.Head.SHA, `^book/text/.*`)
+	diffs, err := git.PullRequestDiffList(client,  repoOwner, repoName, pr)
 	if nil != err {
 		return err
 	}

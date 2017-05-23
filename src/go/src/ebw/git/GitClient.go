@@ -74,6 +74,40 @@ func GithubTokenFromWebRequest(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
+// ClientFromCLIConfigNamed returns the client for the named user from the 
+// cli config.
+func ClientFromCLIConfigNamed(name string) (*Client, error) {
+	c := config.Config
+	user, err := c.GetUserNamed(name)
+	if nil != err {
+		return nil, err
+	}
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: user.Token},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
+
+	githubClient := github.NewClient(tc)
+	ctxt := context.Background()
+	githubUser, _, err := githubClient.Users.Get(ctxt, "")
+	if nil != err {
+		return nil, err
+	}
+
+	client := &Client{
+		Client:   githubClient,
+		Username: ``,
+		Token:    user.Token,
+		Context:  ctxt,
+		User:     githubUser,
+	}
+	client.Username, err = Username(client)
+	if nil != err {
+		return nil, err
+	}
+	return client, nil
+}
+
 // ClientFromConfig returns the client based on the configuration
 func ClientFromCLIConfig() (*Client, error) {
 	c := config.Config

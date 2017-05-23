@@ -136,8 +136,8 @@ export class APIWs {
 		return this.rpc("ListPullRequests",  [repoOwner,repoName] );
 	}
 	
-	PullRequestDiffList (repoOwner:string,repoName:string,sha:string,regexp:string) {
-		return this.rpc("PullRequestDiffList",  [repoOwner,repoName,sha,regexp] );
+	PullRequestDiffList (repoOwner:string,repoName:string,prNumber:number) {
+		return this.rpc("PullRequestDiffList",  [repoOwner,repoName,prNumber] );
 	}
 	
 	PullRequestVersions (repoOwner:string,repoName:string,remoteUrl:string,remoteSha:string,filePath:string) {

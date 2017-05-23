@@ -1090,16 +1090,14 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 				REPONAME string `json:"1"`
 				
-				SHA string `json:"2"`
-				
-				REGEXP string `json:"3"`
+				PRNUMBER int `json:"2"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=4 {
+			if len(request.Params)!=3 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "PullRequestDiffList")
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "PullRequestDiffList")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
@@ -1118,17 +1116,10 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[2], &args.SHA);
+			if err = json.Unmarshal(request.Params[2], &args.PRNUMBER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
-				return err
-			}
-			
-			if err = json.Unmarshal(request.Params[3], &args.REGEXP);
-				nil!=err {
-				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
-					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1162,8 +1153,7 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 					result[0],result[1] = context.PullRequestDiffList(
 		args.REPOOWNER,
 		args.REPONAME,
-		args.SHA,
-		args.REGEXP,
+		args.PRNUMBER,
 		
 				)
 

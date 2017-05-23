@@ -59,8 +59,8 @@ func (rpc *API) ListPullRequests(repoOwner, repoName string) ([]*github.PullRequ
 	return git.ListPullRequests(rpc.Client, repoOwner, repoName)
 }
 
-func (rpc *API) PullRequestDiffList(repoOwner, repoName, sha, regexp string) ([]*git.PullRequestDiff, error) {
-	return git.PullRequestDiffList(rpc.Client, rpc.User, repoOwner, repoName, sha, regexp)
+func (rpc *API) PullRequestDiffList(repoOwner, repoName string, prNumber int) ([]*git.PullRequestDiff, error) {
+	return git.PullRequestDiffListByNumber(rpc.Client, repoOwner, repoName, prNumber)
 }
 
 func (rpc *API) PullRequestVersions(repoOwner, repoName, remoteUrl, remoteSha, filePath string) (string, string, error) {
