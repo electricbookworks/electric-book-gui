@@ -12,23 +12,16 @@
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>
         {{end}}
-        {{if .PrCount}}
+        {{if .AheadBehind}}
         <div class="detail-container">
-            <h6>{{.PrCount}} updates to master version available:</h6>
+            <h6>Updates to master version available:</h6>
+            <p>Your upstream version is {{.AheadBehind.Ahead}} commits ahead of your
+            own version.</p>
             <div class="action-group secondary">
                 <a href="#" class="btn">Update my master version</a>
             </div>
-            <div class="pull-requests">
-                {{range .PullRequests}}
-                <ul class="pull-request-title">
-                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a></h4>
-                </ul>
-                {{end}}
-            </div>
         </div>
-        {{end}} 
-        <div class="todo">This seems to be PR requests, but it needs to be MASTER
-        ahead of FORK - so we would need to check FORK for upstream commits.</div>
+        {{end}}
     </section>
     {{if .PullRequests}}
     <section class="repo-detail-section">

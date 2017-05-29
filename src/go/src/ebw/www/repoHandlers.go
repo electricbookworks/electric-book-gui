@@ -133,6 +133,22 @@ func repoDetails(c *Context) error {
 	c.D[`PullRequests`] = prs
 	c.D[`PrCount`] = len(prs)
 
+	var aheadBehind *git.RepoDiffStats
+
+	if nil!=repo.Parent {
+		aheadBehind, err = git.CompareCommits(client,
+			repo.GetName(),
+			repo.Owner.GetLogin(),
+			`master`,
+			repo.Parent.Owner.GetLogin(),
+			`master`,
+			)
+		if nil!=err {
+			return util.Error(err)
+		}
+	}
+	c.D[`AheadBehind`] = aheadBehind
+
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName

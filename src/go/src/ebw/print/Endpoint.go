@@ -39,8 +39,12 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	s := sse.New()
 	C := make(chan PrintMessage)
 	go func() {
+		sendCount:=0
 		for m := range C {
-			glog.Infof(`About to SendJSON: data = %v`, m.Data)
+			sendCount++
+			if 0==sendCount%10 {
+				glog.Infof(`About to SendJSON: data = %v`, m.Data)
+			}
 			s.SendJSON(`id`, m.Event, m.Data)
 		}
 		s.SendJSON(`id`, `done`, nil)

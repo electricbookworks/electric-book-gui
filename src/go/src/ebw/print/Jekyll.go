@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
-	"strings"
+	// "strings"
 	"sync"
 	"time"
 
@@ -33,6 +33,8 @@ type Jekyll struct {
 	lastRequest time.Time
 	manager     *JekyllManager
 
+	err error
+
 	path [3]string
 }
 
@@ -46,31 +48,29 @@ func (j *Jekyll) getBaseUrl() string {
 	return `/` + j.BaseUrl
 }
 
-func (j *Jekyll) start() error {
-	c := exec.Command(
-		config.Config.Rvm,
-		config.Config.RubyVersion,
-		`do`,
-		`gem`,`install`,`bundler`)
-	c.Stdout, c.Stderr = os.Stdout,os.Stderr
-	c.Dir = j.RepoDir
-	if err :=c.Run(); nil!=err {
-		return util.Error(err)
-	}
-	c = exec.Command(
-		config.Config.Rvm,
-		config.Config.RubyVersion,
-		`do`,
-		`bundle`,
-		`install`)
+// Runs RVM in the given directory with the given commands.
+// Pipes stdout and stderr to os.Stdout and os.Stderr.
+func Rvm(dir string, args ...string) *exec.Cmd {
+	cargs := []string{config.Config.RubyVersion, `do`}
+	cargs = append(cargs, args...)
+	c := exec.Command(config.Config.Rvm, cargs...)
 	c.Stdout, c.Stderr = os.Stdout, os.Stderr
-	c.Dir = j.RepoDir
-	if err := c.Run(); nil != err {
-		return util.Error(err)
+	c.Dir = dir
+	glog.Infof(`Rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
+	return c
+}
+
+func (j *Jekyll) start() error {
+	if err := Rvm(j.RepoDir, `gem`,`install`,`bundler`).Run(); nil!=err {
+		j.err = err
+		return err
 	}
-	args := []string{
-		config.Config.RubyVersion,
-		`do`,
+	if err := Rvm(j.RepoDir, `bundle`,`install`).Run(); nil!=err {
+		j.err = err
+		return err
+	}
+	j.cmd = Rvm(
+		j.RepoDir,
 		`bundle`,
 		`exec`,
 		`jekyll`,
@@ -81,37 +81,37 @@ func (j *Jekyll) start() error {
 		j.getBaseUrl(),
 		`-P`,
 		strconv.FormatInt(j.Port, 10),
-		`--watch`,
-		// `--incremental`,
-	}
-	glog.Infof(`Starting jekyll with %s %s`, config.Config.Rvm, strings.Join(args, ` `))
-	j.cmd = exec.Command(config.Config.Rvm, args...)
-	j.cmd.Dir = j.RepoDir
+		`--watch`,)
 	inR, _, err := os.Pipe()
 	if nil != err {
+		j.err = err
 		return util.Error(err)
 	}
 	j.cmd.Stdin = inR
-	j.cmd.Stdout, j.cmd.Stderr = os.Stdout, os.Stderr
-
 	if err := j.cmd.Start(); nil != err {
+		j.err = err
 		return fmt.Errorf(`ERROR starting jeckyl: %s`, err.Error())
 	}
 
 	targetUrl, err := url.Parse(fmt.Sprintf(`http://localhost:%d/`, j.Port))
 	if nil != err {
+		j.err = err
 		return util.Error(err)
 	}
 	j.server = httputil.NewSingleHostReverseProxy(targetUrl)
 
 	// We wait for the server to come up before we return
+	tryCount := 0
 	for {
 		test, err := http.Get(targetUrl.String())
 		if nil == err {
 			test.Body.Close()
 			break
 		}
-		glog.Infof(`Error trying to reach %s: %s`, targetUrl.String(), err.Error())
+		tryCount++
+		if 0==tryCount % 10 {
+			glog.Infof(`Error trying to reach %s: %s`, targetUrl.String(), err.Error())
+		}
 		time.Sleep(time.Second)
 	}
 	glog.Infof(`Server is up on %s`, targetUrl.String())

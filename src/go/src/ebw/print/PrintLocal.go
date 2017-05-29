@@ -1,59 +1,71 @@
 package print
 
 import (
-	"fmt"
+	// "fmt"
 	"os"
 	"os/exec"
-	// "path/filepath"
+	"path/filepath"
+	"strings"
 
 	"github.com/golang/glog"
 
 	"ebw/book"
-	"ebw/util"
+	// "ebw/util"
 )
 
 func PrintLocal(repoPath, bookName, printOrScreen string, C chan PrintMessage) (string, error) {
 	if ``==printOrScreen {
 		printOrScreen = `print`
 	}
-	doError := func(err error) error {
-		C <- PrintMessage{Event: `error`, Data: err.Error()}
-		return util.Error(err)
-	}
 
 	bookConfig, err := book.ReadConfig(repoPath)
 	if nil != err {
 		return ``, err
 	}
-
-	inR, inW, err := os.Pipe()
-	if nil != err {
-		return ``, doError(fmt.Errorf(`ERROR creating pipe: %v`, err))
-	}
 	outputName := bookName + `-` + printOrScreen + `.pdf`
-	go func() {
-		defer inW.Close()
-		script := `
-echo 'Start of printing script'
-source /usr/local/rvm/scripts/rvm
-gem install bundler
-bundle install
-bundle exec jekyll build --config="_config.yml,_configs/_config.` + printOrScreen + `-pdf.yml"
-cd ` + bookConfig.GetDestinationDir(bookName, `text`) + `
-prince -v -l file-list -o ../../../_output/` + outputName + `
-echo 'End of printing script'
-`	
-		glog.Infof("---\nAbout to run script:%s\n---", script)
-		inW.WriteString(script)
-	}()
 
-	cmd := exec.Command(`/bin/bash`)
-	cmd.Dir = repoPath
-	cmd.Stdin = inR
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	if err := Rvm(repoPath, `gem`,`install`,`bundler`).Run(); nil!=err {
+		glog.Errorf(`Error %s: gem install bundler : %s`, repoPath, err.Error())
+		return ``, err
+	}
+	if err := Rvm(repoPath, `bundle`,`install`).Run(); nil!=err {
+		glog.Errorf(`Error %s: bundle install: %s`, repoPath, err.Error())
+		return ``, err
+	}
 
-	if err := cmd.Run(); nil != err {
-		return ``, doError(fmt.Errorf(`ERROR executing build: %s`, err.Error()))
+	// bundle exec jekyll build --config="_config.yml,_configs/_config.` 
+	// + printOrScreen + `-pdf.yml"
+	jekyllConfig := []string{
+		`_config.yml`,filepath.Join(`_configs`,`_config.`+printOrScreen+`-pdf.yml`),
+	}
+	if bookConfig.MathjaxEnabled {
+		jekyllConfig = append(jekyllConfig, filepath.Join(`_configs`,`_config.mathjax-enabled.yml`))
+	}
+	jekyllConfigArg :=  strings.Join(jekyllConfig,`,`)
+
+	if err := Rvm(repoPath, `bundle`,`exec`,`jekyll`,`build`,`--config`,
+		jekyllConfigArg).Run(); nil!=err {
+		glog.Errorf(`Error %s: bundle exec jekyll build --config %s : %s`,
+			repoPath, jekyllConfigArg, err.Error())
+		return ``,err
+	}
+	if bookConfig.MathjaxEnabled {
+		cmd := exec.Command(`phantomjs`,`render-mathjax.js`)
+		cmd.Dir = filepath.Join(repoPath, `_site`,`assets`,`js`)
+		cmd.Stderr,cmd.Stdout = os.Stderr,os.Stdout
+		if err := cmd.Run(); nil!=err {
+			glog.Errorf(`Error %s: phantomjs render-mathjax.js : %s`, cmd.Dir, err.Error())
+			return ``, err
+		}
+	}
+	cmd := exec.Command(`prince`,`-v`,`-l`,`file-list`,`-o`,
+		`../../../_output/`+outputName)
+	cmd.Stdout, cmd.Stderr = os.Stdout,os.Stderr
+	cmd.Dir = filepath.Join(repoPath, bookConfig.GetDestinationDir(bookName,`text`))
+	if err := cmd.Run(); nil!=err {
+		glog.Errorf(`Error %s: prince -v -l file-list -o ../../../_output/%s : %s`,
+			cmd.Dir, outputName, err.Error())
+		return ``, err
 	}
 
 	output := `_output/` + outputName

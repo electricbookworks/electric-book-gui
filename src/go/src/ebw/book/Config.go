@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	Destination string `yaml:"destination"`
+	MathjaxEnabled bool `yaml:"mathjax-enabled"`
 }
 
 func (c *Config) GetDestinationDir(subpaths ...string) string {

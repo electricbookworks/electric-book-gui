@@ -9,6 +9,7 @@
   user: >
     name=electricbook
     shell=/bin/bash
+    groups='rvm,'
   become: yes
 
 - name: Install electric-book-gui from GIT

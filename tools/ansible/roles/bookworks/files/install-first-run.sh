@@ -4,11 +4,8 @@ set -e
 cd /tmp
 rm -rf jekylltest
 source /usr/local/rvm/scripts/rvm
-gem install jekyll
+gem install jekyll bundler
 jekyll new jekylltest
-cd jekylltest
-  gem install bundler
-cd ..
 
 # clone Electric Book Works template
 # This is required to ensure that everything is configured
