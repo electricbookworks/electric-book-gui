@@ -51,6 +51,16 @@ func (j *Jekyll) start() error {
 		config.Config.Rvm,
 		config.Config.RubyVersion,
 		`do`,
+		`gem`,`install`,`bundler`)
+	c.Stdout, c.Stderr = os.Stdout,os.Stderr
+	c.Dir = j.RepoDir
+	if err :=c.Run(); nil!=err {
+		return util.Error(err)
+	}
+	c = exec.Command(
+		config.Config.Rvm,
+		config.Config.RubyVersion,
+		`do`,
 		`bundle`,
 		`install`)
 	c.Stdout, c.Stderr = os.Stdout, os.Stderr
