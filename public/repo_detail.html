@@ -22,6 +22,43 @@
             </div>
         {{end}}   
             <p>You repo state is {{.ERepo.RepoStateString}}</p>
+            {{$state := .ERepo.MustRepoState}}
+            {{if $state.LocalInSync}}
+            <p>Your book is ready for editing.</p>
+            {{end}}
+            {{if $state.LocalChangesStaged}}
+            <p>You have made changes that you can save. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Save your changes as an Edit Set.</a></p>
+            {{end}}
+            {{if $state.LocalChangesUnstaged}}
+            <p>(There are changes that are not staged. You can probably just ignore these: they tend to be artifacts of the book generation process.)</p>
+            {{end}}
+            {{if $state.LocalConflicted}}
+            <p>Your repo is in a conflicted state from a merge that isn't complete. <em>You need to complete the merge.</em></p>
+            {{end}}
+            {{if $state.LocalBehind}}
+            <p>Your GitHub version has been changed, but these changes aren't on this version yet. <em>You need to pull from Github.</em></p>
+            {{end}}
+            {{if $state.LocalAhead}}
+            <p>There are changes committed here on the server, that haven't been pushed to GitHub. This shouldn't happen with EBM. Most likely this will correct when you next save an Edit Set.</p>
+            {{end}}
+            {{if $state.LocalUnimplemented}}
+            <p>Your EBW repo is in a state that it can't handle. You need to report this to the development team.</p>
+            {{end}}
+            {{if $state.ParentAhead}}
+            <p>Your GitHub repo is behind the book you are contributing to. <em>You should pull the changes.</em></p>
+            {{end}}
+            {{if $state.ParentBehind}}
+            <p>You've made changes you've not shared with the book you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull_new" class="btn">Submit these changes for Review.</a></p>
+            {{end}}
+            {{if $state.ParentInSync}}
+            <p>Your GitHub repo and the book you are contributing to are up-to-date. Good work.</p>
+            {{end}}
+            {{if $state.ParentNotExist}}
+            <p>Your GitHub repo is an original book. There is no 'upstream' book you are contributing to.</p>
+            {{end}}
+            {{if .PullRequests}}
+            <p>There are {{.PullRequests | len}} Edits for Review. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull" class="btn">Review and close these edits.</a></p>
+            {{end}}
         </div>
     </section>
     {{if .PullRequests}}
@@ -91,7 +128,7 @@
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>My Edits</h3>
-            <a href="#" class="btn">Save these changes as an edit set</a>
+            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Save these changes as an edit set</a>
         </div>
         <ol type="1">
         {{range .StagedFiles}}
@@ -107,7 +144,7 @@
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>My changes</h3>
-            <a href="#" class="btn">Submit these changes for review</a>
+            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull_new" class="btn">Submit these changes for review</a>
         </div>
 
         <div class="todo">

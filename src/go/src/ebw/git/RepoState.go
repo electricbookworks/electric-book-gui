@@ -38,6 +38,40 @@ const (
 	ParentInSync
 )
 
+func (rs RepoState) LocalInSync() bool {
+	return 0 == rs&(EBMChangesStaged|EBMChangesUnstaged|EBMConflicted|EBMBehind|EBMAhead|EBMUnimplemented)
+}
+func (rs RepoState) LocalChangesStaged() bool {
+	return 0 < rs&EBMChangesStaged
+}
+func (rs RepoState) LocalChangesUnstaged() bool {
+	return 0 < rs&EBMChangesUnstaged
+}
+func (rs RepoState) LocalConflicted() bool {
+	return 0 < rs&EBMConflicted
+}
+func (rs RepoState) LocalBehind() bool {
+	return 0 < rs&EBMBehind
+}
+func (rs RepoState) LocalAhead() bool {
+	return 0 < rs&EBMAhead
+}
+func (rs RepoState) LocalUnimplemented() bool {
+	return 0 < rs&EBMUnimplemented
+}
+func (rs RepoState) ParentNotExist() bool {
+	return 0 < rs&ParentNotExist
+}
+func (rs RepoState) ParentAhead() bool {
+	return 0 < rs&ParentAhead
+}
+func (rs RepoState) ParentBehind() bool {
+	return 0 < rs&ParentBehind
+}
+func (rs RepoState) ParentInSync() bool {
+	return 0 == (rs & (ParentAhead | ParentBehind | ParentNotExist))
+}
+
 func (rs RepoState) String() string {
 	states := []string{}
 	for v, s := range map[RepoState]string{

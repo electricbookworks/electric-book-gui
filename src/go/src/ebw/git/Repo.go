@@ -290,6 +290,14 @@ func (r *Repo) RepoStateString() (string, error) {
 	return s.String(), nil
 }
 
+func (r *Repo) MustRepoState() RepoState {
+	s, err := r.GetRepoState()
+	if nil != err {
+		panic(err)
+	}
+	return s
+}
+
 func (r *Repo) GetRepoState() (RepoState, error) {
 	var state RepoState
 
