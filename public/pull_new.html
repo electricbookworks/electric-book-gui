@@ -1,18 +1,15 @@
 {{template "_header.html" .}}
-{{template "_topbar_repo.html" .}}
+{{template "_nav_main.html" .}}
 
-<div class="pull-request-workspace">
+<main id="pull-request-new" class="pull-request-workspace constrain-page">
 
 <h1>Submit Changes for Review</h1>
 
-<form method="post" action="pull_new">
+<form method="post" action="./new">
 <div>
 <label for="title">Title
 <input type="text" name="title" />
 </label>
-</div>
-
-<div>
 <textarea name="notes" placeholder="About the changes made.">
 </textarea>
 </div>
@@ -23,6 +20,6 @@
 
 </form>
 
-</div>
+</main>
 
 {{template "_footer.html" .}}

@@ -13,7 +13,7 @@
         <p>{{.Repo.Description}}</p>
         {{end}}
         <div class="detail-container">
-        {{if .AheadBehind}}
+<!--         {{if .AheadBehind}}
             <h6>Updates to master version available:</h6>
             <p>Your upstream version is {{.AheadBehind.Ahead}} commits ahead of your
             own version. It is {{.AheadBehind.Behind}} commits behind your own version.</p>
@@ -21,10 +21,12 @@
                 <a href="#" class="btn">Update my master version</a>
             </div>
         {{end}}   
-            <p>You repo state is {{.ERepo.RepoStateString}}</p>
+ -->            
+        <p>You repo state is {{.ERepo.RepoStateString}}</p>
+
             {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}
-            <p>Your book is ready for editing.</p>
+            <p>Your book is ready for editing. (This message is really just for technical informational reasons.)</p>
             {{end}}
             {{if $state.LocalChangesStaged}}
             <p>You have made changes that you can save. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Save your changes as an Edit Set.</a></p>
@@ -45,10 +47,10 @@
             <p>Your EBW repo is in a state that it can't handle. You need to report this to the development team.</p>
             {{end}}
             {{if $state.ParentAhead}}
-            <p>Your GitHub repo is behind the book you are contributing to. <em>You should pull the changes.</em></p>
+            <p>Your GitHub repo is behind the book you are contributing to. <a href="#" class="btn">Update my version from the master version.</a></p>
             {{end}}
             {{if $state.ParentBehind}}
-            <p>You've made changes you've not shared with the book you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull_new" class="btn">Submit these changes for Review.</a></p>
+            <p>You've made changes you've not shared with the book you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for Review.</a></p>
             {{end}}
             {{if $state.ParentInSync}}
             <p>Your GitHub repo and the book you are contributing to are up-to-date. Good work.</p>

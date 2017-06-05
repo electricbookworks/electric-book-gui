@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/golang/glog"
 
+	cliConfig "ebw/cli/config"
 	"ebw/config"
 	"ebw/git"
 	"ebw/util"
@@ -26,6 +29,16 @@ type githubToken struct {
 
 // githubLogin forwards the user to login on Github
 func githubLogin(c *Context) error {
+	glog.Infof(`landingHandler - reading config file`)
+	err := cliConfig.ReadConfigFile(filepath.Join(os.Getenv("HOME"), ".ebw.yml"))
+	if nil != err {
+		glog.Error(err)
+	}
+	if nil == err {
+		glog.Infof(`Setting c.D['Users']`)
+		c.D[`Users`] = cliConfig.Config.Users
+	}
+
 	p := url.Values{}
 	p.Add(`client_id`, config.Config.Github.Client)
 	p.Add(`redirect_uri`, config.Config.Server+"/github/auth")
@@ -33,6 +46,7 @@ func githubLogin(c *Context) error {
 	state := util.RandomString(20)
 	c.Session.Values[`github_state`] = state
 	p.Add(`state`, state)
+
 	return c.Render("landing.html", map[string]interface{}{
 		"AuthURL": `https://github.com/login/oauth/authorize?` + p.Encode()})
 }
@@ -75,7 +89,7 @@ func githubAuth(c *Context) error {
 	if err := json.NewDecoder(res.Body).Decode(&token); nil != err {
 		return err
 	}
-	
+
 	// HERE WE SET THE ACCESS COOKIE - WHICH MEANS THE
 	// USER IS LOGGED ON...
 	// SO, RATHER:
@@ -97,14 +111,24 @@ func githubAuth(c *Context) error {
 	user, _, err := gc.Users.Get(c.Context(), "")
 	for _, username := range config.Config.AllowedUsers {
 		r := regexp.MustCompile(username)
-		if (r.MatchString(user.GetLogin())) {
+		if r.MatchString(user.GetLogin()) {
 			return loginUser()
 		}
 	}
 	c.FlashError(`Not Permitted`,
-		     `Sorry, but ` + user.GetLogin() + ` is not permitted to access this system`, 
-		     map[string]interface{}{})
-	
+		`Sorry, but `+user.GetLogin()+` is not permitted to access this system`,
+		map[string]interface{}{})
+
+	return c.Redirect(`/`)
+}
+
+func githubSetToken(c *Context) error {
+	strToken := c.Vars[`token`]
+	http.SetCookie(c.W, &http.Cookie{
+		Name:  git.GithubTokenCookie,
+		Value: strToken,
+		Path:  `/`,
+	})
 	return c.Redirect(`/`)
 }
 

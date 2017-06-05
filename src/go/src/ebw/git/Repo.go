@@ -3,8 +3,10 @@ package git
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 	git2go "gopkg.in/libgit2/git2go.v25"
 
@@ -55,7 +57,7 @@ func NewRepoForDir(client *Client, repoDir string) (*Repo, error) {
 	// RepoOwnerAndName will cache the owner and name resultss
 	_, _, err = r.RepoOwnerAndName()
 	if nil != err {
-		return nil, err
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
 
 	return r, nil
@@ -423,4 +425,87 @@ func (r *Repo) Unstash() error {
 		// CheckoutOptions: git2go.CheckoutOpts {
 		// }
 	})
+}
+
+// Pull fetches and merges this repo with the branchName of the remote
+// repo. Note that Pull will leave the repo in the Merge state. You need
+// to fix any conflicts, and then commit.
+func (r *Repo) Pull(remoteName, branchName string) error {
+	if `` == branchName {
+		branchName = `master`
+	}
+	remote, err := FetchRemote(r.Repository, remoteName)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer remote.Free()
+
+	branchReference, err := r.References.Lookup(`refs/remotes/` + remoteName + `/` + branchName)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer branchReference.Free()
+
+	remoteCommit, err := r.LookupAnnotatedCommit(branchReference.Target())
+	if nil != err {
+		return util.Error(err)
+	}
+	defer remoteCommit.Free()
+
+	analysis, _, err := r.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
+	if nil != err {
+		return util.Error(err)
+	}
+	if git2go.MergeAnalysisNone == analysis {
+		glog.Infof(`MergeAnalysisNone - no merge possible (unused)`)
+	}
+	if 0 < analysis&git2go.MergeAnalysisNormal {
+		glog.Infof(`MergeAnalysisNormal - normal merge required`)
+	}
+	if 0 < analysis&git2go.MergeAnalysisUpToDate {
+		glog.Infof(`MergeAnalysisUpToDate - your HEAD is up to date`)
+	}
+	if 0 < analysis&git2go.MergeAnalysisFastForward {
+		glog.Infof(`MergeAnalysisFastForward - your HEAD hasn't diverged`)
+	}
+	if 0 < analysis&git2go.MergeAnalysisUnborn {
+		glog.Infof(`MergeAnalysisUnborn - HEAD is unborn and merge not possible`)
+	}
+
+	// master, err := repo.LookupBranch(`origin/master`, git2go.BranchRemote)
+	// if nil != err {
+	// 	return err
+	// }
+	defaultMergeOptions, err := git2go.DefaultMergeOptions()
+	if nil != err {
+		return err
+	}
+	if err := r.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
+		&defaultMergeOptions,
+		// &git2go.MergeOptions{},
+		nil,
+		//&git2go.CheckoutOpts{},
+	); nil != err {
+		fmt.Fprintf(os.Stderr, "ERROR on Merge: %s\n", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+// PullAbort aborts a merge that is in progress.
+func (r *Repo) PullAbort() error {
+	head, err := r.Repository.Head()
+	if nil != err {
+		return util.Error(err)
+	}
+	commit, err := r.LookupCommit(head.Target())
+	if nil != err {
+		return util.Error(err)
+	}
+	defer commit.Free()
+	if err := r.Repository.ResetToCommit(commit, git2go.ResetHard, nil); nil != err {
+		return util.Error(err)
+	}
+	return nil
 }

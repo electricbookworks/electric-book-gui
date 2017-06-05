@@ -38,6 +38,8 @@ func BookCommands() *commander.Command {
 				BookStagedFilesCommand,
 				BookStashCommand,
 				BookUnstashCommand,
+				BookPullCommand,
+				BookPullAbortCommand,
 			)
 		})
 }
@@ -442,5 +444,36 @@ func BookUnstashCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.Unstash()
+		})
+}
+
+func BookPullCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pull`, flag.ExitOnError)
+	remote := fs.String(`remote`, `origin`, `Remote to pull`)
+	branch := fs.String(`branch`, `master`, `Branch to pull`)
+	return commander.NewCommand(`pull`,
+		`Pull the remote/branch into the repo`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.Pull(*remote, *branch)
+		})
+}
+
+func BookPullAbortCommand() *commander.Command {
+	return commander.NewCommand(`pull-abort`,
+		`Abort the in-progress merge (pull)`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.PullAbort()
 		})
 }

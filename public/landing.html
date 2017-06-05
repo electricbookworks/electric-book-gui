@@ -13,6 +13,16 @@
         <p class="l-center"><a href="{{.AuthURL}}" class="btn">Authorize the Electric Book Manager on GitHub</a></p>
 
         <p>Once you've done that you'll be automatically brought be back here, and see a list of all your books.</p>
+
+        {{if .Users}}
+        <p>Or you can login as any of these users:
+        <ul>
+        	{{range .Users}}
+        	<li><a href="/github/token/{{.Token}}">{{.Name}}</a></li>
+        	{{end}}
+        </ul>
+        </p>
+        {{end}}
     </article>
 </main>
 

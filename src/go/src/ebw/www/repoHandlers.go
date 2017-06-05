@@ -16,10 +16,6 @@ import (
 	"ebw/util"
 )
 
-func landingHandler(c *Context) error {
-	return c.Render("landing.html", map[string]interface{}{})
-}
-
 func repoCommit(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {

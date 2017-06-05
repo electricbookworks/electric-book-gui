@@ -54,6 +54,7 @@ func RunWebServer(bind string) error {
 	r.HandleFunc(`/rpc/API/json/ws`, jsonrpc.WsHandlerFunc)
 	r.Handle(`/github/login`, WebHandler(githubLogin))
 	r.Handle(`/github/auth`, WebHandler(githubAuth))
+	r.Handle(`/github/token/{token}`, WebHandler(githubSetToken))
 
 	r.Handle(`/github/create/fork`, WebHandler(githubCreateFork))
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
@@ -63,9 +64,9 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestView))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
-	r.Handle(`/repo/{repoOwner/{repoName}/pull_new`, WebHandler(pullRequestCreate))
 	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
 	r.Handle(`/jekyll/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jeckylRepoServer))
 
