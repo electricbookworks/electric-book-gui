@@ -12,16 +12,17 @@
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>
         {{end}}
-        {{if .AheadBehind}}
         <div class="detail-container">
+        {{if .AheadBehind}}
             <h6>Updates to master version available:</h6>
             <p>Your upstream version is {{.AheadBehind.Ahead}} commits ahead of your
-            own version.</p>
+            own version. It is {{.AheadBehind.Behind}} commits behind your own version.</p>
             <div class="action-group secondary">
                 <a href="#" class="btn">Update my master version</a>
             </div>
+        {{end}}   
+            <p>You repo state is {{.ERepo.RepoStateString}}</p>
         </div>
-        {{end}}
     </section>
     {{if .PullRequests}}
     <section class="repo-detail-section">
@@ -55,10 +56,6 @@
             </div>
         {{end}}
         </div>
-
-        <div class="todo">
-        Not entirely sure what `Make my own edits` does here...?
-        </div>        
     </section>
     {{end}}
 
@@ -90,24 +87,23 @@
             </table>
         </div>
     </section>
+    {{if .StagedFiles}}
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>My Edits</h3>
             <a href="#" class="btn">Save these changes as an edit set</a>
         </div>
         <ol type="1">
-            {{range .PullRequests}}
-            <li>
-                <div>
-                    <h4><a href="pull/{{.GetNumber}}">{{.GetTitle}}</a> {{if .User}}submitted by {{.User.GetLogin}}{{end}}. Make more changes on chapter</h4>
-                </div>
-            </li>
-            {{end}}
+        {{range .StagedFiles}}
+            <li class="staged-{{.StatusString}}">{{.Path}}</li>
+        {{end}}
         </ol>
         <div class="todo">
         These are the files that are changed on the EBW server, but haven't yet been committed to the repo. <i>Save these changes as an edit set</i> will allow entry of a Commit Message, and will commit the changes to the GitHub repo.
         </div>
     </section>
+    {{end}}
+    {{if .ERepo.HasUpstreamRemote}}
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>My changes</h3>
@@ -118,6 +114,7 @@
             These are commits on the GitHub repo that haven't yet been submitted for Review. Without using BRANCHES, this section has no meaning...
         </div>
     </section>
+    {{end}}
 </main>
 
 {{template "_footer.html" .}}

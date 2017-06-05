@@ -7,7 +7,10 @@
 	</div>
 	{{if .RepoOwner}}
 	<div class="topbar-center">
-		{{.RepoOwner}}/{{.RepoName}}
+		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
+			{{- .RepoOwner}}/{{.RepoName -}}
+		</a>
+		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_github"><img src="/img/github.svg" /></a>
 	</div>
 	{{end}}
 	{{if .User}}

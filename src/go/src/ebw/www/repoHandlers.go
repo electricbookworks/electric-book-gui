@@ -135,18 +135,32 @@ func repoDetails(c *Context) error {
 
 	var aheadBehind *git.RepoDiffStats
 
-	if nil!=repo.Parent {
+	if nil != repo.Parent {
 		aheadBehind, err = git.CompareCommits(client,
 			repo.GetName(),
 			repo.Owner.GetLogin(),
 			`master`,
 			repo.Parent.Owner.GetLogin(),
 			`master`,
-			)
-		if nil!=err {
+		)
+		if nil != err {
 			return util.Error(err)
 		}
 	}
+
+	erepo, err := git.NewRepo(client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer erepo.Free()
+
+	stagedFiles, err := erepo.StagedFiles()
+	if nil != err {
+		return err
+	}
+	c.D[`ERepo`] = erepo
+	c.D[`StagedFiles`] = stagedFiles
+
 	c.D[`AheadBehind`] = aheadBehind
 
 	c.D[`UserName`] = client.Username
@@ -157,7 +171,7 @@ func repoDetails(c *Context) error {
 		return err
 	}
 	return c.Render(`repo_detail.html`, map[string]interface{}{
-		"Repo":    repo,
+		"Repo": repo,
 	})
 }
 
@@ -251,7 +265,7 @@ func pullRequestView(c *Context) error {
 		return err
 	}
 
-	diffs, err := git.PullRequestDiffList(client,  repoOwner, repoName, pr)
+	diffs, err := git.PullRequestDiffList(client, repoOwner, repoName, pr)
 	if nil != err {
 		return err
 	}
@@ -290,6 +304,9 @@ func pullRequestCreate(c *Context) error {
 // repoFileServer serves files from the current user's repos.
 func repoFileServer(c *Context) error {
 	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
 
 	root, err := os.Getwd()
 	if nil != err {
@@ -300,4 +317,23 @@ func repoFileServer(c *Context) error {
 	fs := http.StripPrefix(`/www/`, http.FileServer(http.Dir(root)))
 	fs.ServeHTTP(c.W, c.R)
 	return nil
+}
+
+func repoMergeUpstream(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+
+	remote, err := git.FetchRemoteForRepo(client, repoOwner, repoName, `origin`)
+	if nil != err {
+		return err
+	}
+	remote.Free()
+
+	return nil
+
 }
