@@ -15,7 +15,6 @@ fi
 # FORCE NODE_SASS REBUILD, WHICH SEEMS NECESSARY TO GET VENDOR DIRECTORY IN PLACE
 npm rebuild node-sass --force
 
-
 # INSTALL RVM
 # This should be done in the bookworks playbook...
 #sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3

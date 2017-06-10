@@ -95,7 +95,14 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 	os.MkdirAll(repoOwnerDir, 0755)
 	_, err = os.Stat(repoDir)
 	if nil == err {
-		return gitUpdate(client, repoDir)
+		// TODO : When merging is working correctly, we should not be
+		// running a merge-update here at all.
+		if _, err := gitUpdate(client, repoDir); nil != err {
+			// We ignore update errors, which are most likely merge
+			// conflicts. We will address these in the editor
+			return ``, nil
+		}
+		return ``, nil
 	}
 	if !os.IsNotExist(err) {
 		return ``, util.Error(err)

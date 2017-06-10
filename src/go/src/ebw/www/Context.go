@@ -7,11 +7,16 @@ import (
 	"strconv"
 
 	// "github.com/google/go-github/github"
+	// "github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
 
 	"ebw/git"
+	"ebw/util"
 )
+
+var schemaDecoder = schema.NewDecoder()
 
 type Context struct {
 	R       *http.Request
@@ -20,6 +25,7 @@ type Context struct {
 	D       map[string]interface{}
 	Client  *git.Client
 	Session *sessions.Session
+	Defers  []func()
 }
 
 type WebHandler func(c *Context) error
@@ -38,9 +44,22 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Vars:    mux.Vars(r),
 		Client:  client,
 		Session: session,
+		Defers:  []func(){},
 	}
+	defer c.runDefers()
 	if err := f(c); nil != err {
 		WebError(w, r, err)
+	}
+}
+
+func (c *Context) AddDefer(f func()) {
+	c.Defers = append(c.Defers, f)
+}
+
+func (c *Context) runDefers() {
+	l := len(c.Defers)
+	for i := l - 1; i >= 0; i-- {
+		c.Defers[i]()
 	}
 }
 
@@ -96,4 +115,41 @@ func (c *Context) Redirect(f string, args ...interface{}) error {
 
 func (c *Context) Context() context.Context {
 	return c.R.Context()
+}
+
+// Repo returns the git.Repo for the current request's
+// repository. The called does not need to call .Free(), since it is
+// added to the Context's .Defers
+func (c *Context) Repo() (*git.Repo, error) {
+	var err error
+	client := Client(c.W, c.R)
+	if nil == client {
+		// GithubClient will have redirected us
+		return nil, nil
+	}
+
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+
+	repo, err := git.NewRepo(client, repoOwner, repoName)
+	if nil != err {
+		return nil, err
+	}
+	c.AddDefer(repo.Free)
+	return repo, nil
+}
+
+// Decode does a gorilla schema decode of the incoming form values against
+// the given interface.
+func (c *Context) Decode(i interface{}) error {
+	if err := c.R.ParseForm(); nil != err {
+		return util.Error(err)
+	}
+	if err := schemaDecoder.Decode(i, c.R.URL.Query()); nil != err {
+		return util.Error(err)
+	}
+	if err := schemaDecoder.Decode(i, c.R.PostForm); nil != err {
+		return util.Error(err)
+	}
+	return nil
 }

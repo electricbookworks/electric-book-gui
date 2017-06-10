@@ -9,6 +9,9 @@ export namespace EL {
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
 	export type RepoFileEditorCM =	HTMLDivElement;
+	export type RepoMergeDialog =	HTMLDivElement;
+	export type conflict_FileDisplay =	HTMLLIElement;
+	export type conflict_FileListDisplay =	HTMLUListElement;
 	
 }
 export namespace R {
@@ -45,6 +48,20 @@ export namespace R {
 	export interface RepoFileEditorCM {
 		textEditor: HTMLDivElement,
 		imageEditor: HTMLDivElement,
+		};
+	export interface RepoMergeDialog {
+		title: HTMLHeadingElement,
+		resolveOur: HTMLInputElement,
+		resolveGit: HTMLInputElement,
+		resolveTheir: HTMLInputElement,
+		conflicted: HTMLInputElement,
+		mergeButton: HTMLButtonElement,
+		};
+	export interface conflict_FileDisplay {
+		path: HTMLSpanElement,
+		status: HTMLSpanElement,
+		};
+	export interface conflict_FileListDisplay {
 		};
 	
 }	// end namespace R
@@ -243,6 +260,77 @@ export class RepoFileEditorCM {
 		this.$ = {
 			textEditor: n.childNodes[0] as HTMLDivElement,
 			imageEditor: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoMergeDialog {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoMergeDialog;
+	constructor() {
+		let t = RepoMergeDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div><h1>Updating a Repo</h1><p>How do you want to try this merge?</p><fieldset><label for="resolveOur"><input type="radio" name="resolve" value="our" id="resolveOur"/>
+			I will do the merge.
+		</label><label for="resolveGit"><input type="radio" name="resolve" value="git" id="resolveGit"/>
+			Git can try to merge.
+		</label><label for="resolveTheir"><input type="radio" name="resolve" value="their" id="resolveTheir"/>
+			Choose their files by preference.
+		</label></fieldset><label for="conflicted"><input type="checkbox" name="conflicted" value="only" id="conflicted"/>
+			Only apply above resolution to conflicted files.
+	</label><button class="btn" data-event="click:">Do the Merge</button></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoMergeDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			title: n.childNodes[0] as HTMLHeadingElement,
+			resolveOur: n.childNodes[2].childNodes[0].childNodes[0] as HTMLInputElement,
+			resolveGit: n.childNodes[2].childNodes[1].childNodes[0] as HTMLInputElement,
+			resolveTheir: n.childNodes[2].childNodes[2].childNodes[0] as HTMLInputElement,
+			conflicted: n.childNodes[3].childNodes[0] as HTMLInputElement,
+			mergeButton: n.childNodes[4] as HTMLButtonElement,
+		};
+		this.el = n;
+	}
+}
+export class conflict_FileDisplay {
+	public static _template : HTMLLIElement;
+	public el : HTMLLIElement;
+	public $ : R.conflict_FileDisplay;
+	constructor() {
+		let t = conflict_FileDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<li><span class="path"> </span><span class="status"> </span></li>`;
+			t = d.firstElementChild as HTMLLIElement;
+			conflict_FileDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLLIElement;
+		this.$ = {
+			path: n.childNodes[0] as HTMLSpanElement,
+			status: n.childNodes[1] as HTMLSpanElement,
+		};
+		this.el = n;
+	}
+}
+export class conflict_FileListDisplay {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.conflict_FileListDisplay;
+	constructor() {
+		let t = conflict_FileListDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul class="conflict-file-list-display">
+</ul>`;
+			t = d.firstElementChild as HTMLUListElement;
+			conflict_FileListDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
 		};
 		this.el = n;
 	}

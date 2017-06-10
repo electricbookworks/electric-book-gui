@@ -1654,6 +1654,111 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				return err
 			}
 
+		
+		
+		case "MergedFileCat":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "MergedFileCat")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 4)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1],result[2],result[3] = context.MergedFileCat(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		
+				)
+
+					
+					if (nil!=result[3]) {
+						return result[3].(error)
+					}
+					
+					result = result[0:3]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
 		 
 		default:
 			errorJsonRpc(out, request.Id, JSONRPC_ERROR_METHOD_NOT_FOUND, 

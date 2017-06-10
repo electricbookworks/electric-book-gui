@@ -80,16 +80,38 @@ func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (stri
 	if `` == book {
 		book = `book`
 	}
-	if ``==format {
+	if `` == format {
 		format = `print`
 	}
 	pr := &print.PrintRequest{
-		Book:      book,
-		RepoOwner: repoOwner,
-		RepoName:  repoName,
-		Username:  rpc.Client.Username,
-		Token:     rpc.Client.Token,
+		Book:          book,
+		RepoOwner:     repoOwner,
+		RepoName:      repoName,
+		Username:      rpc.Client.Username,
+		Token:         rpc.Client.Token,
 		PrintOrScreen: format,
 	}
 	return print.MakeEndpoint(pr), nil
+}
+
+func (rpc *API) MergedFileCat(repoOwner, repoName, path string) ([]byte, []byte, []byte, error) {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return nil, nil, nil, err
+	}
+	defer repo.Free()
+
+	our, err := repo.FileCat(path, git.FileOur)
+	if nil != err {
+		our = nil
+	}
+	their, err := repo.FileCat(path, git.FileTheir)
+	if nil != err {
+		their = nil
+	}
+	wd, err := repo.FileCat(path, git.FileWorking)
+	if nil != err {
+		wd = nil
+	}
+	return our, their, wd, nil
 }

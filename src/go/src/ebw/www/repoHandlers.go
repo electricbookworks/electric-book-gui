@@ -154,6 +154,7 @@ func repoDetails(c *Context) error {
 	if nil != err {
 		return err
 	}
+
 	c.D[`ERepo`] = erepo
 	c.D[`StagedFiles`] = stagedFiles
 
@@ -332,4 +333,33 @@ func repoMergeUpstream(c *Context) error {
 
 	return nil
 
+}
+
+func repoMergeRemoteBranch(c *Context) error {
+	var settings struct {
+		Resolve    string `schema:"resolve"`
+		Conflicted bool   `schema:"conflicted"`
+	}
+	if err := c.Decode(&settings); nil != err {
+		return err
+	}
+
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	if err := repo.Pull(c.Vars[`remote`], c.Vars[`branch`]); nil != err {
+		return err
+	}
+	switch settings.Resolve {
+	case `our`:
+		if err := repo.ResetConflictedFilesInWorkingDir(true, settings.Conflicted, nil); nil != err {
+			return err
+		}
+	case `their`:
+		if err := repo.ResetConflictedFilesInWorkingDir(false, settings.Conflicted, nil); nil != err {
+			return err
+		}
+	}
+	return c.Redirect(pathRepoConflict(repo))
 }

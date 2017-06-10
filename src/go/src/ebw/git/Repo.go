@@ -3,7 +3,9 @@ package git
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"regexp"
 
 	"github.com/golang/glog"
@@ -13,11 +15,22 @@ import (
 	"ebw/util"
 )
 
+type FileVersion int
+
+const (
+	FileAncestor FileVersion = 1
+	FileOur                  = 2
+	FileTheir                = 3
+	FileWorking              = 4
+)
+
 var ErrNoGithubParent = errors.New(`This repo has no github parent: it was not forked.`)
+var ErrNotInConflictedState = errors.New(`This repo is not in a conflicted state.`)
 
 type Repo struct {
 	*git2go.Repository
-	Dir string
+	Dir   string
+	isCLI bool
 
 	Client    *Client
 	RepoOwner string
@@ -43,7 +56,26 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 	}, nil
 }
 
-func NewRepoForDir(client *Client, repoDir string) (*Repo, error) {
+// CLI returns true if this repo is working against a CLI, false
+// if we're in a server situation.
+func (r *Repo) CLI() bool {
+	return r.isCLI
+}
+
+// Path returns the path to the filename constructed from the
+// elements passed to Path. If you don't provide any elements,
+// the repo dir is returned.
+func (r *Repo) Path(path ...string) string {
+	if 0 == len(path) {
+		return r.Dir
+	}
+	parts := make([]string, len(path)+1)
+	parts[0] = r.Dir
+	parts = append(parts, path...)
+	return filepath.Join(parts...)
+}
+
+func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 	repo, err := git2go.OpenRepository(repoDir)
 	if nil != err {
 		return nil, err
@@ -51,6 +83,7 @@ func NewRepoForDir(client *Client, repoDir string) (*Repo, error) {
 
 	r := &Repo{
 		Repository: repo,
+		isCLI:      isCLI,
 		Dir:        repoDir,
 		Client:     client,
 	}
@@ -77,6 +110,10 @@ func (r *Repo) RepoOwnerAndName() (string, string, error) {
 	githubRegexp := regexp.MustCompile(`github\.com/([^/]+)/([^/.]+)[/\.]`)
 	m := githubRegexp.FindStringSubmatch(origin.Url())
 	if nil == m {
+		if r.CLI() {
+			// The CLI doesn't necessarily require repoOwner and name
+			return ``, ``, nil
+		}
 		return ``, ``, fmt.Errorf(`Unabled to parse owner and name from repo origin URL %s. Is it a github URL?`, origin.Url())
 	}
 	r.RepoOwner, r.RepoName = m[1], m[2]
@@ -125,6 +162,20 @@ func (r *Repo) StatusCount() (int, int, error) {
 	return indexCount, workdirCount, nil
 }
 
+// StagedFilesAbbreviated returns an easily JSON encoded list of staged
+// files with paths.
+func (r *Repo) StagedFilesAbbreviated() ([]*IndexFileStatusAbbreviated, error) {
+	ifl, err := r.StagedFiles()
+	if nil != err {
+		return nil, err
+	}
+	abbrev := make([]*IndexFileStatusAbbreviated, len(ifl))
+	for i, ifile := range ifl {
+		abbrev[i] = ifile.Abbreviated()
+	}
+	return abbrev, nil
+}
+
 // StagedFiles returns the list of files staged but not committed
 // in the repository.
 func (r *Repo) StagedFiles() ([]*IndexFileStatus, error) {
@@ -167,18 +218,29 @@ func (r *Repo) PrintStatusList() error {
 		if nil != err {
 			return err
 		}
+		oidString := func(oid *git2go.Oid) string {
+			if nil == oid {
+				return `---`
+			}
+			return oid.String()
+		}
 		fmt.Printf(`- Status: %s
   HeadToIndex: 
-    oldFile: %s
-    newFile: %s
+    oldFile: %s (%10s)
+    newFile: %s (%10s)
   IndexToWorkdir:
-    oldFile: %s
-    newFile: %s
+    oldFile: %s (%10s)
+    newFile: %s (%10s)
 `, GitStatusToString(se.Status),
 			se.HeadToIndex.OldFile.Path,
+			oidString(se.HeadToIndex.OldFile.Oid),
 			se.HeadToIndex.NewFile.Path,
+			oidString(se.HeadToIndex.NewFile.Oid),
 			se.IndexToWorkdir.OldFile.Path,
-			se.IndexToWorkdir.NewFile.Path)
+			oidString(se.IndexToWorkdir.OldFile.Oid),
+			se.IndexToWorkdir.NewFile.Path,
+			oidString(se.IndexToWorkdir.NewFile.Oid),
+		)
 	}
 	return nil
 }
@@ -249,6 +311,12 @@ func (r *Repo) GithubRepo() (*github.Repository, error) {
 }
 
 func (r *Repo) SetUpstreamRemote() error {
+	// Sometimes the CLI might not have a Github repo,
+	// so we handle this by simply declaring no github parent, which
+	// is logically correct.
+	if `` == r.RepoOwner {
+		return ErrNoGithubParent
+	}
 	gr, err := r.GithubRepo()
 	if nil != err {
 		return err
@@ -304,7 +372,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	var state RepoState
 
 	// Get the state of the local repository.
-	switch r.State() {
+	switch r.Repository.State() {
 	case git2go.RepositoryStateNone:
 	case git2go.RepositoryStateMerge:
 		state |= EBMConflicted
@@ -506,6 +574,174 @@ func (r *Repo) PullAbort() error {
 	defer commit.Free()
 	if err := r.Repository.ResetToCommit(commit, git2go.ResetHard, nil); nil != err {
 		return util.Error(err)
+	}
+	return nil
+}
+
+func (r *Repo) treeForCommit(commitId *git2go.Oid) (*git2go.Tree, error) {
+	co, err := r.Repository.Lookup(commitId)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	c, err := co.AsCommit()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	return c.Tree()
+}
+
+// FileCat returns the contents of a conflicted or merged file.
+func (r *Repo) FileCat(path string, version FileVersion) ([]byte, error) {
+	var fileId *git2go.Oid
+	if FileWorking == version {
+		return ioutil.ReadFile(filepath.Join(r.Dir, path))
+	}
+	switch version {
+	case FileTheir:
+		mergeHeads, err := r.MergeHeads()
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		if 1 != len(mergeHeads) {
+			return []byte{}, util.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
+		}
+
+		tree, err := r.treeForCommit(mergeHeads[0])
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+
+		te, err := tree.EntryByPath(path)
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		fileId = te.Id
+	case FileOur:
+		headRef, err := r.Head()
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		tree, err := r.treeForCommit(headRef.Target())
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		te, err := tree.EntryByPath(path)
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		fileId = te.Id
+	default:
+		index, err := r.Repository.Index()
+		if nil != err {
+			return []byte{}, util.Error(err)
+		}
+		conflict, err := index.GetConflict(path)
+		if nil != err {
+			// An error can occur if the file is not conflicted
+			return []byte{}, util.Error(err)
+		}
+		switch version {
+		case FileAncestor:
+			fileId = conflict.Ancestor.Id
+		case FileOur:
+			fileId = conflict.Our.Id
+		case FileTheir:
+			fileId = conflict.Their.Id
+		default:
+			return []byte{}, util.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
+		}
+	}
+
+	file, err := r.Repository.Lookup(fileId)
+	if nil != err {
+		return []byte{}, util.Error(err)
+	}
+	defer file.Free()
+	blob, err := file.AsBlob()
+	if nil != err {
+		return []byte{}, util.Error(err)
+	}
+	return blob.Contents(), nil
+}
+
+// ResetConflictedFilesInWorkingDir goes through conflicted files in the
+// working directory and sets them to either our version or
+// their version. The file remains in conflict.
+func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
+	filter func(r *Repo, path string, entry *git2go.StatusEntry) bool) error {
+	state, err := r.GetRepoState()
+	if nil != err {
+		return err
+	}
+	if 0 == EBMConflicted&state {
+		return ErrNotInConflictedState
+	}
+
+	var filePreference FileVersion = FileOur
+	if !chooseOurs {
+		filePreference = FileTheir
+	}
+
+	statusList, err := r.StatusList()
+	if nil != err {
+		return err
+	}
+	defer statusList.Free()
+
+	N, err := statusList.EntryCount()
+	if nil != err {
+		return util.Error(err)
+	}
+	for i := 0; i < N; i++ {
+		entry, err := statusList.ByIndex(i)
+		if nil != err {
+			return util.Error(err)
+		}
+		// If we're only resetting conflicted files, we just move
+		// along if the current file isn't conflicted
+		if conflictedOnly && entry.Status != git2go.StatusConflicted {
+			continue
+		}
+
+		// We're interested in the difference between Head and Index
+		// Not entirely sure how I know this, other than that I've worked
+		// it out by looking at examples/merge-origin test script
+		file := entry.HeadToIndex.OldFile // This should be 'our' file
+		if !chooseOurs {
+			file = entry.HeadToIndex.NewFile // 'their' file
+		}
+
+		// Check that our filter function includes the file.
+		// This allows us to reset a single file by providing an appropriate
+		// filter function
+		if nil != filter && !filter(r, file.Path, &entry) {
+			continue
+		}
+
+		fullPath := r.Path(file.Path)
+		glog.Infof(`Considering %s with Oid = %s`, file.Path, file.Oid)
+		glog.Infof(`Updating file %s`, file.Path)
+		raw, err := r.FileCat(file.Path, filePreference)
+		if nil != err {
+			// It seems for modified files in conflict, we can't rely on
+			// the Oid being set for old- or new- : conflicted files can have
+			// a 000 oid for New, while clearly being in conflict. I'm not sure
+			// why this is, and whether I'm missing some configuration flag while
+			// fetching file status.
+			// TODO: Investigate about why we're getting a Zero OID here for a file
+			// that clearly has existence in both repos.
+			if nil == file.Oid || file.Oid.IsZero() {
+				glog.Infof(`Deleting file %s`, file.Path)
+				if err := os.Remove(fullPath); nil != err && !os.IsNotExist(err) {
+					return util.Error(err)
+				}
+				return nil
+			}
+			return util.Error(err)
+		}
+		if err := ioutil.WriteFile(fullPath, raw, 0644); nil != err {
+			return util.Error(err)
+		}
 	}
 	return nil
 }

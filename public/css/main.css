@@ -4100,6 +4100,20 @@ body {
           #pull-request-view .workspace #mergely-container .merge-editor .merge-mergely .CodeMirror {
             height: 100%; }
 
+#staged-files-list > ul {
+  list-style: none;
+  margin: 0; }
+  #staged-files-list > ul > li {
+    cursor: pointer; }
+    #staged-files-list > ul > li:hover > .path {
+      color: #009E7F; }
+    #staged-files-list > ul > li > .status {
+      font-size: 0.7em;
+      background-color: #ddd;
+      border-radius: 0.2em;
+      margin-left: 1em;
+      padding: 0 0.4em; }
+
 #repo-detail .title-links {
   display: flex;
   flex-direction: row;

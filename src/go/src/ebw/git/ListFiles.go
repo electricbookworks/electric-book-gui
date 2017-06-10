@@ -171,11 +171,6 @@ func UpdateFile(client *Client, user, repoOwner, repoName, path string, content 
 	if err := index.Write(); nil != err {
 		return util.Error(err)
 	}
-	glog.Infof(`AddByPath appears to have worked`)
-
-	// if err := runGitDir(root, []string{`add`, path}); nil != err {
-	// 	return util.Error(err)
-	// }
 	return nil
 }
 

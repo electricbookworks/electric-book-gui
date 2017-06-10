@@ -60,13 +60,18 @@ func RunWebServer(bind string) error {
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
 	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
-	r.Handle(`/repo/{repoOwner}/{repoName}/merge-upstream`, WebHandler(repoMergeUpstream))
+	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestView))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
+
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict`, WebHandler(repoConflict))
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/abort`, WebHandler(repoConflictAbort))
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/resolve`, WebHandler(repoConflictResolve))
+
 	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
 	r.Handle(`/jekyll/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jeckylRepoServer))
 

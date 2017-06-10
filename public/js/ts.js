@@ -124,8 +124,8 @@ var APIWs = (function () {
     APIWs.prototype.ListPullRequests = function (repoOwner, repoName) {
         return this.rpc("ListPullRequests", [repoOwner, repoName]);
     };
-    APIWs.prototype.PullRequestDiffList = function (repoOwner, repoName, sha, regexp) {
-        return this.rpc("PullRequestDiffList", [repoOwner, repoName, sha, regexp]);
+    APIWs.prototype.PullRequestDiffList = function (repoOwner, repoName, prNumber) {
+        return this.rpc("PullRequestDiffList", [repoOwner, repoName, prNumber]);
     };
     APIWs.prototype.PullRequestVersions = function (repoOwner, repoName, remoteUrl, remoteSha, filePath) {
         return this.rpc("PullRequestVersions", [repoOwner, repoName, remoteUrl, remoteSha, filePath]);
@@ -139,7 +139,34 @@ var APIWs = (function () {
     APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format) {
         return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format]);
     };
+    APIWs.prototype.MergedFileCat = function (repoOwner, repoName, path) {
+        return this.rpc("MergedFileCat", [repoOwner, repoName, path]);
+    };
     return APIWs;
+}());
+
+var Context = (function () {
+    function Context(el, RepoOwner, RepoName) {
+        this.el = el;
+        this.RepoOwner = RepoOwner;
+        this.RepoName = RepoName;
+        // I should probably also pass the EBW in the context,
+        // but since _all_ of the EBW methods are static, it is
+        // pretty unnecessary
+    }
+    Context.prototype.API = function () {
+        return EBW.API();
+    };
+    Context.prototype.EBW = function () {
+        return new EBW();
+    };
+    Context.prototype.GetAttribute = function (key) {
+        if (this.el) {
+            return this.el.getAttribute(key);
+        }
+        return "";
+    };
+    return Context;
 }());
 
 var Toast = (function () {
@@ -326,6 +353,61 @@ var RepoFileEditorCM = (function () {
     }
     return RepoFileEditorCM;
 }());
+var RepoMergeDialog = (function () {
+    function RepoMergeDialog() {
+        var t = RepoMergeDialog._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div><h1>Updating a Repo</h1><p>How do you want to try this merge?</p><fieldset><label for=\"resolveOur\"><input type=\"radio\" name=\"resolve\" value=\"our\" id=\"resolveOur\"/>\n\t\t\tI will do the merge.\n\t\t</label><label for=\"resolveGit\"><input type=\"radio\" name=\"resolve\" value=\"git\" id=\"resolveGit\"/>\n\t\t\tGit can try to merge.\n\t\t</label><label for=\"resolveTheir\"><input type=\"radio\" name=\"resolve\" value=\"their\" id=\"resolveTheir\"/>\n\t\t\tChoose their files by preference.\n\t\t</label></fieldset><label for=\"conflicted\"><input type=\"checkbox\" name=\"conflicted\" value=\"only\" id=\"conflicted\"/>\n\t\t\tOnly apply above resolution to conflicted files.\n\t</label><button class=\"btn\" data-event=\"click:\">Do the Merge</button></div>";
+            t = d.firstElementChild;
+            RepoMergeDialog._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            title: n.childNodes[0],
+            resolveOur: n.childNodes[2].childNodes[0].childNodes[0],
+            resolveGit: n.childNodes[2].childNodes[1].childNodes[0],
+            resolveTheir: n.childNodes[2].childNodes[2].childNodes[0],
+            conflicted: n.childNodes[3].childNodes[0],
+            mergeButton: n.childNodes[4],
+        };
+        this.el = n;
+    }
+    return RepoMergeDialog;
+}());
+var conflict_FileDisplay = (function () {
+    function conflict_FileDisplay() {
+        var t = conflict_FileDisplay._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<li><span class=\"path\"> </span><span class=\"status\"> </span></li>";
+            t = d.firstElementChild;
+            conflict_FileDisplay._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            path: n.childNodes[0],
+            status: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return conflict_FileDisplay;
+}());
+var conflict_FileListDisplay = (function () {
+    function conflict_FileListDisplay() {
+        var t = conflict_FileListDisplay._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<ul class=\"conflict-file-list-display\">\n</ul>";
+            t = d.firstElementChild;
+            conflict_FileListDisplay._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {};
+        this.el = n;
+    }
+    return conflict_FileListDisplay;
+}());
 
 function QuerySelectorAllIterate(el, query) {
     var els = [];
@@ -417,6 +499,165 @@ var AddNewBookDialog$$1 = (function (_super) {
     };
     return AddNewBookDialog$$1;
 }(AddNewBookDialog$1));
+
+var RepoMergeButton = (function () {
+    function RepoMergeButton(context, el, dialog) {
+        var _this = this;
+        this.context = context;
+        this.el = el;
+        this.dialog = dialog;
+        el.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.dialog.SetTitle(el.innerHTML);
+            _this.dialog.SetRepoRemote(el.getAttribute("data-repo-merge"));
+            _this.dialog.Open();
+        });
+        el.classList.add("btn");
+    }
+    RepoMergeButton.init = function (context, dialog) {
+        var els = document.querySelectorAll("[data-instance=\"RepoMergeButton\"]");
+        for (var i = 0; i < els.length; i++) {
+            new RepoMergeButton(context, els.item(i), dialog);
+        }
+    };
+    return RepoMergeButton;
+}());
+
+var DialogEvents;
+(function (DialogEvents) {
+    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
+    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
+})(DialogEvents || (DialogEvents = {}));
+/**
+ * FoundationRevealDialog is a class that implements
+ * a Foundation Reveal dialog. It has a public 'Events'
+ * signals.Signal that receives 'opened' and 'closed'
+ * events when the respective action happens on the dialog.
+ */
+var FoundationRevealDialog$1 = (function (_super) {
+    tslib_1.__extends(FoundationRevealDialog$$1, _super);
+    function FoundationRevealDialog$$1(openElement, content) {
+        var _this = _super.call(this) || this;
+        _this.Events = new signals.Signal();
+        _this.$el = jQuery(_this.el);
+        // Comment here
+        TSFoundation.Reveal(_this.$el);
+        if (openElement) {
+            openElement.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.$el.foundation('open');
+            });
+        }
+        _this.$el.bind('open.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Opened);
+        });
+        _this.$el.bind('closed.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Closed);
+        });
+        if (content) {
+            _this.Set(content);
+        }
+        if (document.body.firstChild) {
+            document.body.insertBefore(_this.el, document.body.firstChild);
+        }
+        else {
+            document.body.appendChild(_this.el);
+        }
+        return _this;
+    }
+    // Set the content of the dialog to the given
+    // element.
+    FoundationRevealDialog$$1.prototype.Set = function (el) {
+        this.$.content.innerText = '';
+        this.$.content.appendChild(el);
+    };
+    FoundationRevealDialog$$1.prototype.Open = function () {
+        this.$el.foundation('open');
+    };
+    FoundationRevealDialog$$1.prototype.Close = function () {
+        this.$el.foundation('close');
+    };
+    return FoundationRevealDialog$$1;
+}(FoundationRevealDialog));
+
+var RepoMergeDialog$1 = (function (_super) {
+    tslib_1.__extends(RepoMergeDialog$$1, _super);
+    function RepoMergeDialog$$1(context, openElement) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        Eventify(_this.el, {
+            "click": function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.MergeEvent.dispatch(_this);
+            }
+        });
+        _this.MergeEvent = new signals.Signal();
+        _this.dialog = new FoundationRevealDialog$1(openElement, _this.el);
+        _this.dialog.Events.add(function (act) {
+            switch (act) {
+                case DialogEvents.Opened:
+                    _this.$.resolveOur.checked = true;
+                    _this.$.resolveGit.checked = false;
+                    _this.$.resolveTheir.checked = false;
+                    _this.$.conflicted.checked = false;
+                    break;
+                case DialogEvents.Closed:
+                    // Don't really need to do anything here, because we'll reset 
+                    // on open
+                    break;
+            }
+        });
+        return _this;
+    }
+    RepoMergeDialog$$1.prototype.GetResolve = function () {
+        if (this.$.resolveOur.checked)
+            return "our";
+        if (this.$.resolveGit.checked)
+            return "git";
+        if (this.$.resolveTheir.checked)
+            return "their";
+        return "-";
+    };
+    RepoMergeDialog$$1.prototype.GetConflicted = function () {
+        return this.$.conflicted.checked;
+    };
+    RepoMergeDialog$$1.prototype.GetContext = function () {
+        return this.context;
+    };
+    RepoMergeDialog$$1.prototype.Open = function () {
+        this.dialog.Open();
+    };
+    RepoMergeDialog$$1.prototype.SetTitle = function (titleHTML) {
+        this.$.title.innerHTML = titleHTML;
+    };
+    RepoMergeDialog$$1.prototype.SetRepoRemote = function (repoRemote) {
+        this.repoRemote = repoRemote;
+    };
+    RepoMergeDialog$$1.prototype.GetRepoRemote = function () {
+        return this.repoRemote;
+    };
+    return RepoMergeDialog$$1;
+}(RepoMergeDialog));
+
+var RepoDetailPage = (function () {
+    function RepoDetailPage(context) {
+        this.context = context;
+        var dialog = new RepoMergeDialog$1(context, undefined);
+        RepoMergeButton.init(this.context, dialog);
+        dialog.MergeEvent.add(this.mergeEvent, this);
+    }
+    RepoDetailPage.prototype.mergeEvent = function (dialog) {
+        var resolve = dialog.GetResolve();
+        var conflicted = dialog.GetConflicted();
+        var context = dialog.GetContext();
+        document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/merge/" + dialog.GetRepoRemote() +
+            ("?resolve=" + resolve + "&conflicted=" + conflicted);
+    };
+    return RepoDetailPage;
+}());
 
 var PrintListener = (function () {
     function PrintListener(repoOwner, repoName, book, format) {
@@ -850,64 +1091,6 @@ var RepoFileEditorCM$1 = (function (_super) {
     };
     return RepoFileEditorCM$$1;
 }(RepoFileEditorCM));
-
-var DialogEvents;
-(function (DialogEvents) {
-    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
-    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
-})(DialogEvents || (DialogEvents = {}));
-/**
- * FoundationRevealDialog is a class that implements
- * a Foundation Reveal dialog. It has a public 'Events'
- * signals.Signal that receives 'opened' and 'closed'
- * events when the respective action happens on the dialog.
- */
-var FoundationRevealDialog$1 = (function (_super) {
-    tslib_1.__extends(FoundationRevealDialog$$1, _super);
-    function FoundationRevealDialog$$1(openElement, content) {
-        var _this = _super.call(this) || this;
-        _this.Events = new signals.Signal();
-        _this.$el = jQuery(_this.el);
-        // Comment here
-        TSFoundation.Reveal(_this.$el);
-        if (openElement) {
-            openElement.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                _this.$el.foundation('open');
-            });
-        }
-        _this.$el.bind('open.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Opened);
-        });
-        _this.$el.bind('closed.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Closed);
-        });
-        if (content) {
-            _this.Set(content);
-        }
-        if (document.body.firstChild) {
-            document.body.insertBefore(_this.el, document.body.firstChild);
-        }
-        else {
-            document.body.appendChild(_this.el);
-        }
-        return _this;
-    }
-    // Set the content of the dialog to the given
-    // element.
-    FoundationRevealDialog$$1.prototype.Set = function (el) {
-        this.$.content.innerText = '';
-        this.$.content.appendChild(el);
-    };
-    FoundationRevealDialog$$1.prototype.Open = function () {
-        this.$el.foundation('open');
-    };
-    FoundationRevealDialog$$1.prototype.Close = function () {
-        this.$el.foundation('close');
-    };
-    return FoundationRevealDialog$$1;
-}(FoundationRevealDialog));
 
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {
@@ -1957,6 +2140,221 @@ var RepoEditorPage = (function () {
 }());
 window.RepoEditorPage = RepoEditorPage;
 
+var FileStatus = (function () {
+    function FileStatus(status) {
+        this.status = status;
+    }
+    FileStatus.prototype.Status = function () {
+        if (this.status) {
+            return this.status;
+        }
+        return 'undefined';
+    };
+    return FileStatus;
+}());
+
+var File$1 = (function () {
+    function File(context, path, status) {
+        this.context = context;
+        this.path = path;
+        this.status = new FileStatus(status);
+        this.Listen = new signals.Signal();
+        this.cache = new Map();
+    }
+    File.prototype.Status = function () {
+        if (this.status) {
+            return this.status.Status();
+        }
+        return 'undefined';
+    };
+    File.prototype.Path = function () {
+        return this.path;
+    };
+    /* THE FOLLOWING METHODS HANDLE CONTENT FOR THE FILE */
+    File.prototype.ClearCache = function () {
+        this.cache.clear();
+    };
+    File.prototype.FetchContent = function () {
+        var _this = this;
+        return this.context.API()
+            .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
+            .then(function (_a) {
+            var our = _a[0], their = _a[1], wd = _a[2];
+            _this.cache.set('content-our', our);
+            _this.cache.set('content-their', their);
+            _this.cache.set("content-wd", wd);
+            return Promise.resolve();
+        });
+    };
+    File.prototype.getCachedContent = function (key) {
+        var _this = this;
+        if (this.cache.has(key)) {
+            return Promise.resolve(this.cache.get(key));
+        }
+        return this.FetchContent().then(function () {
+            return Promise.resolve(_this.cache.get(key));
+        });
+    };
+    File.prototype.setCachedContent = function (key, value) {
+        this.cache.set(key, value);
+    };
+    File.prototype.OurContent = function () {
+        return this.getCachedContent("content-our");
+    };
+    File.prototype.TheirContent = function () {
+        return this.getCachedContent("content-their");
+    };
+    File.prototype.WorkingContent = function () {
+        return this.getCachedContent("content-wd");
+    };
+    File.prototype.SetOurContent = function (content) {
+        this.cache.set("content-our", content);
+    };
+    File.prototype.SetTheirContent = function (content) {
+        this.cache.set("content-their", content);
+    };
+    File.prototype.SetWorkingContent = function (content) {
+        this.cache.set("content-wd", content);
+    };
+    // SaveWorkingContent will both save the content into our cache,
+    // and update the repo, including adding the item into the
+    // index.
+    // TODO: Determine if this marks the File as resolved.
+    File.prototype.SaveWorkingContent = function (content) {
+        var _this = this;
+        this.cache.set("content-wd", content);
+        return this.context.API()
+            .UpdateFile(this.context.RepoOwner, this.context.RepoName, this.Path(), content)
+            .then(function () {
+            // TODO: Need to update STATUS
+            _this.Listen.dispatch(_this);
+            return Promise.resolve();
+        });
+    };
+    File.prototype.DeleteWorkingContent = function () {
+        var _this = this;
+        return this.context.API()
+            .RemoveFile(this.context.RepoOwner, this.context.RepoName, this.Path())
+            .then(function () {
+            // TODO: Need to update STATUS
+            _this.Listen.dispatch(_this);
+            return Promise.resolve();
+        });
+    };
+    return File;
+}());
+
+var FileListEvent;
+(function (FileListEvent) {
+    FileListEvent[FileListEvent["FileNew"] = 0] = "FileNew";
+    FileListEvent[FileListEvent["FileChanged"] = 1] = "FileChanged";
+})(FileListEvent || (FileListEvent = {}));
+
+var FileList = (function () {
+    function FileList(context) {
+        this.context = context;
+        this.files = new Array();
+        this.Listen = new signals.Signal();
+    }
+    FileList.prototype.load = function (js) {
+        // I expect js to be an array of {Path:string, Status:string}
+        for (var _i = 0, js_1 = js; _i < js_1.length; _i++) {
+            var j = js_1[_i];
+            var f = new File$1(this.context, j.Path, j.Status);
+            this.files.push(f);
+            this.Listen.dispatch(FileListEvent.FileNew, f);
+        }
+    };
+    return FileList;
+}());
+
+var FileDisplayEvent;
+(function (FileDisplayEvent) {
+    FileDisplayEvent[FileDisplayEvent["FileClick"] = 0] = "FileClick";
+})(FileDisplayEvent || (FileDisplayEvent = {}));
+var FileDisplay = (function (_super) {
+    tslib_1.__extends(FileDisplay, _super);
+    function FileDisplay(context, parent, file) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.file = file;
+        _this.Listen = new signals.Signal();
+        _this.$.path.innerText = file.Path();
+        _this.$.status.innerText = file.Status();
+        _this.el.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.dispatchEvent("file-click");
+            _this.Listen.dispatch(FileDisplayEvent.FileClick, _this.file);
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    FileDisplay.prototype.dispatchEvent = function (name) {
+        var d = { bubbles: true, detail: { file: this.file } };
+        this.el.dispatchEvent(new CustomEvent(name, d));
+    };
+    return FileDisplay;
+}(conflict_FileDisplay));
+
+var FileListDisplayEvent;
+(function (FileListDisplayEvent) {
+    FileListDisplayEvent[FileListDisplayEvent["FileClick"] = 0] = "FileClick";
+})(FileListDisplayEvent || (FileListDisplayEvent = {}));
+var FileListDisplay = (function (_super) {
+    tslib_1.__extends(FileListDisplay, _super);
+    function FileListDisplay(context, parent, fileList) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.parent = parent;
+        _this.Listen = new signals.Signal();
+        fileList.Listen.add(_this.fileListEvent, _this);
+        _this.parent.appendChild(_this.el);
+        return _this;
+    }
+    FileListDisplay.prototype.fileListEvent = function (e, f) {
+        switch (e) {
+            case FileListEvent.FileNew:
+                var fd = new FileDisplay(this.context, this.el, f);
+                fd.Listen.add(this.fileDisplayEvent, this);
+                break;
+        }
+    };
+    FileListDisplay.prototype.fileDisplayEvent = function (evt, f) {
+        switch (evt) {
+            case FileDisplayEvent.FileClick:
+                this.Listen.dispatch(FileListDisplayEvent, f);
+                break;
+        }
+    };
+    return FileListDisplay;
+}(conflict_FileListDisplay));
+
+var RepoConflictPage = (function () {
+    function RepoConflictPage(context) {
+        var _this = this;
+        this.context = context;
+        var fileList = new FileList(context);
+        var fileListDisplay = new FileListDisplay(context, document.getElementById("staged-files-list"), fileList);
+        fileListDisplay.Listen.add(this.fileListEvent, this);
+        fileListDisplay.el.addEventListener("file-click", function (evt) {
+            _this.fileListEvent(undefined, evt.detail.file);
+        });
+        var filesEl = document.getElementById('staged-files-data');
+        if (!filesEl) {
+            EBW.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");
+            return;
+        }
+        var listjs = filesEl.innerText;
+        console.log("listjs = ", listjs);
+        fileList.load(JSON.parse(listjs));
+    }
+    RepoConflictPage.prototype.fileListEvent = function (e, f) {
+        console.log("FileListEvent in RepoConflictPage: ", f);
+    };
+    return RepoConflictPage;
+}());
+
 var MergeEditor$1 = (function (_super) {
     tslib_1.__extends(MergeEditor$$1, _super);
     function MergeEditor$$1(parent, model) {
@@ -2109,6 +2507,19 @@ var EBW = (function () {
             this.api = new APIWs();
             console.log("Activating foundation on the document");
             jQuery(document).foundation();
+            var el = document.getElementById("ebw-context");
+            var context = void 0;
+            if (el) {
+                context = new Context(el, el.getAttribute("data-repo-owner"), el.getAttribute("data-repo-name"));
+                switch (el.getAttribute('data-page')) {
+                    case 'RepoDetailPage':
+                        new RepoDetailPage(context);
+                        break;
+                    case 'RepoConflictPage':
+                        new RepoConflictPage(context);
+                        break;
+                }
+            }
             /* TODO: This should actually use a Router
                to determine what content we have. */
             AddNewBookDialog$$1.instantiate();

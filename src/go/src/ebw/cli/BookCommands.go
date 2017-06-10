@@ -40,6 +40,9 @@ func BookCommands() *commander.Command {
 				BookUnstashCommand,
 				BookPullCommand,
 				BookPullAbortCommand,
+				BookCatCommand,
+				BookMergeHeadsCommand,
+				BookResetConflictedCommand,
 			)
 		})
 }
@@ -475,5 +478,87 @@ func BookPullAbortCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.PullAbort()
+		})
+}
+
+func BookCatCommand() *commander.Command {
+	fs := flag.NewFlagSet(`cat`, flag.ExitOnError)
+	version := fs.Int(`v`, 2, `Version 2=ours, 3=theirs`)
+	return commander.NewCommand(`cat`,
+		`Cat the file contents of the named files`,
+		fs,
+		func(files []string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			for _, f := range files {
+				contents, err := repo.FileCat(f, git.FileVersion(*version))
+				if nil != err {
+					return err
+				}
+				fmt.Println(string(contents))
+			}
+			return nil
+		})
+}
+
+func BookMergeHeadsCommand() *commander.Command {
+	fs := flag.NewFlagSet(`merge-heads`, flag.ExitOnError)
+	return commander.NewCommand(`merge-heads`,
+		`merge-heads test`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			heads, err := repo.MergeHeads()
+			if nil != err {
+				return err
+			}
+			for _, h := range heads {
+				fmt.Println(h)
+			}
+			return nil
+		})
+}
+
+func BookResetConflictedCommand() *commander.Command {
+	fs := flag.NewFlagSet(`reset-conflicted`, flag.ExitOnError)
+	all := fs.Bool(`all`, false, `Reset all files`)
+	theirs := fs.Bool(`theirs`, false, `Reset to their version`)
+	onlyConflicted := fs.Bool(`only-conflicted`, true, `Reset only conflicted files`)
+	return commander.NewCommand(`reset-conflicted`,
+		`Resets conflicted files in the repo. Provide a list of files to reset.`,
+		fs,
+		func(files []string) error {
+			if 0 == len(files) && !*all {
+				return fmt.Errorf(`You need to set -all if you don't provide a list of files`)
+			}
+			filter := func(r *git.Repo, path string, entry *git2go.StatusEntry) bool {
+				if 0 == len(files) {
+					return true
+				}
+				for _, f := range files {
+					if f == path {
+						return true
+					}
+				}
+				return false
+			}
+
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+
+			return repo.ResetConflictedFilesInWorkingDir(
+				!*theirs,
+				*onlyConflicted,
+				filter)
 		})
 }

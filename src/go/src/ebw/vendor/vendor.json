@@ -79,6 +79,12 @@
 			"revisionTime": "2016-09-20T23:08:13Z"
 		},
 		{
+			"checksumSHA1": "X++OemYOs1anrNbZRnEmq4o6pIw=",
+			"path": "github.com/gorilla/schema",
+			"revision": "ca549c5484735df6c48ad233575acc79908c5510",
+			"revisionTime": "2017-06-08T20:27:27Z"
+		},
+		{
 			"checksumSHA1": "ucTBCc7dDRKLGPsYfAzu/Gq63qA=",
 			"path": "github.com/gorilla/securecookie",
 			"revision": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983",

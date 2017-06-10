@@ -1,8 +1,11 @@
 import {API} from './API';
 import {APIWs} from './APIWs';
+import {Context} from './Context';
 import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
+import {RepoDetailPage} from './RepoDetailPage';
 import {RepoEditorPage} from './RepoEditorPage';
+import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
 
@@ -15,6 +18,21 @@ export class EBW {
 			this.api = new APIWs();
 			console.log(`Activating foundation on the document`);
 			jQuery(document).foundation();
+
+			let el = document.getElementById(`ebw-context`);
+			let context : Context;
+			if (el) {
+				context = new Context(el, el.getAttribute(`data-repo-owner`),
+					el.getAttribute(`data-repo-name`));
+				switch (el.getAttribute('data-page')) {
+					case 'RepoDetailPage':
+						new RepoDetailPage(context);
+						break;
+					case 'RepoConflictPage':
+						new RepoConflictPage(context);
+						break;
+				}
+			}
 			/* TODO: This should actually use a Router
 			   to determine what content we have. */
 			AddNewBookDialog.instantiate();

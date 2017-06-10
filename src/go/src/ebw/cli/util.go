@@ -17,7 +17,7 @@ func cliRepo() (*git.Repo, error) {
 	if nil != err {
 		return nil, err
 	}
-	repo, err := git.NewRepoForDir(client, workingDir)
+	repo, err := git.NewRepoForDir(client, workingDir, true)
 	if nil != err {
 		return nil, err
 	}

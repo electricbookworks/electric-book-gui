@@ -1,4 +1,5 @@
 .git
+tmp/
 .idea
 .hg
 .cache
@@ -16,4 +17,6 @@ git_cache/repos/*
 node_modules
 public/css/*.css
 src/go/src/gopkg.in/libgit2
-
+!src/go/src/gopkg.in/git2go.v25/repository_*.go
+examples/merge-origin/fork
+examples/merge-origin/origin

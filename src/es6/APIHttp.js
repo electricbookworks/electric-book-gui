@@ -145,6 +145,10 @@ class API {
 		return this._rpc("PrintPdfEndpoint",  arguments );
 	}
 	
+	MergedFileCat(repoOwner,repoName,path) {
+		return this._rpc("MergedFileCat",  arguments );
+	}
+	
 
 	flatten(callback, context=null) {
 		return function(argsArray) {

@@ -156,4 +156,8 @@ export class APIWs {
 		return this.rpc("PrintPdfEndpoint",  [repoOwner,repoName,book,format] );
 	}
 	
+	MergedFileCat (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("MergedFileCat",  [repoOwner,repoName,path] );
+	}
+	
 }

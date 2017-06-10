@@ -9,8 +9,20 @@ type IndexFileStatus struct {
 	*git2go.StatusEntry
 }
 
+type IndexFileStatusAbbreviated struct {
+	Path   string
+	Status string
+}
+
 func NewIndexFileStatus(se git2go.StatusEntry) *IndexFileStatus {
 	return &IndexFileStatus{&se}
+}
+
+func (ifs *IndexFileStatus) Abbreviated() *IndexFileStatusAbbreviated {
+	return &IndexFileStatusAbbreviated{
+		Path:   ifs.Path(),
+		Status: ifs.StatusString(),
+	}
 }
 
 func (ifs *IndexFileStatus) Path() string {
