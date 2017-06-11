@@ -121,6 +121,12 @@ var APIWs = (function () {
     APIWs.prototype.UpdateFile = function (repoOwner, repoName, path, content) {
         return this.rpc("UpdateFile", [repoOwner, repoName, path, content]);
     };
+    APIWs.prototype.CommitFile = function (repoOwner, repoName, path) {
+        return this.rpc("CommitFile", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.SaveWorkingFile = function (repoOwner, repoName, path, content) {
+        return this.rpc("SaveWorkingFile", [repoOwner, repoName, path, content]);
+    };
     APIWs.prototype.ListPullRequests = function (repoOwner, repoName) {
         return this.rpc("ListPullRequests", [repoOwner, repoName]);
     };
@@ -135,6 +141,9 @@ var APIWs = (function () {
     };
     APIWs.prototype.Commit = function (repoOwner, repoName, message) {
         return this.rpc("Commit", [repoOwner, repoName, message]);
+    };
+    APIWs.prototype.CommitOnly = function (repoOwner, repoName, message) {
+        return this.rpc("CommitOnly", [repoOwner, repoName, message]);
     };
     APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format) {
         return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format]);
@@ -2176,6 +2185,9 @@ var File$1 = (function () {
     };
     File.prototype.FetchContent = function () {
         var _this = this;
+        if (this.cache.has("content-our")) {
+            return Promise.resolve();
+        }
         return this.context.API()
             .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
             .then(function (_a) {
@@ -2224,11 +2236,26 @@ var File$1 = (function () {
         var _this = this;
         this.cache.set("content-wd", content);
         return this.context.API()
-            .UpdateFile(this.context.RepoOwner, this.context.RepoName, this.Path(), content)
+            .SaveWorkingFile(this.context.RepoOwner, this.context.RepoName, this.Path(), content)
             .then(function () {
-            // TODO: Need to update STATUS
+            // TODO: Need to update STATUS to 'UNRESOLVED' -
+            // because a commit will be needed before merge
+            // resolution will be possible
             _this.Listen.dispatch(_this);
             return Promise.resolve();
+        });
+    };
+    File.prototype.CommitWorkingContent = function (content) {
+        var _this = this;
+        return this.SaveWorkingContent(content)
+            .then(function () {
+            return _this.context.API()
+                .CommitFile(_this.context.RepoOwner, _this.context.RepoName, _this.Path())
+                .then(function () {
+                // TODO: Need to update file STATUS to 'RESOLVED'
+                _this.Listen.dispatch(_this);
+                return Promise.resolve();
+            });
         });
     };
     File.prototype.DeleteWorkingContent = function () {
@@ -2330,32 +2357,179 @@ var FileListDisplay = (function (_super) {
     return FileListDisplay;
 }(conflict_FileListDisplay));
 
+var MergeEditorAction;
+(function (MergeEditorAction) {
+    MergeEditorAction[MergeEditorAction["Save"] = 0] = "Save";
+    MergeEditorAction[MergeEditorAction["Resolve"] = 1] = "Resolve";
+    MergeEditorAction[MergeEditorAction["Delete"] = 2] = "Delete";
+    MergeEditorAction[MergeEditorAction["RevertOur"] = 3] = "RevertOur";
+    MergeEditorAction[MergeEditorAction["RevertTheir"] = 4] = "RevertTheir";
+    MergeEditorAction[MergeEditorAction["RevertGit"] = 5] = "RevertGit";
+})(MergeEditorAction || (MergeEditorAction = {}));
+// MergeEditorControlBar handles the wiring between the editor controls
+// and any listeners interested in these controls
+var MergeEditorControlBar = (function () {
+    function MergeEditorControlBar() {
+        var _this = this;
+        this.Listen = new signals.Signal();
+        var ln = function (key, act) {
+            document.getElementById("merge-editor-control-" + key)
+                .addEventListener("click", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.Listen.dispatch(act);
+            });
+        };
+        ln("revert-our", MergeEditorAction.RevertOur);
+        ln("revert-their", MergeEditorAction.RevertTheir);
+        ln("revert-git", MergeEditorAction.RevertGit);
+        ln("save", MergeEditorAction.Save);
+        ln("delete", MergeEditorAction.Delete);
+        ln("resolve", MergeEditorAction.Resolve);
+    }
+    return MergeEditorControlBar;
+}());
+
+var MergeEditor$1 = (function () {
+    function MergeEditor(context, parent) {
+        this.context = context;
+        this.parent = parent;
+        this.Listen = new signals.Signal();
+        var controlBar = new MergeEditorControlBar();
+        controlBar.Listen.add(this.controlAction, this);
+    }
+    MergeEditor.prototype.controlAction = function (act) {
+        var _this = this;
+        switch (act) {
+            case MergeEditorAction.Save:
+                this.file.SaveWorkingContent(this.getText())
+                    .then(function () {
+                    EBW.Toast("Saved " + _this.file.Path());
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.Delete:
+                break;
+            case MergeEditorAction.Resolve:
+                this.file.CommitWorkingContent(this.getText())
+                    .then(function () {
+                    EBW.Toast("Resolved " + _this.file.Path() + ".");
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.RevertOur:
+                this.file.OurContent()
+                    .then(function (s) {
+                    _this.setText(s);
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.RevertTheir:
+                this.file.TheirContent()
+                    .then(function (s) {
+                    _this.setText(s);
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.RevertGit:
+        }
+    };
+    MergeEditor.prototype.getText = function () {
+        return this.getLHS();
+    };
+    MergeEditor.prototype.setText = function (s) {
+        this.setLHS(s);
+    };
+    MergeEditor.prototype.getLHS = function () {
+        var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
+        return cm.getDoc().getValue();
+    };
+    MergeEditor.prototype.getRHS = function () {
+        var cm = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
+        return cm.getDoc().getValue();
+    };
+    MergeEditor.prototype.setLHS = function (s) {
+        var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
+        cm.getDoc().setValue(s);
+    };
+    MergeEditor.prototype.setRHS = function (s) {
+        var cm = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
+        cm.getDoc().setValue(s);
+    };
+    // Merge starts merging a file.
+    MergeEditor.prototype.Merge = function (file) {
+        // First check if we're currently editing, and prompt to save
+        // if we have made changes.
+        var _this = this;
+        var p = file.FetchContent()
+            .then(function () {
+            return Promise.all([file.WorkingContent(), file.TheirContent()]);
+        })
+            .then(function (args) {
+            var _a = [args[0], args[1]], working = _a[0], their = _a[1];
+            _this.file = file;
+            _this.parent.textContent = "";
+            _this.mergelyDiv = document.createElement("div");
+            _this.parent.appendChild(_this.mergelyDiv);
+            var m = jQuery(_this.mergelyDiv);
+            m.mergely({
+                cmsettings: {
+                    readOnly: false,
+                    lineNumbers: true,
+                    lineWrapping: true,
+                },
+                lhs_cmsettings: {
+                    readOnly: false
+                },
+                rhs_cmsettings: {
+                    readOnly: true,
+                },
+                // lhs_cmsettings: {
+                // 	wrap_lines: true,
+                // },
+                // autoresize: true,
+                editor_height: "100%",
+                // wrap_lines: true,
+                lhs: function (setValue) {
+                    setValue(working);
+                },
+                rhs: function (setValue) {
+                    setValue(their);
+                },
+            });
+            // let right = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
+            // console.log('right hand cm = ', right);		
+        });
+    };
+    return MergeEditor;
+}());
+
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
         this.context = context;
         var fileList = new FileList(context);
         var fileListDisplay = new FileListDisplay(context, document.getElementById("staged-files-list"), fileList);
-        fileListDisplay.Listen.add(this.fileListEvent, this);
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
+        this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
         var filesEl = document.getElementById('staged-files-data');
         if (!filesEl) {
             EBW.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");
             return;
         }
         var listjs = filesEl.innerText;
-        console.log("listjs = ", listjs);
         fileList.load(JSON.parse(listjs));
     }
     RepoConflictPage.prototype.fileListEvent = function (e, f) {
         console.log("FileListEvent in RepoConflictPage: ", f);
+        this.editor.Merge(f);
     };
     return RepoConflictPage;
 }());
 
-var MergeEditor$1 = (function (_super) {
+var MergeEditor$2 = (function (_super) {
     tslib_1.__extends(MergeEditor$$1, _super);
     function MergeEditor$$1(parent, model) {
         var _this = _super.call(this) || this;
@@ -2484,7 +2658,7 @@ var PullRequestMergePage = (function () {
     }
     PullRequestMergePage.prototype.viewDiff = function (diff) {
         this.mergelyParent.textContent = '';
-        new MergeEditor$1(this.mergelyParent, diff);
+        new MergeEditor$2(this.mergelyParent, diff);
     };
     PullRequestMergePage.instantiate = function () {
         var pr = document.getElementById('pr-merge-page');

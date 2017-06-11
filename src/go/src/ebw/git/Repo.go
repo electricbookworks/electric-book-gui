@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -246,35 +248,29 @@ func (r *Repo) PrintStatusList() error {
 }
 
 func GitStatusToString(status git2go.Status) string {
-	switch status {
-	case git2go.StatusCurrent:
+	s := []string{}
+	if status == git2go.StatusCurrent {
 		return "StatusCurrent"
-	case git2go.StatusIndexNew:
-		return "StatusIndexNew"
-	case git2go.StatusIndexModified:
-		return "StatusIndexModified"
-	case git2go.StatusIndexDeleted:
-		return "StatusIndexDeleted"
-	case git2go.StatusIndexRenamed:
-		return "StatusIndexRenamed"
-	case git2go.StatusIndexTypeChange:
-		return "StatusIndexTypeChange"
-	case git2go.StatusWtNew:
-		return "StatusWtNew"
-	case git2go.StatusWtModified:
-		return "StatusWtModified"
-	case git2go.StatusWtDeleted:
-		return "StatusWtDeleted"
-	case git2go.StatusWtTypeChange:
-		return "StatusWtTypeChange"
-	case git2go.StatusWtRenamed:
-		return "StatusWtRenamed"
-	case git2go.StatusIgnored:
-		return "StatusIgnored"
-	case git2go.StatusConflicted:
-		return "StatusConflicted"
 	}
-	return "Status-UNKNOWN-"
+	for b, str := range map[git2go.Status]string{
+		git2go.StatusIndexNew:        "StatusIndexNew",
+		git2go.StatusIndexModified:   "StatusIndexModified",
+		git2go.StatusIndexDeleted:    "StatusIndexDeleted",
+		git2go.StatusIndexRenamed:    "StatusIndexRenamed",
+		git2go.StatusIndexTypeChange: "StatusIndexTypeChange",
+		git2go.StatusWtNew:           "StatusWtNew",
+		git2go.StatusWtModified:      "StatusWtModified",
+		git2go.StatusWtDeleted:       "StatusWtDeleted",
+		git2go.StatusWtTypeChange:    "StatusWtTypeChange",
+		git2go.StatusWtRenamed:       "StatusWtRenamed",
+		git2go.StatusIgnored:         "StatusIgnored",
+		git2go.StatusConflicted:      "StatusConflicted",
+	} {
+		if status&b == b {
+			s = append(s, str)
+		}
+	}
+	return strings.Join(s, "|")
 }
 
 func GitRepositoryStateToString(state git2go.RepositoryState) string {
@@ -561,7 +557,7 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 	return nil
 }
 
-// PullAbort aborts a merge that is in progress.
+// PullAbort aborts a merge that is in progress. This isn't quite
 func (r *Repo) PullAbort() error {
 	head, err := r.Repository.Head()
 	if nil != err {
@@ -588,6 +584,55 @@ func (r *Repo) treeForCommit(commitId *git2go.Oid) (*git2go.Tree, error) {
 		return nil, util.Error(err)
 	}
 	return c.Tree()
+}
+
+// FreeCommitSlice frees each of the git2go.Commit pointers
+// in the given slice.
+func FreeCommitSlice(commits []*git2go.Commit) {
+	for _, c := range commits {
+		c.Free()
+	}
+}
+
+// MergeCommits returns a slice of the Commits that contributed to this
+// merge. includeHead indicates whether to include the HEAD commit - this
+// should always be TRUE.
+// The caller needs to free the Commit structures. Use the handy FreeCommitSlice([]*Commit)
+// to do so.
+func (r *Repo) MergeCommits(includeHead bool) ([]*git2go.Commit, error) {
+	commits := []*git2go.Commit{}
+
+	//Getting repo HEAD
+	if includeHead {
+		head, err := r.Repository.Head()
+		if err != nil {
+			return nil, util.Error(err)
+		}
+		defer head.Free()
+
+		headCommit, err := r.LookupCommit(head.Target())
+		if err != nil {
+			return nil, util.Error(err)
+		}
+		commits = append(commits, headCommit)
+	}
+
+	mergeHeads, err := r.Repository.MergeHeads()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	for _, h := range mergeHeads {
+		obj, err := r.Repository.Lookup(h)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		c, err := obj.AsCommit()
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		commits = append(commits, c)
+	}
+	return commits, nil
 }
 
 // FileCat returns the contents of a conflicted or merged file.
@@ -699,7 +744,10 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 		}
 		// If we're only resetting conflicted files, we just move
 		// along if the current file isn't conflicted
-		if conflictedOnly && entry.Status != git2go.StatusConflicted {
+		if conflictedOnly &&
+			entry.Status&git2go.StatusConflicted != git2go.StatusConflicted {
+			glog.Infof(`Skipping entry %s: not conflicted - status = %s`, entry.HeadToIndex.OldFile.Path,
+				GitStatusToString(entry.Status))
 			continue
 		}
 
@@ -744,4 +792,54 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 		}
 	}
 	return nil
+}
+
+// Commit commits the changes on the repo with the given message.
+func (r *Repo) Commit(message string) (*git2go.Oid, error) {
+	author := &git2go.Signature{
+		Name:  r.Client.Username,
+		Email: r.Client.User.GetEmail(),
+		When:  time.Now(),
+	}
+	// TODO: If we don't have a User Email address,
+	// where can we get one?
+	if `` == author.Email {
+		author.Email = author.Name
+	}
+	glog.Infof(`Committing with signatures Name:%s, Email:%s`, r.Client.Username, r.Client.User.GetEmail())
+	index, err := r.Index()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer index.Free()
+	treeId, err := index.WriteTree()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	tree, err := r.LookupTree(treeId)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer tree.Free()
+
+	//Getting repo HEAD
+	head, err := r.Head()
+	if err != nil {
+		return nil, util.Error(err)
+	}
+	defer head.Free()
+
+	commits, err := r.MergeCommits(true)
+	if nil != err {
+		return nil, err
+	}
+	defer FreeCommitSlice(commits)
+
+	oid, err := r.CreateCommit(`HEAD`, author, author, message, tree, commits...)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	glog.Infof(`COMMIT Created: oid = %s`, oid.String())
+
+	return oid, nil
 }

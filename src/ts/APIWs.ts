@@ -132,6 +132,14 @@ export class APIWs {
 		return this.rpc("UpdateFile",  [repoOwner,repoName,path,content] );
 	}
 	
+	CommitFile (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("CommitFile",  [repoOwner,repoName,path] );
+	}
+	
+	SaveWorkingFile (repoOwner:string,repoName:string,path:string,content:string) {
+		return this.rpc("SaveWorkingFile",  [repoOwner,repoName,path,content] );
+	}
+	
 	ListPullRequests (repoOwner:string,repoName:string) {
 		return this.rpc("ListPullRequests",  [repoOwner,repoName] );
 	}
@@ -150,6 +158,10 @@ export class APIWs {
 	
 	Commit (repoOwner:string,repoName:string,message:string) {
 		return this.rpc("Commit",  [repoOwner,repoName,message] );
+	}
+	
+	CommitOnly (repoOwner:string,repoName:string,message:string) {
+		return this.rpc("CommitOnly",  [repoOwner,repoName,message] );
 	}
 	
 	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string,format:string) {

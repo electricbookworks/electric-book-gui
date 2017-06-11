@@ -39,6 +39,8 @@ textarea {
         border: none;
         background-color: $color-offgray;
         cursor: default;
+        position: relative;
+        top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
     }
 }
 

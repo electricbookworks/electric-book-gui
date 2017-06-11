@@ -6,6 +6,7 @@
 	&.disabled {
 		background-color: lighten($color-primary, 20%);
 		border-bottom-width: 0px;
+		// top: 0.15em;
 		&:hover {
 			background-color: inherit;
 		}

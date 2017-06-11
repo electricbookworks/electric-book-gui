@@ -126,6 +126,14 @@ class APIWs {
 		return this._rpc("UpdateFile",  arguments );
 	}
 	
+	CommitFile (repoOwner,repoName,path) {
+		return this._rpc("CommitFile",  arguments );
+	}
+	
+	SaveWorkingFile (repoOwner,repoName,path,content) {
+		return this._rpc("SaveWorkingFile",  arguments );
+	}
+	
 	ListPullRequests (repoOwner,repoName) {
 		return this._rpc("ListPullRequests",  arguments );
 	}
@@ -144,6 +152,10 @@ class APIWs {
 	
 	Commit (repoOwner,repoName,message) {
 		return this._rpc("Commit",  arguments );
+	}
+	
+	CommitOnly (repoOwner,repoName,message) {
+		return this._rpc("CommitOnly",  arguments );
 	}
 	
 	PrintPdfEndpoint (repoOwner,repoName,book,format) {

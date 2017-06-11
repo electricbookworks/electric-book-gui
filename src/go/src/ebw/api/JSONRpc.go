@@ -54,6 +54,13 @@ func (rpc *API) GetFileString(repoOwner, repoName, path string) (string, error) 
 func (rpc *API) UpdateFile(repoOwner, repoName, path, content string) error {
 	return git.UpdateFile(rpc.Client, rpc.User, repoOwner, repoName, path, []byte(content))
 }
+func (rpc *API) CommitFile(repoOwner, repoName, path string) error {
+	return git.CommitFile(rpc.Client, repoOwner, repoName, path)
+}
+
+func (rpc *API) SaveWorkingFile(repoOwner, repoName, path, content string) error {
+	return git.SaveWorkingFile(rpc.Client, repoOwner, repoName, path, []byte(content))
+}
 
 func (rpc *API) ListPullRequests(repoOwner, repoName string) ([]*github.PullRequest, error) {
 	return git.ListPullRequests(rpc.Client, repoOwner, repoName)
@@ -75,6 +82,15 @@ func (rpc *API) Commit(repoOwner, repoName, message string) error {
 	_, err := git.Commit(rpc.Client, repoOwner, repoName, message)
 	return err
 }
+func (rpc *API) CommitOnly(repoOwner, repoName, message string) error {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer repo.Free()
+	_, err = repo.Commit(message)
+	return err
+}
 
 func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (string, error) {
 	if `` == book {
@@ -94,24 +110,24 @@ func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (stri
 	return print.MakeEndpoint(pr), nil
 }
 
-func (rpc *API) MergedFileCat(repoOwner, repoName, path string) ([]byte, []byte, []byte, error) {
+func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (string, string, string, error) {
 	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
-		return nil, nil, nil, err
+		return ``, ``, ``, err
 	}
 	defer repo.Free()
 
 	our, err := repo.FileCat(path, git.FileOur)
 	if nil != err {
-		our = nil
+		our = []byte{}
 	}
 	their, err := repo.FileCat(path, git.FileTheir)
 	if nil != err {
-		their = nil
+		their = []byte{}
 	}
 	wd, err := repo.FileCat(path, git.FileWorking)
 	if nil != err {
-		wd = nil
+		wd = []byte{}
 	}
-	return our, their, wd, nil
+	return string(our), string(their), string(wd), nil
 }

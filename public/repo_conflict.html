@@ -1,17 +1,37 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
-<main id="repo-conflict" class="constrain-page">
-<h1>Your files are in a conflicted state.</h1>
-
-<div>
-    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict/abort">Abort this merge</a>
-</div>
-
-<p>These files require attention:</p>
-<div id="staged-files-list">
-</div>
-
+<main id="repo-conflict">
+	<div id="topbar">
+		<div>Your repo is in conflict.</div>
+		<div class="toolbar-menu">
+		    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict/abort">Abort this merge</a>
+		    <button class="btn" disabled>Resolve this merge</button>
+		</div>
+	</div>
+	<div id="work">
+		<div id="files">
+			<div>These files require attention</div>
+			<div>
+				<div id="staged-files-list">
+				</div>
+			</div>
+		</div>
+		<div id="editor">
+			<div id="editor-topbar">
+				<div class="toolbar-menu">
+					<a class="btn" id="merge-editor-control-save">Save these changes</a>
+					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
+					<a class="btn" id="merge-editor-control-delete" disabled>Delete this file</a>
+					<a class="btn" id="merge-editor-control-revert-our">Revert to Ours</a>
+					<a class="btn" id="merge-editor-control-revert-their">Revert to Theirs</a>
+					<a class="btn" id="merge-editor-control-revert-git" disabled>Revert to Git Merge</a>
+				</div>
+			</div>
+			<div id="editor-work">
+			</div>
+		</div>
+	</div>
 </main>
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoConflictPage">
 </script>

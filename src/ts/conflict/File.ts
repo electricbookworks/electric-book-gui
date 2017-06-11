@@ -32,6 +32,9 @@ export class File {
 		this.cache.clear();
 	}
 	FetchContent() : Promise<void> {
+		if (this.cache.has(`content-our`)) {
+			return Promise.resolve();
+		}
 		return this.context.API()
 		.MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
 		.then(
@@ -79,14 +82,31 @@ export class File {
 	SaveWorkingContent(content:string) : Promise<void> {
 		this.cache.set(`content-wd`, content);
 		return this.context.API()
-		.UpdateFile(
+		.SaveWorkingFile(
 			this.context.RepoOwner, this.context.RepoName, 
 			this.Path(), content)
 		.then(
 			()=>{
-				// TODO: Need to update STATUS
+				// TODO: Need to update STATUS to 'UNRESOLVED' -
+				// because a commit will be needed before merge
+				// resolution will be possible
 				this.Listen.dispatch(this);
 				return Promise.resolve();
+			});
+	}
+	CommitWorkingContent(content:string) : Promise<void> {
+		return this.SaveWorkingContent(content)
+		.then(
+			()=>{
+				return this.context.API()
+				.CommitFile(this.context.RepoOwner, this.context.RepoName,
+					this.Path())
+				.then(
+					()=>{
+						// TODO: Need to update file STATUS to 'RESOLVED'
+						this.Listen.dispatch(this);
+						return Promise.resolve();
+					});
 			});
 	}
 	DeleteWorkingContent() : Promise<void> {

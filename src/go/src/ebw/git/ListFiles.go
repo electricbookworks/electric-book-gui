@@ -147,12 +147,51 @@ func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 // and adds it to the
 // git staging area, ready for the next commit.
 func UpdateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
-	repoDir, err := RepoDir(user, repoOwner, repoName)
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
 	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
 		return util.Error(err)
+	}
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer repo.Free()
+
+	index, err := repo.Index()
+	if nil != err {
+		return util.Error(err)
+	}
+	defer index.Free()
+	if err := index.AddByPath(path); nil != err {
+		return util.Error(err)
+	}
+	if err := index.Write(); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// SaveWorkingFile saves the named file on the repo in the working directory.
+// It does not commit the file's change.
+func SaveWorkingFile(client *Client, repoOwner, repoName, path string, content []byte) error {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// CommitFile comites the named file on the repo.
+func CommitFile(client *Client, repoOwner, repoName, path string) error {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
 	}
 	repo, err := git2go.OpenRepository(repoDir)
 	if nil != err {
