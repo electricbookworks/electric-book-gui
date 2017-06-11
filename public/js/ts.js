@@ -2390,10 +2390,14 @@ var MergeEditorControlBar = (function () {
     return MergeEditorControlBar;
 }());
 
+// MergeEditor controls a Mergely class
+//
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
         this.parent = parent;
+        this.editLeft = false;
+        this.editBoth = true;
         this.Listen = new signals.Signal();
         var controlBar = new MergeEditorControlBar();
         controlBar.Listen.add(this.controlAction, this);
@@ -2435,10 +2439,18 @@ var MergeEditor$1 = (function () {
         }
     };
     MergeEditor.prototype.getText = function () {
-        return this.getLHS();
+        if (this.editLeft) {
+            return this.getLHS();
+        }
+        return this.getRHS();
     };
     MergeEditor.prototype.setText = function (s) {
-        this.setLHS(s);
+        if (this.editLeft) {
+            this.setLHS(s);
+        }
+        else {
+            this.setRHS(s);
+        }
     };
     MergeEditor.prototype.getLHS = function () {
         var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
@@ -2479,10 +2491,10 @@ var MergeEditor$1 = (function () {
                     lineWrapping: true,
                 },
                 lhs_cmsettings: {
-                    readOnly: false
+                    readOnly: (!_this.editBoth) && (!_this.editLeft)
                 },
                 rhs_cmsettings: {
-                    readOnly: true,
+                    readOnly: (!_this.editBoth) && _this.editLeft
                 },
                 // lhs_cmsettings: {
                 // 	wrap_lines: true,
@@ -2491,10 +2503,10 @@ var MergeEditor$1 = (function () {
                 editor_height: "100%",
                 // wrap_lines: true,
                 lhs: function (setValue) {
-                    setValue(working);
+                    setValue(this.editLeft ? working : their);
                 },
                 rhs: function (setValue) {
-                    setValue(their);
+                    setValue(this.editLeft ? their : working);
                 },
             });
             // let right = jQuery(this.mergelyDiv).mergely('cm', 'rhs');

@@ -13,6 +13,8 @@ export class MergeEditor {
 	protected mergelyDiv: HTMLDivElement;
 	public Listen : signals.Signal;
 	protected file:File;
+	protected editLeft = false;
+	protected editBoth = true;
 
 	constructor(
 		protected context:Context,
@@ -22,7 +24,6 @@ export class MergeEditor {
 		this.Listen = new signals.Signal();
 		let controlBar = new MergeEditorControlBar();
 		controlBar.Listen.add(this.controlAction, this);
-
 	}
 	controlAction(act:MergeEditorAction) {
 		switch(act) {
@@ -64,10 +65,17 @@ export class MergeEditor {
 		}
 	}
 	getText() : string {
-		return this.getLHS();
+		if (this.editLeft) {
+			return this.getLHS();
+		}
+		return this.getRHS();
 	}
 	setText(s:string) {
-		this.setLHS(s);
+		if (this.editLeft) {
+			this.setLHS(s);
+		} else {
+			this.setRHS(s);
+		}
 	}
 
 	getLHS() : string {
@@ -113,10 +121,10 @@ export class MergeEditor {
 						lineWrapping: true,
 					},
 					lhs_cmsettings: {
-						readOnly: false
+						readOnly: (!this.editBoth) && (!this.editLeft)
 					},
 					rhs_cmsettings: {
-						readOnly: true,
+						readOnly: (!this.editBoth) && this.editLeft
 					},
 					// lhs_cmsettings: {
 					// 	wrap_lines: true,
@@ -125,10 +133,10 @@ export class MergeEditor {
 					editor_height: "100%",
 					// wrap_lines: true,
 					lhs: function(setValue:(v:string)=>void) {
-						setValue(working);
+						setValue(this.editLeft ? working : their);
 					},
 					rhs: function(setValue:(v:string)=>void) {
-						setValue(their);
+						setValue(this.editLeft ? their : working);
 					},
 					// height: (h:number)=>{
 					// 	return this.parent.clientHeight + "px";
