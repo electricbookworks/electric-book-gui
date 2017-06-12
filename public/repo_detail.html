@@ -26,7 +26,7 @@
 
             {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}
-            <p>Your book is ready for editing. (This message is really just for technical informational reasons.)</p>
+            <p>Your book is ready for editing. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit files</a></p>
             {{end}}
             {{if $state.LocalConflicted}}
             <p>Your repo is in a conflicted state from a merge that isn't complete. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict">You need to complete the merge.</a></p>

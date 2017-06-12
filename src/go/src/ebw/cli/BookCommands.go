@@ -40,6 +40,7 @@ func BookCommands() *commander.Command {
 				BookUnstashCommand,
 				BookPullCommand,
 				BookPullAbortCommand,
+				BookPushCommand,
 				BookCatCommand,
 				BookMergeHeadsCommand,
 				BookResetConflictedCommand,
@@ -566,7 +567,7 @@ func BookResetConflictedCommand() *commander.Command {
 
 func BookCleanupCommand() *commander.Command {
 	return commander.NewCommand(`cleanup`,
-		`Cleansup repo merge artifacts`,
+		`Cleans up repo merge artifacts`,
 		nil,
 		func([]string) error {
 			repo, err := cliRepo()
@@ -575,6 +576,26 @@ func BookCleanupCommand() *commander.Command {
 			}
 			defer repo.Free()
 			if err := repo.Cleanup(); nil != err {
+				return err
+			}
+			return nil
+		})
+}
+
+func BookPushCommand() *commander.Command {
+	fs := flag.NewFlagSet(`push`, flag.ExitOnError)
+	remote := fs.String(`remote`, `origin`, `Remote to push to`)
+	branch := fs.String(`branch`, `master`, `Remote branch to push to`)
+	return commander.NewCommand(`push`,
+		`Push the repo to the remote branch`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			if err := repo.Push(*remote, *branch); nil != err {
 				return err
 			}
 			return nil

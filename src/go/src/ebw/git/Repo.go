@@ -919,3 +919,19 @@ func (r *Repo) Cleanup() error {
 	}
 	return r.CleanupConflictTemporaryFiles()
 }
+
+// Push implements 'git push remote branch' for the repo.
+// TODO: Check whether my ref string is able to push not just
+// from our master-to-master, but also from master -> x or x -> y
+func (r *Repo) Push(remoteName, branchName string) error {
+	remote, err := r.Repository.Remotes.Lookup(remoteName)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer remote.Free()
+	ref := fmt.Sprintf(`+refs/heads/%s`, branchName)
+	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}

@@ -201,7 +201,10 @@ func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, e
 	// Push the server-side commit to our master: which is probably
 	// our FORK of a repo.
 	if err = runGitDir(repoDir, []string{`push`, `origin`, `master`}); nil != err {
-		return nil, err
+		glog.Infof(`ERROR on push origin master in %s: %s`, repoDir, err.Error())
+		// We don't crash on this error, since we're actually ok if our repo
+		// is out-of-sync with the remote: we'll resolve that via a pull
+		// return nil, err
 	}
 	return oid, nil
 }

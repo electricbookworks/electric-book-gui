@@ -30,6 +30,11 @@ func repoCommit(c *Context) error {
 		return err
 	}
 
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+
 	if `POST` == c.R.Method {
 		// Process a POST for a Commit
 		msg := c.P(`commit_message`)
@@ -42,7 +47,7 @@ func repoCommit(c *Context) error {
 			return err
 		}
 		c.FlashSuccess(`Commit Succeeded`, `Your commit succeeded with ID {{.Oid}}`, map[string]interface{}{`Oid`: oid.String()})
-		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
+		return c.Redirect(pathRepoDetail(r))
 	}
 
 	c.D[`UserName`] = client.Username
@@ -333,6 +338,19 @@ func repoMergeUpstream(c *Context) error {
 
 	return nil
 
+}
+
+// repoPushRemote pushes to the remote repo. For our purposes
+// this would almost always be origin/master
+func repoPushRemote(c *Context) error {
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	if err := repo.Push(c.Vars[`remote`], c.Vars[`branch`]); nil != err {
+		return err
+	}
+	return c.Redirect(pathRepoDetail(repo))
 }
 
 func repoMergeRemoteBranch(c *Context) error {

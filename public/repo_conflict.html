@@ -21,7 +21,8 @@
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
 					<a class="btn" id="merge-editor-control-save">Save these changes</a>
-					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
+					<!-- We don't actually require a 'resolve', since we'll commit -am -->
+					<a class="btn" id="merge-editor-control-resolve" style="display: none;">Mark resolved</a>
 					<a class="btn" id="merge-editor-control-delete" disabled>Delete this file</a>
 					<a class="btn" id="merge-editor-control-revert-our">Revert to Ours</a>
 					<a class="btn" id="merge-editor-control-revert-their">Revert to Theirs</a>
