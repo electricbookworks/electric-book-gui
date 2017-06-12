@@ -36,14 +36,16 @@
 			justify-content: space-between;
 			align-items: stretch;
 
-			&>div:nth-child(1) {	// titlebar
+			transition: width 0.3s;
+
+			&>div:nth-child(2) {	// titlebar
 				flex-grow: 0;
 				border-bottom: 1px solid $color-primary;
 				background-color: $color-inverse-bg;
 				color: $color-inverse-fg;
 				padding-left: 1em;
 			}
-			&>div:nth-child(2) {	
+			&>div:nth-child(3) {	
 				// container for #staged-files-list, required to 
 				// allow position:relative;
 				flex-grow: 1;				
@@ -65,7 +67,7 @@
 			#editor-topbar {
 				flex-grow: 0;
 				// height: 3.3em;
-				padding: 0.6em 1em 0.6em 1em;
+				padding: 0.6em 1em 0.6em 3em;
 
 				display: flex;
 				flex-direction: row;

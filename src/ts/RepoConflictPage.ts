@@ -1,4 +1,5 @@
 import {Context} from './Context';
+import {ControlTag} from './ControlTag';
 import {EBW} from './EBW';
 import {File} from './conflict/File';
 import {FileList} from './conflict/FileList';
@@ -24,6 +25,15 @@ export class RepoConflictPage {
 		this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
 		this.commitDialog = new CommitMessageDialog(false);
 		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
+
+
+		new ControlTag(document.getElementById(`files-show-tag`),
+			(showing:boolean)=>{
+				let el = document.getElementById(`files`);				
+				el
+				.style.width = showing ? "30em":"0px";
+			});
+
 
 		let filesEl = document.getElementById('staged-files-data');
 		if (!filesEl) {

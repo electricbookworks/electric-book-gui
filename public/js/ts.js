@@ -710,6 +710,23 @@ var RepoDetailPage = (function () {
     return RepoDetailPage;
 }());
 
+// A ControlTag controls the appearance of another div, most likely changing
+// it's width or making it appear / disappear
+var ControlTag = (function () {
+    function ControlTag(el, callback) {
+        var _this = this;
+        this.el = el;
+        this.callback = callback;
+        this.el.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.el.classList.toggle("showing");
+            _this.callback(_this.el.classList.contains("showing"));
+        });
+    }
+    return ControlTag;
+}());
+
 var PrintListener = (function () {
     function PrintListener(repoOwner, repoName, book, format) {
         if (book === void 0) { book = "book"; }
@@ -2141,6 +2158,12 @@ var RepoEditorPage = (function () {
         new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
         new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
         new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
+        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
+            document.getElementById("new-editor-files-nav")
+                .style.width = showing ? "20%" : "0px";
+            document.getElementById("repo-file-actions")
+                .style.visibility = showing ? "visible" : "hidden";
+        });
         FSPrimeFromJS(this.FS, filesJson);
         document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
             evt.preventDefault();
@@ -2652,6 +2675,11 @@ var RepoConflictPage = (function () {
         this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
         this.commitDialog = new CommitMessageDialog$1(false);
         new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
+        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
+            var el = document.getElementById("files");
+            el
+                .style.width = showing ? "30em" : "0px";
+        });
         var filesEl = document.getElementById('staged-files-data');
         if (!filesEl) {
             EBW.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");

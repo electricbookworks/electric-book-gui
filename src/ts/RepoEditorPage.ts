@@ -1,8 +1,9 @@
+import {ControlTag} from './ControlTag';
+import {EBW} from './EBW';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
 import {RepoEditorPage_NewFileDialog} from './RepoEditorPage_NewFileDialog';
 import {RepoEditorPage_RenameFileDialog} from './RepoEditorPage_RenameFileDialog';
-import {EBW} from './EBW';
 
 import {FileContent,FileStat,FS} from './FS/FS';
 import {FSNotify} from './FS/FSNotify';
@@ -57,6 +58,15 @@ export class RepoEditorPage {
 			document.getElementById(`editor-rename-button`),
 			this.FS,
 			this.editor);
+
+		new ControlTag(document.getElementById(`files-show-tag`),
+			(showing:boolean)=>{
+				document.getElementById(`new-editor-files-nav`)
+				.style.width = showing ? "20%":"0px";
+				document.getElementById(`repo-file-actions`)
+				.style.visibility = showing ? `visible` : `hidden`;
+			});
+
 		
 		FSPrimeFromJS(this.FS, filesJson);
 

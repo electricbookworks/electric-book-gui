@@ -3,7 +3,8 @@
 
 <main id="new-editor">
 	<nav id="new-editor-files-nav">
-		<div class="file-actions action-group">
+		<div id="files-show-tag" class="showing"><img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" /></div>
+		<div class="file-actions action-group" id="repo-file-actions">
 			<button id="repo-new-file" class="btn">New File</button>
 			<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
 		</div>
