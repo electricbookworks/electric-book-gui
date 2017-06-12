@@ -25,8 +25,12 @@
 	&:hover {
 		background-color: $color-primary;
 		color: $color-primary;
+		svg {color:white};
 	}
-	& > img {
+	&>object {
+		pointer-events:none;
+	}
+	&>object, &>img, &>svg {
 		width: 1.4em;
 		&.showing {
 			display: none;
@@ -35,12 +39,14 @@
 			display: block;
 		}
 	}
-	&.showing > img {
-		&.showing {
-			display: block;
-		}
-		&.hidden {
-			display: none;
+	&.showing {
+		&>object, &>img, &>svg {
+			&.showing {
+				display: block;
+			}
+			&.hidden {
+				display: none;
+			}
 		}
 	}
 }

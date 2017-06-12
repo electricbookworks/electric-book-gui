@@ -82,7 +82,7 @@ func PullRequestCheckout(client *Client, remoteUrl, sha string) (string, error) 
 func PullRequestDiffListByNumber(client *Client, repoOwner, repoName string,
 	prNumber int) ([]*PullRequestDiff, error) {
 	pr, _, err := client.PullRequests.Get(client.Context, repoOwner, repoName, prNumber)
-	if nil!=err {
+	if nil != err {
 		return nil, util.Error(err)
 	}
 	return PullRequestDiffList(client, repoOwner, repoName, pr)
@@ -98,18 +98,18 @@ func PullRequestDiffList(client *Client, repoOwner, repoName string,
 	if nil != err {
 		return nil, err
 	}
-	files, _, err := client.PullRequests.ListFiles(client.Context, 
+	files, _, err := client.PullRequests.ListFiles(client.Context,
 		repoOwner, repoName,
 		pr.GetNumber(), &github.ListOptions{
 			PerPage: 1000,
-			})
-	if nil!=err {
+		})
+	if nil != err {
 		return nil, util.Error(err)
 	}
 	diffs := make([]*PullRequestDiff, len(files))
 	for i, p := range files {
 		diffs[i], err = GetPathDiff(localPath, remotePath, p.GetFilename())
-		if nil!=err {
+		if nil != err {
 			return nil, err
 		}
 	}

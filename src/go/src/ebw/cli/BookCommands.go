@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -45,6 +46,10 @@ func BookCommands() *commander.Command {
 				BookMergeHeadsCommand,
 				BookResetConflictedCommand,
 				BookCleanupCommand,
+				BookPRListCommand,
+				BookPRDetailCommand,
+				BookPRFetchCommand,
+				BookPRMergeCommand,
 			)
 		})
 }
@@ -599,5 +604,93 @@ func BookPushCommand() *commander.Command {
 				return err
 			}
 			return nil
+		})
+}
+
+func BookPRListCommand() *commander.Command {
+	return commander.NewCommand(`pr-list`,
+		`List the open PR's for the repo`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			prs, err := repo.PullRequestList()
+			if nil != err {
+				return err
+			}
+			for _, pr := range prs {
+				fmt.Printf("%5d\t%s\n", pr.GetNumber(), pr.GetTitle())
+			}
+			return nil
+		})
+}
+
+func BookPRDetailCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pr`, flag.ExitOnError)
+	number := fs.Int(`n`, 0, `The number of the PR to display`)
+	return commander.NewCommand(`pr`,
+		`Show the details on a particular pr`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			if 0 == *number {
+				prs, err := repo.PullRequestList()
+				if nil != err {
+					return err
+				}
+				for _, pr := range prs {
+					fmt.Printf("%5d\t%s\n", pr.GetNumber(), pr.GetTitle())
+				}
+				return fmt.Errorf(`You need to specify the PR number (-n)`)
+			}
+			pr, err := repo.PullRequest(*number)
+			if nil != err {
+				return err
+			}
+			js := json.NewEncoder(os.Stdout)
+			js.SetIndent(``, `  `)
+			if err := js.Encode(pr); nil != err {
+				return err
+			}
+			return nil
+		})
+}
+
+func BookPRFetchCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pr-fetch`, flag.ExitOnError)
+	number := fs.Int(`n`, 0, `Number of the PR to fetch`)
+	return commander.NewCommand(`pr-fetch`,
+		`Fetch the numbered (-n) PR`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.PullRequestFetch(*number)
+		})
+}
+
+func BookPRMergeCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pr-merge`, flag.ExitOnError)
+	number := fs.Int(`n`, 0, `Number of the PR to merge`)
+	return commander.NewCommand(`pr-merge`,
+		`Merge the numbered (-n) PR`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.PullRequestMerge(*number)
 		})
 }

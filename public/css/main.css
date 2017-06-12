@@ -3928,15 +3928,19 @@ body {
   #files-show-tag:hover {
     background-color: #009E7F;
     color: #009E7F; }
-  #files-show-tag > img {
+    #files-show-tag:hover svg {
+      color: white; }
+  #files-show-tag > object {
+    pointer-events: none; }
+  #files-show-tag > object, #files-show-tag > img, #files-show-tag > svg {
     width: 1.4em; }
-    #files-show-tag > img.showing {
+    #files-show-tag > object.showing, #files-show-tag > img.showing, #files-show-tag > svg.showing {
       display: none; }
-    #files-show-tag > img.hidden {
+    #files-show-tag > object.hidden, #files-show-tag > img.hidden, #files-show-tag > svg.hidden {
       display: block; }
-  #files-show-tag.showing > img.showing {
+  #files-show-tag.showing > object.showing, #files-show-tag.showing > img.showing, #files-show-tag.showing > svg.showing {
     display: block; }
-  #files-show-tag.showing > img.hidden {
+  #files-show-tag.showing > object.hidden, #files-show-tag.showing > img.hidden, #files-show-tag.showing > svg.hidden {
     display: none; }
 
 #new-editor {

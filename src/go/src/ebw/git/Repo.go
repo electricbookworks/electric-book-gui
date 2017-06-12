@@ -306,6 +306,20 @@ func (r *Repo) GithubRepo() (*github.Repository, error) {
 	return repo, err
 }
 
+// AddRemote adds the given remoteName with the given CloneURL,
+// but does not change any existing remote with the given remoteName
+func (r *Repo) AddRemote(remoteName string, remoteCloneURL string) error {
+	remote, err := r.Remotes.Lookup(remoteName)
+	if nil != err {
+		remote, err = r.Remotes.Create(remoteName, remoteCloneURL)
+		if nil != err {
+			return util.Error(err)
+		}
+	}
+	defer remote.Free()
+	return nil
+}
+
 func (r *Repo) SetUpstreamRemote() error {
 	// Sometimes the CLI might not have a Github repo,
 	// so we handle this by simply declaring no github parent, which
@@ -323,13 +337,13 @@ func (r *Repo) SetUpstreamRemote() error {
 	upstreamUrl, err := r.Client.AddAuth(`https://github.com/` +
 		gr.Parent.Owner.GetLogin() + `/` + gr.Parent.GetName() + `.git`)
 	if nil != err {
-		return err
+		return util.Error(err)
 	}
 	remote, err := r.Remotes.Lookup(`upstream`)
 	if nil != err {
 		remote, err = r.Remotes.Create(`upstream`, upstreamUrl)
 		if nil != err {
-			return err
+			return util.Error(err)
 		}
 	}
 	defer remote.Free()
@@ -509,13 +523,18 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 		return util.Error(err)
 	}
 	defer branchReference.Free()
-
 	remoteCommit, err := r.LookupAnnotatedCommit(branchReference.Target())
 	if nil != err {
 		return util.Error(err)
 	}
 	defer remoteCommit.Free()
 
+	return r.mergeAnnotatedCommit(remoteCommit)
+}
+
+// mergeAnnotatedCommit does an actual merge of the given AnnotatedCommit
+// with the HEAD of the repo.
+func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error {
 	analysis, _, err := r.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
 	if nil != err {
 		return util.Error(err)
@@ -553,7 +572,6 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 		fmt.Fprintf(os.Stderr, "ERROR on Merge: %s\n", err.Error())
 		return err
 	}
-
 	return nil
 }
 
