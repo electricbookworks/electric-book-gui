@@ -6,7 +6,7 @@
 		<div>Your repo is in conflict.</div>
 		<div class="toolbar-menu">
 		    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict/abort">Abort this merge</a>
-		    <button class="btn" disabled>Resolve this merge</button>
+		    <button class="btn" id="action-commit">Resolve this merge</button>
 		</div>
 	</div>
 	<div id="work">
@@ -26,6 +26,8 @@
 					<a class="btn" id="merge-editor-control-revert-our">Revert to Ours</a>
 					<a class="btn" id="merge-editor-control-revert-their">Revert to Theirs</a>
 					<a class="btn" id="merge-editor-control-revert-git" disabled>Revert to Git Merge</a>
+				</div>
+				<div id="merge-instructions">
 				</div>
 			</div>
 			<div id="editor-work">

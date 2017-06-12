@@ -154,7 +154,11 @@ class APIWs {
 		return this._rpc("Commit",  arguments );
 	}
 	
-	CommitOnly (repoOwner,repoName,message) {
+	CommitAll (repoOwner,repoName,message,notes) {
+		return this._rpc("CommitAll",  arguments );
+	}
+	
+	CommitOnly (repoOwner,repoName,message,notes) {
 		return this._rpc("CommitOnly",  arguments );
 	}
 	

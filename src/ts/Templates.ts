@@ -1,6 +1,7 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
+	export type CommitMessageDialog =	HTMLDivElement;
 	export type EditorImage =	HTMLDivElement;
 	export type FSFileList_File =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
@@ -12,6 +13,7 @@ export namespace EL {
 	export type RepoMergeDialog =	HTMLDivElement;
 	export type conflict_FileDisplay =	HTMLLIElement;
 	export type conflict_FileListDisplay =	HTMLUListElement;
+	export type conflict_MergeInstructions =	HTMLDivElement;
 	
 }
 export namespace R {
@@ -23,6 +25,13 @@ export namespace R {
 		repo_name: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
+		};
+	export interface CommitMessageDialog {
+		title: HTMLHeadingElement,
+		instructions: HTMLDivElement,
+		message: HTMLInputElement,
+		notes: HTMLTextAreaElement,
+		commit: HTMLButtonElement,
 		};
 	export interface EditorImage {
 		};
@@ -63,6 +72,12 @@ export namespace R {
 		};
 	export interface conflict_FileListDisplay {
 		};
+	export interface conflict_MergeInstructions {
+		show: HTMLDivElement,
+		text: HTMLDivElement,
+		theirSide: HTMLSpanElement,
+		ourSide: HTMLSpanElement,
+		};
 	
 }	// end namespace R
 export class AddNewBookDialog {
@@ -94,6 +109,34 @@ export class AddNewBookDialog {
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[2] as HTMLDivElement,
 			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+		};
+		this.el = n;
+	}
+}
+export class CommitMessageDialog {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.CommitMessageDialog;
+	constructor() {
+		let t = CommitMessageDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div><h1>Title</h1><div>Instructions</div><fieldset><label for="commitMessage">Enter the commit message
+		<input type="text" name="commitMessage" id="commitMessage"/>
+		</label><label for="commitNotes">Further notes about the commit
+		<textarea name="commitNotes" id="commitNotes" rows="5">
+		</textarea>
+		</label></fieldset><button class="btn">Commit</button></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			CommitMessageDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			title: n.childNodes[0] as HTMLHeadingElement,
+			instructions: n.childNodes[1] as HTMLDivElement,
+			message: n.childNodes[2].childNodes[0].childNodes[1] as HTMLInputElement,
+			notes: n.childNodes[2].childNodes[1].childNodes[1] as HTMLTextAreaElement,
+			commit: n.childNodes[3] as HTMLButtonElement,
 		};
 		this.el = n;
 	}
@@ -331,6 +374,28 @@ export class conflict_FileListDisplay {
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
+		};
+		this.el = n;
+	}
+}
+export class conflict_MergeInstructions {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.conflict_MergeInstructions;
+	constructor() {
+		let t = conflict_MergeInstructions._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="merge-instructions showing"><div class="instructions-button">?</div><div class="instructions-text"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			conflict_MergeInstructions._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			show: n.childNodes[0] as HTMLDivElement,
+			text: n.childNodes[1] as HTMLDivElement,
+			theirSide: n.childNodes[1].childNodes[1].childNodes[1] as HTMLSpanElement,
+			ourSide: n.childNodes[1].childNodes[2].childNodes[1] as HTMLSpanElement,
 		};
 		this.el = n;
 	}

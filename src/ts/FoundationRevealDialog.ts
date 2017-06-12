@@ -21,14 +21,12 @@ export class FoundationRevealDialog extends Template {
 	public Events: signals.Signal;
 
 	constructor(
-		openElement:HTMLElement,
+		openElement?:HTMLElement,
 		content?:HTMLElement
 	) {
 		super();
 		this.Events = new signals.Signal();
 		this.$el = jQuery(this.el);
-		// Comment here
-		TSFoundation.Reveal(this.$el);
 
 		if (openElement) {
 			openElement.addEventListener('click', (evt)=>{
@@ -46,11 +44,13 @@ export class FoundationRevealDialog extends Template {
 		if (content) {
 			this.Set(content);
 		}
-		if (document.body.firstChild) {
-			document.body.insertBefore(this.el, document.body.firstChild);
-		} else {
-			document.body.appendChild(this.el);
-		}
+
+		// The el must be inserted into the DOM before Foundation is
+		// called on it, otherwise Foundation doesn't properly position
+		// the dialog.
+		document.body.appendChild(this.el);
+		// TSFoundation required because Typescript can be really stupid.
+		TSFoundation.Reveal(this.$el);
 	}
 	// Set the content of the dialog to the given
 	// element.

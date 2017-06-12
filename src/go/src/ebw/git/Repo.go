@@ -558,6 +558,10 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 }
 
 // PullAbort aborts a merge that is in progress. This isn't quite
+// live `git merge --abort`, because this is in fact simply a RESET
+// to HEAD, which occurs in spite of, or while ignoring, any changed
+// files in WD. `git merge --abort`, though, will fail if there are modified
+// files in WD (or something like that).
 func (r *Repo) PullAbort() error {
 	head, err := r.Repository.Head()
 	if nil != err {
@@ -794,8 +798,64 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 	return nil
 }
 
+// AddToIndex adds the file at path to the index, if it exists, or
+// deletes the file in the index if it does not exist.
+func (r *Repo) AddToIndex(path string) error {
+	index, err := r.Index()
+	if nil != err {
+		return util.Error(err)
+	}
+	defer index.Free()
+	exists, err := util.FileExists(r.Path(path))
+	if nil != err {
+		return err
+	}
+	if exists {
+		if err = index.AddByPath(path); nil != err {
+			// Adding a pre-existing file shouldn't be an issue,
+			// since it's the file contents, not the file name,
+			// that is important about the adding.
+			return util.Error(err)
+		}
+	} else {
+		if err = index.RemoveByPath(path); nil != err {
+			// I might need to consider what happens if I
+			// remove a file that isn't in the Index.
+			return util.Error(err)
+		}
+	}
+	if err := index.Write(); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// AddAllToIndex adds all staged files to the index, including deleting
+// files from the index if they don't exist in the WD.
+func (r *Repo) AddAllStagedFilesToIndex() error {
+	files, err := r.StagedFiles()
+	if nil != err {
+		return err
+	}
+	for _, f := range files {
+		if err = r.AddToIndex(f.Path()); nil != err {
+			return err
+		}
+	}
+	return nil
+}
+
+// CommitAll works like `git commit -am` first adding all working-dir
+// modified files to the index.
+func (r *Repo) CommitAll(message, notes string) (*git2go.Oid, error) {
+	if err := r.AddAllStagedFilesToIndex(); nil != err {
+		return nil, err
+	}
+	return r.Commit(message, notes)
+}
+
 // Commit commits the changes on the repo with the given message.
-func (r *Repo) Commit(message string) (*git2go.Oid, error) {
+func (r *Repo) Commit(message string, notes string) (*git2go.Oid, error) {
 	author := &git2go.Signature{
 		Name:  r.Client.Username,
 		Email: r.Client.User.GetEmail(),
@@ -842,4 +902,20 @@ func (r *Repo) Commit(message string) (*git2go.Oid, error) {
 	glog.Infof(`COMMIT Created: oid = %s`, oid.String())
 
 	return oid, nil
+}
+
+// CleanupConflictTemporaryFiles cleans up any temporary files used in a
+// conflict resolution.
+func (r *Repo) CleanupConflictTemporaryFiles() error {
+	// At the moment this is a NOP.
+	return nil
+}
+
+// Cleanup cleans up the state of the repo, and also removes any temporary
+// files that a merge or conflict state might have created.
+func (r *Repo) Cleanup() error {
+	if err := r.Repository.StateCleanup(); nil != err {
+		return util.Error(err)
+	}
+	return r.CleanupConflictTemporaryFiles()
 }

@@ -43,6 +43,7 @@ func BookCommands() *commander.Command {
 				BookCatCommand,
 				BookMergeHeadsCommand,
 				BookResetConflictedCommand,
+				BookCleanupCommand,
 			)
 		})
 }
@@ -560,5 +561,22 @@ func BookResetConflictedCommand() *commander.Command {
 				!*theirs,
 				*onlyConflicted,
 				filter)
+		})
+}
+
+func BookCleanupCommand() *commander.Command {
+	return commander.NewCommand(`cleanup`,
+		`Cleansup repo merge artifacts`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			if err := repo.Cleanup(); nil != err {
+				return err
+			}
+			return nil
 		})
 }

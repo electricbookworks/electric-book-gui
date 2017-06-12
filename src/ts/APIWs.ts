@@ -160,8 +160,12 @@ export class APIWs {
 		return this.rpc("Commit",  [repoOwner,repoName,message] );
 	}
 	
-	CommitOnly (repoOwner:string,repoName:string,message:string) {
-		return this.rpc("CommitOnly",  [repoOwner,repoName,message] );
+	CommitAll (repoOwner:string,repoName:string,message:string,notes:string) {
+		return this.rpc("CommitAll",  [repoOwner,repoName,message,notes] );
+	}
+	
+	CommitOnly (repoOwner:string,repoName:string,message:string,notes:string) {
+		return this.rpc("CommitOnly",  [repoOwner,repoName,message,notes] );
 	}
 	
 	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string,format:string) {

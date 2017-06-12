@@ -4149,7 +4149,11 @@ body {
       align-items: stretch; }
       #repo-conflict #work #editor #editor-topbar {
         flex-grow: 0;
-        padding: 0.6em 1em 0.6em 1em; }
+        padding: 0.6em 1em 0.6em 1em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start; }
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
         position: relative; }
@@ -4189,6 +4193,36 @@ body {
         border-radius: 0.2em;
         margin-left: 1em;
         padding: 0 0.4em; }
+
+.merge-instructions {
+  position: relative; }
+  .merge-instructions .instructions-button {
+    background-color: transparent;
+    color: #009E7F;
+    border: 1px solid #009E7F;
+    padding: 0.4em 1em;
+    cursor: pointer;
+    display: inline-block; }
+  .merge-instructions .instructions-text {
+    display: none;
+    overflow-y: auto;
+    padding: 2em;
+    border: 2px solid #009E7F;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.95);
+    position: absolute;
+    top: 0em;
+    right: 3em;
+    width: 50em;
+    max-width: 70vw; }
+    .merge-instructions .instructions-text .editor-side {
+      font-weight: bold;
+      color: #009E7F; }
+  .merge-instructions.showing .instructions-button {
+    background-color: #009E7F;
+    color: white; }
+  .merge-instructions.showing .instructions-text {
+    display: inline-block; }
 
 #repo-detail .title-links {
   display: flex;

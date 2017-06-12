@@ -142,8 +142,11 @@ var APIWs = (function () {
     APIWs.prototype.Commit = function (repoOwner, repoName, message) {
         return this.rpc("Commit", [repoOwner, repoName, message]);
     };
-    APIWs.prototype.CommitOnly = function (repoOwner, repoName, message) {
-        return this.rpc("CommitOnly", [repoOwner, repoName, message]);
+    APIWs.prototype.CommitAll = function (repoOwner, repoName, message, notes) {
+        return this.rpc("CommitAll", [repoOwner, repoName, message, notes]);
+    };
+    APIWs.prototype.CommitOnly = function (repoOwner, repoName, message, notes) {
+        return this.rpc("CommitOnly", [repoOwner, repoName, message, notes]);
     };
     APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format) {
         return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format]);
@@ -226,6 +229,27 @@ var AddNewBookDialog$1 = (function () {
         this.el = n;
     }
     return AddNewBookDialog;
+}());
+var CommitMessageDialog = (function () {
+    function CommitMessageDialog() {
+        var t = CommitMessageDialog._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"commitMessage\">Enter the commit message\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label><label for=\"commitNotes\">Further notes about the commit\n\t\t<textarea name=\"commitNotes\" id=\"commitNotes\" rows=\"5\">\n\t\t</textarea>\n\t\t</label></fieldset><button class=\"btn\">Commit</button></div>";
+            t = d.firstElementChild;
+            CommitMessageDialog._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            title: n.childNodes[0],
+            instructions: n.childNodes[1],
+            message: n.childNodes[2].childNodes[0].childNodes[1],
+            notes: n.childNodes[2].childNodes[1].childNodes[1],
+            commit: n.childNodes[3],
+        };
+        this.el = n;
+    }
+    return CommitMessageDialog;
 }());
 var EditorImage = (function () {
     function EditorImage() {
@@ -417,6 +441,26 @@ var conflict_FileListDisplay = (function () {
     }
     return conflict_FileListDisplay;
 }());
+var conflict_MergeInstructions = (function () {
+    function conflict_MergeInstructions() {
+        var t = conflict_MergeInstructions._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"merge-instructions showing\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
+            t = d.firstElementChild;
+            conflict_MergeInstructions._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            show: n.childNodes[0],
+            text: n.childNodes[1],
+            theirSide: n.childNodes[1].childNodes[1].childNodes[1],
+            ourSide: n.childNodes[1].childNodes[2].childNodes[1],
+        };
+        this.el = n;
+    }
+    return conflict_MergeInstructions;
+}());
 
 function QuerySelectorAllIterate(el, query) {
     var els = [];
@@ -550,8 +594,6 @@ var FoundationRevealDialog$1 = (function (_super) {
         var _this = _super.call(this) || this;
         _this.Events = new signals.Signal();
         _this.$el = jQuery(_this.el);
-        // Comment here
-        TSFoundation.Reveal(_this.$el);
         if (openElement) {
             openElement.addEventListener('click', function (evt) {
                 evt.preventDefault();
@@ -568,12 +610,12 @@ var FoundationRevealDialog$1 = (function (_super) {
         if (content) {
             _this.Set(content);
         }
-        if (document.body.firstChild) {
-            document.body.insertBefore(_this.el, document.body.firstChild);
-        }
-        else {
-            document.body.appendChild(_this.el);
-        }
+        // The el must be inserted into the DOM before Foundation is
+        // called on it, otherwise Foundation doesn't properly position
+        // the dialog.
+        document.body.appendChild(_this.el);
+        // TSFoundation required because Typescript can be really stupid.
+        TSFoundation.Reveal(_this.$el);
         return _this;
     }
     // Set the content of the dialog to the given
@@ -2390,18 +2432,26 @@ var MergeEditorControlBar = (function () {
     return MergeEditorControlBar;
 }());
 
-// MergeEditor controls a Mergely class
-//
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
         this.parent = parent;
-        this.editLeft = false;
+        this.editLeft = true;
         this.editBoth = true;
         this.Listen = new signals.Signal();
         var controlBar = new MergeEditorControlBar();
         controlBar.Listen.add(this.controlAction, this);
     }
+    // OurSide returns a string describing the side on which the
+    // final version will be displayed.
+    MergeEditor.prototype.OurSide = function () {
+        return this.editLeft ? "left" : "right";
+    };
+    // TheirSide returns a string describing the side on which
+    // the submitted changes will be displayed.
+    MergeEditor.prototype.TheirSide = function () {
+        return this.editLeft ? "right" : "left";
+    };
     MergeEditor.prototype.controlAction = function (act) {
         var _this = this;
         switch (act) {
@@ -2516,6 +2566,80 @@ var MergeEditor$1 = (function () {
     return MergeEditor;
 }());
 
+var MergeInstructions = (function (_super) {
+    tslib_1.__extends(MergeInstructions, _super);
+    function MergeInstructions(parent, editor) {
+        var _this = _super.call(this) || this;
+        if (!parent) {
+            return _this;
+        }
+        _this.$.theirSide.innerHTML = editor.TheirSide();
+        _this.$.ourSide.innerHTML = editor.OurSide();
+        _this.$.show.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.el.classList.toggle("showing");
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    return MergeInstructions;
+}(conflict_MergeInstructions));
+
+var CommitMessageDialog$1 = (function (_super) {
+    tslib_1.__extends(CommitMessageDialog$$1, _super);
+    function CommitMessageDialog$$1(clearOnOpen) {
+        var _this = _super.call(this) || this;
+        _this.clearOnOpen = clearOnOpen;
+        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+        _this.dialog.Events.add(_this.dialogEvent, _this);
+        _this.$.commit.addEventListener("click", function (evt) {
+            evt.stopPropagation();
+            evt.preventDefault();
+            _this.resolve({
+                Message: _this.$.message.value,
+                Notes: _this.$.notes.value,
+                Cancelled: false
+            });
+            _this.resolve = undefined;
+            _this.dialog.Close();
+        });
+        return _this;
+    }
+    CommitMessageDialog$$1.prototype.dialogEvent = function (evt) {
+        switch (evt) {
+            case DialogEvents.Closed:
+                // If the commit button was pressed, we have resolved
+                // the promise, and have cleared this.resolve
+                if (this.resolve) {
+                    this.resolve({ Cancelled: true });
+                }
+                return;
+            case DialogEvents.Opened:
+                if (this.clearOnOpen) {
+                    this.$.notes.value = "";
+                    this.$.message.value = "";
+                }
+                return;
+        }
+        
+    };
+    // Open returns a Promise that will return a string[]. The string[]
+    // will either contain two elements: 
+    CommitMessageDialog$$1.prototype.Open = function (title, instructions) {
+        var _this = this;
+        this.$.title.innerText = title;
+        this.$.instructions.innerText = instructions;
+        return new Promise(function (resolve, reject) {
+            _this.resolve = resolve;
+            _this.dialog.Open();
+        });
+    };
+    return CommitMessageDialog$$1;
+}(CommitMessageDialog));
+
+// RepoConflictPage handles conflict-merging for the repo.
+// It's main data is generated in public/repo_conflict.html
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
@@ -2526,6 +2650,8 @@ var RepoConflictPage = (function () {
             _this.fileListEvent(undefined, evt.detail.file);
         });
         this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
+        this.commitDialog = new CommitMessageDialog$1(false);
+        new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         var filesEl = document.getElementById('staged-files-data');
         if (!filesEl) {
             EBW.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");
@@ -2533,6 +2659,25 @@ var RepoConflictPage = (function () {
         }
         var listjs = filesEl.innerText;
         fileList.load(JSON.parse(listjs));
+        document.getElementById("action-commit").addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
+                .then(function (r) {
+                if (r.Cancelled) {
+                    console.log("Cancelled commit");
+                    return;
+                }
+                document.location.href = "/repo/" +
+                    encodeURIComponent(_this.context.RepoOwner) +
+                    "/" + encodeURIComponent(_this.context.RepoName) +
+                    "/conflict/resolve?" +
+                    "message=" + encodeURIComponent(r.Message) +
+                    "&notes=" + encodeURIComponent(r.Notes);
+                return;
+            })
+                .catch(EBW.Error);
+        });
     }
     RepoConflictPage.prototype.fileListEvent = function (e, f) {
         console.log("FileListEvent in RepoConflictPage: ", f);

@@ -8,12 +8,11 @@ import jQuery = require('jquery');
 import signals = require('signals');
 
 // MergeEditor controls a Mergely class
-//
 export class MergeEditor {
 	protected mergelyDiv: HTMLDivElement;
 	public Listen : signals.Signal;
 	protected file:File;
-	protected editLeft = false;
+	protected editLeft = true;
 	protected editBoth = true;
 
 	constructor(
@@ -25,6 +24,17 @@ export class MergeEditor {
 		let controlBar = new MergeEditorControlBar();
 		controlBar.Listen.add(this.controlAction, this);
 	}
+	// OurSide returns a string describing the side on which the
+	// final version will be displayed.
+	OurSide() : string {
+		return this.editLeft ? "left" : "right";
+	}
+	// TheirSide returns a string describing the side on which
+	// the submitted changes will be displayed.
+	TheirSide() : string {
+		return this.editLeft ? "right" : "left";
+	}
+
 	controlAction(act:MergeEditorAction) {
 		switch(act) {
 			case MergeEditorAction.Save:

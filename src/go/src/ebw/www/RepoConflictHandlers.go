@@ -2,7 +2,8 @@ package www
 
 import (
 	"fmt"
-	// "github.com/golang/glog"
+
+	"github.com/golang/glog"
 	// "ebw/git"
 )
 
@@ -38,9 +39,27 @@ func repoConflictAbort(c *Context) error {
 }
 
 func repoConflictResolve(c *Context) error {
-	// FOR CONFLICT RESOLVE, I JUST NEED TO EXECUTE
-	// git commit -am 'merged' && git push origin master ... ?
-	// if push origin master fails, I might need to git pull origin master
-	// and then resolve the new conflicts that arise.
-	return fmt.Errorf("repo-confict-resolve is not yet implemented")
+	var r struct {
+		Notes   string
+		Message string
+	}
+	if err := c.Decode(&r); nil != err {
+		return err
+	}
+	if `` == r.Message {
+		return fmt.Errorf(`You need to supply a Message for a commit`)
+	}
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	if _, err := repo.CommitAll(r.Message, r.Notes); nil != err {
+		return err
+	}
+
+	if err := repo.CleanupConflictTemporaryFiles(); nil != err {
+		return err
+	}
+	glog.Infof(`Resolved conflict, going back to detail %s`, pathRepoDetail(repo))
+	return c.Redirect(pathRepoDetail(repo))
 }

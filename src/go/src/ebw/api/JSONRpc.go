@@ -82,13 +82,22 @@ func (rpc *API) Commit(repoOwner, repoName, message string) error {
 	_, err := git.Commit(rpc.Client, repoOwner, repoName, message)
 	return err
 }
-func (rpc *API) CommitOnly(repoOwner, repoName, message string) error {
+func (rpc *API) CommitAll(repoOwner, repoName, message, notes string) error {
 	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
 	defer repo.Free()
-	_, err = repo.Commit(message)
+	_, err = repo.CommitAll(message, notes)
+	return err
+}
+func (rpc *API) CommitOnly(repoOwner, repoName, message, notes string) error {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer repo.Free()
+	_, err = repo.Commit(message, notes)
 	return err
 }
 

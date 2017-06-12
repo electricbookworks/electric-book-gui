@@ -66,6 +66,11 @@
 				flex-grow: 0;
 				// height: 3.3em;
 				padding: 0.6em 1em 0.6em 1em;
+
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: flex-start;
 			}
 			#editor-work {
 				flex-grow: 1;
@@ -120,6 +125,50 @@
 				margin-left: 1em;
 				padding: 0 0.4em;
 			}
+		}
+	}
+}
+
+.merge-instructions {
+	position: relative;
+	.instructions-button {
+		background-color: transparent;
+		color: $color-primary;
+		border: 1px solid $color-primary;
+		padding: 0.4em 1em;
+		cursor: pointer;
+		display: inline-block;
+	}
+	.instructions-text {
+		display: none;
+
+		overflow-y: auto;
+		padding: 2em;
+		border: 2px solid $color-primary;
+		z-index: 100;
+		background-color: rgba(255,255,255,0.95);
+
+		position: absolute;
+		
+		top: 0em;
+		right: 3em;
+
+		width: 50em;
+		max-width: 70vw;
+
+		.editor-side {
+			font-weight: bold;
+			color: $color-primary;
+		}
+			
+	}
+	&.showing {
+		.instructions-button {
+			background-color: $color-inverse-bg;
+			color: $color-inverse-fg;
+		}
+		.instructions-text {
+			display: inline-block;
 		}
 	}
 }
