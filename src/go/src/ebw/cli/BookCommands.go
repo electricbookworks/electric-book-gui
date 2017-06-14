@@ -501,11 +501,15 @@ func BookCatCommand() *commander.Command {
 			}
 			defer repo.Free()
 			for _, f := range files {
-				contents, err := repo.FileCat(f, git.FileVersion(*version))
+				exists, contents, err := repo.FileCat(f, git.FileVersion(*version))
 				if nil != err {
 					return err
 				}
-				fmt.Println(string(contents))
+				if !exists {
+					fmt.Fprintf(os.Stderr, "%s DOES NOT EXIST\n", f)
+				} else {
+					fmt.Println(string(contents))
+				}
 			}
 			return nil
 		})

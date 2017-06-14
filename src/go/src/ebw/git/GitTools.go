@@ -49,7 +49,8 @@ func Username(client *Client) (string, error) {
 
 // RepoDir returns the local git_cache repo working directory location.
 // If repoOwner or repoName is an empty string, the path is returned
-// up to that level.
+// up to that level. BUT, you cannot just Join the path pieces - you
+// need to call RepoDir again to get the additional parts.
 func RepoDir(user, repoOwner, repoName string) (string, error) {
 	root, err := os.Getwd()
 	if nil != err {
@@ -62,7 +63,7 @@ func RepoDir(user, repoOwner, repoName string) (string, error) {
 	if `` == repoName {
 		return filepath.Join(root, repoOwner), nil
 	}
-	return filepath.Join(root, repoOwner, repoName), nil
+	return filepath.Join(root, repoOwner, repoName, `/repo`), nil
 }
 
 // Checkout checks out the github repo into the cached directory system,
@@ -87,12 +88,11 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 	// to clone - that will cause a 'directory already exists' error.
 	// So we only create the parent directory, then determine whether
 	// the repoDirectory exists or not.
-	repoOwnerDir, err := RepoDir(client.Username, repoOwner, ``)
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
-		return ``, util.Error(err)
+		return ``, err
 	}
-	repoDir := filepath.Join(repoOwnerDir, repoName)
-	os.MkdirAll(repoOwnerDir, 0755)
+	os.MkdirAll(filepath.Dir(repoDir), 0755)
 	_, err = os.Stat(repoDir)
 	if nil == err {
 		// TODO : When merging is working correctly, we should not be
@@ -108,8 +108,8 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 		return ``, util.Error(err)
 	}
 
-	cmd := exec.Command(`git`, `clone`, repoUrl+`.git`)
-	cmd.Dir = repoOwnerDir
+	cmd := exec.Command(`git`, `clone`, repoUrl+`.git`, filepath.Base(repoDir))
+	cmd.Dir = filepath.Dir(repoDir)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
 	if err := cmd.Run(); nil != err {
 		return ``, util.Error(err)
@@ -328,6 +328,8 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, n
 	return nil
 }
 
+// ContributeToRepo configures a fork of the repo for the given
+// user, and checks out the newly forked repo.
 func ContributeToRepo(client *Client, repoUserAndName string) error {
 	// See CLI BookContribute for model of how this should function.
 	parts := strings.Split(repoUserAndName, `/`)
@@ -351,6 +353,7 @@ func ContributeToRepo(client *Client, repoUserAndName string) error {
 		parts[0], parts[1])
 }
 
+// GitCloneTo clones a repo to the given working directory.
 func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string) error {
 	if "" == workingDir {
 		wd, err := os.Getwd()
@@ -427,29 +430,8 @@ func GitRemoteRepo(workingDir, remote string) (remoteUser, remoteProject string,
 	return gitRemoteParseUrl(rem.Url())
 }
 
-// DEPRECATED - we're using git2go instead
-// func GitRemoteRepo_shell(workingDir, remote string) (remoteUser, remoteProject string, err error) {
-// 	if `` == remote {
-// 		remote = `origin`
-// 	}
-// 	if `` == workingDir {
-// 		workingDir, err = os.Getwd()
-// 		if nil != err {
-// 			return ``, ``, util.Error(err)
-// 		}
-// 	}
-
-// 	remoteUrl, err := getGitOutput(workingDir, []string{
-// 		`remote`,
-// 		`get-url`,
-// 		remote,
-// 	})
-// 	if nil != err {
-// 		return ``, ``, err
-// 	}
-// 	return gitRemoteParseUrl(remoteUrl)
-// }
-
+// gitRemoteParseUrl parses a remote Url, and returns the
+// owner and name combination for the repo.
 func gitRemoteParseUrl(remoteUrl string) (string, string, error) {
 	ru, err := url.Parse(remoteUrl)
 	if nil != err {

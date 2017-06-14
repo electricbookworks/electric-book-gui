@@ -131,7 +131,7 @@ func PullRequestUpdate(client *Client, user, repoOwner, repoName string,
 	// return nil
 }
 
-func PullRequestClose(client *Client, user, repoOwner, repoName string, number int) error {
+func PullRequestClose(client *Client, repoOwner, repoName string, number int) error {
 	closedAt := time.Now()
 	merged := true
 	state := `closed`

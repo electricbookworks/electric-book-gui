@@ -386,7 +386,7 @@ export class conflict_MergeInstructions {
 		let t = conflict_MergeInstructions._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="merge-instructions showing"><div class="instructions-button">?</div><div class="instructions-text"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>`;
+			d.innerHTML = `<div class="merge-instructions"><div class="instructions-button">?</div><div class="instructions-text"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			conflict_MergeInstructions._template = t;
 		}

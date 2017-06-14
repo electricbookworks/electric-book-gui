@@ -10,15 +10,12 @@
 		</div>
 	</div>
 	<div id="work">
-		<div id="files">
+		<div id="files" class="showing">
 			<div id="files-show-tag" class="showing">
 				<object class="hidden" type="image/svg+xml" data="/img/file-folder-open.svg">
 					Show
 				</object>
-				<object class="showing" type="image/svg+xml" data="/img/file-folder-open.svg">Close</object>
-
- 				<!-- <img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/> -->
-				<!-- <img class="showing" src="/img/file-folder-closed.svg" alt="Close files" /> -->
+				<object class="showing" type="image/svg+xml" data="/img/file-folder-closed.svg">Close</object>
 			</div>
 			<div>These files require attention</div>
 			<div>
@@ -31,11 +28,26 @@
 				<div class="toolbar-menu">
 					<a class="btn" id="merge-editor-control-save">Save these changes</a>
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
-					<a class="btn" id="merge-editor-control-resolve" style="display: none;">Mark resolved</a>
+					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
 					<a class="btn" id="merge-editor-control-delete" disabled>Delete this file</a>
-					<a class="btn" id="merge-editor-control-revert-our">Revert to Ours</a>
-					<a class="btn" id="merge-editor-control-revert-their">Revert to Theirs</a>
-					<a class="btn" id="merge-editor-control-revert-git" disabled>Revert to Git Merge</a>
+
+					<div class="drop-down">
+						<button class="btn">Copy</button>
+						<div class="hover">
+							<a class="btn" id="merge-editor-control-copy-working">Ours to Theirs</a>
+							<a class="btn" id="merge-editor-control-copy-their">Theirs to Ours</a>
+						</div>
+					</div>
+
+					<div class="drop-down">
+						<div class="btn">Revert</div>
+						<div class="hover">
+							<a class="btn" id="merge-editor-control-revert-our">Ours to Our Original</a>
+							<a class="btn" id="merge-editor-control-revert-git" disabled>
+							Ours to git merge result</a>
+							<a class="btn" id="merge-editor-control-revert-their">Theirs to Their Original</a>
+						</div>
+					</div>
 				</div>
 				<div id="merge-instructions">
 				</div>

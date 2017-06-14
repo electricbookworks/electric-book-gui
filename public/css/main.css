@@ -3943,6 +3943,52 @@ body {
   #files-show-tag.showing > object.hidden, #files-show-tag.showing > img.hidden, #files-show-tag.showing > svg.hidden {
     display: none; }
 
+.toolbar-menu {
+  flex-grow: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline; }
+  .toolbar-menu > button, .toolbar-menu > div, .toolbar-menu > a {
+    display: block;
+    margin-bottom: 0.2em;
+    margin-right: 0.4em; }
+  .toolbar-menu .spacer {
+    height: 1em; }
+  .toolbar-menu .drop-down {
+    display: inline-block;
+    position: relative; }
+    .toolbar-menu .drop-down > .btn:after {
+      display: inline-block;
+      margin-left: 0.5em;
+      width: 1em;
+      height: 1em;
+      content: url("/img/arrow-right.svg");
+      transition: transform 0.2s; }
+    .toolbar-menu .drop-down:hover > .btn:after, .toolbar-menu .drop-down:active > .btn:after, .toolbar-menu .drop-down:focus > .btn:after, .toolbar-menu .drop-down:focus-within > .btn:after {
+      transform: rotate(-90deg); }
+    .toolbar-menu .drop-down .hover {
+      position: absolute;
+      top: 2em;
+      left: 0;
+      background-color: white;
+      border: 2px solid #009E7F;
+      border-radius: 0.4em;
+      border-top-left-radius: 0;
+      padding: 0.6em;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      width: 15em; }
+      .toolbar-menu .drop-down .hover > div, .toolbar-menu .drop-down .hover > a, .toolbar-menu .drop-down .hover > button {
+        margin: 0.2em 0.4em; }
+      .toolbar-menu .drop-down .hover:hover, .toolbar-menu .drop-down .hover:active, .toolbar-menu .drop-down .hover:focus, .toolbar-menu .drop-down .hover:focus-within {
+        display: flex; }
+    .toolbar-menu .drop-down:hover .hover, .toolbar-menu .drop-down:active .hover, .toolbar-menu .drop-down:focus .hover, .toolbar-menu .drop-down:focus-within .hover {
+      display: flex; }
+
 #new-editor {
   flex-grow: 1;
   position: relative;
@@ -4200,7 +4246,10 @@ body {
       flex-direction: column;
       justify-content: space-between;
       align-items: stretch;
-      transition: width 0.3s; }
+      transition: width 0.3s;
+      width: 0px; }
+      #repo-conflict #work #files.showing {
+        width: 30em; }
       #repo-conflict #work #files > div:nth-child(2) {
         flex-grow: 0;
         border-bottom: 1px solid #009E7F;

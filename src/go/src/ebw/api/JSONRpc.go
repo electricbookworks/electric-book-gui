@@ -7,6 +7,7 @@ package api
 //go:generate golait2 -logtostderr gen -out ../../../../ts/APIWs.ts -type API -in ebw/api/JSONRpc.go -tem typescriptWs
 
 import (
+	"fmt"
 	"github.com/google/go-github/github"
 
 	"ebw/git"
@@ -119,24 +120,92 @@ func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (stri
 	return print.MakeEndpoint(pr), nil
 }
 
-func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (string, string, string, error) {
+func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (bool, string, bool, string, error) {
+	retErr := func(err error) (bool, string, bool, string, error) {
+		return false, ``, false, ``, err
+	}
 	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
-		return ``, ``, ``, err
+		return retErr(err)
 	}
 	defer repo.Free()
 
-	our, err := repo.FileCat(path, git.FileOur)
+	working, their := []byte{}, []byte{}
+	workingTree, theirTree := repo.WorkingTree(), repo.TheirTree()
+
+	workingExists, err := workingTree.Exists(path)
 	if nil != err {
-		our = []byte{}
+		return retErr(err)
 	}
-	their, err := repo.FileCat(path, git.FileTheir)
+	if workingExists {
+		working, err = workingTree.Read(path)
+		if nil != err {
+			return retErr(err)
+		}
+	}
+	theirExists, err := theirTree.Exists(path)
 	if nil != err {
-		their = []byte{}
+		return retErr(err)
 	}
-	wd, err := repo.FileCat(path, git.FileWorking)
+	if theirExists {
+		their, err = theirTree.Read(path)
+		if nil != err {
+			return retErr(err)
+		}
+	}
+	return workingExists, string(working), theirExists, string(their), nil
+}
+
+// SaveMergingFile saves the 'Working' and 'Their' versions of the working
+// file into our repo and our their-tree.
+func (rpc *API) SaveMergingFile(repoOwner, repoName string, path string, workingExists bool, workingContent string, theirExists bool, theirContent string) error {
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
-		wd = []byte{}
+		return err
 	}
-	return string(our), string(their), string(wd), nil
+	defer r.Free()
+	if workingExists {
+		if err := r.WorkingTree().Write(path, []byte(workingContent)); nil != err {
+			return err
+		}
+	} else {
+		if err := r.WorkingTree().Remove(path); nil != err {
+			return err
+		}
+	}
+	if theirExists {
+		if err := r.TheirTree().Write(path, []byte(theirContent)); nil != err {
+			return err
+		}
+	} else {
+		if err := r.TheirTree().Remove(path); nil != err {
+			return err
+		}
+	}
+	return nil
+}
+
+// MergeFileOriginal returns the original file for the merge-version from the
+// named repo.
+func (rpc *API) MergeFileOriginal(repoOwner, repoName, path string, version string) (bool, string, error) {
+	var v git.FileVersion
+	switch version {
+	case "our":
+		v = git.FileOur
+	case "their":
+		v = git.FileTheir
+	default:
+		return false, ``, fmt.Errorf(`Unrecognized version request: %s`, version)
+	}
+
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return false, ``, err
+	}
+	defer r.Free()
+	exists, raw, err := r.FileCat(path, v)
+	if nil != err {
+		return false, ``, err
+	}
+	return exists, string(raw), nil
 }

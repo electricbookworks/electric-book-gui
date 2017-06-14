@@ -8,7 +8,7 @@ export class MergeInstructions extends Template {
 			return;
 		}
 		this.$.theirSide.innerHTML = editor.TheirSide();
-		this.$.ourSide.innerHTML = editor.OurSide();
+		this.$.ourSide.innerHTML = editor.WorkingSide();
 
 		this.$.show.addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();

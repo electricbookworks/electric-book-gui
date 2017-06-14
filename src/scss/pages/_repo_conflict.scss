@@ -38,6 +38,11 @@
 
 			transition: width 0.3s;
 
+			width: 0px;
+			&.showing {
+				width: 30em;
+			}
+
 			&>div:nth-child(2) {	// titlebar
 				flex-grow: 0;
 				border-bottom: 1px solid $color-primary;

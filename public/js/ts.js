@@ -154,6 +154,12 @@ var APIWs = (function () {
     APIWs.prototype.MergedFileCat = function (repoOwner, repoName, path) {
         return this.rpc("MergedFileCat", [repoOwner, repoName, path]);
     };
+    APIWs.prototype.SaveMergingFile = function (repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent) {
+        return this.rpc("SaveMergingFile", [repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent]);
+    };
+    APIWs.prototype.MergeFileOriginal = function (repoOwner, repoName, path, version) {
+        return this.rpc("MergeFileOriginal", [repoOwner, repoName, path, version]);
+    };
     return APIWs;
 }());
 
@@ -446,7 +452,7 @@ var conflict_MergeInstructions = (function () {
         var t = conflict_MergeInstructions._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"merge-instructions showing\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
+            d.innerHTML = "<div class=\"merge-instructions\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
             t = d.firstElementChild;
             conflict_MergeInstructions._template = t;
         }
@@ -2227,6 +2233,23 @@ var FileStatus = (function () {
     return FileStatus;
 }());
 
+var FileContent$1 = (function () {
+    function FileContent(exists, raw) {
+        this.Exists = exists;
+        this.Raw = raw;
+    }
+    return FileContent;
+}());
+var FileEvent;
+(function (FileEvent) {
+    FileEvent[FileEvent["WorkingChanged"] = 0] = "WorkingChanged";
+    FileEvent[FileEvent["TheirChanged"] = 1] = "TheirChanged";
+    FileEvent[FileEvent["StatusChanged"] = 2] = "StatusChanged";
+})(FileEvent || (FileEvent = {}));
+// File models a single conflicted file in the repo.
+// All communication with the conflicted file occurs through this single
+// class, which will coordinate any other internal-classes that it might need,
+// like the file status.
 var File$1 = (function () {
     function File(context, path, status) {
         this.context = context;
@@ -2248,90 +2271,99 @@ var File$1 = (function () {
     File.prototype.ClearCache = function () {
         this.cache.clear();
     };
-    File.prototype.FetchContent = function () {
+    File.prototype.FetchContent = function (source) {
         var _this = this;
-        if (this.cache.has("content-our")) {
+        if (this.cache.has("working")) {
             return Promise.resolve();
         }
         return this.context.API()
             .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
             .then(function (_a) {
-            var our = _a[0], their = _a[1], wd = _a[2];
-            _this.cache.set('content-our', our);
-            _this.cache.set('content-their', their);
-            _this.cache.set("content-wd", wd);
+            var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3];
+            var workingFile = new FileContent$1(workingExists, working);
+            var theirFile = new FileContent$1(theirExists, their);
+            _this.cache.set("working", workingFile);
+            _this.cache.set("their", theirFile);
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
+            _this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
             return Promise.resolve();
         });
     };
-    File.prototype.getCachedContent = function (key) {
+    File.prototype.RevertOur = function (source) {
         var _this = this;
-        if (this.cache.has(key)) {
-            return Promise.resolve(this.cache.get(key));
-        }
-        return this.FetchContent().then(function () {
-            return Promise.resolve(_this.cache.get(key));
+        return this.mergeFileOriginal("our")
+            .then(function (fc) {
+            _this.cache.set("working", fc);
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+            return Promise.resolve(fc);
         });
+    };
+    File.prototype.RevertTheir = function (source) {
+        var _this = this;
+        return this.mergeFileOriginal("their")
+            .then(function (fc) {
+            _this.cache.set("their", fc);
+            _this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
+            return Promise.resolve(fc);
+        });
+    };
+    File.prototype.mergeFileOriginal = function (v) {
+        return this.context.API()
+            .MergeFileOriginal(this.context.RepoOwner, this.context.RepoName, this.path, v)
+            .then(function (_a) {
+            var exists = _a[0], raw = _a[1];
+            return Promise.resolve(new FileContent$1(exists, raw));
+        });
+    };
+    File.prototype.getCachedContent = function (key) {
+        return this.cache.get(key);
     };
     File.prototype.setCachedContent = function (key, value) {
         this.cache.set(key, value);
     };
-    File.prototype.OurContent = function () {
-        return this.getCachedContent("content-our");
+    File.prototype.TheirFile = function () {
+        return this.cache.get("their");
     };
-    File.prototype.TheirContent = function () {
-        return this.getCachedContent("content-their");
+    File.prototype.WorkingFile = function () {
+        return this.cache.get("working");
     };
-    File.prototype.WorkingContent = function () {
-        return this.getCachedContent("content-wd");
+    File.prototype.RemoveWorkingFile = function (source) {
+        var fc = new FileContent$1(false, "");
+        this.cache.set("working", fc);
+        this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+        // Don't need to delete on server as this will happen on file save
     };
-    File.prototype.SetOurContent = function (content) {
-        this.cache.set("content-our", content);
+    File.prototype.RemoveTheirFile = function (source) {
+        var fc = new FileContent$1(false, "");
+        this.cache.set("their", new FileContent$1(false, ""));
+        this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
+        // Don't need to delete on server as this will happen on file save
     };
-    File.prototype.SetTheirContent = function (content) {
-        this.cache.set("content-their", content);
+    File.prototype.SetWorkingContent = function (source, content) {
+        var fc = new FileContent$1(content != undefined, content);
+        this.cache.set("working", fc);
+        this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
     };
-    File.prototype.SetWorkingContent = function (content) {
-        this.cache.set("content-wd", content);
+    File.prototype.SetTheirContent = function (source, content) {
+        var fc = new FileContent$1(content != undefined, content);
+        this.cache.set("their", fc);
+        this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
     };
-    // SaveWorkingContent will both save the content into our cache,
-    // and update the repo, including adding the item into the
-    // index.
-    // TODO: Determine if this marks the File as resolved.
-    File.prototype.SaveWorkingContent = function (content) {
+    File.prototype.Save = function () {
         var _this = this;
-        this.cache.set("content-wd", content);
+        var working = this.cache.get("working");
+        var their = this.cache.get("their");
         return this.context.API()
-            .SaveWorkingFile(this.context.RepoOwner, this.context.RepoName, this.Path(), content)
+            .SaveMergingFile(this.context.RepoOwner, this.context.RepoName, this.Path(), working.Exists, working.Raw, their.Exists, their.Raw)
             .then(function () {
-            // TODO: Need to update STATUS to 'UNRESOLVED' -
-            // because a commit will be needed before merge
-            // resolution will be possible
-            _this.Listen.dispatch(_this);
+            // TODO Need to somehow update the status
+            _this.Listen.dispatch(_this, FileEvent.StatusChanged, _this);
             return Promise.resolve();
         });
     };
-    File.prototype.CommitWorkingContent = function (content) {
-        var _this = this;
-        return this.SaveWorkingContent(content)
-            .then(function () {
-            return _this.context.API()
-                .CommitFile(_this.context.RepoOwner, _this.context.RepoName, _this.Path())
-                .then(function () {
-                // TODO: Need to update file STATUS to 'RESOLVED'
-                _this.Listen.dispatch(_this);
-                return Promise.resolve();
-            });
-        });
-    };
-    File.prototype.DeleteWorkingContent = function () {
-        var _this = this;
+    File.prototype.Commit = function (source) {
         return this.context.API()
-            .RemoveFile(this.context.RepoOwner, this.context.RepoName, this.Path())
-            .then(function () {
-            // TODO: Need to update STATUS
-            _this.Listen.dispatch(_this);
-            return Promise.resolve();
-        });
+            .CommitFile(this.context.RepoOwner, this.context.RepoName, this.Path());
     };
     return File;
 }());
@@ -2376,6 +2408,7 @@ var FileDisplay = (function (_super) {
         _this.el.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
+            console.log("CLICKED: " + _this.file.Path());
             _this.dispatchEvent("file-click");
             _this.Listen.dispatch(FileDisplayEvent.FileClick, _this.file);
         });
@@ -2430,6 +2463,8 @@ var MergeEditorAction;
     MergeEditorAction[MergeEditorAction["RevertOur"] = 3] = "RevertOur";
     MergeEditorAction[MergeEditorAction["RevertTheir"] = 4] = "RevertTheir";
     MergeEditorAction[MergeEditorAction["RevertGit"] = 5] = "RevertGit";
+    MergeEditorAction[MergeEditorAction["CopyWorking"] = 6] = "CopyWorking";
+    MergeEditorAction[MergeEditorAction["CopyTheir"] = 7] = "CopyTheir";
 })(MergeEditorAction || (MergeEditorAction = {}));
 // MergeEditorControlBar handles the wiring between the editor controls
 // and any listeners interested in these controls
@@ -2437,21 +2472,75 @@ var MergeEditorControlBar = (function () {
     function MergeEditorControlBar() {
         var _this = this;
         this.Listen = new signals.Signal();
+        this.DeleteButton = this.get("control-delete");
+        this.SaveButton = this.get("control-save");
+        this.RevertOurButton = this.get("revert-our");
+        this.RevertTheirButton = this.get("revert-their");
+        this.CopyWorkingButton = this.get("copy-working");
+        this.CopyTheirButton = this.get("copy-their");
+        this.buttons = new Array();
         var ln = function (key, act) {
-            document.getElementById("merge-editor-control-" + key)
-                .addEventListener("click", function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                _this.Listen.dispatch(act);
-            });
+            var el = _this.get(key);
+            if (el) {
+                el.addEventListener("click", function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    _this.Listen.dispatch(act);
+                });
+                _this.buttons.push(el);
+            }
+            else {
+                console.error("Failed to find #" + key);
+            }
         };
         ln("revert-our", MergeEditorAction.RevertOur);
         ln("revert-their", MergeEditorAction.RevertTheir);
         ln("revert-git", MergeEditorAction.RevertGit);
+        ln("copy-working", MergeEditorAction.CopyWorking);
+        ln("copy-their", MergeEditorAction.CopyTheir);
         ln("save", MergeEditorAction.Save);
         ln("delete", MergeEditorAction.Delete);
         ln("resolve", MergeEditorAction.Resolve);
     }
+    MergeEditorControlBar.prototype.get = function (key) {
+        return document.getElementById("merge-editor-control-" + key);
+    };
+    MergeEditorControlBar.prototype.disable = function (el) {
+        this.enable(el, false);
+    };
+    MergeEditorControlBar.prototype.enable = function (el, e) {
+        if (e === void 0) { e = true; }
+        if (e) {
+            el.removeAttribute("disabled");
+        }
+        else {
+            el.setAttribute("disabled", "disabled");
+        }
+    };
+    MergeEditorControlBar.prototype.SetFile = function (f) {
+        if (this.file) {
+            this.file.Listen.remove(this.fileEvent, this);
+        }
+        this.file = f;
+        this.file.Listen.add(this.fileEvent, this);
+    };
+    MergeEditorControlBar.prototype.fileEvent = function (source, e) {
+        for (var _i = 0, _a = this.buttons; _i < _a.length; _i++) {
+            var el = _a[_i];
+            this.enable(el, undefined != this.file);
+        }
+        if (!this.file) {
+            return;
+        }
+        var f = this.file;
+        if (f.WorkingFile().Exists || f.TheirFile().Exists) {
+            // One or the other exists
+            this.DeleteButton.removeAttribute("disabled");
+        }
+        else {
+            this.DeleteButton.setAttribute("disabled", "disabled");
+        }
+    };
     return MergeEditorControlBar;
 }());
 
@@ -2462,12 +2551,12 @@ var MergeEditor$1 = (function () {
         this.editLeft = true;
         this.editBoth = true;
         this.Listen = new signals.Signal();
-        var controlBar = new MergeEditorControlBar();
-        controlBar.Listen.add(this.controlAction, this);
+        this.controls = new MergeEditorControlBar();
+        this.controls.Listen.add(this.controlAction, this);
     }
-    // OurSide returns a string describing the side on which the
+    // WorkingSide returns a string describing the side on which the
     // final version will be displayed.
-    MergeEditor.prototype.OurSide = function () {
+    MergeEditor.prototype.WorkingSide = function () {
         return this.editLeft ? "left" : "right";
     };
     // TheirSide returns a string describing the side on which
@@ -2479,43 +2568,101 @@ var MergeEditor$1 = (function () {
         var _this = this;
         switch (act) {
             case MergeEditorAction.Save:
-                this.file.SaveWorkingContent(this.getText())
-                    .then(function () {
-                    EBW.Toast("Saved " + _this.file.Path());
-                })
+                this.SaveFile()
                     .catch(EBW.Error);
                 break;
             case MergeEditorAction.Delete:
                 break;
             case MergeEditorAction.Resolve:
-                this.file.CommitWorkingContent(this.getText())
+                this.SaveFile()
                     .then(function () {
-                    EBW.Toast("Resolved " + _this.file.Path() + ".");
+                    // undefined so we receive notifications
+                    return _this.file.Commit(undefined);
+                })
+                    .then(function () {
+                    EBW.Toast("Resolved changes on " + _this.file.Path());
                 })
                     .catch(EBW.Error);
                 break;
             case MergeEditorAction.RevertOur:
-                this.file.OurContent()
-                    .then(function (s) {
-                    _this.setText(s);
-                })
-                    .catch(EBW.Error);
+                this.RevertOur();
                 break;
             case MergeEditorAction.RevertTheir:
-                this.file.TheirContent()
-                    .then(function (s) {
-                    _this.setText(s);
-                })
-                    .catch(EBW.Error);
+                this.RevertTheir();
+                break;
+            case MergeEditorAction.CopyWorking:
+                this.CopyWorking();
+                break;
+            case MergeEditorAction.CopyTheir:
+                this.CopyTheir();
                 break;
             case MergeEditorAction.RevertGit:
         }
     };
-    MergeEditor.prototype.getText = function () {
+    MergeEditor.prototype.setWorkingText = function (t) {
+        if (this.editLeft) {
+            this.setLHS(t);
+        }
+        else {
+            this.setRHS(t);
+        }
+    };
+    MergeEditor.prototype.setTheirText = function (t) {
+        if (this.editLeft) {
+            this.setRHS(t);
+        }
+        else {
+            this.setLHS(t);
+        }
+    };
+    MergeEditor.prototype.getWorkingText = function () {
         if (this.editLeft) {
             return this.getLHS();
         }
         return this.getRHS();
+    };
+    MergeEditor.prototype.getTheirText = function () {
+        if (this.editLeft) {
+            return this.getRHS();
+        }
+        return this.getLHS();
+    };
+    MergeEditor.prototype.getWorkingContent = function () {
+        return new FileContent$1(this.isWorkingDeleted(), this.getWorkingText());
+    };
+    MergeEditor.prototype.getTheirContent = function () {
+        return new FileContent$1(this.isTheirDeleted(), this.getTheirText());
+    };
+    MergeEditor.prototype.CopyTheir = function () {
+        // We leave source undefined, so that our editor will update
+        // when the change arrives		
+        console.log("isTheirDeleted = " + this.isTheirDeleted() + ", text = " + this.getTheirText());
+        this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
+    };
+    MergeEditor.prototype.CopyWorking = function () {
+        // We leave source undefined, so that our editor will update
+        // when the change arrives
+        console.log("isWorkingDeleted = " + this.isWorkingDeleted());
+        console.log("working text = " + this.getTheirText());
+        this.file.SetTheirContent(undefined, this.isWorkingDeleted() ? undefined : this.getWorkingText());
+    };
+    MergeEditor.prototype.RevertOur = function () {
+        // Leave source undefined so that our editor updates when
+        // changes arrive.
+        this.file.RevertOur(undefined)
+            .catch(EBW.Error);
+    };
+    MergeEditor.prototype.RevertTheir = function () {
+        // Leave source undefined so that our editor updates when
+        // changes arrive.	
+        this.file.RevertTheir(undefined)
+            .catch(EBW.Error);
+    };
+    MergeEditor.prototype.isWorkingDeleted = function () {
+        return !this.file.WorkingFile().Exists;
+    };
+    MergeEditor.prototype.isTheirDeleted = function () {
+        return !this.file.TheirFile().Exists;
     };
     MergeEditor.prototype.setText = function (s) {
         if (this.editLeft) {
@@ -2525,34 +2672,100 @@ var MergeEditor$1 = (function () {
             this.setRHS(s);
         }
     };
+    MergeEditor.prototype.getLeftCM = function () {
+        return jQuery(this.mergelyDiv).mergely('cm', 'lhs');
+    };
+    MergeEditor.prototype.getRightCM = function () {
+        return jQuery(this.mergelyDiv).mergely('cm', 'rhs');
+    };
     MergeEditor.prototype.getLHS = function () {
-        var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
-        return cm.getDoc().getValue();
+        return this.getLeftCM().getDoc().getValue();
     };
     MergeEditor.prototype.getRHS = function () {
-        var cm = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
-        return cm.getDoc().getValue();
+        return this.getRightCM().getDoc().getValue();
     };
     MergeEditor.prototype.setLHS = function (s) {
-        var cm = jQuery(this.mergelyDiv).mergely('cm', 'lhs');
-        cm.getDoc().setValue(s);
+        if (!s)
+            s = "";
+        this.getLeftCM().getDoc().setValue(s);
     };
     MergeEditor.prototype.setRHS = function (s) {
-        var cm = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
-        cm.getDoc().setValue(s);
+        if (!s)
+            s = "";
+        this.getRightCM().getDoc().setValue(s);
+    };
+    MergeEditor.prototype.SaveFile = function () {
+        if (this.file) {
+            var f_1 = this.file;
+            var w = this.getWorkingText();
+            // We pass ourselves as the source, so that we don't update
+            // our editor when the change event arrives
+            this.file.SetWorkingContent(this, this.isWorkingDeleted() ? undefined : this.getWorkingText());
+            this.file.SetTheirContent(this, this.isTheirDeleted() ? undefined : this.getTheirText());
+            return this.file.Save()
+                .then(function () {
+                EBW.Toast("Saved " + f_1.Path());
+                return Promise.resolve("");
+            });
+        }
+        return Promise.reject("No file to save");
+    };
+    MergeEditor.prototype.FileEventListener = function (source, e, fc) {
+        // If we were ourselves the source of the event, we ignore it.
+        if (source == this) {
+            return;
+        }
+        switch (e) {
+            case FileEvent.WorkingChanged:
+                this.setWorkingText(fc.Raw);
+                break;
+            case FileEvent.TheirChanged:
+                this.setTheirText(fc.Raw);
+                break;
+            case FileEvent.StatusChanged:
+                break;
+        }
     };
     // Merge starts merging a file.
     MergeEditor.prototype.Merge = function (file) {
-        // First check if we're currently editing, and prompt to save
-        // if we have made changes.
         var _this = this;
-        var p = file.FetchContent()
+        console.log("Merge: " + file.Path());
+        if (this.file && this.file.Path() == file.Path()) {
+            return; // Nothing to do if we're selecting the same file
+        }
+        // Save any file we're currently editing
+        if (this.file) {
+            this.SaveFile();
+            this.file.Listen.remove(this.FileEventListener, this);
+        }
+        // Controls must receive update before we do.
+        // TODO : Actually, the controls should listen to US, not to the
+        // file, and we should have an 'EditorStateModel'...
+        this.controls.SetFile(file);
+        // VERY importantly, we don't listen to the file 
+        // until after we've concluded the FetchContent, because
+        // we won't have an editor to populate when FetchContent
+        // sends its signals that the content has changed.
+        // However, because we configure ourselves as the source,
+        // if we were listening, it shouldn't be a problem...
+        var p = file.FetchContent(this)
             .then(function () {
-            return Promise.all([file.WorkingContent(), file.TheirContent()]);
+            return Promise.all([file.WorkingFile(), file.TheirFile()]);
         })
             .then(function (args) {
             var _a = [args[0], args[1]], working = _a[0], their = _a[1];
             _this.file = file;
+            _this.file.Listen.add(_this.FileEventListener, _this);
+            var lhsText, rhsText;
+            if (_this.editLeft) {
+                lhsText = working.Raw;
+                rhsText = their.Raw;
+            }
+            else {
+                lhsText = their.Raw;
+                rhsText = working.Raw;
+            }
+            // Create a new Mergely Editor for each file
             _this.parent.textContent = "";
             _this.mergelyDiv = document.createElement("div");
             _this.parent.appendChild(_this.mergelyDiv);
@@ -2569,21 +2782,14 @@ var MergeEditor$1 = (function () {
                 rhs_cmsettings: {
                     readOnly: (!_this.editBoth) && _this.editLeft
                 },
-                // lhs_cmsettings: {
-                // 	wrap_lines: true,
-                // },
-                // autoresize: true,
                 editor_height: "100%",
-                // wrap_lines: true,
                 lhs: function (setValue) {
-                    setValue(this.editLeft ? working : their);
+                    setValue(lhsText);
                 },
                 rhs: function (setValue) {
-                    setValue(this.editLeft ? their : working);
+                    setValue(rhsText);
                 },
             });
-            // let right = jQuery(this.mergelyDiv).mergely('cm', 'rhs');
-            // console.log('right hand cm = ', right);		
         });
     };
     return MergeEditor;
@@ -2597,7 +2803,7 @@ var MergeInstructions = (function (_super) {
             return _this;
         }
         _this.$.theirSide.innerHTML = editor.TheirSide();
-        _this.$.ourSide.innerHTML = editor.OurSide();
+        _this.$.ourSide.innerHTML = editor.WorkingSide();
         _this.$.show.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
@@ -2661,8 +2867,6 @@ var CommitMessageDialog$1 = (function (_super) {
     return CommitMessageDialog$$1;
 }(CommitMessageDialog));
 
-// RepoConflictPage handles conflict-merging for the repo.
-// It's main data is generated in public/repo_conflict.html
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
@@ -2677,8 +2881,12 @@ var RepoConflictPage = (function () {
         new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");
-            el
-                .style.width = showing ? "30em" : "0px";
+            if (showing)
+                el.classList.add("showing");
+            else
+                el.classList.remove("showing");
+            // el
+            // .style.width = showing ? "30em":"0px";
         });
         var filesEl = document.getElementById('staged-files-data');
         if (!filesEl) {

@@ -176,4 +176,12 @@ export class APIWs {
 		return this.rpc("MergedFileCat",  [repoOwner,repoName,path] );
 	}
 	
+	SaveMergingFile (repoOwner:string,repoName:string,path:string,workingExists:boolean,workingContent:string,theirExists:boolean,theirContent:string) {
+		return this.rpc("SaveMergingFile",  [repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent] );
+	}
+	
+	MergeFileOriginal (repoOwner:string,repoName:string,path:string,version:string) {
+		return this.rpc("MergeFileOriginal",  [repoOwner,repoName,path,version] );
+	}
+	
 }

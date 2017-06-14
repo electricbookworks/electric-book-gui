@@ -29,9 +29,13 @@ export class RepoConflictPage {
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
-				let el = document.getElementById(`files`);				
-				el
-				.style.width = showing ? "30em":"0px";
+				let el = document.getElementById(`files`);
+				if (showing)
+					el.classList.add(`showing`);
+				else
+					el.classList.remove(`showing`);				
+				// el
+				// .style.width = showing ? "30em":"0px";
 			});
 
 

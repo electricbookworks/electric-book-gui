@@ -165,6 +165,14 @@ class API {
 		return this._rpc("MergedFileCat",  arguments );
 	}
 	
+	SaveMergingFile(repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent) {
+		return this._rpc("SaveMergingFile",  arguments );
+	}
+	
+	MergeFileOriginal(repoOwner,repoName,path,version) {
+		return this._rpc("MergeFileOriginal",  arguments );
+	}
+	
 
 	flatten(callback, context=null) {
 		return function(argsArray) {

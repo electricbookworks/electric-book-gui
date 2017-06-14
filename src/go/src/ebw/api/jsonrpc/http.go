@@ -2157,7 +2157,7 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			// 	return
 			// }
 			
-			result := make([]interface{}, 4)
+			result := make([]interface{}, 5)
 			
 
 			if err = func() (err error) {
@@ -2175,7 +2175,7 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 
 				
-					result[0],result[1],result[2],result[3] = context.MergedFileCat(
+					result[0],result[1],result[2],result[3],result[4] = context.MergedFileCat(
 		args.REPOOWNER,
 		args.REPONAME,
 		args.PATH,
@@ -2183,11 +2183,271 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				)
 
 					
-					if (nil!=result[3]) {
-						return result[3].(error)
+					if (nil!=result[4]) {
+						return result[4].(error)
 					}
 					
-					result = result[0:3]
+					result = result[0:4]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "SaveMergingFile":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+				WORKINGEXISTS bool `json:"3"`
+				
+				WORKINGCONTENT string `json:"4"`
+				
+				THEIREXISTS bool `json:"5"`
+				
+				THEIRCONTENT string `json:"6"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=7 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 7, len(request.Params), "SaveMergingFile")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.WORKINGEXISTS);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[4], &args.WORKINGCONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 4+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[5], &args.THEIREXISTS);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 5+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[6], &args.THEIRCONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 6+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.SaveMergingFile(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		args.WORKINGEXISTS,
+		args.WORKINGCONTENT,
+		args.THEIREXISTS,
+		args.THEIRCONTENT,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "MergeFileOriginal":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+				VERSION string `json:"3"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=4 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "MergeFileOriginal")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.VERSION);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 3)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1],result[2] = context.MergeFileOriginal(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		args.VERSION,
+		
+				)
+
+					
+					if (nil!=result[2]) {
+						return result[2].(error)
+					}
+					
+					result = result[0:2]
 					
 
 								

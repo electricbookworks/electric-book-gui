@@ -37,6 +37,8 @@ type Repo struct {
 	Client    *Client
 	RepoOwner string
 	RepoName  string
+
+	EBWRepoStatus *EBWRepoStatus
 }
 
 func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
@@ -49,13 +51,17 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 	if nil != err {
 		return nil, err
 	}
-	return &Repo{
+	r := &Repo{
 		Repository: repo,
 		Dir:        repoDir,
 		Client:     client,
 		RepoOwner:  repoOwner,
 		RepoName:   repoName,
-	}, nil
+	}
+	if r.EBWRepoStatus, err = r.ReadEBWRepoStatus(); nil != err {
+		return nil, err
+	}
+	return r, nil
 }
 
 // CLI returns true if this repo is working against a CLI, false
@@ -64,16 +70,44 @@ func (r *Repo) CLI() bool {
 	return r.isCLI
 }
 
-// Path returns the path to the filename constructed from the
-// elements passed to Path. If you don't provide any elements,
+// Path returns the path to the filename INSIDE THE GIT REPO
+// constructed from the
+// concatenated elements passed to RepoPath.
+// If you don't provide any elements,
 // the repo dir is returned.
-func (r *Repo) Path(path ...string) string {
+func (r *Repo) RepoPath(path ...string) string {
 	if 0 == len(path) {
 		return r.Dir
 	}
 	parts := make([]string, len(path)+1)
 	parts[0] = r.Dir
-	parts = append(parts, path...)
+	copy(parts[1:], path)
+	return filepath.Join(parts...)
+}
+
+// TheirPath returns the path to the `their` version of a file
+// used during Merge resolution.
+func (r *Repo) TheirPath(path ...string) string {
+	if 0 == len(path) {
+		return filepath.Join(filepath.Dir(r.Dir), `merge-their`)
+	}
+	parts := make([]string, len(path)+2)
+	parts[0] = filepath.Dir(r.Dir)
+	parts[1] = `merge-their`
+	copy(parts[2:], path)
+	return filepath.Join(parts...)
+}
+
+// ConfigPath returns the path mapped into the
+// EBW `config` directory
+func (r *Repo) ConfigPath(path ...string) string {
+	if 0 == len(path) {
+		return filepath.Join(filepath.Dir(r.Dir), `ebw-config`)
+	}
+	parts := make([]string, len(path)+2)
+	parts[0] = filepath.Dir(r.Dir)
+	parts[1] = `ebw-config`
+	copy(parts[2:], path)
 	return filepath.Join(parts...)
 }
 
@@ -658,54 +692,73 @@ func (r *Repo) MergeCommits(includeHead bool) ([]*git2go.Commit, error) {
 }
 
 // FileCat returns the contents of a conflicted or merged file.
-func (r *Repo) FileCat(path string, version FileVersion) ([]byte, error) {
+// The first bool parameter indicates whether the files exists.
+func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 	var fileId *git2go.Oid
 	if FileWorking == version {
-		return ioutil.ReadFile(filepath.Join(r.Dir, path))
+		exists, err := util.FileExists(r.RepoPath(path))
+		if nil != err {
+			return false, []byte{}, err
+		}
+		if !exists {
+			return false, []byte{}, nil
+		}
+		raw, err := ioutil.ReadFile(r.RepoPath(path))
+		if nil != err {
+			return false, []byte{}, util.Error(err)
+		}
+		return true, raw, err
 	}
 	switch version {
 	case FileTheir:
 		mergeHeads, err := r.MergeHeads()
 		if nil != err {
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 		if 1 != len(mergeHeads) {
-			return []byte{}, util.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
+			return false, []byte{}, util.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
 		}
 
 		tree, err := r.treeForCommit(mergeHeads[0])
 		if nil != err {
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 
 		te, err := tree.EntryByPath(path)
 		if nil != err {
-			return []byte{}, util.Error(err)
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				return false, []byte{}, nil
+			}
+
+			return false, []byte{}, util.Error(err)
 		}
 		fileId = te.Id
 	case FileOur:
 		headRef, err := r.Head()
 		if nil != err {
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 		tree, err := r.treeForCommit(headRef.Target())
 		if nil != err {
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 		te, err := tree.EntryByPath(path)
 		if nil != err {
-			return []byte{}, util.Error(err)
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				return false, []byte{}, nil
+			}
+			return false, []byte{}, util.Error(err)
 		}
 		fileId = te.Id
 	default:
 		index, err := r.Repository.Index()
 		if nil != err {
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 		conflict, err := index.GetConflict(path)
 		if nil != err {
 			// An error can occur if the file is not conflicted
-			return []byte{}, util.Error(err)
+			return false, []byte{}, util.Error(err)
 		}
 		switch version {
 		case FileAncestor:
@@ -715,20 +768,25 @@ func (r *Repo) FileCat(path string, version FileVersion) ([]byte, error) {
 		case FileTheir:
 			fileId = conflict.Their.Id
 		default:
-			return []byte{}, util.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
+			return false, []byte{}, util.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
 		}
 	}
 
+	if fileId.IsZero() {
+		// I'm guessing this could occur if the file does not exist
+		glog.Infof(`Got fileId IsZero() for %s (v=%d)`, path, version)
+		return false, []byte{}, nil
+	}
 	file, err := r.Repository.Lookup(fileId)
 	if nil != err {
-		return []byte{}, util.Error(err)
+		return false, []byte{}, util.Error(err)
 	}
 	defer file.Free()
 	blob, err := file.AsBlob()
 	if nil != err {
-		return []byte{}, util.Error(err)
+		return false, []byte{}, util.Error(err)
 	}
-	return blob.Contents(), nil
+	return true, blob.Contents(), nil
 }
 
 // ResetConflictedFilesInWorkingDir goes through conflicted files in the
@@ -788,11 +846,14 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 			continue
 		}
 
-		fullPath := r.Path(file.Path)
+		fullPath := r.RepoPath(file.Path)
 		glog.Infof(`Considering %s with Oid = %s`, file.Path, file.Oid)
 		glog.Infof(`Updating file %s`, file.Path)
-		raw, err := r.FileCat(file.Path, filePreference)
+		exists, raw, err := r.FileCat(file.Path, filePreference)
 		if nil != err {
+			return err
+		}
+		if !exists {
 			// It seems for modified files in conflict, we can't rely on
 			// the Oid being set for old- or new- : conflicted files can have
 			// a 000 oid for New, while clearly being in conflict. I'm not sure
@@ -800,14 +861,11 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 			// fetching file status.
 			// TODO: Investigate about why we're getting a Zero OID here for a file
 			// that clearly has existence in both repos.
-			if nil == file.Oid || file.Oid.IsZero() {
-				glog.Infof(`Deleting file %s`, file.Path)
-				if err := os.Remove(fullPath); nil != err && !os.IsNotExist(err) {
-					return util.Error(err)
-				}
-				return nil
+			glog.Infof(`Deleting file %s`, file.Path)
+			if err := os.Remove(fullPath); nil != err && !os.IsNotExist(err) {
+				return util.Error(err)
 			}
-			return util.Error(err)
+			return nil
 		}
 		if err := ioutil.WriteFile(fullPath, raw, 0644); nil != err {
 			return util.Error(err)
@@ -824,7 +882,7 @@ func (r *Repo) AddToIndex(path string) error {
 		return util.Error(err)
 	}
 	defer index.Free()
-	exists, err := util.FileExists(r.Path(path))
+	exists, err := util.FileExists(r.RepoPath(path))
 	if nil != err {
 		return err
 	}
@@ -925,12 +983,45 @@ func (r *Repo) Commit(message string, notes string) (*git2go.Oid, error) {
 // CleanupConflictTemporaryFiles cleans up any temporary files used in a
 // conflict resolution.
 func (r *Repo) CleanupConflictTemporaryFiles() error {
-	// At the moment this is a NOP.
+	if err := r.WorkingTree().Cleanup(); nil != err {
+		return err
+	}
+	if err := r.TheirTree().Cleanup(); nil != err {
+		return err
+	}
 	return nil
 }
 
+// CloseConflict closes the conflict on the repo, including
+// closing PR's if PR merges are in process.
+func (r *Repo) CloseConflict(message, notes string) error {
+	if _, err := r.CommitAll(message, notes); nil != err {
+		return err
+	}
+
+	if 0 < r.EBWRepoStatus.MergingPRNumber {
+		if err := PullRequestClose(r.Client,
+			r.RepoOwner, r.RepoName, r.EBWRepoStatus.MergingPRNumber); nil != err {
+			return err
+		}
+	}
+
+	r.EBWRepoStatus.MergingPRNumber = 0
+	if err := r.WriteEBWRepoStatus(); nil != err {
+		return err
+	}
+
+	if err := r.CleanupConflictTemporaryFiles(); nil != err {
+		return err
+	}
+
+	return r.Cleanup()
+}
+
 // Cleanup cleans up the state of the repo, and also removes any temporary
-// files that a merge or conflict state might have created.
+// files that a merge or conflict state might have created. This is probably
+// only necessary to call from CloseConflict - any other version should not
+// be required.
 func (r *Repo) Cleanup() error {
 	if err := r.Repository.StateCleanup(); nil != err {
 		return util.Error(err)
@@ -952,4 +1043,22 @@ func (r *Repo) Push(remoteName, branchName string) error {
 		return util.Error(err)
 	}
 	return nil
+}
+
+// WorkingTree returns a FileTree instance into the working
+// directory for the repo.
+func (r *Repo) WorkingTree() *FileTree {
+	return &FileTree{
+		Path:      r.RepoPath,
+		Temporary: false,
+	}
+}
+
+// TheirTree returns a FileTree instance into the
+// merge-conflict temporary `their` tree
+func (r *Repo) TheirTree() *FileTree {
+	return &FileTree{
+		Path:      r.TheirPath,
+		Temporary: true,
+	}
 }

@@ -204,8 +204,23 @@ func CommitFile(client *Client, repoOwner, repoName, path string) error {
 		return util.Error(err)
 	}
 	defer index.Free()
-	if err := index.AddByPath(path); nil != err {
-		return util.Error(err)
+
+	fileExists, err := util.FileExists(filepath.Join(repoDir, path))
+	if nil != err {
+		return err
+	}
+	if fileExists {
+		if err := index.AddByPath(path); nil != err {
+			return util.Error(fmt.Errorf(`Failed to AddByPath %s: %s`, path, err.Error()))
+		}
+	} else {
+		if err := index.RemoveByPath(path); nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				glog.Infof(`ERR not found on RemoveByPath for %s`, path)
+			} else {
+				return util.Error(err)
+			}
+		}
 	}
 	if err := index.Write(); nil != err {
 		return util.Error(err)

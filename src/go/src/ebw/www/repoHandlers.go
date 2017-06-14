@@ -24,12 +24,6 @@ func repoCommit(c *Context) error {
 
 	repoOwner := c.Vars[`repoOwner`]
 	repoName := c.Vars[`repoName`]
-
-	repoDir, err := git.RepoDir(client.Username, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-
 	r, err := c.Repo()
 	if nil != err {
 		return err
@@ -53,9 +47,9 @@ func repoCommit(c *Context) error {
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
-	c.D[`Path`] = repoDir
+	c.D[`Path`] = r.RepoPath()
 
-	statusList, err := git.GitStatusList(c.Context(), repoDir)
+	statusList, err := git.GitStatusList(c.Context(), r.RepoPath())
 	if nil != err {
 		return err
 	}
@@ -95,10 +89,12 @@ func repoView(c *Context) error {
 	c.D[`UserName`] = client.Username
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
-	repoDir, err := git.RepoDir(client.Username, repoOwner, repoName)
+
+	r, err := c.Repo()
 	if nil != err {
 		return err
 	}
+	repoDir := r.RepoPath()
 	c.D[`Path`] = repoDir
 	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
@@ -203,7 +199,7 @@ func pullRequestClose(c *Context) error {
 	repoName := c.Vars[`repoName`]
 
 	number := int(c.PI(`number`))
-	if err := git.PullRequestClose(client, client.Username, repoOwner, repoName, number); nil != err {
+	if err := git.PullRequestClose(client, repoOwner, repoName, number); nil != err {
 		return err
 	}
 	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
@@ -357,6 +353,7 @@ func repoMergeRemoteBranch(c *Context) error {
 	var settings struct {
 		Resolve    string `schema:"resolve"`
 		Conflicted bool   `schema:"conflicted"`
+		PRNumber   int    `schema:"pr_number"`
 	}
 	if err := c.Decode(&settings); nil != err {
 		return err
@@ -376,6 +373,19 @@ func repoMergeRemoteBranch(c *Context) error {
 		}
 	case `their`:
 		if err := repo.ResetConflictedFilesInWorkingDir(false, settings.Conflicted, nil); nil != err {
+			return err
+		}
+	}
+
+	// Synchronize the TheirTree with the FileTheir items
+	if err := repo.TheirTree().Sync(repo, git.FileTheir); nil != err {
+		return err
+	}
+	// Set our EBWRepoStatus configuration file, so that we know we're
+	// merging a PR, not just merging with an upstream repo
+	if 0 < settings.PRNumber {
+		repo.EBWRepoStatus.MergingPRNumber = settings.PRNumber
+		if err = repo.WriteEBWRepoStatus(); nil != err {
 			return err
 		}
 	}

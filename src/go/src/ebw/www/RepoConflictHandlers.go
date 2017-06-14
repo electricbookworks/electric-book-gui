@@ -53,11 +53,7 @@ func repoConflictResolve(c *Context) error {
 	if nil != err {
 		return err
 	}
-	if _, err := repo.CommitAll(r.Message, r.Notes); nil != err {
-		return err
-	}
-
-	if err := repo.CleanupConflictTemporaryFiles(); nil != err {
+	if err := repo.CloseConflict(r.Message, r.Notes); nil != err {
 		return err
 	}
 	glog.Infof(`Resolved conflict, going back to detail %s`, pathRepoDetail(repo))

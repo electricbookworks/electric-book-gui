@@ -19,6 +19,7 @@ export class FileDisplay extends Template {
 
 		this.el.addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
+			console.log(`CLICKED: ${this.file.Path()}`);
 			this.dispatchEvent(`file-click`);
 			this.Listen.dispatch(FileDisplayEvent.FileClick, this.file);
 		});
