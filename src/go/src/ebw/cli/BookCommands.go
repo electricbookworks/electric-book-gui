@@ -50,6 +50,7 @@ func BookCommands() *commander.Command {
 				BookPRDetailCommand,
 				BookPRFetchCommand,
 				BookPRMergeCommand,
+				BookMergeInfo,
 			)
 		})
 }
@@ -696,5 +697,27 @@ func BookPRMergeCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.PullRequestMerge(*number)
+		})
+}
+
+func BookMergeInfo() *commander.Command {
+	return commander.NewCommand(`merge-info`,
+		`Provide merge info on the named files`,
+		nil,
+		func(files []string) error {
+
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			for _, f := range files {
+				mfi, err := repo.MergeFileInfo(f)
+				if nil != err {
+					return err
+				}
+				fmt.Println(mfi)
+			}
+			return nil
 		})
 }

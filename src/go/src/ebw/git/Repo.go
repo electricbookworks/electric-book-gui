@@ -1,6 +1,7 @@
 package git
 
 import (
+	"crypto/sha1"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -1061,4 +1062,78 @@ func (r *Repo) TheirTree() *FileTree {
 		Path:      r.TheirPath,
 		Temporary: true,
 	}
+}
+
+// IndexEntry returns the libgit2 entry from the Index for the
+// given path.
+func (r *Repo) IndexEntry(path string) (*git2go.IndexEntry, error) {
+	index, err := r.Index()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	defer index.Free()
+	i, err := index.Find(path)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	entry, err := index.EntryByIndex(i)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	return entry, nil
+}
+
+// FileInfoFromIndex returns FileInfo for the given path
+// from the Index
+func (r *Repo) FileInfoFromIndex(path string) (*FileInfo, error) {
+	entry, err := r.IndexEntry(path)
+	if nil != err {
+		return nil, err
+	}
+	id := entry.Id
+	if nil == id {
+		id = &git2go.Oid{}
+	} else {
+		obj, err := r.Lookup(id)
+		defer obj.Free()
+		b, err := obj.AsBlob()
+		defer b.Free()
+		// Git's object Id isn't a direct hash of the contents, but
+		// includes a prefix. Since I can't calculate this for
+		// regular files, here I calculate the hash fo the blob
+		// contents only.
+		if nil != err {
+			return nil, fmt.Errorf("ERROR ON AsBlob for %s: %s\n", path, err.Error())
+		} else {
+			h := sha1.New()
+			h.Write(b.Contents())
+			id = git2go.NewOidFromBytes(h.Sum(nil))
+		}
+	}
+	return &FileInfo{
+		Hash: id,
+		Path: path,
+	}, nil
+}
+
+// MergeFileInfo returns the MergeFileInfo for the named
+// path in the Working dir, the Their dir, and the Index
+func (r *Repo) MergeFileInfo(path string) (*MergeFileInfo, error) {
+	index, err := r.FileInfoFromIndex(path)
+	if nil != err {
+		return nil, err
+	}
+	working, err := NewFileInfoFromPath(r.WorkingTree().Path(path))
+	if nil != err {
+		return nil, err
+	}
+	their, err := NewFileInfoFromPath(r.TheirTree().Path(path))
+	if nil != err {
+		return nil, err
+	}
+	return &MergeFileInfo{
+		Working: working,
+		Their:   their,
+		Index:   index,
+	}, nil
 }
