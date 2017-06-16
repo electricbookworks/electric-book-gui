@@ -7,4 +7,7 @@ export class FileStatus {
 		}
 		return 'undefined';
 	}
+	SetStatus(s:string) {
+		this.status = s;
+	}
 }

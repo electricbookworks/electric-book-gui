@@ -45,8 +45,8 @@ export class MergeEditorControlBar {
 	constructor() {
 		this.Listen = new signals.Signal();
 
-		this.DeleteButton = this.get(`control-delete`);
-		this.SaveButton = this.get(`control-save`);
+		this.DeleteButton = this.get(`delete`);
+		this.SaveButton = this.get(`save`);
 
 		this.RevertOurButton = this.get(`revert-our`);
 		this.RevertTheirButton = this.get(`revert-their`);

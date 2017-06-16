@@ -126,8 +126,12 @@ class APIWs {
 		return this._rpc("UpdateFile",  arguments );
 	}
 	
-	CommitFile (repoOwner,repoName,path) {
-		return this._rpc("CommitFile",  arguments );
+	StageFile (repoOwner,repoName,path) {
+		return this._rpc("StageFile",  arguments );
+	}
+	
+	StageFileAndReturnMergingState (repoOwner,repoName,path) {
+		return this._rpc("StageFileAndReturnMergingState",  arguments );
 	}
 	
 	SaveWorkingFile (repoOwner,repoName,path,content) {

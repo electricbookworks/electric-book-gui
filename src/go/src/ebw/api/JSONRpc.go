@@ -55,8 +55,29 @@ func (rpc *API) GetFileString(repoOwner, repoName, path string) (string, error) 
 func (rpc *API) UpdateFile(repoOwner, repoName, path, content string) error {
 	return git.UpdateFile(rpc.Client, rpc.User, repoOwner, repoName, path, []byte(content))
 }
-func (rpc *API) CommitFile(repoOwner, repoName, path string) error {
-	return git.CommitFile(rpc.Client, repoOwner, repoName, path)
+func (rpc *API) StageFile(repoOwner, repoName, path string) error {
+	err := git.StageFile(rpc.Client, repoOwner, repoName, path)
+	if nil != err {
+		return err
+	}
+	return nil
+}
+
+func (rpc *API) StageFileAndReturnMergingState(repoOwner, repoName, path string) (string, error) {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return ``, err
+	}
+	defer repo.Free()
+	err = git.StageFile(rpc.Client, repoOwner, repoName, path)
+	if nil != err {
+		return ``, err
+	}
+	state, err := repo.MergeFileResolutionState(path)
+	if nil != err {
+		return ``, err
+	}
+	return state.String(), nil
 }
 
 func (rpc *API) SaveWorkingFile(repoOwner, repoName, path, content string) error {
@@ -158,31 +179,35 @@ func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (bool, string, b
 
 // SaveMergingFile saves the 'Working' and 'Their' versions of the working
 // file into our repo and our their-tree.
-func (rpc *API) SaveMergingFile(repoOwner, repoName string, path string, workingExists bool, workingContent string, theirExists bool, theirContent string) error {
+func (rpc *API) SaveMergingFile(repoOwner, repoName string, path string, workingExists bool, workingContent string, theirExists bool, theirContent string) (string, error) {
 	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
-		return err
+		return ``, err
 	}
 	defer r.Free()
 	if workingExists {
 		if err := r.WorkingTree().Write(path, []byte(workingContent)); nil != err {
-			return err
+			return ``, err
 		}
 	} else {
 		if err := r.WorkingTree().Remove(path); nil != err {
-			return err
+			return ``, err
 		}
 	}
 	if theirExists {
 		if err := r.TheirTree().Write(path, []byte(theirContent)); nil != err {
-			return err
+			return ``, err
 		}
 	} else {
 		if err := r.TheirTree().Remove(path); nil != err {
-			return err
+			return ``, err
 		}
 	}
-	return nil
+	state, err := r.MergeFileResolutionState(path)
+	if nil != err {
+		return ``, err
+	}
+	return state.String(), nil
 }
 
 // MergeFileOriginal returns the original file for the merge-version from the

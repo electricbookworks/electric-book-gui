@@ -187,8 +187,10 @@ func SaveWorkingFile(client *Client, repoOwner, repoName, path string, content [
 	return nil
 }
 
-// CommitFile comites the named file on the repo.
-func CommitFile(client *Client, repoOwner, repoName, path string) error {
+// StageFile adds the named file to the index, or removes the file
+// from the index if it does not exist in the working dir. This is
+// intended as a functional equivalent of `git add [path]`
+func StageFile(client *Client, repoOwner, repoName, path string) error {
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err

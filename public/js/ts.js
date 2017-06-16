@@ -121,8 +121,11 @@ var APIWs = (function () {
     APIWs.prototype.UpdateFile = function (repoOwner, repoName, path, content) {
         return this.rpc("UpdateFile", [repoOwner, repoName, path, content]);
     };
-    APIWs.prototype.CommitFile = function (repoOwner, repoName, path) {
-        return this.rpc("CommitFile", [repoOwner, repoName, path]);
+    APIWs.prototype.StageFile = function (repoOwner, repoName, path) {
+        return this.rpc("StageFile", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.StageFileAndReturnMergingState = function (repoOwner, repoName, path) {
+        return this.rpc("StageFileAndReturnMergingState", [repoOwner, repoName, path]);
     };
     APIWs.prototype.SaveWorkingFile = function (repoOwner, repoName, path, content) {
         return this.rpc("SaveWorkingFile", [repoOwner, repoName, path, content]);
@@ -2230,13 +2233,16 @@ var FileStatus = (function () {
         }
         return 'undefined';
     };
+    FileStatus.prototype.SetStatus = function (s) {
+        this.status = s;
+    };
     return FileStatus;
 }());
 
 var FileContent$1 = (function () {
     function FileContent(exists, raw) {
         this.Exists = exists;
-        this.Raw = raw;
+        this.Raw = raw ? raw : "";
     }
     return FileContent;
 }());
@@ -2246,16 +2252,13 @@ var FileEvent;
     FileEvent[FileEvent["TheirChanged"] = 1] = "TheirChanged";
     FileEvent[FileEvent["StatusChanged"] = 2] = "StatusChanged";
 })(FileEvent || (FileEvent = {}));
-// File models a single conflicted file in the repo.
-// All communication with the conflicted file occurs through this single
-// class, which will coordinate any other internal-classes that it might need,
-// like the file status.
 var File$1 = (function () {
     function File(context, path, status) {
         this.context = context;
         this.path = path;
         this.status = new FileStatus(status);
         this.Listen = new signals.Signal();
+        this.ListenRPC = new signals.Signal();
         this.cache = new Map();
     }
     File.prototype.Status = function () {
@@ -2263,6 +2266,10 @@ var File$1 = (function () {
             return this.status.Status();
         }
         return 'undefined';
+    };
+    File.prototype.SetStatus = function (source, status) {
+        this.status.SetStatus(status);
+        this.Listen.dispatch(source, FileEvent.StatusChanged, status);
     };
     File.prototype.Path = function () {
         return this.path;
@@ -2276,6 +2283,7 @@ var File$1 = (function () {
         if (this.cache.has("working")) {
             return Promise.resolve();
         }
+        this.ListenRPC.dispatch(source, true, "FetchContent");
         return this.context.API()
             .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
             .then(function (_a) {
@@ -2284,6 +2292,7 @@ var File$1 = (function () {
             var theirFile = new FileContent$1(theirExists, their);
             _this.cache.set("working", workingFile);
             _this.cache.set("their", theirFile);
+            _this.ListenRPC.dispatch(source, false, "FetchContent");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
             _this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
             return Promise.resolve();
@@ -2291,18 +2300,22 @@ var File$1 = (function () {
     };
     File.prototype.RevertOur = function (source) {
         var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertOur");
         return this.mergeFileOriginal("our")
             .then(function (fc) {
             _this.cache.set("working", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertOur");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
             return Promise.resolve(fc);
         });
     };
     File.prototype.RevertTheir = function (source) {
         var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertTheir");
         return this.mergeFileOriginal("their")
             .then(function (fc) {
             _this.cache.set("their", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertTheir");
             _this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
             return Promise.resolve(fc);
         });
@@ -2353,17 +2366,26 @@ var File$1 = (function () {
         var _this = this;
         var working = this.cache.get("working");
         var their = this.cache.get("their");
+        this.ListenRPC.dispatch(this, true, "Save");
         return this.context.API()
             .SaveMergingFile(this.context.RepoOwner, this.context.RepoName, this.Path(), working.Exists, working.Raw, their.Exists, their.Raw)
-            .then(function () {
-            // TODO Need to somehow update the status
-            _this.Listen.dispatch(_this, FileEvent.StatusChanged, _this);
+            .then(function (_a) {
+            var status = _a[0];
+            _this.ListenRPC.dispatch(_this, false, "Save");
+            _this.SetStatus(undefined, status);
             return Promise.resolve();
         });
     };
-    File.prototype.Commit = function (source) {
+    File.prototype.Stage = function (source) {
+        var _this = this;
+        this.ListenRPC.dispatch(this, true, "Stage");
         return this.context.API()
-            .CommitFile(this.context.RepoOwner, this.context.RepoName, this.Path());
+            .StageFileAndReturnMergingState(this.context.RepoOwner, this.context.RepoName, this.Path()).then(function (_a) {
+            var status = _a[0];
+            _this.ListenRPC.dispatch(_this, false, "Stage");
+            _this.SetStatus(source, status);
+            return Promise.resolve();
+        });
     };
     return File;
 }());
@@ -2404,20 +2426,40 @@ var FileDisplay = (function (_super) {
         _this.file = file;
         _this.Listen = new signals.Signal();
         _this.$.path.innerText = file.Path();
-        _this.$.status.innerText = file.Status();
+        _this.fileEvent(undefined, FileEvent.StatusChanged, undefined);
         _this.el.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            console.log("CLICKED: " + _this.file.Path());
             _this.dispatchEvent("file-click");
             _this.Listen.dispatch(FileDisplayEvent.FileClick, _this.file);
         });
+        _this.file.Listen.add(_this.fileEvent, _this);
+        _this.file.ListenRPC.add(_this.rpcEvent, _this);
         parent.appendChild(_this.el);
         return _this;
     }
     FileDisplay.prototype.dispatchEvent = function (name) {
         var d = { bubbles: true, detail: { file: this.file } };
         this.el.dispatchEvent(new CustomEvent(name, d));
+    };
+    FileDisplay.prototype.fileEvent = function (source, event, data) {
+        switch (event) {
+            case FileEvent.StatusChanged:
+                this.$.status.innerText = this.file.Status();
+                this.el.classList.remove("status-new", "status-modified", "status-resolved", "status-deleted");
+                this.el.classList.add("status-" + this.file.Status());
+                break;
+        }
+    };
+    FileDisplay.prototype.rpcEvent = function (source, inProgress, method) {
+        console.log("RPC Event for " + this.file.Path() + " inProgress = " + inProgress + ", method = " + method);
+        var cl = this.el.classList;
+        if (inProgress) {
+            cl.add("rpc");
+        }
+        else {
+            cl.remove("rpc");
+        }
     };
     return FileDisplay;
 }(conflict_FileDisplay));
@@ -2472,8 +2514,8 @@ var MergeEditorControlBar = (function () {
     function MergeEditorControlBar() {
         var _this = this;
         this.Listen = new signals.Signal();
-        this.DeleteButton = this.get("control-delete");
-        this.SaveButton = this.get("control-save");
+        this.DeleteButton = this.get("delete");
+        this.SaveButton = this.get("save");
         this.RevertOurButton = this.get("revert-our");
         this.RevertTheirButton = this.get("revert-their");
         this.CopyWorkingButton = this.get("copy-working");
@@ -2577,7 +2619,7 @@ var MergeEditor$1 = (function () {
                 this.SaveFile()
                     .then(function () {
                     // undefined so we receive notifications
-                    return _this.file.Commit(undefined);
+                    return _this.file.Stage(undefined);
                 })
                     .then(function () {
                     EBW.Toast("Resolved changes on " + _this.file.Path());

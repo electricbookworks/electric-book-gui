@@ -4259,7 +4259,7 @@ body {
       #repo-conflict #work #files > div:nth-child(3) {
         flex-grow: 1;
         position: relative;
-        padding: 0 0 0 1em; }
+        padding: 0 0 0 0; }
     #repo-conflict #work #editor {
       flex-grow: 1;
       position: relative;
@@ -4305,7 +4305,9 @@ body {
     list-style: none;
     margin: 0; }
     #staged-files-list > ul > li {
-      cursor: pointer; }
+      padding-left: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s; }
       #staged-files-list > ul > li:hover > .path {
         color: #009E7F; }
       #staged-files-list > ul > li > .status {
@@ -4314,6 +4316,16 @@ body {
         border-radius: 0.2em;
         margin-left: 1em;
         padding: 0 0.4em; }
+      #staged-files-list > ul > li.status-new > .status {
+        background-color: #fab414; }
+      #staged-files-list > ul > li.status-deleted > .status {
+        background-color: #fab414; }
+      #staged-files-list > ul > li.status-modified > .status {
+        background-color: #ddd; }
+      #staged-files-list > ul > li.status-resolved > .status {
+        background-color: #009e7f; }
+      #staged-files-list > ul > li.rpc {
+        background-color: yellow; }
 
 .merge-instructions {
   position: relative; }

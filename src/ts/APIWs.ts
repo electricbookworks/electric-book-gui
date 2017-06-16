@@ -132,8 +132,12 @@ export class APIWs {
 		return this.rpc("UpdateFile",  [repoOwner,repoName,path,content] );
 	}
 	
-	CommitFile (repoOwner:string,repoName:string,path:string) {
-		return this.rpc("CommitFile",  [repoOwner,repoName,path] );
+	StageFile (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("StageFile",  [repoOwner,repoName,path] );
+	}
+	
+	StageFileAndReturnMergingState (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("StageFileAndReturnMergingState",  [repoOwner,repoName,path] );
 	}
 	
 	SaveWorkingFile (repoOwner:string,repoName:string,path:string,content:string) {

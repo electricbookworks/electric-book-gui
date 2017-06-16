@@ -8,14 +8,19 @@ export class FileContent {
 	public Raw: string;
 	constructor(exists:boolean, raw:string) {
 		this.Exists = exists;
-		this.Raw = raw;
+		this.Raw = raw ? raw : ``;
 	}
 }
 
 export enum FileEvent {
 	WorkingChanged,
 	TheirChanged,
-	StatusChanged,
+	StatusChanged
+}
+
+export class MergeFileResolutionState {
+	State: number;
+	Description: string;
 }
 
 // File models a single conflicted file in the repo.
@@ -25,11 +30,14 @@ export enum FileEvent {
 export class File {
 	protected status : FileStatus;
 	public Listen : signals.Signal;
+	// Signalled when RPC is in progress
+	public ListenRPC: signals.Signal;
 
 	protected cache : Map<string,FileContent>;
 	constructor(protected context:Context,protected path: string, status:string) {
 		this.status = new FileStatus(status);
 		this.Listen = new signals.Signal();
+		this.ListenRPC = new signals.Signal();
 		this.cache = new Map<string,FileContent>();
 	}
 	Status(): string {
@@ -37,6 +45,10 @@ export class File {
 			return this.status.Status();
 		}
 		return 'undefined';
+	}
+	SetStatus(source:any, status:string) {
+		this.status.SetStatus(status);
+		this.Listen.dispatch(source, FileEvent.StatusChanged, status);
 	}
 	Path() : string {
 		return this.path;
@@ -50,6 +62,7 @@ export class File {
 		if (this.cache.has(`working`)) {
 			return Promise.resolve();
 		}
+		this.ListenRPC.dispatch(source, true, `FetchContent`);
 		return this.context.API()
 		.MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
 		.then(
@@ -58,25 +71,31 @@ export class File {
 				let theirFile = new FileContent(theirExists, their);
 				this.cache.set(`working`, workingFile);
 				this.cache.set(`their`, theirFile);
+
+				this.ListenRPC.dispatch(source, false, `FetchContent`);
 				this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
 				this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
 				return Promise.resolve();
 			});
 	}
 	RevertOur(source:any) : Promise<FileContent> {
+		this.ListenRPC.dispatch(source, true, `RevertOur`);
 		return this.mergeFileOriginal("our")
 		.then(
 			(fc:FileContent)=>{
 				this.cache.set(`working`, fc);
+				this.ListenRPC.dispatch(source, false, `RevertOur`);
 				this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
 				return Promise.resolve(fc);
 			});
 	}
 	RevertTheir(source:any) : Promise<FileContent> {
+		this.ListenRPC.dispatch(source, true,`RevertTheir`);
 		return this.mergeFileOriginal("their")
 		.then(
 			(fc:FileContent)=>{
 				this.cache.set(`their`, fc);
+				this.ListenRPC.dispatch(source, false, `RevertTheir`);
 				this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
 				return Promise.resolve(fc);
 			});
@@ -126,6 +145,7 @@ export class File {
 	Save() : Promise<void> {
 		let working = this.cache.get(`working`);
 		let their = this.cache.get(`their`);
+		this.ListenRPC.dispatch(this, true, `Save`);
 		return this.context.API()
 		.SaveMergingFile(
 			this.context.RepoOwner, this.context.RepoName,
@@ -134,17 +154,24 @@ export class File {
 			their.Exists, their.Raw
 			)
 		.then(
-			()=>{
-				// TODO Need to somehow update the status
-				this.Listen.dispatch(this, FileEvent.StatusChanged, this);
+			([status]:[string])=>{
+				this.ListenRPC.dispatch(this, false, `Save`);
+				this.SetStatus(undefined, status);
 				return Promise.resolve();
 			});
 	}
-	Commit(source:any):Promise<void> {
+	Stage(source:any):Promise<void> {
+		this.ListenRPC.dispatch(this,true,`Stage`);
 		return this.context.API()
-		.CommitFile(
-			this.context.RepoOwner, this.context.RepoName,
+		.StageFileAndReturnMergingState(
+			this.context.RepoOwner, 
+			this.context.RepoName,
 			this.Path()
-			);
+		).then(
+			([status]:[string])=>{
+				this.ListenRPC.dispatch(this,false, `Stage`);
+				this.SetStatus(source, status);
+				return Promise.resolve();
+			});
 	}
 }

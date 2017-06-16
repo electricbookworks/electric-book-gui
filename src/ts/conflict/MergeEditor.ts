@@ -50,7 +50,7 @@ export class MergeEditor {
 				.then(
 					()=>{
 						// undefined so we receive notifications
-						return this.file.Commit(undefined);
+						return this.file.Stage(undefined);
 					})
 				.then(
 					()=>{

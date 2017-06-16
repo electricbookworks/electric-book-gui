@@ -2,6 +2,7 @@ package www
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -317,25 +318,6 @@ func repoFileServer(c *Context) error {
 	return nil
 }
 
-func repoMergeUpstream(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
-
-	remote, err := git.FetchRemoteForRepo(client, repoOwner, repoName, `origin`)
-	if nil != err {
-		return err
-	}
-	remote.Free()
-
-	return nil
-
-}
-
 // repoPushRemote pushes to the remote repo. For our purposes
 // this would almost always be origin/master
 func repoPushRemote(c *Context) error {
@@ -350,44 +332,47 @@ func repoPushRemote(c *Context) error {
 }
 
 func repoMergeRemoteBranch(c *Context) error {
-	var settings struct {
-		Resolve    string `schema:"resolve"`
-		Conflicted bool   `schema:"conflicted"`
-		PRNumber   int    `schema:"pr_number"`
+	var args struct {
+		Resolve     string `schema:"resolve"`
+		Conflicted  bool   `schema:"conflicted"`
+		PRNumber    int    `schema:"pr_number"`
+		Description string `schema:"description"`
 	}
-	if err := c.Decode(&settings); nil != err {
+	if err := c.Decode(&args); nil != err {
 		return err
 	}
 
+	var resolve git.ResolveMergeOption
+	switch args.Resolve {
+	case `our`:
+		resolve = git.ResolveMergeOur
+	case `their`:
+		resolve = git.ResolveMergeTheir
+	case `git`:
+		fallthrough
+	default:
+		return fmt.Errorf(`Only supported resolve param values are 'their' and 'our'`)
+	}
+
+	remote, branch := c.Vars[`remote`], c.Vars[`branch`]
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
-	if err := repo.Pull(c.Vars[`remote`], c.Vars[`branch`]); nil != err {
-		return err
-	}
-	switch settings.Resolve {
-	case `our`:
-		if err := repo.ResetConflictedFilesInWorkingDir(true, settings.Conflicted, nil); nil != err {
-			return err
-		}
-	case `their`:
-		if err := repo.ResetConflictedFilesInWorkingDir(false, settings.Conflicted, nil); nil != err {
-			return err
-		}
-	}
 
-	// Synchronize the TheirTree with the FileTheir items
-	if err := repo.TheirTree().Sync(repo, git.FileTheir); nil != err {
-		return err
-	}
-	// Set our EBWRepoStatus configuration file, so that we know we're
-	// merging a PR, not just merging with an upstream repo
-	if 0 < settings.PRNumber {
-		repo.EBWRepoStatus.MergingPRNumber = settings.PRNumber
-		if err = repo.WriteEBWRepoStatus(); nil != err {
-			return err
+	if `` == args.Description {
+		if 0 < args.PRNumber {
+			args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
+		} else {
+			if `upstream` == remote {
+				args.Description = `You are merging with the original book you are contributing to.`
+			} else {
+				args.Description = `You are merging with your Github repo.`
+			}
 		}
+	}
+	if err := repo.MergeWith(remote, branch, resolve, args.Conflicted, args.PRNumber, args.Description); nil != err {
+		return err
 	}
 	return c.Redirect(pathRepoConflict(repo))
 }

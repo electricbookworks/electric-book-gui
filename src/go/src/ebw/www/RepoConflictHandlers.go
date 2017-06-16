@@ -12,7 +12,8 @@ func repoConflict(c *Context) error {
 	if nil != err {
 		return err
 	}
-	stagedFiles, err := repo.StagedFilesAbbreviated()
+
+	stagedFiles, err := repo.MergingFilesList()
 	if nil != err {
 		return err
 	}

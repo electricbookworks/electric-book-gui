@@ -53,11 +53,11 @@
 			&>div:nth-child(3) {	
 				// container for #staged-files-list, required to 
 				// allow position:relative;
+				// see #staged-files-list definitions belog
 				flex-grow: 1;				
 				position: relative;
-				padding: 0 0 0 1em;
+				padding: 0 0 0 0;
 			}
-
 		}
 		#editor {
 			flex-grow: 1;
@@ -116,6 +116,7 @@
 		list-style: none;
 		margin: 0;
 		& > li {
+			padding-left: 1em;
 			cursor: pointer;
 			&:hover {
 				&>.path {
@@ -132,6 +133,30 @@
 				margin-left: 1em;
 				padding: 0 0.4em;
 			}
+			&.status-new {
+				&>.status {
+					background-color: $color-status-new;
+				}
+			}
+			&.status-deleted {
+				&>.status {
+					background-color: $color-status-deleted;
+				}
+			}
+			&.status-modified {
+				&>.status {
+					background-color: $color-status-modified;
+				}
+			}
+			&.status-resolved {
+				&>.status {
+					background-color: $color-status-resolved;
+				}
+			}
+			&.rpc {
+				background-color: yellow;
+			}
+			transition: background-color 0.3s;
 		}
 	}
 }

@@ -50,3 +50,8 @@ $color-info-light: #fee4b7;
 $color-error-light: #fdd9ca;
 
 $color-offgray: $color-mediumgray;
+
+$color-status-new: $color-info;
+$color-status-deleted: $color-warning;
+$color-status-modified: $color-lightgray;
+$color-status-resolved: $color-success;

@@ -59,7 +59,7 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 		RepoOwner:  repoOwner,
 		RepoName:   repoName,
 	}
-	if r.EBWRepoStatus, err = r.ReadEBWRepoStatus(); nil != err {
+	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
 		return nil, err
 	}
 	return r, nil
@@ -169,6 +169,39 @@ func (r *Repo) StatusList() (*git2go.StatusList, error) {
 		return nil, err
 	}
 	return sl, nil
+}
+
+// StatusListFilenames returns a slice on only the
+// filenames of the files appearing in the StatusList
+func (r *Repo) StatusListFilenames() ([]string, error) {
+	sl, err := r.StatusList()
+	if nil != err {
+		return nil, err
+	}
+	defer sl.Free()
+	slN, err := sl.EntryCount()
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	files := make([]string, slN)
+	for i := 0; i < slN; i++ {
+		se, err := sl.ByIndex(i)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		fn := se.HeadToIndex.OldFile.Path
+		if `` == fn {
+			fn = se.HeadToIndex.NewFile.Path
+			if `` == fn {
+				fn = se.IndexToWorkdir.OldFile.Path
+				if `` == fn {
+					fn = se.IndexToWorkdir.NewFile.Path
+				}
+			}
+		}
+		files[i] = fn
+	}
+	return files, nil
 }
 
 // StatusCount returns the number of uncommitted items in the
@@ -355,6 +388,9 @@ func (r *Repo) AddRemote(remoteName string, remoteCloneURL string) error {
 	return nil
 }
 
+// SetUpstreamRemote configures the `upstream` remote in the
+// github repo. It discovers the upstream remote by looking for
+// the repo's parent on Github.
 func (r *Repo) SetUpstreamRemote() error {
 	// Sometimes the CLI might not have a Github repo,
 	// so we handle this by simply declaring no github parent, which
@@ -631,6 +667,8 @@ func (r *Repo) PullAbort() error {
 	return nil
 }
 
+// treeForCommit converts a *Oid into a *Tree. It's just here as a utility
+// function.
 func (r *Repo) treeForCommit(commitId *git2go.Oid) (*git2go.Tree, error) {
 	co, err := r.Repository.Lookup(commitId)
 	if nil != err {
@@ -1008,7 +1046,9 @@ func (r *Repo) CloseConflict(message, notes string) error {
 	}
 
 	r.EBWRepoStatus.MergingPRNumber = 0
-	if err := r.WriteEBWRepoStatus(); nil != err {
+	r.EBWRepoStatus.MergingFiles = []string{}
+	r.EBWRepoStatus.MergingDescription = ``
+	if err := r.writeEBWRepoStatus(); nil != err {
 		return err
 	}
 
@@ -1074,6 +1114,9 @@ func (r *Repo) IndexEntry(path string) (*git2go.IndexEntry, error) {
 	defer index.Free()
 	i, err := index.Find(path)
 	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			glog.Errorf(`ERROR IS ErrNotFound`)
+		}
 		return nil, util.Error(err)
 	}
 	entry, err := index.EntryByIndex(i)
@@ -1088,6 +1131,13 @@ func (r *Repo) IndexEntry(path string) (*git2go.IndexEntry, error) {
 func (r *Repo) FileInfoFromIndex(path string) (*FileInfo, error) {
 	entry, err := r.IndexEntry(path)
 	if nil != err {
+		glog.Errorf(`FileInfoFromIndex got error %v`, err)
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			return &FileInfo{
+				Path: path,
+				Hash: &git2go.Oid{},
+			}, nil
+		}
 		return nil, err
 	}
 	id := entry.Id
@@ -1136,4 +1186,96 @@ func (r *Repo) MergeFileInfo(path string) (*MergeFileInfo, error) {
 		Their:   their,
 		Index:   index,
 	}, nil
+}
+
+// MergeWith merges the repo with the given remote and branch, and configures
+// all the EBW Server required configurations for correct conflict management.
+// At present MergeWith will not work on the command line unless the user is
+// within a EBW Server structured git repo.
+func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conflicted bool, prNumber int, description string) error {
+	if err := r.Pull(remote, branch); nil != err {
+		return err
+	}
+	switch resolve {
+	case ResolveMergeOur:
+		if err := r.ResetConflictedFilesInWorkingDir(true, conflicted, nil); nil != err {
+			return err
+		}
+	case ResolveMergeTheir:
+		if err := r.ResetConflictedFilesInWorkingDir(false, conflicted, nil); nil != err {
+			return err
+		}
+	}
+
+	// Synchronize the TheirTree with the FileTheir items
+	if err := r.TheirTree().Sync(r, FileTheir); nil != err {
+		return err
+	}
+
+	// Set our EBWRepoStatus configuration file, so that we have
+	// full meta-data information on this merge, even after we've
+	// messed with the filesystem / index.
+	r.EBWRepoStatus.MergingDescription = description
+	files, err := r.StatusListFilenames()
+	if nil != err {
+		return err
+	}
+	r.EBWRepoStatus.MergingFiles = files
+	if 0 < prNumber {
+		r.EBWRepoStatus.MergingPRNumber = prNumber
+	} else {
+		r.EBWRepoStatus.MergingPRNumber = 0
+	}
+
+	if err = r.writeEBWRepoStatus(); nil != err {
+		return err
+	}
+
+	return nil
+}
+
+// MergingFilesList returns a slice of all the files in the
+// repo that are merging, with a status indication for each.
+func (r *Repo) MergingFilesList() ([]*IndexFileStatusAbbreviated, error) {
+	files := make([]*IndexFileStatusAbbreviated, len(r.EBWRepoStatus.MergingFiles))
+	for i, path := range r.EBWRepoStatus.MergingFiles {
+		rs, err := r.MergeFileResolutionState(path)
+		if nil != err {
+			return nil, err
+		}
+		f := &IndexFileStatusAbbreviated{
+			Path:   path,
+			Status: rs.String(),
+		}
+		files[i] = f
+	}
+	return files, nil
+}
+
+// MergeFileResolutionState returns the state of the merging file at the
+// given path.
+func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, error) {
+	info, err := r.MergeFileInfo(path)
+	if nil != err {
+		return MergeFileResolutionState(0), err
+	}
+	if info.Index.Hash.Equal(info.Working.Hash) {
+		if info.Index.Hash.Equal(info.Their.Hash) {
+			// our-their & repo are the same => RESOLVED
+			return MergeFileResolved, nil
+		}
+		// theirs differs from ours - but for now I'm going to
+		// differentiate this state
+		return MergeFileModified, nil
+	}
+	// since working differs from index =>
+	// implies modified, and hashes aren't the same,
+	// so we
+	if info.Working.Hash.IsZero() {
+		return MergeFileNew, nil
+	}
+	if info.Their.Hash.IsZero() {
+		return MergeFileDeleted, nil
+	}
+	return MergeFileModified, nil
 }
