@@ -11,6 +11,7 @@ export namespace EL {
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
 	export type RepoFileEditorCM =	HTMLDivElement;
 	export type RepoMergeDialog =	HTMLDivElement;
+	export type conflict_ClosePRDialog =	HTMLDivElement;
 	export type conflict_FileDisplay =	HTMLLIElement;
 	export type conflict_FileListDisplay =	HTMLUListElement;
 	export type conflict_MergeInstructions =	HTMLDivElement;
@@ -65,6 +66,13 @@ export namespace R {
 		resolveTheir: HTMLInputElement,
 		conflicted: HTMLInputElement,
 		mergeButton: HTMLButtonElement,
+		};
+	export interface conflict_ClosePRDialog {
+		title: HTMLHeadingElement,
+		instructions: HTMLDivElement,
+		closePR_no: HTMLInputElement,
+		closePR_yes: HTMLInputElement,
+		closeMessage: HTMLInputElement,
 		};
 	export interface conflict_FileDisplay {
 		path: HTMLSpanElement,
@@ -339,6 +347,33 @@ export class RepoMergeDialog {
 		this.el = n;
 	}
 }
+export class conflict_ClosePRDialog {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.conflict_ClosePRDialog;
+	constructor() {
+		let t = conflict_ClosePRDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div><h1>Title</h1><div>Instructions</div><fieldset><label for="closePR-no"><input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		</label><label for="closePR-yes"><input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
+		</label><label for="closeMessage">Close message
+		<input type="text" name="closeMessage" id="closeMessage"/>
+		</label></fieldset><button class="btn" data-event="click:done">Done</button></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			conflict_ClosePRDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			title: n.childNodes[0] as HTMLHeadingElement,
+			instructions: n.childNodes[1] as HTMLDivElement,
+			closePR_no: n.childNodes[2].childNodes[0].childNodes[0] as HTMLInputElement,
+			closePR_yes: n.childNodes[2].childNodes[1].childNodes[0] as HTMLInputElement,
+			closeMessage: n.childNodes[2].childNodes[2].childNodes[1] as HTMLInputElement,
+		};
+		this.el = n;
+	}
+}
 export class conflict_FileDisplay {
 	public static _template : HTMLLIElement;
 	public el : HTMLLIElement;
@@ -347,7 +382,7 @@ export class conflict_FileDisplay {
 		let t = conflict_FileDisplay._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<li><span class="path"> </span><span class="status"> </span></li>`;
+			d.innerHTML = `<li class="file-display"><span class="path"> </span><span class="status"> </span></li>`;
 			t = d.firstElementChild as HTMLLIElement;
 			conflict_FileDisplay._template = t;
 		}

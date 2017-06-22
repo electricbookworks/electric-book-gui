@@ -147,8 +147,11 @@ func PullRequestClose(client *Client, repoOwner, repoName string, number int) er
 	return nil
 }
 
+// PullRequestCreate creates a new Pull Request from the user's repo to the
+// upstream repo.
+// In order to ensure that changes to the user's repo aren't propagated
+// with the PR, we branch at the point of PR creation.
 func PullRequestCreate(client *Client, user, repoOwner, repoName, title, notes string) error {
-	// base := `master`
 	head := fmt.Sprintf(`%s:master`, user)
 	// head := `master`
 	base := `master`

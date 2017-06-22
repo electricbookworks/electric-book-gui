@@ -3,9 +3,11 @@
 
 <main id="repo-conflict">
 	<div id="topbar">
-		<div>Your repo is in conflict.</div>
+		<div>Your repo is in conflict.
+		<span class="merging-description">{{.Merging.MergingDescription}}</span>
+		</div>
 		<div class="toolbar-menu">
-		    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict/abort">Abort this merge</a>
+		    <button class="btn" id="action-abort">Abort this merge</a>
 		    <button class="btn" id="action-commit">Resolve this merge</button>
 		</div>
 	</div>
@@ -61,6 +63,9 @@
 </script>
 <script type="text/hidden" id="staged-files-data">
 {{- .StagedFiles | json | raw -}}
+</script>
+<script type="text/hidden" id="merging-info">
+{{- .Merging | json | raw -}}
 </script>
 
 {{template "_footer.html" .}}

@@ -65,7 +65,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
-	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestView))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repoOwner}/{repoName}/push/{remote}/{branch}`, WebHandler(repoPushRemote))
 

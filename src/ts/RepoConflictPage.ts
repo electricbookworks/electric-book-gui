@@ -7,12 +7,16 @@ import {FileListDisplayEvent, FileListDisplay} from './conflict/FileListDisplay'
 import {MergeEditor} from './conflict/MergeEditor';
 import {MergeInstructions} from './conflict/MergeInstructions';
 import {CommitMessageDialogResult, CommitMessageDialog} from './CommitMessageDialog';
+import {ClosePRDialog, ClosePRDialogResult} from './conflict/ClosePRDialog';
+import {MergingInfo} from './conflict/MergingInfo';
 
 // RepoConflictPage handles conflict-merging for the repo.
 // It's main data is generated in public/repo_conflict.html
 export class RepoConflictPage {
 	protected editor: MergeEditor;
 	protected commitDialog: CommitMessageDialog;
+	protected closePRDialog: ClosePRDialog;
+	protected mergingInfo: MergingInfo;
 
 	constructor(protected context:Context) {
 		let fileList = new FileList(context);
@@ -26,6 +30,8 @@ export class RepoConflictPage {
 		this.commitDialog = new CommitMessageDialog(false);
 		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
 
+		this.mergingInfo = new MergingInfo(document.getElementById(`merging-info`));
+		this.closePRDialog = new ClosePRDialog(false);
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
@@ -53,19 +59,39 @@ export class RepoConflictPage {
 			.then(
 				(r:CommitMessageDialogResult) => {
 					if (r.Cancelled) {
-						console.log(`Cancelled commit`);
 						return;
 					}
-					document.location.href = `/repo/` +
-						encodeURIComponent(this.context.RepoOwner) + 
-						`/` + encodeURIComponent(this.context.RepoName) +
-						`/conflict/resolve?` +
-						`message=` + encodeURIComponent(r.Message) + 
-						`&notes=` + encodeURIComponent(r.Notes);
+					console.log(`Result= `, r);
+					this.context.RepoRedirect(`conflict/resolve`, 
+						new Map([[`message`,r.Message],[`notes`,r.Notes]])
+					);
 					return;
 				})
 			.catch (EBW.Error);
 		});
+		document.getElementById(`action-abort`).addEventListener(`click`, (evt)=>{
+			evt.preventDefault(); evt.stopPropagation();
+			if (this.mergingInfo.IsPRMerge()) {
+				this.closePRDialog.Open(`Close PR`,
+					`You have been merging PR ${this.mergingInfo.PRNumber}.
+					Do you want to close the PR?`, 
+					{Close: false, CloseMessage:"", Cancelled: false})
+				.then(
+					(r:ClosePRDialogResult)=>{
+						if (r.Cancelled) {
+							return;
+						}
+						this.context.RepoRedirect(`conflict/abort`, 
+							new Map([[`message`,r.CloseMessage],
+								[`close`,r.Close]])
+						);
+						return;
+					})
+				.catch( EBW.Error );
+			} else {				
+				this.context.RepoRedirect(`conflict/abort`);
+			}
+		})
 	}
 	fileListEvent(e:FileListDisplayEvent, f:File) : void {
 		console.log(`FileListEvent in RepoConflictPage: `, f);

@@ -548,14 +548,20 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 // FetchRemote fetches the named remote for the repo.
 func (r *Repo) FetchRemote(remoteName string) error {
-	remote, err := FetchRemote(r.Repository, remoteName)
+	// We're assuming that our configured repo has the right permissions,
+	// which we should probably check
+	remote, err := r.Remotes.Lookup(remoteName)
 	if nil != err {
-		return err
+		return util.Error(err)
 	}
-	remote.Free()
+	defer remote.Free()
+	if err := remote.Fetch([]string{}, nil, ``); nil != err {
+		return util.Error(err)
+	}
 	return nil
 }
 
+// Stash stashes all current working directory files with the given message.
 func (r *Repo) Stash(msg string) (*git2go.Oid, error) {
 	sig, err := r.DefaultSignature()
 	if nil != err {
@@ -568,6 +574,7 @@ func (r *Repo) Stash(msg string) (*git2go.Oid, error) {
 	return oid, nil
 }
 
+// Unstash unstashes previously stashed working directory files.
 func (r *Repo) Unstash() error {
 	return r.Stashes.Apply(0, git2go.StashApplyOptions{
 		Flags: git2go.StashApplyReinstateIndex,
@@ -652,6 +659,9 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 // files in WD. `git merge --abort`, though, will fail if there are modified
 // files in WD (or something like that).
 func (r *Repo) PullAbort() error {
+	if err := r.Cleanup(); nil != err {
+		return err
+	}
 	head, err := r.Repository.Head()
 	if nil != err {
 		return util.Error(err)
@@ -1193,8 +1203,17 @@ func (r *Repo) MergeFileInfo(path string) (*MergeFileInfo, error) {
 // At present MergeWith will not work on the command line unless the user is
 // within a EBW Server structured git repo.
 func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conflicted bool, prNumber int, description string) error {
-	if err := r.Pull(remote, branch); nil != err {
-		return err
+	if 0 == prNumber {
+		if err := r.Pull(remote, branch); nil != err {
+			return err
+		}
+	} else {
+		if err := r.PullRequestFetch(prNumber); nil != err {
+			return err
+		}
+		if err := r.PullRequestMerge(prNumber); nil != err {
+			return err
+		}
 	}
 	switch resolve {
 	case ResolveMergeOur:
@@ -1278,4 +1297,49 @@ func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, 
 		return MergeFileDeleted, nil
 	}
 	return MergeFileModified, nil
+}
+
+// BranchCreate creates the named branch on the repo. The force param is
+// set to true if you wish to overwrite an existing branch with the same
+// name. If no name is provided, this function will assign a name based on
+// the template PR_{{prN}} for the current head, where prN is the Nth PR we've
+// sent. Because, down-the-line, we might delete branches, this number isn't
+// to be considered definitive.
+func (r *Repo) BranchCreate(name string, force bool) (string, error) {
+	head, err := r.Repository.Head()
+	if nil != err {
+		return ``, util.Error(err)
+	}
+	if `` == name {
+		for i := 1; true; i++ {
+			name = fmt.Sprintf(`PR_%d`, i)
+			br, err := r.Repository.LookupBranch(name, git2go.BranchLocal)
+			if nil != err {
+				if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+					break
+				}
+				return ``, util.Error(err)
+			}
+			br.Free()
+		}
+	}
+
+	commit, err := r.LookupCommit(head.Target())
+	if nil != err {
+		return ``, util.Error(err)
+	}
+	defer commit.Free()
+
+	br, err := r.Repository.CreateBranch(name, commit, force)
+	if nil != err {
+		return ``, util.Error(err)
+	}
+	br.Free()
+
+	// Now we've created the branch on EBW, we need to push the branch to
+	// GitHub
+	if err := r.Push(`origin`, name); nil != err {
+		return ``, err
+	}
+	return name, err
 }

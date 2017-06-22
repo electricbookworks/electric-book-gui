@@ -24,4 +24,21 @@ export class Context {
 		}
 		return ``;
 	}
+	RepoRedirect(path: string, args?: Map<string,any>) : void {
+		let params = "";
+		if (args) {
+			let a : string[] = [];
+			args.forEach( (v,k)=>{
+				v = String(v).trim();
+				if (v) {
+					a.push(encodeURIComponent(k) + `=` + encodeURIComponent(v));
+				}
+			});
+			if (0<a.length) {
+				params = "?" + a.join("&");
+			}
+		}
+		let href =`/repo/${this.RepoOwner}/${this.RepoName}/${path}${params}`;
+		document.location.href = href;
+	}
 }

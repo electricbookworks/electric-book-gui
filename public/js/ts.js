@@ -166,6 +166,11 @@ var APIWs = (function () {
     return APIWs;
 }());
 
+// Context is a general class passed through to most sub-classes that allows
+// us to track the repo- and user-specific things that are common to pretty
+// much all requests. In some senses, it's a bit like a global namespace,
+// just much better controlled because it's a class we defined and pass around,
+// and can therefore modify for children if that is appropriate at some point.
 var Context = (function () {
     function Context(el, RepoOwner, RepoName) {
         this.el = el;
@@ -186,6 +191,23 @@ var Context = (function () {
             return this.el.getAttribute(key);
         }
         return "";
+    };
+    Context.prototype.RepoRedirect = function (path, args) {
+        var params = "";
+        if (args) {
+            var a_1 = [];
+            args.forEach(function (v, k) {
+                v = String(v).trim();
+                if (v) {
+                    a_1.push(encodeURIComponent(k) + "=" + encodeURIComponent(v));
+                }
+            });
+            if (0 < a_1.length) {
+                params = "?" + a_1.join("&");
+            }
+        }
+        var href = "/repo/" + this.RepoOwner + "/" + this.RepoName + "/" + path + params;
+        document.location.href = href;
     };
     return Context;
 }());
@@ -417,12 +439,33 @@ var RepoMergeDialog = (function () {
     }
     return RepoMergeDialog;
 }());
+var conflict_ClosePRDialog = (function () {
+    function conflict_ClosePRDialog() {
+        var t = conflict_ClosePRDialog._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"closePR-no\"><input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label><label for=\"closePR-yes\"><input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label><label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label></fieldset><button class=\"btn\" data-event=\"click:done\">Done</button></div>";
+            t = d.firstElementChild;
+            conflict_ClosePRDialog._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            title: n.childNodes[0],
+            instructions: n.childNodes[1],
+            closePR_no: n.childNodes[2].childNodes[0].childNodes[0],
+            closePR_yes: n.childNodes[2].childNodes[1].childNodes[0],
+            closeMessage: n.childNodes[2].childNodes[2].childNodes[1],
+        };
+        this.el = n;
+    }
+    return conflict_ClosePRDialog;
+}());
 var conflict_FileDisplay = (function () {
     function conflict_FileDisplay() {
         var t = conflict_FileDisplay._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<li><span class=\"path\"> </span><span class=\"status\"> </span></li>";
+            d.innerHTML = "<li class=\"file-display\"><span class=\"path\"> </span><span class=\"status\"> </span></li>";
             t = d.firstElementChild;
             conflict_FileDisplay._template = t;
         }
@@ -2909,6 +2952,108 @@ var CommitMessageDialog$1 = (function (_super) {
     return CommitMessageDialog$$1;
 }(CommitMessageDialog));
 
+var ClosePRDialog = (function (_super) {
+    tslib_1.__extends(ClosePRDialog, _super);
+    function ClosePRDialog(clearOnOpen) {
+        var _this = _super.call(this) || this;
+        // firstOpen is set false after the first time the dialog is opened.
+        // This allows us to initialize default values iff this is the first usage,
+        // or to go with the user's settings if this is not the first usage.
+        _this.firstOpen = true;
+        _this.clearOnOpen = clearOnOpen;
+        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+        _this.dialog.Events.add(_this.dialogEvent, _this);
+        Eventify(_this.el, {
+            "change": function (evt) {
+                evt.stopPropagation();
+                evt.preventDefault();
+                console.log("Clicked ", evt.target);
+                var close = evt.target.getAttribute("value") == "yes";
+                if (close) {
+                    _this.$.closeMessage.removeAttribute('disabled');
+                }
+                else {
+                    _this.$.closeMessage.setAttribute('disabled', 'disabled');
+                }
+            },
+            "done": function (evt) {
+                console.log("done event");
+                evt.stopPropagation();
+                evt.preventDefault();
+                _this.resolve({
+                    Close: _this.$.closePR_yes.checked,
+                    CloseMessage: _this.$.closeMessage.value,
+                    Cancelled: false
+                });
+                _this.resolve = undefined;
+                _this.dialog.Close();
+            }
+        });
+        return _this;
+    }
+    ClosePRDialog.prototype.dialogEvent = function (evt) {
+        switch (evt) {
+            case DialogEvents.Closed:
+                // If the commit button was pressed, we have resolved
+                // the promise, and have cleared this.resolve
+                if (this.resolve) {
+                    this.resolve({ Cancelled: true });
+                }
+                return;
+            case DialogEvents.Opened:
+                if (this.clearOnOpen) {
+                }
+                return;
+        }
+        
+    };
+    // Open returns a Promise that will return a string[]. The string[]
+    // will either contain two elements: 
+    ClosePRDialog.prototype.Open = function (title, instructions, defaultSetting) {
+        var _this = this;
+        this.$.title.innerText = title;
+        this.$.instructions.innerText = instructions;
+        if (defaultSetting && this.firstOpen) {
+            this.firstOpen = true;
+            this.$.closePR_yes.checked = defaultSetting.Close;
+            this.$.closePR_no.checked = !(this.$.closePR_yes.checked);
+            if (this.$.closePR_yes.checked) {
+                this.$.closeMessage.removeAttribute("disabled");
+            }
+            else {
+                this.$.closeMessage.setAttribute("disabled", "disabled");
+            }
+        }
+        if (this.clearOnOpen) {
+            this.$.closePR_yes.checked = false;
+            this.$.closePR_no.checked = true;
+            this.$.closeMessage.setAttribute('disabled', 'disabled');
+        }
+        return new Promise(function (resolve, reject) {
+            _this.resolve = resolve;
+            _this.dialog.Open();
+        });
+    };
+    return ClosePRDialog;
+}(conflict_ClosePRDialog));
+
+// MergingInfo is the typescript equivalent of the EBWRepoStatus which provides
+// some information on how the repo came to be in a conflict state.
+var MergingInfo = (function () {
+    function MergingInfo(dataEl) {
+        if (!dataEl) {
+            dataEl = document.getElementById("merging-info");
+            var js = JSON.parse(dataEl.innerText);
+            this.PRNumber = js.MergingPRNumber;
+            this.Description = js.MergingDescription;
+        }
+    }
+    MergingInfo.prototype.IsPRMerge = function () {
+        return (0 < this.PRNumber);
+    };
+    return MergingInfo;
+}());
+
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
@@ -2921,6 +3066,8 @@ var RepoConflictPage = (function () {
         this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
         this.commitDialog = new CommitMessageDialog$1(false);
         new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
+        this.mergingInfo = new MergingInfo(document.getElementById("merging-info"));
+        this.closePRDialog = new ClosePRDialog(false);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");
             if (showing)
@@ -2943,18 +3090,32 @@ var RepoConflictPage = (function () {
             _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
                 .then(function (r) {
                 if (r.Cancelled) {
-                    console.log("Cancelled commit");
                     return;
                 }
-                document.location.href = "/repo/" +
-                    encodeURIComponent(_this.context.RepoOwner) +
-                    "/" + encodeURIComponent(_this.context.RepoName) +
-                    "/conflict/resolve?" +
-                    "message=" + encodeURIComponent(r.Message) +
-                    "&notes=" + encodeURIComponent(r.Notes);
+                console.log("Result= ", r);
+                _this.context.RepoRedirect("conflict/resolve", new Map([["message", r.Message], ["notes", r.Notes]]));
                 return;
             })
                 .catch(EBW.Error);
+        });
+        document.getElementById("action-abort").addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            if (_this.mergingInfo.IsPRMerge()) {
+                _this.closePRDialog.Open("Close PR", "You have been merging PR " + _this.mergingInfo.PRNumber + ".\n\t\t\t\t\tDo you want to close the PR?", { Close: false, CloseMessage: "", Cancelled: false })
+                    .then(function (r) {
+                    if (r.Cancelled) {
+                        return;
+                    }
+                    _this.context.RepoRedirect("conflict/abort", new Map([["message", r.CloseMessage],
+                        ["close", r.Close]]));
+                    return;
+                })
+                    .catch(EBW.Error);
+            }
+            else {
+                _this.context.RepoRedirect("conflict/abort");
+            }
         });
     }
     RepoConflictPage.prototype.fileListEvent = function (e, f) {

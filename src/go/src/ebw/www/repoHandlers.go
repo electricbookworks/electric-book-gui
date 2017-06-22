@@ -230,6 +230,30 @@ func pullRequestList(c *Context) error {
 	return c.Render(`pull_request_list.html`, nil)
 }
 
+// pullRequestMerge merges a pull request and sends the user to the
+// conflict page.
+// TODO: Scrap this entire method and merge it with repoMergeRemoteBranch
+func pullRequestMerge(c *Context) error {
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	prNumber := int(c.PI(`number`))
+	// TODO: Extract the description from the actual PR.
+	if err := repo.MergeWith(``, ``, git.ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
+		return err
+	}
+	if err := repo.PullRequestFetch(prNumber); nil != err {
+		return err
+	}
+	if err := repo.PullRequestMerge(prNumber); nil != err {
+		return err
+	}
+	return c.Redirect(pathRepoConflict(repo))
+}
+
+// pullRequestView is deprecated. I'm leaving it here just for a few
+// revisions, then it can be cut.
 func pullRequestView(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
@@ -276,25 +300,27 @@ func pullRequestView(c *Context) error {
 }
 
 func pullRequestCreate(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
+	repo, err := c.Repo()
+	if nil != err {
+		return err
 	}
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
 
-	c.D[`UserName`] = client.Username
-	c.D[`RepoOwner`] = repoOwner
-	c.D[`RepoName`] = repoName
+	c.D[`UserName`] = repo.Client.Username
+	c.D[`RepoOwner`] = repo.RepoOwner
+	c.D[`RepoName`] = repo.RepoName
 
 	if `POST` == c.R.Method {
-		if err := git.PullRequestCreate(
-			client, client.Username, repoOwner, repoName,
-			c.P(`title`), c.P(`notes`)); nil != err {
+		var args struct {
+			Title string `schema:"title"`
+			Notes string `schema:"notes"`
+		}
+		if err := c.Decode(&args); nil != err {
 			return err
 		}
-		c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
-		return nil
+		if err := repo.PullRequestCreate(args.Title, args.Notes); nil != err {
+			return err
+		}
+		return c.Redirect(pathRepoDetail(repo))
 	}
 
 	return c.Render(`pull_new.html`, nil)
