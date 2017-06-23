@@ -449,6 +449,30 @@ func (r *Repo) MustRepoState() RepoState {
 	return s
 }
 
+// CanCreatePR returns true if the Upstream repo is
+// behind the Github repo, and there has been a new commit
+// since the last PR was issued.
+func (r *Repo) CanCreatePR() (bool, error) {
+	s, err := r.GetRepoState()
+	if nil != err {
+		return false, nil
+	}
+	// Cannot issue a PR unless Github is up-to-date, and
+	// the local repo is in sync with Github
+	if s.LocalBehind() || s.LocalAhead() {
+		return false, nil
+	}
+	// Cannot issue a PR unless the parent is behind
+	if !s.ParentBehind() {
+		return false, nil
+	}
+	head, err := r.Repository.Head()
+	if nil != err {
+		return false, util.Error(err)
+	}
+	return r.EBWRepoStatus.LastPRHash != head.Target().String(), nil
+}
+
 func (r *Repo) GetRepoState() (RepoState, error) {
 	var state RepoState
 
@@ -1289,7 +1313,7 @@ func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, 
 	}
 	// since working differs from index =>
 	// implies modified, and hashes aren't the same,
-	// so we
+	// so we are new or deleted or modified
 	if info.Working.Hash.IsZero() {
 		return MergeFileNew, nil
 	}
@@ -1305,10 +1329,10 @@ func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, 
 // the template PR_{{prN}} for the current head, where prN is the Nth PR we've
 // sent. Because, down-the-line, we might delete branches, this number isn't
 // to be considered definitive.
-func (r *Repo) BranchCreate(name string, force bool) (string, error) {
+func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error) {
 	head, err := r.Repository.Head()
 	if nil != err {
-		return ``, util.Error(err)
+		return ``, nil, util.Error(err)
 	}
 	if `` == name {
 		for i := 1; true; i++ {
@@ -1318,7 +1342,7 @@ func (r *Repo) BranchCreate(name string, force bool) (string, error) {
 				if git2go.IsErrorCode(err, git2go.ErrNotFound) {
 					break
 				}
-				return ``, util.Error(err)
+				return ``, nil, util.Error(err)
 			}
 			br.Free()
 		}
@@ -1326,20 +1350,20 @@ func (r *Repo) BranchCreate(name string, force bool) (string, error) {
 
 	commit, err := r.LookupCommit(head.Target())
 	if nil != err {
-		return ``, util.Error(err)
+		return ``, nil, util.Error(err)
 	}
 	defer commit.Free()
 
 	br, err := r.Repository.CreateBranch(name, commit, force)
 	if nil != err {
-		return ``, util.Error(err)
+		return ``, nil, util.Error(err)
 	}
 	br.Free()
 
 	// Now we've created the branch on EBW, we need to push the branch to
 	// GitHub
 	if err := r.Push(`origin`, name); nil != err {
-		return ``, err
+		return ``, nil, err
 	}
-	return name, err
+	return name, head.Target(), err
 }

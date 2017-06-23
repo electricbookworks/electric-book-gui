@@ -106,7 +106,7 @@ func (r *Repo) PullRequestClose(number int, merged bool) error {
 // In order to ensure that changes to the user's repo aren't propagated
 // with the PR, we branch at the point of PR creation.
 func (r *Repo) PullRequestCreate(title, notes string) error {
-	branchName, err := r.BranchCreate(``, false)
+	branchName, headOid, err := r.BranchCreate(``, false)
 	if nil != err {
 		return err
 	}
@@ -135,6 +135,11 @@ func (r *Repo) PullRequestCreate(title, notes string) error {
 		})
 	if nil != err {
 		return util.Error(err)
+	}
+
+	r.EBWRepoStatus.LastPRHash = headOid.String()
+	if err := r.writeEBWRepoStatus(); nil != err {
+		return err
 	}
 
 	return nil

@@ -53,7 +53,7 @@
             <p>Your GitHub repo is behind the book you are contributing to. <div data-instance="RepoMergeButton" data-repo-merge="upstream/master">Update my version from the master version.</div>
             </p>
             {{end}}
-            {{if $state.ParentBehind}}
+            {{if .ERepo.CanCreatePR}}
             <p>You've made changes you've not shared with the book you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for Review.</a></p>
             {{end}}
             {{if $state.ParentInSync}}
@@ -146,11 +146,11 @@
         </div>
     </section>
     {{end}}
-    {{if .ERepo.HasUpstreamRemote}}
+    {{if .ERepo.CanCreatePR}}
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>My changes</h3>
-            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull_new" class="btn">Submit these changes for review</a>
+            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for review</a>
         </div>
 
         <div class="todo">

@@ -26,6 +26,10 @@ type EBWRepoStatus struct {
 	// file has been deleted and committed (although the file should still exist in
 	// HEAD, we would have to work our way through the whole of HEAD looking for it).
 	MergingFiles []string `yaml:"merging_files"`
+	// LastPRHash contains the Hash of the commit used for the last PR
+	// sent from this repo. This is used to determine whether new changes
+	// have been made on the repo that the user could push upstream.
+	LastPRHash string `yaml:"last_pr_hash"`
 }
 
 const ebw_repo_status_filename = `status.yml`
