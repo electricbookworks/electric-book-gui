@@ -1,3 +1,11 @@
+@mixin hoverEtAl() {
+	@each $p in hover active focus focus-within {
+		&:#{$p} {
+			@content;
+		}
+	}
+}
+
 .toolbar-menu {
 	flex-grow: 0;
 	// padding: 0.2em;
@@ -31,44 +39,44 @@
 				transition: transform 0.2s;
 			}
 		}
-		&:hover, &:active, &:focus, &:focus-within {
+		@include hoverEtAl() {
 			&>.btn {
 				&:after {
 					// content: url('/img/arrow-down.svg');
 					transform: rotate(-90deg);
 				}
 			}
-		}
-		.hover {
-			position: absolute;
-			top: 2em;
-			left: 0;
-			background-color: white;
-			border: 2px solid $color-primary;
-			border-radius: 0.4em;
-			border-top-left-radius: 0;
-			padding: 0.6em;
-			z-index: 100;
-			display: none;
-
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: stretch;
-
-			width: 15em;
-
-			&>div, &>a, &>button {
-				margin: 0.2em 0.4em;
-			}
-
-			&:hover, &:active, &:focus, &:focus-within {
+			& > .hover {
 				display: flex;
 			}
 		}
-		&:hover, &:active, &:focus, &:focus-within {
-			.hover {
-				display: flex;
-			}
-		}
+
+	}
+}
+
+.hover {
+	position: absolute;
+	top: 2em;
+	left: 0;
+	background-color: white;
+	border: 2px solid $color-primary;
+	border-radius: 0.4em;
+	border-top-left-radius: 0;
+	padding: 0.6em;
+	z-index: 100;
+	display: none;
+
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+
+	width: 15em;
+
+	&>div, &>a, &>button {
+		margin: 0.2em 0.4em;
+	}
+
+	@include hoverEtAl {
+		display: flex;
 	}
 }

@@ -3965,29 +3965,48 @@ body {
       height: 1em;
       content: url("/img/arrow-right.svg");
       transition: transform 0.2s; }
-    .toolbar-menu .drop-down:hover > .btn:after, .toolbar-menu .drop-down:active > .btn:after, .toolbar-menu .drop-down:focus > .btn:after, .toolbar-menu .drop-down:focus-within > .btn:after {
+    .toolbar-menu .drop-down:hover > .btn:after {
       transform: rotate(-90deg); }
-    .toolbar-menu .drop-down .hover {
-      position: absolute;
-      top: 2em;
-      left: 0;
-      background-color: white;
-      border: 2px solid #009E7F;
-      border-radius: 0.4em;
-      border-top-left-radius: 0;
-      padding: 0.6em;
-      z-index: 100;
-      display: none;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: stretch;
-      width: 15em; }
-      .toolbar-menu .drop-down .hover > div, .toolbar-menu .drop-down .hover > a, .toolbar-menu .drop-down .hover > button {
-        margin: 0.2em 0.4em; }
-      .toolbar-menu .drop-down .hover:hover, .toolbar-menu .drop-down .hover:active, .toolbar-menu .drop-down .hover:focus, .toolbar-menu .drop-down .hover:focus-within {
-        display: flex; }
-    .toolbar-menu .drop-down:hover .hover, .toolbar-menu .drop-down:active .hover, .toolbar-menu .drop-down:focus .hover, .toolbar-menu .drop-down:focus-within .hover {
+    .toolbar-menu .drop-down:hover > .hover {
       display: flex; }
+    .toolbar-menu .drop-down:active > .btn:after {
+      transform: rotate(-90deg); }
+    .toolbar-menu .drop-down:active > .hover {
+      display: flex; }
+    .toolbar-menu .drop-down:focus > .btn:after {
+      transform: rotate(-90deg); }
+    .toolbar-menu .drop-down:focus > .hover {
+      display: flex; }
+    .toolbar-menu .drop-down:focus-within > .btn:after {
+      transform: rotate(-90deg); }
+    .toolbar-menu .drop-down:focus-within > .hover {
+      display: flex; }
+
+.hover {
+  position: absolute;
+  top: 2em;
+  left: 0;
+  background-color: white;
+  border: 2px solid #009E7F;
+  border-radius: 0.4em;
+  border-top-left-radius: 0;
+  padding: 0.6em;
+  z-index: 100;
+  display: none;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: 15em; }
+  .hover > div, .hover > a, .hover > button {
+    margin: 0.2em 0.4em; }
+  .hover:hover {
+    display: flex; }
+  .hover:active {
+    display: flex; }
+  .hover:focus {
+    display: flex; }
+  .hover:focus-within {
+    display: flex; }
 
 #new-editor {
   flex-grow: 1;
