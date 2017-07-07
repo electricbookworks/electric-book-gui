@@ -47,7 +47,8 @@ func githubCreateNew(c *Context) error {
 
 	/* These fields are defined in public/es6/AddNewBookDialog.html */
 	repoNewName := c.P(`repo_new`)
-	redirectUrl, err := pathRepoEdit(c, repoNewName)
+
+	redirectUrl, err := pathRepoEdit(c, c.Client.Username+"/"+repoNewName)
 	if nil != err {
 		/** @TODO Provide a more useful error explaining that the
 		 * user/repo format is required to make a repo fork.

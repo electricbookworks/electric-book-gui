@@ -22,7 +22,7 @@
             </div>
         {{end}}   
  -->            
-        <p>You repo state is {{.ERepo.RepoStateString}}</p>
+        <p>You repo state is {{.ERepo.RepoStateStringNoError}}</p>
 
             {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}

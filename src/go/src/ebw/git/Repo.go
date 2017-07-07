@@ -433,6 +433,14 @@ func (r *Repo) HasUpstreamRemote() (bool, error) {
 	return true, nil
 }
 
+func (r *Repo) RepoStateStringNoError() string {
+	s, err := r.RepoStateString()
+	if nil != err {
+		return err.Error()
+	}
+	return s
+}
+
 func (r *Repo) RepoStateString() (string, error) {
 	s, err := r.GetRepoState()
 	if nil != err {
