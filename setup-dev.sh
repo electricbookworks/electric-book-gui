@@ -30,5 +30,6 @@ popd
 source /usr/local/rvm/scripts/rvm
 rvm install ruby-2.4.0
 
+cp repository_mergeheads.go src/go/src/gopkg.in/libgit2/git2go.v25/repository_mergeheads.go
 
 
