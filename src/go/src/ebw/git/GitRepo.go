@@ -23,6 +23,16 @@ func (g *GitRepo) RepoOwner() string {
 	return g.Owner.GetLogin()
 }
 
+// RepoOwnerNiceName returns the users name or login if the
+// name isn't available.
+func (g *GitRepo) RepoOwnerNiceName() string {
+	name := g.Owner.GetName()
+	if `` == name {
+		return "LOGIN: " + g.Owner.GetLogin()
+	}
+	return "NAME: " + name
+}
+
 type gitRepoSlice []*GitRepo
 
 func (g gitRepoSlice) Len() int {

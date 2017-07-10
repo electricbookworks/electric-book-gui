@@ -438,7 +438,7 @@ body {
   margin: 0;
   padding: 0;
   background: white;
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-weight: normal;
   line-height: 1.5;
   color: #444;
@@ -1085,7 +1085,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-style: normal;
   font-weight: normal;
   color: inherit;
@@ -3713,6 +3713,7 @@ p {
 
 h1 {
   font-size: 2em;
+  font-weight: bold;
   line-height: 1.25; }
   @media (min-width: 43.75em) {
     h1 {
@@ -3724,16 +3725,8 @@ h1 {
       line-height: 1.05; } }
 
 h2 {
-  font-size: 1.625em;
+  font-size: 1.5em;
   line-height: 1.15384615; }
-  @media (min-width: 43.75em) {
-    h2 {
-      font-size: 2em;
-      line-height: 1.25; } }
-  @media (min-width: 56.25em) {
-    h2 {
-      font-size: 2.25em;
-      line-height: 1.25; } }
 
 h3 {
   font-size: 1.375em;
@@ -3805,7 +3798,9 @@ body {
 
 .constrain-page {
   width: 90%;
-  margin: auto; }
+  margin: auto;
+  padding-top: 2em;
+  max-width: 60em; }
   @media (min-width: 50em) {
     .constrain-page {
       width: 70%; } }
@@ -3838,6 +3833,9 @@ body {
     border-bottom-width: 0px; }
     .btn.disabled:hover {
       background-color: inherit; }
+  .btn.btn-inverse {
+    color: #009E7F;
+    background-color: white; }
 
 .action-group {
   display: flex;
@@ -3884,6 +3882,8 @@ body {
     width: 3em;
     height: 2em;
     padding: 0 0.5em; }
+  .topbar .username-gravatar {
+    margin-right: 1em; }
   .topbar .topbar-center {
     font-weight: bold; }
 
@@ -4007,6 +4007,9 @@ body {
     display: flex; }
   .hover:focus-within {
     display: flex; }
+
+.landing-page {
+  max-width: 40em; }
 
 #new-editor {
   flex-grow: 1;
@@ -4422,10 +4425,8 @@ body {
       margin-right: 0em; }
 
 .repo-list {
-  padding-left: 0;
   list-style: none;
-  margin: 0 0 3em 0;
-  padding: 0 1em;
+  margin: 1em 0 3em 0;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -4443,37 +4444,19 @@ body {
     max-width: 100%;
     text-decoration: none; }
   .repo-list .repo {
+    border-top: 1px solid #eee;
     box-sizing: border-box;
-    width: 32%;
-    border: 1px solid #999;
+    width: 100%;
+    padding: 1em 0 1.6em 0;
     margin-bottom: 1em;
     margin-right: 2%;
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-between;
-    padding: 1em; }
+    justify-content: space-between; }
     @supports (display: grid) {
       .repo-list .repo {
         margin-bottom: 0; } }
-    .repo-list .repo:nth-child(3n) {
-      margin-right: 0; }
-    .repo-list .repo .repo-add-repo {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      min-height: 10em; }
-  @supports (display: grid) {
-    .repo-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-gap: 1em;
-      align-items: stretch; }
-      .repo-list .repo {
-        width: auto;
-        word-break: auto;
-        margin-right: 0; } }
 
 input,
 textarea,
@@ -4502,13 +4485,11 @@ textarea {
   border-radius: 0.25em;
   border-top: 0;
   border-right: 0;
-  border-left: 0;
-  border-bottom: 0.15em solid #006b56; }
+  border-left: 0; }
   .cta:hover,
   .btn:hover,
   [type="submit"]:hover {
     background-color: #00d1a8;
-    border-bottom: 0.15em solid transparent;
     cursor: pointer; }
   .cta[disabled],
   .btn[disabled],
@@ -4516,8 +4497,7 @@ textarea {
     border: none;
     background-color: #71B8AA;
     cursor: default;
-    position: relative;
-    top: 0.15em; }
+    position: relative; }
 
 .btn-wide,
 .input-wide,

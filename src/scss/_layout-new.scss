@@ -31,6 +31,8 @@ body {
 .constrain-page {
   width: 90%;
   margin: auto;
+  padding-top: 2em;
+  max-width: 60em;
 
   @media (min-width: $bp-m) {
   	width: 70%;

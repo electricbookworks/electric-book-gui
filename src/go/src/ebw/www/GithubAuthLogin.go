@@ -42,7 +42,7 @@ func githubLogin(c *Context) error {
 	p := url.Values{}
 	p.Add(`client_id`, config.Config.Github.Client)
 	p.Add(`redirect_uri`, config.Config.Server+"/github/auth")
-	p.Add(`scope`, `repo user`)
+	p.Add(`scope`, `repo user user:email user:name`)
 	state := util.RandomString(20)
 	c.Session.Values[`github_state`] = state
 	p.Add(`state`, state)
@@ -53,6 +53,7 @@ func githubLogin(c *Context) error {
 
 // githubAuth receives github's oauth2 authorization response
 func githubAuth(c *Context) error {
+	glog.Infof(`githubAuth callback: form values = %v`, c.R.Form)
 	p := url.Values{}
 	if "" != c.R.FormValue("error") {
 		return fmt.Errorf(`We were unable to authenticate you on GitHub: %s`, c.R.FormValue("error_description"))

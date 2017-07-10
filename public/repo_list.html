@@ -1,19 +1,23 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" . }}
 
+{{$userLogin := .UserName}}
 <main>
-<section>
+<section class="constrain-page center repo-list-page">
+    <h1>Dashboard</h1>
 
     <ul class="repo-list">
         {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
+                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
 
-                <h3><a href="https://github.com/{{.Owner.Login}}">{{.Owner.Login}}</a>'s {{if .GetFork}}version{{else}}original{{end}}
+                <div>
+                {{- if eq .Owner.GetLogin $userLogin}}My
+                {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} {{if .GetFork}}version{{else}}original{{end}}
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
-                {{- end}}</h3>
+                {{- end}}</div>
                 {{if .Description}}
                 <p>{{.Description}}</p>
                 {{end}}
@@ -35,7 +39,7 @@
         {{end}}
         <li class="repo">
             <div class="repo-add-repo">
-                <a data-open="repo-new-modal">Add a New Book</a>
+                <a data-open="repo-new-modal" class="btn">Add a New Book</a>
             </div>
         </li>
     </ul>

@@ -7,16 +7,16 @@
 	</div>
 	{{if .RepoOwner}}
 	<div class="topbar-center">
+		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_blank"><img src="/img/github.svg" /></a>
 		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
 			{{- .RepoOwner}}/{{.RepoName -}}
 		</a>
-		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_github"><img src="/img/github.svg" /></a>
 	</div>
 	{{end}}
 	{{if .User}}
 	<div class="topbar-right">
 		<div>
-			Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a>. <a href="/logoff">Log out</a>
+			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a> <a href="/logoff" class="btn btn-inverse">Sign out</a>
 		</div>
 	</div>
 	{{end}}

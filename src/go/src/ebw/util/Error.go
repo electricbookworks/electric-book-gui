@@ -28,7 +28,7 @@ func ToError(args []interface{}) error {
 	}
 	gerr, ok := args[0].(*git2go.GitError)
 	if ok {
-		glog.Infof(`ToError returing a &git2go.GitError)`)
+		glog.Infof(`ToError returing a &git2go.GitError: %s`, gerr.Error())
 		return gerr
 	}
 	err, ok := args[0].(error)
@@ -45,7 +45,7 @@ func Error(e ...interface{}) error {
 	}
 	gerr, ok := e[0].(*git2go.GitError)
 	if ok {
-		glog.Infof(`Error returing a &git2go.GitError)`)
+		glog.Infof(`Error returning a &git2go.GitError: %s`, gerr.Error())
 		return gerr
 	}
 

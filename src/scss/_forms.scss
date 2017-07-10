@@ -29,10 +29,10 @@ textarea {
 	border-top: 0;
 	border-right: 0;
 	border-left: 0;
-    border-bottom: 0.15em solid darken($color-primary, 10%);
+    // border-bottom: 0.15em solid darken($color-primary, 10%);
 	&:hover {
 		background-color: lighten($color-primary, 10%);
-        border-bottom: 0.15em solid transparent;
+        // border-bottom: 0.15em solid transparent;
 		cursor: pointer;
 	}
     &[disabled] {
@@ -40,7 +40,7 @@ textarea {
         background-color: $color-offgray;
         cursor: default;
         position: relative;
-        top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
+        // top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
     }
 }
 

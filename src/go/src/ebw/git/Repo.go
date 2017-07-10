@@ -211,7 +211,7 @@ func (r *Repo) StatusCount() (int, int, error) {
 		Show: git2go.StatusShowIndexOnly,
 	})
 	if nil != err {
-		return 0, 0, err
+		return 0, 0, util.Error(err)
 	}
 	defer sl.Free()
 	indexCount, err := sl.EntryCount()
@@ -222,7 +222,7 @@ func (r *Repo) StatusCount() (int, int, error) {
 		Show: git2go.StatusShowWorkdirOnly,
 	})
 	if nil != err {
-		return 0, 0, err
+		return 0, 0, util.Error(err)
 	}
 	defer sl.Free()
 	workdirCount, err := sl.EntryCount()
@@ -484,6 +484,8 @@ func (r *Repo) CanCreatePR() (bool, error) {
 func (r *Repo) GetRepoState() (RepoState, error) {
 	var state RepoState
 
+	// glog.Infof("Getting Repository.State()")
+
 	// Get the state of the local repository.
 	switch r.Repository.State() {
 	case git2go.RepositoryStateNone:
@@ -492,6 +494,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	default:
 		state |= EBMUnimplemented
 	}
+
+	// glog.Infof("state = %d, fetching StatusCount", state)
 
 	// Work out changes on the local repository, and how those
 	// effect our RepoState
@@ -509,23 +513,32 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMChangesUnstaged
 	}
 
+	// glog.Infof("staged, workingDir = %d, %d, state = %d, going to FetchRemote", stagedChanges,
+	// 	workingdirChanges, state)
+
 	// Check ahead/behind for our github repo and for our
 	// parent repo. These are EBMAhead and EBMBehind.
 	if err := r.FetchRemote(`origin`); nil != err {
 		return 0, err
 	}
 
+	// glog.Infof("fetched remote, going to lookupbranch")
+
 	originBranch, err := r.Repository.LookupBranch(`origin/master`, git2go.BranchRemote)
 	if nil != err {
-		return 0, fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error())
+		return 0, util.Error(fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error()))
 	}
 	defer originBranch.Free()
 
+	// glog.Infof("getting r.Repository.Head()")
+
 	localHead, err := r.Repository.Head()
 	if nil != err {
-		return 0, fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error())
+		return 0, util.Error(fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error()))
 	}
 	defer localHead.Free()
+
+	// glog.Infof("Fetching localAhead, localBehind")
 
 	localAhead, localBehind, err := r.Repository.AheadBehind(localHead.Target(), originBranch.Target())
 	if nil != err {
@@ -538,6 +551,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMBehind
 	}
 
+	// glog.Infof("Checking for upstreamRemote")
+
 	// A BRANCH points to a Commit, so we need to resolve
 	// Check ahead/behind between our github repo and its parent
 	hasUpstreamRemote, err := r.HasUpstreamRemote()
@@ -547,18 +562,21 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if !hasUpstreamRemote {
 		state |= ParentNotExist
 	} else {
+		// glog.Infof("We've got upstream remote, fetching upstream remote")
 		if err := r.FetchRemote(`upstream`); nil != err {
 			return 0, err
 		}
+		// glog.Infof("Looking up upstream/master")
 		upstreamBranch, err := r.Repository.LookupBranch(`upstream/master`, git2go.BranchRemote)
 		if nil != err {
-			return 0, fmt.Errorf(`Failed to lookup branch upstream/master: %s`, err.Error())
+			return 0, util.Error(fmt.Errorf(`Failed to lookup branch upstream/master: %s`, err.Error()))
 		}
 		defer upstreamBranch.Free()
 
+		// glog.Infof("Checking upstream ahead/behind")
 		originAhead, originBehind, err := r.Repository.AheadBehind(originBranch.Target(), upstreamBranch.Target())
 		if nil != err {
-			return 0, fmt.Errorf(`Failed to get AheadBehind for origin and upstream branches: %s`, err.Error())
+			return 0, util.Error(fmt.Errorf(`Failed to get AheadBehind for origin and upstream branches: %s`, err.Error()))
 		}
 		if 0 < originAhead {
 			state |= ParentBehind
@@ -569,12 +587,13 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		if 0 == state&(ParentAhead|ParentBehind) {
 			state |= ParentInSync
 		} else {
-			fmt.Printf("OriginAhead = %d, OriginBehind = %d\n", originAhead, originBehind)
+			// glog.Infof("OriginAhead = %d, OriginBehind = %d\n", originAhead, originBehind)
 		}
 	}
 	if 0 == state&(EBMAhead|EBMBehind|EBMConflicted|EBMUnimplemented|EBMChangesStaged|EBMChangesUnstaged) {
 		state |= EBMInSync
 	}
+	// glog.Infof("Leaving GetRepoState successfully, state = %d", state)
 	return state, nil
 }
 
@@ -587,7 +606,16 @@ func (r *Repo) FetchRemote(remoteName string) error {
 		return util.Error(err)
 	}
 	defer remote.Free()
-	if err := remote.Fetch([]string{}, nil, ``); nil != err {
+	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
+		RemoteCallbacks: git2go.RemoteCallbacks{
+			CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
+				// glog.Infof(`CredentialsCallback: url=%s, username_from_url=%s, allows_types = %d`, url, username_from_url, allowed_types)
+				errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
+				// glog.Infof("NewCredUserpassPlaintext returned %d, %v", errCode, cred)
+				return git2go.ErrorCode(errCode), &cred
+			},
+		},
+	}, ``); nil != err {
 		return util.Error(err)
 	}
 	return nil

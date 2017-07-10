@@ -39,6 +39,7 @@ func githubCreateFork(c *Context) error {
 // githubCreateNew creates a New book - ie a duplication of the
 // base electric-book template.
 func githubCreateNew(c *Context) error {
+	panic(`githubCreateNew`)
 	client := Client(c.W, c.R)
 	if nil == client {
 		// GithubClient will have redirected us

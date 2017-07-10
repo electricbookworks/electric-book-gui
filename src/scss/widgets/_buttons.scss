@@ -11,6 +11,14 @@
 			background-color: inherit;
 		}
 	}
+
+	&.btn-inverse {
+		color: $color-primary;
+		background-color: white;
+		&:hover {
+
+		}
+	}
 }
 
 .action-group {

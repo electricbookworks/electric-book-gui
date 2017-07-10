@@ -7,6 +7,11 @@
 
 
 <main id="repo-detail" class="constrain-page">
+
+            <div class="action-group">
+                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
+            </div>
+
     <section class="repo-detail-section">
         <h3><a class="repo-title" href="/">{{.Repo.Name}}</a></h3>
         {{if .Repo.Description}}
@@ -102,34 +107,6 @@
     </section>
     {{end}}
 
-    <section class="repo-detail-section">
-        <div class="title-links">
-            <h3>Files</h3>
-            <div class="action-group">
-                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit files</a></div>
-        </div>
-        </div>
-        <div class="file-list">
-            <table>
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Change set</th>
-                    <th>Last updated by</th>
-                </tr>
-                </thead>
-                <tbody class="file-list">
-                {{ range .RepoFiles.Files}}
-                <tr>
-                    <td><a class="file-item">{{.Name}}</a></td>
-                    <td>Change set description here</td>
-                    <td>Username</td>
-                </tr>
-                {{ end }}
-                </tbody>
-            </table>
-        </div>
-    </section>
     {{if .StagedFiles}}
     <section class="repo-detail-section">
         <div class="title-links">
@@ -146,6 +123,7 @@
         </div>
     </section>
     {{end}}
+<!--
     {{if .ERepo.CanCreatePR}}
     <section class="repo-detail-section">
         <div class="title-links">
@@ -158,7 +136,8 @@
         </div>
     </section>
     {{end}}
-</main>
+ -->
+ </main>
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDetailPage">
 </script>
 
