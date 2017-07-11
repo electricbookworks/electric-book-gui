@@ -3873,15 +3873,16 @@ body {
   padding: 1em;
   border-bottom: 1px solid #006b56;
   background-color: #009E7F;
-  color: white; }
+  color: white;
+  position: relative; }
   .topbar a {
     color: white; }
     .topbar a:hover {
       color: #e6e6e6; }
   .topbar img {
-    width: 3em;
     height: 2em;
-    padding: 0 0.5em; }
+    padding-left: 0.5em;
+    margin-bottom: 2px; }
   .topbar .username-gravatar {
     margin-right: 1em; }
   .topbar .topbar-center {
@@ -4007,6 +4008,13 @@ body {
     display: flex; }
   .hover:focus-within {
     display: flex; }
+
+.header-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%; }
 
 .landing-page {
   max-width: 40em; }
@@ -4165,15 +4173,15 @@ body {
   list-style: none;
   margin: 0; }
   .pull-requests .repository-pull-request-details {
-    border-top: 1px solid #ddd;
-    padding: 2em 0;
+    border-top: 1px solid #eee;
+    padding: 1em 0;
     margin: 0;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between; }
     .pull-requests .repository-pull-request-details:last-child {
-      border-bottom: 1px solid #ddd; }
+      border-bottom: 1px solid #eee; }
     .pull-requests .repository-pull-request-details .details {
       margin-right: 2em; }
     .pull-requests .repository-pull-request-details .actions {
@@ -4447,16 +4455,28 @@ body {
     border-top: 1px solid #eee;
     box-sizing: border-box;
     width: 100%;
-    padding: 1em 0 1.6em 0;
+    padding: 1em 0 1em 0;
     margin-bottom: 1em;
     margin-right: 2%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
     justify-content: space-between; }
     @supports (display: grid) {
       .repo-list .repo {
         margin-bottom: 0; } }
+    .repo-list .repo .repo-details p:last-child {
+      margin-bottom: 0; }
+    .repo-list .repo .repo-manage {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-start; }
+      .repo-list .repo .repo-manage a {
+        margin-top: 1em; }
+        .repo-list .repo .repo-manage a:first-child {
+          margin-top: 0em; }
 
 input,
 textarea,

@@ -31,7 +31,7 @@
         border-top: 1px solid $color-verylightgray;
         box-sizing: border-box;
         width: 100%;
-        padding: 1em 0 1.6em 0;
+        padding: 1em 0 1em 0;
 
         // border: 1px solid #999;
         margin-bottom: 1em;
@@ -41,10 +41,32 @@
         margin-right: 2%;
 
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: stretch;
         justify-content: space-between;
         // padding: 1em;
+
+        .repo-details {
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        .repo-manage {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-start;
+            & a {
+                // display: inline-block;
+                // &:
+                margin-top: 1em;
+                &:first-child {
+                    margin-top: 0em;
+                }
+            }
+        }
 
         .repo-add-repo {
             // display: flex;

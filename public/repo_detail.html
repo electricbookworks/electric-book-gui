@@ -8,12 +8,13 @@
 
 <main id="repo-detail" class="constrain-page">
 
+    <section class="repo-detail-section">
+        <div class="header-bar">
+            <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
             <div class="action-group">
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
             </div>
-
-    <section class="repo-detail-section">
-        <h3><a class="repo-title" href="/">{{.Repo.Name}}</a></h3>
+        </div>
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>
         {{end}}
@@ -26,8 +27,8 @@
                 <a href="#" class="btn">Update my master version</a>
             </div>
         {{end}}   
- -->            
-        <p>You repo state is {{.ERepo.RepoStateStringNoError}}</p>
+ -->            <!-- 
+        <p>You repo state is {{.ERepo.RepoStateStringNoError}}</p> -->
 
             {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}

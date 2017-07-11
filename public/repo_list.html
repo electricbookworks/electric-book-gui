@@ -4,7 +4,12 @@
 {{$userLogin := .UserName}}
 <main>
 <section class="constrain-page center repo-list-page">
-    <h1>Dashboard</h1>
+    <div class="header-bar">
+        <h1>Dashboard</h1>
+        <div class="action-group">
+            <a data-open="repo-new-modal" class="btn">Add a New Book</a>
+        </div>
+    </div>
 
     <ul class="repo-list">
         {{range .Repos}}

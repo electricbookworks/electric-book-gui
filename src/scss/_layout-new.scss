@@ -23,6 +23,7 @@ body {
 
 		@include inverse;
 		border-top: 1px solid darken($color-inverse-bg, 10%);
+		// height: 1em;
 	}
 	article {
 	}

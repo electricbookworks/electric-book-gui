@@ -166,11 +166,6 @@ var APIWs = (function () {
     return APIWs;
 }());
 
-// Context is a general class passed through to most sub-classes that allows
-// us to track the repo- and user-specific things that are common to pretty
-// much all requests. In some senses, it's a bit like a global namespace,
-// just much better controlled because it's a class we defined and pass around,
-// and can therefore modify for children if that is appropriate at some point.
 var Context = (function () {
     function Context(el, RepoOwner, RepoName) {
         this.el = el;
@@ -2188,6 +2183,11 @@ function FSPrimeFromJS(fs, js) {
 }
 //# sourceMappingURL=FSPrimeFromJS.js.map
 
+/**
+ * RepoEditorPage is the JS controller for the page that allows
+ * editing of a repo.
+ *
+ */
 var RepoEditorPage = (function () {
     function RepoEditorPage(repoOwner, repoName, filesList, filesJson, proseIgnoreFunction) {
         var _this = this;
@@ -2215,6 +2215,9 @@ var RepoEditorPage = (function () {
                 .style.width = showing ? "20%" : "0px";
             document.getElementById("repo-file-actions")
                 .style.visibility = showing ? "visible" : "hidden";
+            var f = document.getElementById("page-footer");
+            f.style.display = showing ? 'flex' : 'none';
+            console.log("set footer = ", f);
         });
         FSPrimeFromJS(this.FS, filesJson);
         document.getElementById("repo-print-printer").addEventListener('click', function (evt) {

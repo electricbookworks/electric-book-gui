@@ -16,7 +16,7 @@
 	{{if .User}}
 	<div class="topbar-right">
 		<div>
-			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank"><img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar">{{.UserName}}</a> <a href="/logoff" class="btn btn-inverse">Sign out</a>
+			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank">{{.UserName}}<img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar"/></a> <a href="/logoff" class="btn btn-inverse">Sign out</a>
 		</div>
 	</div>
 	{{end}}

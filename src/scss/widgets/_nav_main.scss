@@ -7,11 +7,15 @@
 	border-bottom: 1px solid darken($color-inverse-bg, 10%);
 
 	@include inverse;
+	position: relative;
 
 	img {
-		width: 3em;
+		// width: 3em;
 		height: 2em;
-		padding: 0 0.5em;
+		// position: relative;
+		// bottom: 3px;
+		padding-left: 0.5em;
+		margin-bottom: 2px;
 	}
 
 	.username-gravatar {

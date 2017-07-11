@@ -7,11 +7,11 @@
 	margin: 0;
 
 	.repository-pull-request-details {
-		border-top: 1px solid $color-lightgray;
+		border-top: 1px solid $color-verylightgray;
 		&:last-child {
-			border-bottom: 1px solid $color-lightgray;
+			border-bottom: 1px solid $color-verylightgray;
 		}
-		padding: 2em 0;
+		padding: 1em 0;
 
 		margin: 0;
 		display: flex;

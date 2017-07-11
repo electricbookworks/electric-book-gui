@@ -65,6 +65,10 @@ export class RepoEditorPage {
 				.style.width = showing ? "20%":"0px";
 				document.getElementById(`repo-file-actions`)
 				.style.visibility = showing ? `visible` : `hidden`;
+
+				let f = document.getElementById(`page-footer`);
+				f.style.display = showing ? 'flex' : 'none';
+				console.log(`set footer = `, f);
 			});
 
 		
