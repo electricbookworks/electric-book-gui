@@ -4128,7 +4128,8 @@ body {
         width: 100%;
         height: 100%; }
         #new-editor #file-editors .editor .repo-file-editor-workspace .repo-file-editor .CodeMirror {
-          font-size: 1.6em;
+          font-size: 1em;
+          font-family: 'Inconsolata',monospace;
           position: absolute;
           top: 0;
           bottom: 0;
