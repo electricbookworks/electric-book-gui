@@ -4188,12 +4188,14 @@ body {
     .pull-requests .repository-pull-request-details:last-child {
       border-bottom: 1px solid #eee; }
     .pull-requests .repository-pull-request-details .details {
-      margin-right: 2em; }
+      margin-right: 8em; }
     .pull-requests .repository-pull-request-details .actions {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       justify-content: flex-start; }
+      .pull-requests .repository-pull-request-details .actions a {
+        white-space: nowrap; }
 
 #pull-request-view {
   display: flex;

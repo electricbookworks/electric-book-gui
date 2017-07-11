@@ -9,6 +9,14 @@
 		<h1>To Review</h1>
 
 		<ul class="pull-requests">
+
+				<li class="pull-request open repository-pull-request-details">
+ 					<div class="actions">
+						<a href="pull/0" class="btn">Review Submission <!--{{.GetTitle}}--></a>
+						<a href="https://github.com/{{$repoOwner}}/{{$repoName}}/pull/0">View the discussion on GitHub</a>
+					</div>
+				</li>
+
 			{{range .PullRequests}}
 				<li class="pull-request open repository-pull-request-details">
 					<div class="details">
