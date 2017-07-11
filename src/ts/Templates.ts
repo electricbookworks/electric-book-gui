@@ -96,13 +96,13 @@ export class AddNewBookDialog {
 		let t = AddNewBookDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div><div><h1>Add a New Book</h1><fieldset><label><input type="radio" value="new"/>
-				Start a new book.
+			d.innerHTML = `<div><div><h1>Add a New Series</h1><fieldset><label><input type="radio" value="new"/>
+				Start a new series.
 			</label><label><input type="radio" value="collaborate"/>
-				Collaborate on an existing book.
-			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New Book</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new book.
+				Collaborate on an existing series.
+			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New Series</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new series.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
-		</label><input type="submit" class="btn" value="New Book"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the owner and repo for the book you will collaborate on.
+		</label><input type="submit" class="btn" value="New Series"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the owner and repo for the series you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;

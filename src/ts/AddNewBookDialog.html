@@ -9,35 +9,35 @@ eventify:
 ---
 <div>
 	<div data-set="chooseType">
-		<h1>Add a New Book</h1>
+		<h1>Add a New Series</h1>
 		<fieldset>
 			<label>
 				<input type="radio" value="new" data-set="newBookRadio" />
-				Start a new book.
+				Start a new series.
 			</label>
 			<label>
 				<input type="radio" value="collaborate"
 				data-set="collaborateRadio" />
-				Collaborate on an existing book.
+				Collaborate on an existing series.
 			</label>
 		</fieldset>
 		<button data-event="click:choseType" class="btn">Next</button>
 	</div>
 	<div data-set="newBook">
-		<h1>New Book</h1>
+		<h1>New Series</h1>
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new" />
-		<label>Enter the name for your new book.
+		<label>Enter the name for your new series.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick" data-set="repo_name"/>
 		</label>
-		<input type="submit" class="btn" value="New Book"/>
+		<input type="submit" class="btn" value="New Series"/>
 		</form>
 	</div>
 	<div data-set="collaborate">
 		<h1>Collaborate</h1>
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork" />
-		<label>Enter the owner and repo for the book you will collaborate on.
+		<label>Enter the owner and repo for the series you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core" data-set="collaborate_repo" />
 		</label>
 		<input type="submit" class="btn" value="Collaborate" />

@@ -28,9 +28,9 @@ func (g *GitRepo) RepoOwner() string {
 func (g *GitRepo) RepoOwnerNiceName() string {
 	name := g.Owner.GetName()
 	if `` == name {
-		return "LOGIN: " + g.Owner.GetLogin()
+		return g.Owner.GetLogin()
 	}
-	return "NAME: " + name
+	return name
 }
 
 type gitRepoSlice []*GitRepo
