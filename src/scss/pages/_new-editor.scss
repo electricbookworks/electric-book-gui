@@ -70,6 +70,13 @@
 		.file-actions {
 			flex-grow: 0;
 		}
+
+		#repo-file-actions {
+			flex-direction: column;
+			&>div, &>a, &>button {
+				margin-left: 0;
+			}
+		}
 		.file-container {
 			flex-grow: 1;
 			position:relative;

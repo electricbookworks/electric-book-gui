@@ -4071,6 +4071,10 @@ body {
         display: none; }
     #new-editor #new-editor-files-nav .file-actions {
       flex-grow: 0; }
+    #new-editor #new-editor-files-nav #repo-file-actions {
+      flex-direction: column; }
+      #new-editor #new-editor-files-nav #repo-file-actions > div, #new-editor #new-editor-files-nav #repo-file-actions > a, #new-editor #new-editor-files-nav #repo-file-actions > button {
+        margin-left: 0; }
     #new-editor #new-editor-files-nav .file-container {
       flex-grow: 1;
       position: relative; }
