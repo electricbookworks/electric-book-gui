@@ -412,28 +412,6 @@ var RepoFileEditorCM = (function () {
     }
     return RepoFileEditorCM;
 }());
-var RepoMergeDialog = (function () {
-    function RepoMergeDialog() {
-        var t = RepoMergeDialog._template;
-        if (!t) {
-            var d = document.createElement('div');
-            d.innerHTML = "<div><h1>Updating a Repo</h1><p>How do you want to try this merge?</p><fieldset><label for=\"resolveOur\"><input type=\"radio\" name=\"resolve\" value=\"our\" id=\"resolveOur\"/>\n\t\t\tI will do the merge.\n\t\t</label><label for=\"resolveGit\"><input type=\"radio\" name=\"resolve\" value=\"git\" id=\"resolveGit\"/>\n\t\t\tGit can try to merge.\n\t\t</label><label for=\"resolveTheir\"><input type=\"radio\" name=\"resolve\" value=\"their\" id=\"resolveTheir\"/>\n\t\t\tChoose their files by preference.\n\t\t</label></fieldset><label for=\"conflicted\"><input type=\"checkbox\" name=\"conflicted\" value=\"only\" id=\"conflicted\"/>\n\t\t\tOnly apply above resolution to conflicted files.\n\t</label><button class=\"btn\" data-event=\"click:\">Do the Merge</button></div>";
-            t = d.firstElementChild;
-            RepoMergeDialog._template = t;
-        }
-        var n = t.cloneNode(true);
-        this.$ = {
-            title: n.childNodes[0],
-            resolveOur: n.childNodes[2].childNodes[0].childNodes[0],
-            resolveGit: n.childNodes[2].childNodes[1].childNodes[0],
-            resolveTheir: n.childNodes[2].childNodes[2].childNodes[0],
-            conflicted: n.childNodes[3].childNodes[0],
-            mergeButton: n.childNodes[4],
-        };
-        this.el = n;
-    }
-    return RepoMergeDialog;
-}());
 var conflict_ClosePRDialog = (function () {
     function conflict_ClosePRDialog() {
         var t = conflict_ClosePRDialog._template;
@@ -600,160 +578,42 @@ var AddNewBookDialog$$1 = (function (_super) {
     return AddNewBookDialog$$1;
 }(AddNewBookDialog$1));
 
-var RepoMergeButton = (function () {
-    function RepoMergeButton(context, el, dialog) {
-        var _this = this;
+var RepoMergeDirectButton = (function () {
+    function RepoMergeDirectButton(context, el) {
         this.context = context;
         this.el = el;
-        this.dialog = dialog;
+        var href = "/repo/" + context.RepoOwner + "/" +
+            (context.RepoName + "/merge/") +
+            el.getAttribute('data-repo-merge') +
+            "?resolve=our&conflicted=yes";
+        console.log("onclick for ", el, "  = ", href);
         el.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            _this.dialog.SetTitle(el.innerHTML);
-            _this.dialog.SetRepoRemote(el.getAttribute("data-repo-merge"));
-            _this.dialog.Open();
+            document.location.href = "/repo/" + context.RepoOwner + "/" +
+                (context.RepoName + "/merge/") +
+                el.getAttribute('data-repo-merge') +
+                "?resolve=our&conflicted=false";
         });
         el.classList.add("btn");
     }
-    RepoMergeButton.init = function (context, dialog) {
+    RepoMergeDirectButton.init = function (context) {
         var els = document.querySelectorAll("[data-instance=\"RepoMergeButton\"]");
         for (var i = 0; i < els.length; i++) {
-            new RepoMergeButton(context, els.item(i), dialog);
+            new RepoMergeDirectButton(context, els.item(i));
         }
     };
-    return RepoMergeButton;
+    return RepoMergeDirectButton;
 }());
-
-var DialogEvents;
-(function (DialogEvents) {
-    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
-    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
-})(DialogEvents || (DialogEvents = {}));
-/**
- * FoundationRevealDialog is a class that implements
- * a Foundation Reveal dialog. It has a public 'Events'
- * signals.Signal that receives 'opened' and 'closed'
- * events when the respective action happens on the dialog.
- */
-var FoundationRevealDialog$1 = (function (_super) {
-    tslib_1.__extends(FoundationRevealDialog$$1, _super);
-    function FoundationRevealDialog$$1(openElement, content) {
-        var _this = _super.call(this) || this;
-        _this.Events = new signals.Signal();
-        _this.$el = jQuery(_this.el);
-        if (openElement) {
-            openElement.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                _this.$el.foundation('open');
-            });
-        }
-        _this.$el.bind('open.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Opened);
-        });
-        _this.$el.bind('closed.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Closed);
-        });
-        if (content) {
-            _this.Set(content);
-        }
-        // The el must be inserted into the DOM before Foundation is
-        // called on it, otherwise Foundation doesn't properly position
-        // the dialog.
-        document.body.appendChild(_this.el);
-        // TSFoundation required because Typescript can be really stupid.
-        TSFoundation.Reveal(_this.$el);
-        return _this;
-    }
-    // Set the content of the dialog to the given
-    // element.
-    FoundationRevealDialog$$1.prototype.Set = function (el) {
-        this.$.content.innerText = '';
-        this.$.content.appendChild(el);
-    };
-    FoundationRevealDialog$$1.prototype.Open = function () {
-        this.$el.foundation('open');
-    };
-    FoundationRevealDialog$$1.prototype.Close = function () {
-        this.$el.foundation('close');
-    };
-    return FoundationRevealDialog$$1;
-}(FoundationRevealDialog));
-
-var RepoMergeDialog$1 = (function (_super) {
-    tslib_1.__extends(RepoMergeDialog$$1, _super);
-    function RepoMergeDialog$$1(context, openElement) {
-        var _this = _super.call(this) || this;
-        _this.context = context;
-        Eventify(_this.el, {
-            "click": function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                _this.MergeEvent.dispatch(_this);
-            }
-        });
-        _this.MergeEvent = new signals.Signal();
-        _this.dialog = new FoundationRevealDialog$1(openElement, _this.el);
-        _this.dialog.Events.add(function (act) {
-            switch (act) {
-                case DialogEvents.Opened:
-                    _this.$.resolveOur.checked = true;
-                    _this.$.resolveGit.checked = false;
-                    _this.$.resolveTheir.checked = false;
-                    _this.$.conflicted.checked = false;
-                    break;
-                case DialogEvents.Closed:
-                    // Don't really need to do anything here, because we'll reset 
-                    // on open
-                    break;
-            }
-        });
-        return _this;
-    }
-    RepoMergeDialog$$1.prototype.GetResolve = function () {
-        if (this.$.resolveOur.checked)
-            return "our";
-        if (this.$.resolveGit.checked)
-            return "git";
-        if (this.$.resolveTheir.checked)
-            return "their";
-        return "-";
-    };
-    RepoMergeDialog$$1.prototype.GetConflicted = function () {
-        return this.$.conflicted.checked;
-    };
-    RepoMergeDialog$$1.prototype.GetContext = function () {
-        return this.context;
-    };
-    RepoMergeDialog$$1.prototype.Open = function () {
-        this.dialog.Open();
-    };
-    RepoMergeDialog$$1.prototype.SetTitle = function (titleHTML) {
-        this.$.title.innerHTML = titleHTML;
-    };
-    RepoMergeDialog$$1.prototype.SetRepoRemote = function (repoRemote) {
-        this.repoRemote = repoRemote;
-    };
-    RepoMergeDialog$$1.prototype.GetRepoRemote = function () {
-        return this.repoRemote;
-    };
-    return RepoMergeDialog$$1;
-}(RepoMergeDialog));
 
 var RepoDetailPage = (function () {
     function RepoDetailPage(context) {
         this.context = context;
-        var dialog = new RepoMergeDialog$1(context, undefined);
-        RepoMergeButton.init(this.context, dialog);
-        dialog.MergeEvent.add(this.mergeEvent, this);
+        RepoMergeDirectButton.init(this.context);
+        // let dialog = new RepoMergeDialog(context, undefined);
+        // RepoMergeButton.init(this.context, dialog);
+        // dialog.MergeEvent.add(this.mergeEvent, this);
     }
-    RepoDetailPage.prototype.mergeEvent = function (dialog) {
-        var resolve = dialog.GetResolve();
-        var conflicted = dialog.GetConflicted();
-        var context = dialog.GetContext();
-        document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/merge/" + dialog.GetRepoRemote() +
-            ("?resolve=" + resolve + "&conflicted=" + conflicted);
-    };
     return RepoDetailPage;
 }());
 
@@ -1206,6 +1066,62 @@ var RepoFileEditorCM$1 = (function (_super) {
     };
     return RepoFileEditorCM$$1;
 }(RepoFileEditorCM));
+
+var DialogEvents;
+(function (DialogEvents) {
+    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
+    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
+})(DialogEvents || (DialogEvents = {}));
+/**
+ * FoundationRevealDialog is a class that implements
+ * a Foundation Reveal dialog. It has a public 'Events'
+ * signals.Signal that receives 'opened' and 'closed'
+ * events when the respective action happens on the dialog.
+ */
+var FoundationRevealDialog$1 = (function (_super) {
+    tslib_1.__extends(FoundationRevealDialog$$1, _super);
+    function FoundationRevealDialog$$1(openElement, content) {
+        var _this = _super.call(this) || this;
+        _this.Events = new signals.Signal();
+        _this.$el = jQuery(_this.el);
+        if (openElement) {
+            openElement.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.$el.foundation('open');
+            });
+        }
+        _this.$el.bind('open.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Opened);
+        });
+        _this.$el.bind('closed.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Closed);
+        });
+        if (content) {
+            _this.Set(content);
+        }
+        // The el must be inserted into the DOM before Foundation is
+        // called on it, otherwise Foundation doesn't properly position
+        // the dialog.
+        document.body.appendChild(_this.el);
+        // TSFoundation required because Typescript can be really stupid.
+        TSFoundation.Reveal(_this.$el);
+        return _this;
+    }
+    // Set the content of the dialog to the given
+    // element.
+    FoundationRevealDialog$$1.prototype.Set = function (el) {
+        this.$.content.innerText = '';
+        this.$.content.appendChild(el);
+    };
+    FoundationRevealDialog$$1.prototype.Open = function () {
+        this.$el.foundation('open');
+    };
+    FoundationRevealDialog$$1.prototype.Close = function () {
+        this.$el.foundation('close');
+    };
+    return FoundationRevealDialog$$1;
+}(FoundationRevealDialog));
 
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {

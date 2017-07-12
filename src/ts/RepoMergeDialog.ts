@@ -4,6 +4,7 @@ import {Eventify} from './Eventify';
 import {RepoMergeDialog as Template} from './Templates';
 import {DialogEvents, FoundationRevealDialog as Dialog} from './FoundationRevealDialog';
 
+import signals = require('signals');
 
 /**
  * RepoMergeDialog displays options about how a
