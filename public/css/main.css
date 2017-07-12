@@ -3837,6 +3837,11 @@ body {
     color: #009E7F;
     background-color: white; }
 
+.button-smallprint {
+  margin-top: 0.6em;
+  font-size: 0.8em;
+  max-width: 40em; }
+
 .action-group {
   display: flex;
   flex-direction: row;
@@ -3881,6 +3886,7 @@ body {
       color: #e6e6e6; }
   .topbar img {
     height: 2em;
+    width: 2.5em;
     padding-left: 0.5em;
     margin-bottom: 2px; }
   .topbar .username-gravatar {
