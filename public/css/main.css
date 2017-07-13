@@ -4319,6 +4319,15 @@ body {
         flex-direction: row;
         justify-content: space-between;
         align-items: flex-start; }
+      #repo-conflict #work #editor #editor-label-panes {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-around; }
+        #repo-conflict #work #editor #editor-label-panes > div {
+          color: white;
+          font-weight: bold;
+          text-align: center; }
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
         position: relative; }

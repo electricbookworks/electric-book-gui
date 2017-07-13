@@ -79,6 +79,17 @@
 				justify-content: space-between;
 				align-items: flex-start;
 			}
+			#editor-label-panes {
+				display: flex;
+				flex-direction: row;
+				align-items: flex-start;
+				justify-content: space-around;
+				& > div {
+					color: white;
+					font-weight: bold;
+					text-align: center;
+				}
+			}
 			#editor-work {
 				flex-grow: 1;
 				position: relative;
