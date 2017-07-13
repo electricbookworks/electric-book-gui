@@ -22,6 +22,7 @@ func repoConflict(c *Context) error {
 		`Repo`:        repo,
 		`RepoOwner`:   repo.RepoOwner,
 		`RepoName`:    repo.RepoName,
+		`UserName`:    c.Client.Username,
 		`StagedFiles`: stagedFiles,
 		`Merging`:     repo.EBWRepoStatus,
 	})

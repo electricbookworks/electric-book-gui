@@ -77,12 +77,12 @@ export class RepoEditorPage {
 		document.getElementById(`repo-print-printer`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			console.log(`Starting printing...`);
-			EBW.Toast(`Printing in progress...`);
+			EBW.Toast(`Creating your PDF. We'll open it in a new tab when it's ready.`);
 			new PrintListener(this.repoOwner, this.repoName, `book`, `print`);
 		});
 		document.getElementById(`repo-print-screen`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();
-			EBW.Toast(`Printing for screen in progress...`);
+			EBW.Toast(`Creating your PDF. We'll open it in a new tab when it's ready.`);
 			new PrintListener(this.repoOwner, this.repoName, `book`, `screen`);
 		});
 		document.getElementById(`repo-jekyll`).addEventListener(`click`, evt=>{
