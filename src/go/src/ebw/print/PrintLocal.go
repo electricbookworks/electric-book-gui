@@ -75,7 +75,7 @@ func PrintLocal(repoPath, bookName, printOrScreen string, C chan PrintMessage) (
 		return ``, err
 	}
 
-	output := `_output/` + outputName
+	output := `repo/_output/` + outputName
 
 	return output, nil
 }
