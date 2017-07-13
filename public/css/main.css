@@ -3886,10 +3886,12 @@ body {
       color: #e6e6e6; }
   .topbar img {
     height: 2em;
-    width: 2.5em;
-    margin-bottom: 2px; }
-  .topbar .username-gravatar {
-    margin-right: 1em; }
+    width: 2em;
+    margin-bottom: 2px;
+    box-sizing: content-box; }
+  .topbar .username-gravatar > img {
+    margin-left: 0.5em;
+    margin-right: 0.5em; }
   .topbar .topbar-center {
     font-weight: bold; }
 

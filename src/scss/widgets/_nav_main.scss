@@ -10,17 +10,18 @@
 	position: relative;
 
 	img {
-		// width: 3em;
 		height: 2em;
-		width: 2.5em;
-		// position: relative;
-		// bottom: 3px;
-		// padding-left: 0.5em;
+		width: 2em;
 		margin-bottom: 2px;
+		box-sizing: content-box;
 	}
 
 	.username-gravatar {
-		margin-right: 1em;
+		// padding-left: 0.5em;
+		& > img {
+			margin-left: 0.5em;
+			margin-right: 0.5em;
+		}
 	}
 
 	.topbar-center {
