@@ -69,7 +69,7 @@ export class MergeEditorControlBar {
 		}
 		ln(`revert-our`, MergeEditorAction.RevertOur);
 		ln(`revert-their`, MergeEditorAction.RevertTheir);
-		ln(`revert-git`, MergeEditorAction.RevertGit);
+		// ln(`revert-git`, MergeEditorAction.RevertGit);
 		ln(`copy-working`, MergeEditorAction.CopyWorking);
 		ln(`copy-their`, MergeEditorAction.CopyTheir);
 		ln(`save`, MergeEditorAction.Save);
