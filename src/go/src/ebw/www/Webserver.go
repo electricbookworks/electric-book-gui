@@ -140,6 +140,9 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		"raw": func(in string) template.HTML {
 			return template.HTML(in)
 		},
+		"IsSpecialUser": func(username string) bool {
+			return "craigmj" == username || "arthurattwell" == username
+		},
 	})
 	if err := filepath.Walk("public", func(name string, info os.FileInfo, err error) error {
 		// glog.Infof("walk: %s", name)

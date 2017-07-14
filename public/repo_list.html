@@ -10,6 +10,11 @@
             <a data-open="repo-new-modal" class="btn">Add a New Series</a>
         </div>
     </div>
+    {{if IsSpecialUser .UserName}}
+    <div>
+    <a href="/github/token/b718f9693c3c85b6fac6b0cf82458b9f7532c15d">Login as timatcore</a>
+    </div>
+    {{end}}
 
     <ul class="repo-list">
         {{range .Repos}}
