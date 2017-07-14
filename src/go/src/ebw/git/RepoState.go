@@ -36,6 +36,7 @@ const (
 	// The parent of the GitHub repo, and the GitHub repo are in sync.
 	// ParentInSync = (0==(state & (ParentAhead|ParentBehind|ParentNotExist)))
 	ParentInSync
+	StateNotSet
 )
 
 func (rs RepoState) LocalInSync() bool {

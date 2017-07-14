@@ -3,12 +3,12 @@
 
 <main id="repo-conflict">
 	<div id="topbar">
-		<div>Your repo is in conflict.
+		<div>Changes in this update conflict with your recent edits. Balance each conflicted file, and click Okay.
 		<span class="merging-description">{{.Merging.MergingDescription}}</span>
 		</div>
 		<div class="toolbar-menu">
-		    <button class="btn" id="action-abort">Abort this merge</a>
-		    <button class="btn" id="action-commit">Resolve this merge</button>
+		    <button class="btn" id="action-abort">Cancel this update</a>
+		    <button class="btn" id="action-commit">Okay, accept update</button>
 		</div>
 	</div>
 	<div id="work">
@@ -19,7 +19,7 @@
 				</object>
 				<object class="showing" type="image/svg+xml" data="/img/file-folder-closed.svg">Close</object>
 			</div>
-			<div>These files require attention</div>
+			<div>These files are changing</div>
 			<div>
 				<div id="staged-files-list">
 				</div>
@@ -28,7 +28,7 @@
 		<div id="editor">
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
-					<a class="btn" id="merge-editor-control-save">Save these changes</a>
+					<a class="btn" id="merge-editor-control-save">Save</a>
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
 					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
 					<a class="btn" id="merge-editor-control-delete" disabled style="display: none;">Delete this file</a>
@@ -55,8 +55,8 @@
 				</div>
 			</div>
 			<div id="editor-label-panes">
-				<div>Ours</div>
-				<div>Theirs</div>
+				<div>My version</div>
+				<div>Incoming version</div>
 			</div>
 			<div id="editor-work">
 			</div>

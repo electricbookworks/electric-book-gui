@@ -3,7 +3,6 @@
 
 {{$repoOwner := .RepoOwner}}
 {{$repoName := .RepoName}}
-{{$repoFiles := .RepoFiles}}
 
 
 <main id="repo-detail" class="constrain-page">
@@ -19,16 +18,6 @@
         <p>{{.Repo.Description}}</p>
         {{end}}
         <div class="detail-container">
-<!--         {{if .AheadBehind}}
-            <h6>Updates to master version available:</h6>
-            <p>Your upstream version is {{.AheadBehind.Ahead}} commits ahead of your
-            own version. It is {{.AheadBehind.Behind}} commits behind your own version.</p>
-            <div class="action-group secondary">
-                <a href="#" class="btn">Update my master version</a>
-            </div>
-        {{end}}   
- -->            <!-- 
-        <p>You repo state is {{.ERepo.RepoStateStringNoError}}</p> -->
 
             {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}
@@ -56,7 +45,7 @@
             <p>Your EBW repo is in a state that it can't handle. You need to report this to the development team.</p>
             {{end}}
             {{if $state.ParentAhead}}
-            <p>Your GitHub repo is behind the book you are contributing to. <div data-instance="RepoMergeButton" data-repo-merge="upstream/master">Update my version from the master version.</div>
+            <p>Your GitHub repo is behind the book you are contributing to. <div data-instance="RepoMergeButton" data-repo-merge="upstream/master">Update my version from the original</div>
             </p>
             {{end}}
             {{if .ERepo.CanCreatePR}}
@@ -73,6 +62,8 @@
             {{end}}
         </div>
     </section>
+
+{{if false}}
     {{if .PullRequests}}
     <section class="repo-detail-section">
 
@@ -107,7 +98,9 @@
         </div>
     </section>
     {{end}}
+{{end}}
 
+{{if false}}
     {{if .StagedFiles}}
     <section class="repo-detail-section">
         <div class="title-links">
@@ -124,21 +117,9 @@
         </div>
     </section>
     {{end}}
-<!--
-    {{if .ERepo.CanCreatePR}}
-    <section class="repo-detail-section">
-        <div class="title-links">
-            <h3>My changes</h3>
-            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for review</a>
-        </div>
-
-        <div class="todo">
-            These are commits on the GitHub repo that haven't yet been submitted for Review. Without using BRANCHES, this section has no meaning...
-        </div>
-    </section>
-    {{end}}
- -->
+{{end}}
  </main>
+
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDetailPage">
 </script>
 

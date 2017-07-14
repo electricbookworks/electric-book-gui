@@ -11,19 +11,22 @@ import (
 func FetchRemote(repo *git2go.Repository, remoteName string) (*git2go.Remote, error) {
 	// We're assuming that our configured repo has the right permissions,
 	// which we should probably check
+	t := util.NewTimer(`FetchRemote(` + remoteName + `)`)
+	defer t.Close()
 	remote, err := repo.Remotes.Lookup(remoteName)
-	if nil!=err {
+	if nil != err {
 		return nil, util.Error(err)
 	}
-	if err := remote.Fetch([]string{}, nil, ``); nil!=err {
+	t.Mark(`Going to Fetch remote`)
+	if err := remote.Fetch([]string{}, nil, ``); nil != err {
 		return nil, util.Error(err)
 	}
 	return remote, nil
 }
 
-func FetchRemoteForRepo(client *Client, repoOwner, repoName, remoteName string) (*git2go.Remote,error) {
+func FetchRemoteForRepo(client *Client, repoOwner, repoName, remoteName string) (*git2go.Remote, error) {
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
-	if nil!=err {
+	if nil != err {
 		return nil, err
 	}
 	return FetchRemoteForRepoDir(client, repoDir, remoteName)
@@ -31,13 +34,13 @@ func FetchRemoteForRepo(client *Client, repoOwner, repoName, remoteName string) 
 
 func FetchRemoteForRepoDir(client *Client, repoDir string, remoteName string) (*git2go.Remote, error) {
 	repo, err := git2go.OpenRepository(repoDir)
-	if nil!=err {
+	if nil != err {
 		return nil, util.Error(err)
 	}
 	defer repo.Free()
 	remote, err := FetchRemote(repo, remoteName)
-	if nil!=err {
+	if nil != err {
 		return nil, err
 	}
-	return remote,nil
+	return remote, nil
 }

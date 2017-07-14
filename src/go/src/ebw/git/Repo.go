@@ -40,6 +40,8 @@ type Repo struct {
 	RepoName  string
 
 	EBWRepoStatus *EBWRepoStatus
+
+	state RepoState
 }
 
 func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
@@ -58,6 +60,7 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 		Client:     client,
 		RepoOwner:  repoOwner,
 		RepoName:   repoName,
+		state:      StateNotSet,
 	}
 	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
 		return nil, err
@@ -123,6 +126,7 @@ func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 		isCLI:      isCLI,
 		Dir:        repoDir,
 		Client:     client,
+		state:      StateNotSet,
 	}
 	// RepoOwnerAndName will cache the owner and name resultss
 	_, _, err = r.RepoOwnerAndName()
@@ -482,6 +486,11 @@ func (r *Repo) CanCreatePR() (bool, error) {
 }
 
 func (r *Repo) GetRepoState() (RepoState, error) {
+	timer := util.NewTimer(`GetRepoState`)
+	defer timer.Close()
+	if r.state != 0 && r.state != StateNotSet {
+		return r.state, nil
+	}
 	var state RepoState
 
 	// glog.Infof("Getting Repository.State()")
@@ -495,6 +504,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMUnimplemented
 	}
 
+	timer.Mark(`Got State`)
+
 	// glog.Infof("state = %d, fetching StatusCount", state)
 
 	// Work out changes on the local repository, and how those
@@ -503,6 +514,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if nil != err {
 		return 0, err
 	}
+
+	timer.Mark(`StatusCount`)
 
 	// In theory on EBM, we're not interested in workingDirChanages, since
 	// any changes made on the EBM are immediately staged.
@@ -521,6 +534,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if err := r.FetchRemote(`origin`); nil != err {
 		return 0, err
 	}
+
+	timer.Mark(`FetchRemote origin`)
 
 	// glog.Infof("fetched remote, going to lookupbranch")
 
@@ -551,6 +566,8 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMBehind
 	}
 
+	timer.Mark(`AheadBehind`)
+
 	// glog.Infof("Checking for upstreamRemote")
 
 	// A BRANCH points to a Commit, so we need to resolve
@@ -566,6 +583,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		if err := r.FetchRemote(`upstream`); nil != err {
 			return 0, err
 		}
+		timer.Mark(`FetchRemote upstream`)
 		// glog.Infof("Looking up upstream/master")
 		upstreamBranch, err := r.Repository.LookupBranch(`upstream/master`, git2go.BranchRemote)
 		if nil != err {
@@ -593,12 +611,15 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if 0 == state&(EBMAhead|EBMBehind|EBMConflicted|EBMUnimplemented|EBMChangesStaged|EBMChangesUnstaged) {
 		state |= EBMInSync
 	}
+	r.state = state
 	// glog.Infof("Leaving GetRepoState successfully, state = %d", state)
 	return state, nil
 }
 
 // FetchRemote fetches the named remote for the repo.
 func (r *Repo) FetchRemote(remoteName string) error {
+	t := util.NewTimer(`FetchRemote(` + remoteName + `)`)
+	defer t.Close()
 	// We're assuming that our configured repo has the right permissions,
 	// which we should probably check
 	remote, err := r.Remotes.Lookup(remoteName)
@@ -606,18 +627,23 @@ func (r *Repo) FetchRemote(remoteName string) error {
 		return util.Error(err)
 	}
 	defer remote.Free()
-	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
-		RemoteCallbacks: git2go.RemoteCallbacks{
-			CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
-				// glog.Infof(`CredentialsCallback: url=%s, username_from_url=%s, allows_types = %d`, url, username_from_url, allowed_types)
-				errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
-				// glog.Infof("NewCredUserpassPlaintext returned %d, %v", errCode, cred)
-				return git2go.ErrorCode(errCode), &cred
-			},
-		},
-	}, ``); nil != err {
-		return util.Error(err)
+	t.Mark(`Going to Fetch()`)
+	if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
+		return err
 	}
+	// if err := remote.Fetch([]string{}, &git2go.FetchOptions{
+	// 	RemoteCallbacks: git2go.RemoteCallbacks{
+	// 		CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
+	// 			// glog.Infof(`CredentialsCallback: url=%s, username_from_url=%s, allows_types = %d`, url, username_from_url, allowed_types)
+	// 			errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
+	// 			// glog.Infof("NewCredUserpassPlaintext returned %d, %v", errCode, cred)
+	// 			t.Mark(`Returned credentials`)
+	// 			return git2go.ErrorCode(errCode), &cred
+	// 		},
+	// 	},
+	// }, ``); nil != err {
+	// 	return util.Error(err)
+	// }
 	return nil
 }
 

@@ -51,6 +51,7 @@ func BookCommands() *commander.Command {
 				BookPRFetchCommand,
 				BookPRMergeCommand,
 				BookMergeInfo,
+				BookFetchCommand,
 			)
 		})
 }
@@ -455,6 +456,22 @@ func BookUnstashCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.Unstash()
+		})
+}
+
+func BookFetchCommand() *commander.Command {
+	fs := flag.NewFlagSet(`fetch`, flag.ExitOnError)
+	remote := fs.String(`remote`, `origin`, `Remote to fetch`)
+	return commander.NewCommand(`fetch`,
+		`Fetch the remote/branch into the repo`,
+		fs,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.FetchRemote(*remote)
 		})
 }
 
