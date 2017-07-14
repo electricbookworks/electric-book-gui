@@ -4269,8 +4269,7 @@ body {
   align-items: stretch; }
   #repo-conflict #topbar {
     flex-grow: 0;
-    height: 3em;
-    padding: 0.6em 1em 0 1em;
+    padding: 0.6em 1em 1em 1em;
     display: flex;
     flex: row nowrap;
     justify-content: space-between;
