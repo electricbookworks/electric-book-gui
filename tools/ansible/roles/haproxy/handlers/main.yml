@@ -1,0 +1,2 @@
+- name: restart haproxy
+  include: "haproxy-restart.yml"

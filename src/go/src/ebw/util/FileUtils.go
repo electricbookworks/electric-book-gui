@@ -46,3 +46,16 @@ func CalcSHA(in []byte) *string {
 	s := fmt.Sprintf("%x", bs)
 	return &s
 }
+
+// WorkingDir returns the passed directory, or the current
+// working directory if d is an empty string.
+func WorkingDir(d string) string {
+	if `` != d {
+		return d
+	}
+	wd, err := os.Getwd()
+	if nil != err {
+		panic(err)
+	}
+	return wd
+}

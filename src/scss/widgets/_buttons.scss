@@ -1,0 +1,49 @@
+.btn {
+	@include button-style();
+	padding: 0.4em 1em;
+	line-height: 1em;
+	appearance: button;
+	&.disabled {
+		background-color: lighten($color-primary, 20%);
+		border-bottom-width: 0px;
+		// top: 0.15em;
+		&:hover {
+			background-color: inherit;
+		}
+	}
+
+	&.btn-inverse {
+		color: $color-primary;
+		background-color: white;
+		&:hover {
+
+		}
+	}
+}
+
+.button-smallprint {
+	margin-top: 0.6em;
+    font-size: 0.8em;
+    max-width: 40em;
+}
+
+
+.action-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: baseline;
+	padding: 0.4em;
+	&>* {
+		margin-left: 1em;
+		&:first-child {
+			margin-left: 0;
+		}
+	}
+	&.primary {
+
+	}
+	&.secondary {
+
+	}
+}

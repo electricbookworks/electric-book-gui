@@ -1,0 +1,28 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+
+<main id="repo-commit" class="constrain-page center">
+	<h1>Commit Changes</h1>
+	{{if .StatusList.EntryCount}}
+		<p>You have made {{.StatusList.EntryCount}} change{{if ne 1 .StatusList.EntryCount}}s{{end}}.</p>
+		<ul>
+		{{range .StatusList.Statuses}}
+			<li>{{.Filename}} - {{.StatusType}}</li>
+		{{end}}
+		</ul>
+
+		<form method="post" action="commit">
+			<label for="commit_message">Commit Message
+			<textarea name="commit_message" id="commit_message" wordwrap="true">{{.CommitMessage}}</textarea>
+			</label>
+			<input type="submit" name="action" value="Commit" class="btn" />
+			<a href="." class="btn">Cancel</a>
+		</form>
+	{{else}}
+		<p>You haven't saved any changes yet, so you have no changes to commit.</p>
+		<p><a href="." class="btn">Back to {{.RepoName}}</a></p>
+
+	{{end}}
+</main>
+
+{{template "_footer.html" .}}

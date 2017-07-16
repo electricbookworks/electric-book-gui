@@ -1,7 +1,13 @@
 class RepoFileList {
-	constructor(parent, repo, editor) {
+	constructor(parent, repoOwner, repoName, editor) {
+		new AllFilesList(repoOwner, repoName, editor);
+		if (!parent) {
+			console.log(`Created RepoFileList with null parent`);
+			return;
+		}
 		this.parent = parent;
-		this.repo = repo;
+		this.repoOwner = repoOwner;
+		this.repoName = repoName;
 		this.editor = editor;
 
 		this.files = [];
@@ -9,24 +15,29 @@ class RepoFileList {
 		Eventify(this.el, {
 			'click-new': function(evt) {
 				evt.preventDefault();
-				let name = prompt('Enter new filename:');
-				if (!name) return;
-				let file = new RepoFileModel(this.repo, `book/text/${name}`, this, {"newFile":true});
-				this.files.push(file);
-				new RepoFileEditLink(this.$.fileList, file, (x,file)=>{
-					this.editor.setFile(file);
-				});
-				this.editor.setFile(file);
+				// TODO Convert this to EBW.Prompt
+				EBW.Prompt(`Enter new filename:`).
+				then(
+					(name)=> {
+						if (!name) return;
+						let file = new RepoFileModel(this.repoOwner, this.repoName, `book/text/${name}`, {"newFile":true});
+						this.files.push(file);
+						new RepoFileEditLink(this.$.fileList, file, (x,file)=>{
+							this.editor.setFile(file);
+						});
+						this.editor.setFile(file);
+					}
+					);
 			}
 		}, this);
 
 		this.api = EBW.API();
 
-		this.api.ListFiles(repo, `^book/text/.*`)
+		this.api.ListFiles(repoOwner, repoName, `^book/text/.*`)
 		.then( this.api.flatten(
 			files=>{
 				for (let f of files) {
-					let file = new RepoFileModel(repo, f, this);
+					let file = new RepoFileModel(repoOwner, repoName, f);
 					this.files.push(file);
 					new RepoFileEditLink(this.$.fileList, file, (x,file) =>{
 						this.editor.setFile(file);
@@ -36,9 +47,13 @@ class RepoFileList {
 		.catch( (err)=>{
 			EBW.Error(err);
 		});
+		
 		this.parent.appendChild(this.el);
 	}
 	IsDirty() {
+		if (!this.files) {
+			return false;
+		}
 		for (let f of this.files) {
 			if (f.IsDirty()) {
 				return true;

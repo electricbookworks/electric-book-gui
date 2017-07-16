@@ -27,6 +27,7 @@ p {
 
 h1 {
   font-size: 2em;
+  font-weight: bold;
   line-height: 1.25;
   @media (min-width: 43.75em) {
       font-size: 2.5em;
@@ -39,15 +40,15 @@ h1 {
 }
 
 h2 {
-  font-size: 1.625em;
+  font-size: 1.5em;
   line-height: 1.15384615;
   @media (min-width: 43.75em) {
-      font-size: 2em;
-      line-height: 1.25;
+      // font-size: 2em;
+      // line-height: 1.25;
   }
   @media (min-width: 56.25em) {
-      font-size: 2.25em;
-      line-height: 1.25;
+      // font-size: 2.25em;
+      // line-height: 1.25;
   }
 }
 
@@ -83,7 +84,7 @@ blockquote {
 }
 
 a {
-	color: $primary;
+	color: $color-primary;
 	&:hover {
 		text-decoration: none;
 	}
@@ -99,7 +100,7 @@ a {
 	}
 }
 
-:focus {
-	outline: 0.15em dashed $dark-grey;
-	outline-offset: 0.1em;
-}
+// :focus {
+// 	outline: 0.15em dashed $color-darkgray;
+// 	outline-offset: 0.1em;
+// }

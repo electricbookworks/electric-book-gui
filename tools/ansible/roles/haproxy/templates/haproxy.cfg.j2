@@ -24,9 +24,9 @@ defaults
         mode    http
         option  httplog
         option  dontlognull
-        timeout connect 30s
-        timeout client 60s
-        timeout server 60s
+        timeout connect 600s
+        timeout client 600s
+        timeout server 600s
         timeout client-fin 30s
 
 
@@ -38,5 +38,3 @@ frontend web
         bind *:80
         mode http
         default_backend ebw
-
-~                                                       

@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
 )
@@ -27,9 +28,9 @@ func GitNotExistError(err error) bool {
 }
 
 // GetFile returns the contents of the file at path in users given repo
-func GetFile(client *Client, user, repo, path string) ([]byte, error) {
+func GetFile(client *Client, user, repoOwner, repoName, path string) ([]byte, error) {
 	if false {
-		fileContent, _, _, err := client.Repositories.GetContents(client.Context, user, repo, path,
+		fileContent, _, _, err := client.Repositories.GetContents(client.Context, repoOwner, repoName, path,
 			&github.RepositoryContentGetOptions{})
 		if nil != err {
 			return nil, util.Error(err)
@@ -40,7 +41,7 @@ func GetFile(client *Client, user, repo, path string) ([]byte, error) {
 		}
 		return []byte(content), nil
 	} else {
-		root, err := RepoDir(user, repo)
+		root, err := RepoDir(user, repoOwner, repoName)
 		if nil != err {
 			return nil, err
 		}
@@ -52,9 +53,9 @@ func GetFile(client *Client, user, repo, path string) ([]byte, error) {
 	}
 }
 
-func GetFileSHA(client *Client, user, repo, path string) (*string, error) {
+func GetFileSHA(client *Client, user, repoOwner, repoName, path string) (*string, error) {
 	if false {
-		fileContent, _, _, err := client.Repositories.GetContents(client.Context, user, repo, path,
+		fileContent, _, _, err := client.Repositories.GetContents(client.Context, repoOwner, repoName, path,
 			&github.RepositoryContentGetOptions{})
 		if nil != err {
 			return nil, util.Error(err)
@@ -65,7 +66,7 @@ func GetFileSHA(client *Client, user, repo, path string) (*string, error) {
 		}
 		return fileContent.SHA, nil
 	} else {
-		root, err := RepoDir(user, repo)
+		root, err := RepoDir(user, repoOwner, repoName)
 		if nil != err {
 			return nil, err
 		}
@@ -73,11 +74,11 @@ func GetFileSHA(client *Client, user, repo, path string) (*string, error) {
 	}
 }
 
-func CreateFile(client *Client, user, repo, path string, content []byte) error {
+func CreateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
 	if false {
 		message := `automatic message`
 		_, _, err := client.Repositories.CreateFile(client.Context,
-			user, repo, path, &github.RepositoryContentFileOptions{
+			repoOwner, repoName, path, &github.RepositoryContentFileOptions{
 				Content: content,
 				Message: &message,
 				SHA:     util.CalcSHA(content),
@@ -87,7 +88,7 @@ func CreateFile(client *Client, user, repo, path string, content []byte) error {
 		}
 		return nil
 	} else {
-		root, err := RepoDir(user, repo)
+		root, err := RepoDir(user, repoOwner, repoName)
 		if nil != err {
 			return err
 		}
@@ -101,9 +102,9 @@ func CreateFile(client *Client, user, repo, path string, content []byte) error {
 	}
 }
 
-func DeleteFile(client *Client, user, repo, path string) error {
+func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 	if false {
-		sha, err := GetFileSHA(client, user, repo, path)
+		sha, err := GetFileSHA(client, user, repoOwner, repoName, path)
 		if GitNotExistError(err) {
 			// If the file doesn't exist, it's pre-deleted
 			return nil
@@ -112,7 +113,7 @@ func DeleteFile(client *Client, user, repo, path string) error {
 			return err
 		}
 		message := `automatic message`
-		_, _, err = client.Repositories.DeleteFile(client.Context, user, repo, path,
+		_, _, err = client.Repositories.DeleteFile(client.Context, repoOwner, repoName, path,
 			&github.RepositoryContentFileOptions{
 				Message: &message,
 				SHA:     sha,
@@ -122,7 +123,7 @@ func DeleteFile(client *Client, user, repo, path string) error {
 		}
 		return nil
 	} else {
-		root, err := RepoDir(user, repo)
+		root, err := RepoDir(user, repoOwner, repoName)
 		if nil != err {
 			return err
 		}
@@ -134,62 +135,120 @@ func DeleteFile(client *Client, user, repo, path string) error {
 		if !exists {
 			return nil // doesn't exist => already deleted!
 		}
-		if err := runGitDir(root, []string{`rm`, path}); nil != err {
+		if err := runGitDir(root, []string{`rm`, `-f`, path}); nil != err {
 			return err
 		}
 		return nil
 	}
 }
 
-// UpdateFile updates the given file with the given content, and adds it to the
+// UpdateFile updates the given file with the given
+// content,
+// and adds it to the
 // git staging area, ready for the next commit.
-func UpdateFile(client *Client, user, repo, path string, content []byte) error {
-	if false {
-		glog.Infof("UpdateFile(%s)", path)
-		sha, err := GetFileSHA(client, user, repo, path)
-
-		if nil != err {
-			if GitNotExistError(err) {
-				glog.Infof(`UpdateFile %s does not exist: creating`, path)
-				return CreateFile(client, user, repo, path, content)
-			}
-			return util.Error(err)
-		}
-		message := `automatic message`
-		_, _, err = client.Repositories.UpdateFile(client.Context, user, repo, path,
-			&github.RepositoryContentFileOptions{
-				Content: content,
-				SHA:     sha,
-				Message: &message,
-			})
-
-		if nil != err {
-			return util.Error(err)
-		}
-		return nil
-	} else {
-		root, err := RepoDir(user, repo)
-		if nil != err {
-			return err
-		}
-		if err := ioutil.WriteFile(filepath.Join(root, path), content, 0644); nil != err {
-			return util.Error(err)
-		}
-		if err := runGitDir(root, []string{`add`, path}); nil != err {
-			return util.Error(err)
-		}
-		return nil
+func UpdateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
 	}
+	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
+		return util.Error(err)
+	}
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer repo.Free()
+
+	index, err := repo.Index()
+	if nil != err {
+		return util.Error(err)
+	}
+	defer index.Free()
+	if err := index.AddByPath(path); nil != err {
+		return util.Error(err)
+	}
+	if err := index.Write(); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// SaveWorkingFile saves the named file on the repo in the working directory.
+// It does not commit the file's change.
+func SaveWorkingFile(client *Client, repoOwner, repoName, path string, content []byte) error {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// StageFile adds the named file to the index, or removes the file
+// from the index if it does not exist in the working dir. This is
+// intended as a functional equivalent of `git add [path]`
+func StageFile(client *Client, repoOwner, repoName, path string) error {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	repo, err := git2go.OpenRepository(repoDir)
+	if nil != err {
+		return util.Error(err)
+	}
+	defer repo.Free()
+
+	index, err := repo.Index()
+	if nil != err {
+		return util.Error(err)
+	}
+	defer index.Free()
+
+	fileExists, err := util.FileExists(filepath.Join(repoDir, path))
+	if nil != err {
+		return err
+	}
+	if fileExists {
+		if err := index.AddByPath(path); nil != err {
+			return util.Error(fmt.Errorf(`Failed to AddByPath %s: %s`, path, err.Error()))
+		}
+	} else {
+		if err := index.RemoveByPath(path); nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				glog.Infof(`ERR not found on RemoveByPath for %s`, path)
+			} else {
+				return util.Error(err)
+			}
+		}
+	}
+	if err := index.Write(); nil != err {
+		return util.Error(err)
+	}
+	return nil
+}
+
+// ListAllRepoFiles returns a Directory type with all the files in
+// the repo.
+func ListAllRepoFiles(client *Client, user, repoOwner, repoName string) (DirectoryEntry, error) {
+	root, err := RepoDir(user, repoOwner, repoName)
+	if nil != err {
+		return nil, err
+	}
+	d, err := NewDirectory(root)
+	if nil != err {
+		return nil, err
+	}
+	return d, nil
 }
 
 // ListFiles returns an array of all the files in the repo that match
-// the pathRegexp regular expression. Note that this function
-// only works on the local checked out repo, not on the Github hosted
-// remote repo (which is ok, because that's the model that we are moving
-// towards).
-func ListFiles(client *Client, user, repo, pathRegexp string) ([]string, error) {
+// the pathRegexp regular expression.
+func ListFiles(client *Client, user, repoOwner, repoName, pathRegexp string) ([]string, error) {
 	files := []string{}
-	root, err := RepoDir(user, repo)
+	root, err := RepoDir(user, repoOwner, repoName)
 	if nil != err {
 		return nil, err
 	}
@@ -212,4 +271,52 @@ func ListFiles(client *Client, user, repo, pathRegexp string) ([]string, error) 
 		return nil
 	})
 	return files, err
+}
+
+func FileExistsInWorkingDir(client *Client, repoOwner, repoName, path string) (bool, error) {
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return false, err
+	}
+	_, err = os.Stat(filepath.Join(repoDir, path))
+	if nil == err {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, util.Error(err)
+}
+
+func FileRenameInWorkingDir(client *Client, repoOwner, repoName, fromPath, toPath string) error {
+	if fromPath == toPath {
+		return nil
+	}
+	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	from := filepath.Join(repoDir, fromPath)
+	to := filepath.Join(repoDir, toPath)
+	// TODO: Should check that both from and to remain
+	// without our repoDir...
+	exists, err := util.FileExists(to)
+	if nil != err {
+		return err
+	}
+	if exists {
+		return fmt.Errorf(`Destination file %s already exists`, toPath)
+	}
+	exists, err = util.FileExists(from)
+	if nil != err {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf(`Source file %s does not exist`, fromPath)
+	}
+	if err := runGitDir(repoDir, []string{`mv`, from, to}); nil != err {
+		glog.Errorf(`ERROR running git mv %s %s: %`, from, to, err.Error())
+		return err
+	}
+	return nil
 }

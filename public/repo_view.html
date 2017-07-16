@@ -1,38 +1,54 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
-<main>
+<main id="new-editor">
+	<nav id="new-editor-files-nav">
+		<div id="files-show-tag" class="showing"><img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" /></div>
+		<div class="file-actions action-group toolbar-menu" id="repo-file-actions">
+			<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
+			<div class="drop-down">
+				<button class="btn">Output</button>
+				<div class="hover">
+				   <button href="#" id="repo-jekyll" class="btn">Web version</button>
+				   <button id="repo-print-screen" class="btn">Screen PDF</button>
+				   <button id="repo-print-printer" class="btn">Print PDF</button>
+				   <button disabled class="btn">epub</button>
+				</div>
+			</div>
+			<button id="repo-new-file" class="btn">New File</button>
 
-	<h1>Editing {{.RepoName}}</h1>
-	<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
+		</div>
+		<div class="file-container">
+			<ul id="all-files-editor" data-instance="AllFilesList">
+		</ul>
+		</div>
+	</nav>
 
-
-	<section class="section-editor">
-
+	<section class="section-editor" id="file-editors">
 		<header class="header-split">
-			<h2>Editor</h2>
-			{{template "_editor_actions.html" .}}
+			<div class="file-title">
+				Editing <span ebw-bind="current-filename">CHOOSE A FILE</span>
+			</div>
+			<div class="action-group primary" id="editor-actions">
+				<button class="btn" id="editor-save-button">Save</button>
+				<button id="editor-undo-button" class="btn">Undo</button>
+				<button id="editor-rename-button" class="btn">Rename</button>
+				<button id="editor-delete-button" title="Delete" class="btn">Delete</button>
+			</div>
 		</header>
-
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
-
-		{{template "_outputs.html"}}
 	</section>
-
-
-	{{template "_files.html"}}
-
-	{{template "_repo_commits.html"}}
-
-	{{template "_repo_pull_requests.html"}}
-
-	<script>
-	document.addEventListener('DOMContentLoaded', function() {
-		new RepoEditorPage('{{.RepoName}}');
-	});
+	<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+new RepoEditorPage(
+	{{.RepoOwner}},
+	{{.RepoName}},
+	document.querySelector('[data-instance="AllFilesList"]'),
+	{{.RepoFiles}},
+	{{.ProseIgnoreFilter}});
+});
 	</script>
-
 </main>
 
 {{template "_footer.html" .}}

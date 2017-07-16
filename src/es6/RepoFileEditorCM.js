@@ -19,7 +19,7 @@ class RepoFileEditorCM {
 				.then(
 					()=>{						
 						// this.$.save.disabled = true;
-						console.log(`Document saved`);
+						EBW.Toast(`Document saved.`);
 					})
 				.catch(
 					(err)=>{
@@ -53,7 +53,7 @@ class RepoFileEditorCM {
 		this.editor = new EditorCodeMirror(this.$.editor);
 		this.parent.appendChild(this.el);
 		// this.editor.getSession().on('change', (evt)=>{
-		// 	console.log(`editor-on-chance: justLoaded = ${this.justLoaded}`);
+		// 	console.log(`editor-on-change: justLoaded = ${this.justLoaded}`);
 		// 	this.$.save.disabled = this.justLoaded;
 		// 	this.justLoaded = false;
 		// });
@@ -91,9 +91,3 @@ class RepoFileEditorCM {
 			});
 	}
 }
-
-// document.addEventListener('DOMContentLoaded', function() {
-// 	for (let e of document.querySelectorAll('[data-instance="RepoFileEditor"]')) {
-// 		new RepoFileEditor(e);
-// 	}
-// });

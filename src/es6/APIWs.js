@@ -94,48 +94,92 @@ class APIWs {
 		return this._rpc("Version",  arguments );
 	}
 	
-	DeleteFile (repo,path) {
-		return this._rpc("DeleteFile",  arguments );
+	RenameFile (repoOwner,repoName,fromPath,toPath) {
+		return this._rpc("RenameFile",  arguments );
 	}
 	
-	ListFiles (repo,pathregex) {
+	RemoveFile (repoOwner,repoName,path) {
+		return this._rpc("RemoveFile",  arguments );
+	}
+	
+	ListFiles (repoOwner,repoName,pathregex) {
 		return this._rpc("ListFiles",  arguments );
 	}
 	
-	GetFile (repo,path) {
+	FileExists (repoOwner,repoName,path) {
+		return this._rpc("FileExists",  arguments );
+	}
+	
+	ListAllRepoFiles (repoOwner,repoName) {
+		return this._rpc("ListAllRepoFiles",  arguments );
+	}
+	
+	GetFile (repoOwner,repoName,path) {
 		return this._rpc("GetFile",  arguments );
 	}
 	
-	GetFileString (repo,path) {
+	GetFileString (repoOwner,repoName,path) {
 		return this._rpc("GetFileString",  arguments );
 	}
 	
-	UpdateFile (repo,path,content) {
+	UpdateFile (repoOwner,repoName,path,content) {
 		return this._rpc("UpdateFile",  arguments );
 	}
 	
-	ListPullRequests (repo) {
+	StageFile (repoOwner,repoName,path) {
+		return this._rpc("StageFile",  arguments );
+	}
+	
+	StageFileAndReturnMergingState (repoOwner,repoName,path) {
+		return this._rpc("StageFileAndReturnMergingState",  arguments );
+	}
+	
+	SaveWorkingFile (repoOwner,repoName,path,content) {
+		return this._rpc("SaveWorkingFile",  arguments );
+	}
+	
+	ListPullRequests (repoOwner,repoName) {
 		return this._rpc("ListPullRequests",  arguments );
 	}
 	
-	PullRequestDiffList (repo,sha,regexp) {
+	PullRequestDiffList (repoOwner,repoName,prNumber) {
 		return this._rpc("PullRequestDiffList",  arguments );
 	}
 	
-	PullRequestVersions (repo,remoteUrl,remoteSha,filePath) {
+	PullRequestVersions (repoOwner,repoName,remoteUrl,remoteSha,filePath) {
 		return this._rpc("PullRequestVersions",  arguments );
 	}
 	
-	PullRequestUpdate (repo,remoteSHA,filePath,data) {
+	PullRequestUpdate (repoOwner,repoName,remoteSHA,filePath,data) {
 		return this._rpc("PullRequestUpdate",  arguments );
 	}
 	
-	Commit (repo,message) {
+	Commit (repoOwner,repoName,message) {
 		return this._rpc("Commit",  arguments );
 	}
 	
-	PrintPdfEndpoint (repo,book) {
+	CommitAll (repoOwner,repoName,message,notes) {
+		return this._rpc("CommitAll",  arguments );
+	}
+	
+	CommitOnly (repoOwner,repoName,message,notes) {
+		return this._rpc("CommitOnly",  arguments );
+	}
+	
+	PrintPdfEndpoint (repoOwner,repoName,book,format) {
 		return this._rpc("PrintPdfEndpoint",  arguments );
+	}
+	
+	MergedFileCat (repoOwner,repoName,path) {
+		return this._rpc("MergedFileCat",  arguments );
+	}
+	
+	SaveMergingFile (repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent) {
+		return this._rpc("SaveMergingFile",  arguments );
+	}
+	
+	MergeFileOriginal (repoOwner,repoName,path,version) {
+		return this._rpc("MergeFileOriginal",  arguments );
 	}
 	
 

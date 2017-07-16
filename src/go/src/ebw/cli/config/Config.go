@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/golang/glog"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -44,6 +46,16 @@ func (c *conf) GetUser() (*githubUser, error) {
 	return nil, fmt.Errorf("Failed to find defaultUser '%s'", c.DefaultUser)
 }
 
+// GetUserNamed returns the githubUser with the given name.
+func (c *conf) GetUserNamed(name string) (*githubUser, error) {
+	for _, u := range c.Users {
+		if u.Name == name {
+			return u, nil
+		}
+	}
+	return nil, fmt.Errorf(`Failed to find user named '%s'`, name)
+}
+
 // SetUser sets the default user for this session.
 func (c *conf) SetUser(user string) error {
 	for _, u := range c.Users {
@@ -59,6 +71,7 @@ func (c *conf) readFile(in string) error {
 	if "" == in {
 		in = filepath.Join(os.Getenv("HOME"), ".ebw.yml")
 	}
+	glog.Infof(`Reading config file %s`, in)
 	raw, err := ioutil.ReadFile(in)
 	if nil != err {
 		return err

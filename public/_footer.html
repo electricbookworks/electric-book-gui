@@ -1,18 +1,22 @@
-	<footer role="contentinfo">
-	<p><a href="http://electricbook.works/">Help</a></p>
+	<footer role="contentinfo" id="page-footer">
+	<p><a href="http://electricbook.works/">Docs</a> &bullet; <a href="http://electricbook.works/support">Support</a></p>
 	</footer>
 
 	<script src="/bower_components/babel-polyfill/browser-polyfill.js"></script>
-	<script src="/js/main.js?t={{Rand}}"></script>
-	<!-- jQuery -->
+
 	<script src="/bower_components/jquery/dist/jquery.min.js"></script>
-	<!-- if we're editing a file -->
-		<script src="/codemirror/{{.CMVersion}}/bower_components/codemirror/lib/codemirror.js"></script>
+	<script src="/bower_components/foundation-sites/dist/js/foundation.js"></script>
+
+	<script type="text/javascript" src="/bower_components/js-signals/dist/signals.min.js"></script>
+
+	<script src="/codemirror/{{.CMVersion}}/bower_components/codemirror/lib/codemirror.js"></script>
 	<script src="/codemirror/{{.CMVersion}}/bower_components/codemirror/mode/markdown/markdown.js"></script>
-	<script src="/lib/mergely-3.4.3/lib/mergely.min.js"></script>
-	<!-- ACE Editor JS -->
-	<script src="https://cdn.jsdelivr.net/ace/1.2.4/min/ace.js"></script>
-	<!-- endif -->
+	<script src="/lib/mergely-3.4.3/lib/mergely.js"></script>
+
+	<script src="/bower_components/tslib/tslib.js"></script>
+	<script src="/js/tslib-set.js"></script>
+	<script src="/js/typescript-foundation.js"></script>
+	<script src="/js/ts.js?t={{Rand}}"></script>
 
 </body>
 </html>

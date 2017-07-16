@@ -1,0 +1,28 @@
+<div>
+	<h1 data-set="title">Updating a Repo</h1>
+
+	<p>How do you want to try this merge?</p>
+
+	<fieldset>
+		<label for="resolveOur">
+			<input type="radio" name="resolve" value="our" data-set="resolveOur" id="resolveOur" />
+			I will do the merge.
+		</label>
+		<label for="resolveGit">
+			<input type="radio" name="resolve" value="git" data-set="resolveGit" id="resolveGit"/>
+			Git can try to merge.
+		</label>
+		<label for="resolveTheir">
+			<input type="radio" name="resolve" value="their" data-set="resolveTheir" id="resolveTheir" />
+			Choose their files by preference.
+		</label>
+	</fieldset>
+
+	<label for="conflicted">
+		<input type="checkbox" name="conflicted" value="only" data-set="conflicted" id="conflicted" />
+			Only apply above resolution to conflicted files.
+	</label>
+
+	<button class="btn" data-set="mergeButton" data-event="click:">Do the Merge</button>
+
+</div>

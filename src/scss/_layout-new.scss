@@ -1,0 +1,64 @@
+section {
+	margin-top: 1em;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+	min-height: 100vh;
+
+	main {
+		flex-grow: 1;
+	}
+
+	footer {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: center;
+		align-items: baseline;
+		padding-top: 1em;
+
+		@include inverse;
+		border-top: 1px solid darken($color-inverse-bg, 10%);
+		// height: 1em;
+	}
+	article {
+	}
+}
+
+.constrain-page {
+  width: 90%;
+  margin: auto;
+  padding-top: 2em;
+  max-width: 60em;
+
+  @media (min-width: $bp-m) {
+  	width: 70%;
+  }
+
+  @media (min-width: $bp-l) {
+  	width: 70%;
+  }
+}
+
+.l-center {
+	text-align: center;
+}
+
+@mixin section-border() {
+	border-bottom: 3px solid $color-primary;
+}
+
+.todo {
+	border: 3px solid #88f;
+	background-color: white;
+	padding: 2em;
+
+	color: #333;
+	border-radius: 1em;
+	margin: 1em 0 2em 0;
+
+}

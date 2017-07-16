@@ -1,33 +1,24 @@
 {{template "_header.html" .}}
-{{template "_topbar_repo.html" .}}
+{{template "_nav_main.html" .}}
 
-<div id="repo-workspace">
-<!--<p>Your repo is checked out at <a href="file://{{.Path}}">{{.Path}}</a>.-->
-	<div id="repo-nav">
-		<div>Changes for Review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
-		<div id="repo-files" class="repo-menu">
-			<ul id="repo-file-list">
-			</ul>
+<main id="pull-request-view">
+	<div class="pr-topbar">Changes for Review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
+	<div class="workspace">
+		<nav id="differences">
+			<div id="pr-files-list">
+			</div>
+			<div>
+				<a href="{{.PullRequest.Number}}/close" class="btn">Close Changes</a>
+			</div>
+		</nav>
+		<div id="mergely-container">
 		</div>
-		<div>
-		<a href="{{.PullRequest.Number}}/close"><button>Close Changes</button></a>
-		</div>
 	</div>
-	<div id="mergely">
-
-	</div>
-	</div>
-</div>
+</main>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-	new PullRequestDiffList(document.getElementById('repo-file-list'), {{.Diffs}}, {
-			"repo":{{.RepoName}},
-			"remoteURL" : {{.PullURL}},
-			"remoteSHA": {{.SHA}},
-		}, document.getElementById('mergely'));
-});
+<script id="pr-merge-page" type="text/hidden" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}" remote-url="{{.PullURL}}" remote-sha="{{.SHA}}">
+{{- .Diffs | json | raw -}}
 </script>
 
 {{template "_footer.html" .}}

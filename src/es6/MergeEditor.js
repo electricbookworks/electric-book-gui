@@ -1,5 +1,6 @@
 class MergeEditor {
 	constructor(parent, model) {
+		console.log(`new MergeEditor: parent=`, parent);
 		this.model = model;
 		[this.el, this.$] = DTemplate('MergeEditor');
 		Eventify(this.el, {
@@ -7,7 +8,10 @@ class MergeEditor {
 				evt.preventDefault();
 				model.Update(this.get())
 				.then()
-				.catch( err=>EBW.Error );
+				.catch( err=>{
+					console.log(`Error on the save function`);
+					EBW.Error(err);
+				});
 			}
 		}, this);
 
@@ -17,14 +21,8 @@ class MergeEditor {
 			parent.appendChild(this.el);
 		}
 
-		model.GetContent().then(EBW.flatten(
-			(local,remote)=>{
-				this.mergely(local,remote);
-			}
-			))
-		.catch(err=>{
-			EBW.Error(err);
-		});
+		model.GetContent().then(EBW.flatten(this.mergely,this))
+			.catch( EBW.Error );
 
 	}
 	get() {
@@ -35,20 +33,37 @@ class MergeEditor {
 		this.$.mergely.textContent= ``;
 		this.mergely = document.createElement(`div`);
 		this.$.mergely.appendChild(this.mergely);
-		let m = jQuery(this.mergely).mergely({
+		let m = jQuery(this.mergely);
+		console.log(`local = `, local.substring(0,50));
+		console.log(`remote = `, remote.substring(0,50));
+		m.mergely({
 			cmsettings: { 
 				readOnly: false, 
 				lineNumbers: true,
+				wrap_lines: true,
 			},
-			editor_height: this.$.mergely.clientHeight,
+			rhs_cmsettings: {
+				// readOnly: true,
+			},
+			// editor_height: "40em",
+			autoresize: true,
+			editor_height: "100%",
+			// editor_width: "48%",
+			wrap_lines: true,
 			lhs: function(setValue) {
 				setValue(local);
 			},
 			rhs: function(setValue) {
 				setValue(remote);
+			},
+			height: (h)=>{
+				return this.$.mergely.clientHeight + "px";
+			},
+			width: (w)=>{
+				return this.$.mergely.clientWidth + "px";
 			}
 		});
-		let right = m.mergely('cm', 'right');
+		let right = jQuery(this.mergely).mergely('cm', 'rhs');
 		console.log('right hand cm = ', right);
 	}	
 }

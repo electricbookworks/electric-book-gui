@@ -1,11 +1,36 @@
-<nav role="banner">
-	<ul class="nav-main">
-		<li><a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a></li>
+<nav class="topbar">
+	<div class="topbar-left">
+		<a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a>
 		<!-- if changes_to_review -->
-		<li><a href="/">Review submissions (1)</a></li>
+		<!-- <a href="/">Review submissions (1)</a> -->
 		<!-- end -->
-	</ul>
-	<!-- if logged_in -->
-	<p>Logged in as <a href="https://github.com/{{.UserName}}"><img class="gravatar" src="" alt="">{{.UserName}}</a>. <a href="/logoff">Log out</a></p>
-	<!-- end -->
+	</div>
+	{{if .RepoOwner}}
+	<div class="topbar-center">
+		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_blank"><img src="/img/github.svg" /></a>
+		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
+			{{- .RepoOwner}}/{{.RepoName -}}
+		</a>
+	</div>
+	{{end}}
+	{{if .User}}
+	<div class="topbar-right">
+		<div>
+			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank">{{.UserName}}<img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar"/></a> <a href="/logoff" class="btn btn-inverse">Sign out</a>
+		</div>
+	</div>
+	{{end}}
 </nav>
+{{if .Flashes -}}
+<div id="flashes" class="constrain-page flashes">
+{{range .Flashes}}
+	<div class="callout flash {{.CSS}}" data-closable>
+		{{- if .Title}}<h1>{{.Title}}</h1>{{end -}}
+		<div class="content">{{.Content}}</div>
+		<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+{{- end}}
+</div>
+{{- end}}

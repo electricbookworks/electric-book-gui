@@ -6,11 +6,38 @@ $bp-l: 64em;
 $bp-xl: 80em;
 
 @import 'colors';
-@import 'style-guide';
-@import 'normalize';
-@import 'h5bp';
+@import 'foundation';
+@include foundation-everything(true);
+
+// @import 'style-guide';
+//@import 'normalize';
+//@import 'h5bp';
+// @import 'forms';
+// @import 'layout';
+@import 'typography-new';
 @import 'typography';
+
+@import 'layout-new';
+
+@import 'widgets/buttons';
+
+@import 'widgets/Toast';
+@import 'widgets/nav_main';
+@import 'widgets/flashes';
+@import 'widgets/files_show_tag';
+@import 'widgets/toolbar_menu.scss';
+@import 'widgets/header-bar';
+// @import 'repositories';
+// @import 'html-checker';
+
+@import 'pages/landing';
+@import 'pages/new-editor';
+@import 'pages/pull_new';
+@import 'pages/pull_request_list';
+@import 'pages/pull_request_view';
+@import 'pages/repo_conflict';
+@import 'pages/repo_detail';
+@import 'pages/repo_list';
+
+//@import 'typography';
 @import 'forms';
-@import 'layout';
-@import 'repositories';
-@import 'html-checker';

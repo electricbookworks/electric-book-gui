@@ -827,6 +827,9 @@ jQuery.extend(Mgly.CodeMirrorDiffView.prototype, {
 			// do not move the rhs until the lhs end point is >= the rhs end point.
 			var last_change = null;
 			var force_scroll = false;
+			if (!this.changes) {
+				this._diff(editor_name1, editor_name2);
+			}
 			for (var i = 0; i < this.changes.length; ++i) {
 				var change = this.changes[i];
 				if ((midline.line >= change[this_side+'-line-from'])) {

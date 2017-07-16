@@ -1,54 +1,66 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" . }}
 
+{{$userLogin := .UserName}}
 <main>
-
-<h1>Dashboard</h1>
-
-
-<section>
-    <h2>My books</h2>
+<section class="constrain-page center repo-list-page">
+    <div class="header-bar">
+        <h1>Dashboard</h1>
+        <div class="action-group">
+            <a data-open="repo-new-modal" class="btn">Add a New Series</a>
+        </div>
+    </div>
+    {{if IsSpecialUser .UserName}}
+    <div>
+    <a href="/github/token/b718f9693c3c85b6fac6b0cf82458b9f7532c15d">Login as timatcore</a>
+    </div>
+    {{end}}
 
     <ul class="repo-list">
-        {{range .Repos }}
+        {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <a class="repo-title" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">{{.Name}}</a></h2>
-                <h3><a href="/">UserName</a>'s version, from <a href="/">OrganizationName</a></h3>
-                <!-- if {{.Description}} !== <nil> -->
+                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
+
+                <div>
+                {{- if eq .Owner.GetLogin $userLogin}}My
+                {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} {{if .GetFork}}version{{else}}original{{end}}
+                {{- if .Owner.Company}}
+                , from <a href="/TODO">{{.Owner.Company}}</a>
+                {{- end}}</div>
+                {{if .Description}}
                 <p>{{.Description}}</p>
-                <!-- endif -->
+                {{end}}
 
                 <!-- Grab latest commit -->
-                <p>Last updated by TheirUserName RelativeTimeAgo.</p>
+                {{with .GetLastCommit}}
+                {{if .Committer}}
+                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
+                {{end}}
+                {{end}}
             </div>
-            <p class="repo-manage"><a class="btn" href="/repo/{{.Name}}/update?url={{.HTMLURL}}">Manage</a></p>
-
+            <div class="repo-manage">
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update">Manage</a>
+              {{if .GetTotalPRs}}
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
+              {{end}}
+            </div>
         </li>
-        {{end -}}
+        {{end}}
+        <li class="repo">
+            <div class="repo-add-repo">
+                <a data-open="repo-new-modal" class="btn">Add a New Series</a>
+            </div>
+        </li>
     </ul>
 
-    <nav aria-label="Page navigation" class="action-group l-center">
-        <ul>
-            <li><a href="/">Previous</a></li>
-            <li><a href="/">1</a></li>
-            <li><a href="/">2</a></li>
-            <li><a href="/">3</a></li>
-            <li><a href="/">Next</a></li>
-        </ul>
-    </nav>
-</section>
+    <div class="reveal" data-instance="AddNewBookDialog" id="repo-new-modal" data-reveal>
+         <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+          </button>        
+    </div>
 
-<section>
-    <form class="form-fork" method="post" action="/github/create-fork">
-        <h2>Create an Adaptation</h2>
-        <label for="repo_name">The base book:
-            <input type="text" name="repo_name" id="repo_name" value="" placeholder="e.g. electricbookworks/electric-book" />
-        </label>
-        <input class="cta" type="submit" value="Create adaptation" />
-    </form>
 </section>
-
 
 </main>
 

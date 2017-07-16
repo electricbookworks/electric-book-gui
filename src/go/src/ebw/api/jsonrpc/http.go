@@ -136,36 +136,54 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 		
 		
-		case "DeleteFile":
+		case "RenameFile":
 			
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				PATH string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				FROMPATH string `json:"2"`
+				
+				TOPATH string `json:"3"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=4 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "DeleteFile")
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "RenameFile")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.PATH);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.FROMPATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.TOPATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
 				return err
 			}
 			
@@ -196,8 +214,115 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 
 				
-					result[0] = context.DeleteFile(
-		args.REPO,
+					result[0] = context.RenameFile(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.FROMPATH,
+		args.TOPATH,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "RemoveFile":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "RemoveFile")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.RemoveFile(
+		args.REPOOWNER,
+		args.REPONAME,
 		args.PATH,
 		
 				)
@@ -236,28 +361,238 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				PATHREGEX string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				PATHREGEX string `json:"2"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=3 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "ListFiles")
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "ListFiles")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.PATHREGEX);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATHREGEX);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 2)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1] = context.ListFiles(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATHREGEX,
+		
+				)
+
+					
+					if (nil!=result[1]) {
+						return result[1].(error)
+					}
+					
+					result = result[0:1]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "FileExists":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "FileExists")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 2)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1] = context.FileExists(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		
+				)
+
+					
+					if (nil!=result[1]) {
+						return result[1].(error)
+					}
+					
+					result = result[0:1]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "ListAllRepoFiles":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=2 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "ListAllRepoFiles")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
@@ -291,9 +626,9 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 
 				
-					result[0],result[1] = context.ListFiles(
-		args.REPO,
-		args.PATHREGEX,
+					result[0],result[1] = context.ListAllRepoFiles(
+		args.REPOOWNER,
+		args.REPONAME,
 		
 				)
 
@@ -331,31 +666,40 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				PATH string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=3 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "GetFile")
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "GetFile")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.PATH);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
 				return err
 			}
 			
@@ -387,7 +731,8 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1] = context.GetFile(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.PATH,
 		
 				)
@@ -426,31 +771,40 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				PATH string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=3 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "GetFileString")
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "GetFileString")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.PATH);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
 				return err
 			}
 			
@@ -482,7 +836,8 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1] = context.GetFileString(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.PATH,
 		
 				)
@@ -521,37 +876,152 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				PATH string `json:"1"`
+				REPONAME string `json:"1"`
 				
-				CONTENT string `json:"2"`
+				PATH string `json:"2"`
+				
+				CONTENT string `json:"3"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=3 {
+			if len(request.Params)!=4 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "UpdateFile")
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "UpdateFile")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.PATH);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[2], &args.CONTENT);
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.CONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.UpdateFile(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		args.CONTENT,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "StageFile":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "StageFile")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
@@ -585,8 +1055,228 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				
 
 				
-					result[0] = context.UpdateFile(
-		args.REPO,
+					result[0] = context.StageFile(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "StageFileAndReturnMergingState":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "StageFileAndReturnMergingState")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 2)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1] = context.StageFileAndReturnMergingState(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		
+				)
+
+					
+					if (nil!=result[1]) {
+						return result[1].(error)
+					}
+					
+					result = result[0:1]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "SaveWorkingFile":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+				CONTENT string `json:"3"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=4 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "SaveWorkingFile")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.CONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.SaveWorkingFile(
+		args.REPOOWNER,
+		args.REPONAME,
 		args.PATH,
 		args.CONTENT,
 		
@@ -626,22 +1316,31 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=1 {
+			if len(request.Params)!=2 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 1, len(request.Params), "ListPullRequests")
+					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "ListPullRequests")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
@@ -673,7 +1372,8 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1] = context.ListPullRequests(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		
 				)
 
@@ -711,11 +1411,11 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				SHA string `json:"1"`
+				REPONAME string `json:"1"`
 				
-				REGEXP string `json:"2"`
+				PRNUMBER int `json:"2"`
 				
 			}{}
 
@@ -727,21 +1427,21 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.SHA);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[2], &args.REGEXP);
+			if err = json.Unmarshal(request.Params[2], &args.PRNUMBER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
@@ -776,9 +1476,9 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1] = context.PullRequestDiffList(
-		args.REPO,
-		args.SHA,
-		args.REGEXP,
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PRNUMBER,
 		
 				)
 
@@ -816,49 +1516,58 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				REMOTEURL string `json:"1"`
+				REPONAME string `json:"1"`
 				
-				REMOTESHA string `json:"2"`
+				REMOTEURL string `json:"2"`
 				
-				FILEPATH string `json:"3"`
+				REMOTESHA string `json:"3"`
+				
+				FILEPATH string `json:"4"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=4 {
+			if len(request.Params)!=5 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "PullRequestVersions")
+					"Expected %d parameters, but got %d in call to %s", 5, len(request.Params), "PullRequestVersions")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.REMOTEURL);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[2], &args.REMOTESHA);
+			if err = json.Unmarshal(request.Params[2], &args.REMOTEURL);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[3], &args.FILEPATH);
+			if err = json.Unmarshal(request.Params[3], &args.REMOTESHA);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[4], &args.FILEPATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 4+1, err.Error()), nil)
 				return err
 			}
 			
@@ -890,7 +1599,8 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1],result[2] = context.PullRequestVersions(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.REMOTEURL,
 		args.REMOTESHA,
 		args.FILEPATH,
@@ -931,49 +1641,58 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				REMOTESHA string `json:"1"`
+				REPONAME string `json:"1"`
 				
-				FILEPATH string `json:"2"`
+				REMOTESHA string `json:"2"`
 				
-				DATA string `json:"3"`
+				FILEPATH string `json:"3"`
+				
+				DATA string `json:"4"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=4 {
+			if len(request.Params)!=5 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "PullRequestUpdate")
+					"Expected %d parameters, but got %d in call to %s", 5, len(request.Params), "PullRequestUpdate")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.REMOTESHA);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[2], &args.FILEPATH);
+			if err = json.Unmarshal(request.Params[2], &args.REMOTESHA);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[3], &args.DATA);
+			if err = json.Unmarshal(request.Params[3], &args.FILEPATH);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[4], &args.DATA);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 4+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1005,7 +1724,8 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0] = context.PullRequestUpdate(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.REMOTESHA,
 		args.FILEPATH,
 		args.DATA,
@@ -1046,31 +1766,40 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				MESSAGE string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				MESSAGE string `json:"2"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=3 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "Commit")
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "Commit")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.MESSAGE);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.MESSAGE);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1102,8 +1831,239 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0] = context.Commit(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.MESSAGE,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "CommitAll":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				MESSAGE string `json:"2"`
+				
+				NOTES string `json:"3"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=4 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "CommitAll")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.MESSAGE);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.NOTES);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.CommitAll(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.MESSAGE,
+		args.NOTES,
+		
+				)
+
+					
+					if (nil!=result[0]) {
+						return result[0].(error)
+					}
+					
+					result = result[0:0]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "CommitOnly":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				MESSAGE string `json:"2"`
+				
+				NOTES string `json:"3"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=4 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "CommitOnly")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.MESSAGE);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.NOTES);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 1)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0] = context.CommitOnly(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.MESSAGE,
+		args.NOTES,
 		
 				)
 
@@ -1141,31 +2101,49 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 			
 			args := struct {
 				
-				REPO string `json:"0"`
+				REPOOWNER string `json:"0"`
 				
-				BOOK string `json:"1"`
+				REPONAME string `json:"1"`
+				
+				BOOK string `json:"2"`
+				
+				FORMAT string `json:"3"`
 				
 			}{}
 
 			// Decoding request.Params as an array
-			if len(request.Params)!=2 {
+			if len(request.Params)!=4 {
 				err = fmt.Errorf(
-					"Expected %d parameters, but got %d in call to %s", 2, len(request.Params), "PrintPdfEndpoint")
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "PrintPdfEndpoint")
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[0], &args.REPO);
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
 				return err
 			}
 			
-			if err = json.Unmarshal(request.Params[1], &args.BOOK);
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
 				nil!=err {
 				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
 					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.BOOK);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.FORMAT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
 				return err
 			}
 			
@@ -1197,8 +2175,10 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 
 				
 					result[0],result[1] = context.PrintPdfEndpoint(
-		args.REPO,
+		args.REPOOWNER,
+		args.REPONAME,
 		args.BOOK,
+		args.FORMAT,
 		
 				)
 
@@ -1208,6 +2188,371 @@ func processJsonRpc(in io.Reader, out io.Writer, conn *_root.Connection) error {
 					}
 					
 					result = result[0:1]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "MergedFileCat":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=3 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 3, len(request.Params), "MergedFileCat")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 5)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1],result[2],result[3],result[4] = context.MergedFileCat(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		
+				)
+
+					
+					if (nil!=result[4]) {
+						return result[4].(error)
+					}
+					
+					result = result[0:4]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "SaveMergingFile":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+				WORKINGEXISTS bool `json:"3"`
+				
+				WORKINGCONTENT string `json:"4"`
+				
+				THEIREXISTS bool `json:"5"`
+				
+				THEIRCONTENT string `json:"6"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=7 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 7, len(request.Params), "SaveMergingFile")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.WORKINGEXISTS);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[4], &args.WORKINGCONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 4+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[5], &args.THEIREXISTS);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 5+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[6], &args.THEIRCONTENT);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 6+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 2)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1] = context.SaveMergingFile(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		args.WORKINGEXISTS,
+		args.WORKINGCONTENT,
+		args.THEIREXISTS,
+		args.THEIRCONTENT,
+		
+				)
+
+					
+					if (nil!=result[1]) {
+						return result[1].(error)
+					}
+					
+					result = result[0:1]
+					
+
+								
+				return nil
+			}(); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_APPLICATION_ERROR, err, nil)
+				return err
+			}
+
+			
+			response := jsonResponse{
+				Jsonrpc:"2.0",
+				Id: request.Id,
+				Result: result,
+			}
+			encoder := json.NewEncoder(out)
+			if err := encoder.Encode(&response); nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INTERNAL_ERROR, err, nil)
+				return err
+			}
+
+		
+		
+		case "MergeFileOriginal":
+			
+			
+			args := struct {
+				
+				REPOOWNER string `json:"0"`
+				
+				REPONAME string `json:"1"`
+				
+				PATH string `json:"2"`
+				
+				VERSION string `json:"3"`
+				
+			}{}
+
+			// Decoding request.Params as an array
+			if len(request.Params)!=4 {
+				err = fmt.Errorf(
+					"Expected %d parameters, but got %d in call to %s", 4, len(request.Params), "MergeFileOriginal")
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[0], &args.REPOOWNER);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 0+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[1], &args.REPONAME);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 1+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[2], &args.PATH);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 2+1, err.Error()), nil)
+				return err
+			}
+			
+			if err = json.Unmarshal(request.Params[3], &args.VERSION);
+				nil!=err {
+				errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, fmt.Errorf(
+					"Unable to decode JSON param %d: %s", 3+1, err.Error()), nil)
+				return err
+			}
+			
+			
+
+			// // Decoding request.Params as an object
+			// err := json.Unmarshal(request.Params, &args)
+			// if nil!=err {
+			// 	errorJsonRpc(out, request.Id, JSONRPC_ERROR_INVALID_PARAMS, err, nil)
+			// 	return
+			// }
+			
+			result := make([]interface{}, 3)
+			
+
+			if err = func() (err error) {
+				
+				
+				defer func() {
+					if r:=recover(); nil!=r {
+						if e, ok := r.(error); ok {
+							err=e
+						} else {
+							err = fmt.Errorf("PANIC: %s", e)
+						}
+					}
+				}()
+				
+
+				
+					result[0],result[1],result[2] = context.MergeFileOriginal(
+		args.REPOOWNER,
+		args.REPONAME,
+		args.PATH,
+		args.VERSION,
+		
+				)
+
+					
+					if (nil!=result[2]) {
+						return result[2].(error)
+					}
+					
+					result = result[0:2]
 					
 
 								

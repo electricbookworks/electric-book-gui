@@ -1,0 +1,30 @@
+.topbar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: baseline;
+	padding: 1em;
+	border-bottom: 1px solid darken($color-inverse-bg, 10%);
+
+	@include inverse;
+	position: relative;
+
+	img {
+		height: 2em;
+		width: 2em;
+		margin-bottom: 2px;
+		box-sizing: content-box;
+	}
+
+	.username-gravatar {
+		// padding-left: 0.5em;
+		& > img {
+			margin-left: 0.5em;
+			margin-right: 0.5em;
+		}
+	}
+
+	.topbar-center {
+		font-weight: bold;
+	}
+}

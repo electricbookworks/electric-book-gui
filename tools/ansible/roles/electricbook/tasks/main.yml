@@ -1,14 +1,15 @@
-- name: Install required packages git, vim
+- name: Install required packages git, vim, libgit2-dev
   apt: >
     name={{item}}
     state=present
-  with_items: [ git, vim ]
+  with_items: [ git, vim, libgit2-dev, lxc-dev ]
   become: yes
 
 - name: Create electricbook user
   user: >
     name=electricbook
     shell=/bin/bash
+    groups='rvm,'
   become: yes
 
 - name: Install electric-book-gui from GIT
@@ -32,7 +33,7 @@
     mode=0755
   become: yes
 
-- name: install electricbook server
+- name: install electricbook
   copy: >
     dest=/opt/electricbook/bin/electricbook
     force=yes
@@ -68,4 +69,3 @@
 - include: nginx.yml
   when: >
     'nginx'==webserver
-

@@ -10,11 +10,10 @@ import (
 	"ebw/util"
 )
 
-// runGit runs git in the user/repo cache working directory with
-// the given args, returning error
-// on failure.
-func runGit(user, repo string, args []string) error {
-	root, err := RepoDir(user, repo)
+// runGit runs git in the user/repoOwner/repoName cache working directory with
+// the given args, returning error on failure.
+func runGit(user, repoOwner, repoName string, args []string) error {
+	root, err := RepoDir(user, repoOwner, repoName)
 	if nil != err {
 		return err
 	}

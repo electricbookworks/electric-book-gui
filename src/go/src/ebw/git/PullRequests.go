@@ -13,16 +13,19 @@ import (
 	"ebw/util"
 )
 
-func ListPullRequests(client *Client, user, repo string) ([]*github.PullRequest, error) {
-	requests, _, err := client.PullRequests.List(client.Context, user, repo, &github.PullRequestListOptions{})
+// ListPullRequests returns a list of the Pull Requests for the
+// given repoOwner/repoName
+func ListPullRequests(client *Client, repoOwner, repoName string) ([]*github.PullRequest, error) {
+	requests, _, err := client.PullRequests.List(client.Context,
+		repoOwner, repoName, &github.PullRequestListOptions{})
 	if nil != err {
 		return nil, util.Error(err)
 	}
 	return requests, nil
 }
 
-func GetPullRequest(client *Client, user, repo string, number int) (*github.PullRequest, error) {
-	pr, _, err := client.PullRequests.Get(client.Context, user, repo, number)
+func GetPullRequest(client *Client, user, repoOwner, repoName string, number int) (*github.PullRequest, error) {
+	pr, _, err := client.PullRequests.Get(client.Context, repoOwner, repoName, number)
 	return pr, err
 }
 
@@ -40,16 +43,21 @@ func PullRequestDir(sha string) (string, error) {
 	return filepath.Join(prRoot, sha), nil
 }
 
-// PullRequestCheckout checks out the given remoteUrl with given sha
-func PullRequestCheckout(remoteUrl, sha string) (string, error) {
+// PullRequestCheckout checks out the given
+// remoteUrl with given sha
+func PullRequestCheckout(client *Client, remoteUrl, sha string) (string, error) {
+	remoteUrl, err := client.AddAuth(remoteUrl)
+	if nil != err {
+		return ``, err
+	}
 	glog.Infof(`PullRequestCheckout(remote = %s, sha = %s)`, remoteUrl, sha)
 	prRoot, err := PullRequestDir(``)
 	os.MkdirAll(prRoot, 0755)
-	_, err = os.Stat(filepath.Join(prRoot, sha))
+	prDir := filepath.Join(prRoot, sha)
+	_, err = os.Stat(prDir)
 	if nil == err {
-		prRoot = filepath.Join(prRoot, sha)
 		// Update from origin / master
-		if err = runGitDir(prRoot, []string{`pull`, `origin`, `master`}); nil != err {
+		if err = runGitDir(prDir, []string{`pull`, `origin`, `master`}); nil != err {
 			return ``, err
 		}
 	} else {
@@ -60,34 +68,59 @@ func PullRequestCheckout(remoteUrl, sha string) (string, error) {
 		if err = runGitDir(prRoot, []string{`clone`, remoteUrl, sha}); nil != err {
 			return ``, err
 		}
-		prRoot = filepath.Join(prRoot, sha)
 	}
 
-	if err = runGitDir(prRoot, []string{`checkout`, sha}); nil != err {
+	if err = gitConfig(client, prDir); nil != err {
 		return ``, err
 	}
-	return prRoot, nil
+	if err = runGitDir(prDir, []string{`checkout`, sha}); nil != err {
+		return ``, err
+	}
+	return prDir, nil
 }
 
-func PullRequestDiffList(client *Client, user, repo string,
-	sha string, pathRegexp string) ([]*PullRequestDiff, error) {
-	localPath, err := RepoDir(user, repo)
+func PullRequestDiffListByNumber(client *Client, repoOwner, repoName string,
+	prNumber int) ([]*PullRequestDiff, error) {
+	pr, _, err := client.PullRequests.Get(client.Context, repoOwner, repoName, prNumber)
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	return PullRequestDiffList(client, repoOwner, repoName, pr)
+}
+
+func PullRequestDiffList(client *Client, repoOwner, repoName string,
+	pr *github.PullRequest) ([]*PullRequestDiff, error) {
+	localPath, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return nil, err
 	}
-	remotePath, err := PullRequestDir(sha)
+	remotePath, err := PullRequestDir(pr.Head.GetSHA())
 	if nil != err {
 		return nil, err
 	}
-	diffs, err := GetPathDiffList(localPath, remotePath, pathRegexp)
+	files, _, err := client.PullRequests.ListFiles(client.Context,
+		repoOwner, repoName,
+		pr.GetNumber(), &github.ListOptions{
+			PerPage: 1000,
+		})
+	if nil != err {
+		return nil, util.Error(err)
+	}
+	diffs := make([]*PullRequestDiff, len(files))
+	for i, p := range files {
+		diffs[i], err = GetPathDiff(localPath, remotePath, p.GetFilename())
+		if nil != err {
+			return nil, err
+		}
+	}
 	return diffs, err
 }
 
 // PullRequestUpdate just updates the file in the 'master' repo the
 // same as editing in the regular system.
-func PullRequestUpdate(client *Client, user, repo string,
+func PullRequestUpdate(client *Client, user, repoOwner, repoName string,
 	sha string, path string, content []byte) error {
-	return UpdateFile(client, user, repo, path, content)
+	return UpdateFile(client, user, repoOwner, repoName, path, content)
 	// localPath, err := RepoDir(user, repo)
 	// if nil != err {
 	// 	return err
@@ -98,11 +131,11 @@ func PullRequestUpdate(client *Client, user, repo string,
 	// return nil
 }
 
-func PullRequestClose(client *Client, user, repo string, number int) error {
+func PullRequestClose(client *Client, repoOwner, repoName string, number int) error {
 	closedAt := time.Now()
 	merged := true
 	state := `closed`
-	_, _, err := client.PullRequests.Edit(client.Context, user, repo, number, &github.PullRequest{
+	_, _, err := client.PullRequests.Edit(client.Context, repoOwner, repoName, number, &github.PullRequest{
 		Number:   &number,
 		ClosedAt: &closedAt,
 		Merged:   &merged,
@@ -114,13 +147,16 @@ func PullRequestClose(client *Client, user, repo string, number int) error {
 	return nil
 }
 
-func PullRequestCreate(client *Client, user, repo, title, notes string) error {
-	// base := `master`
+// PullRequestCreate creates a new Pull Request from the user's repo to the
+// upstream repo.
+// In order to ensure that changes to the user's repo aren't propagated
+// with the PR, we branch at the point of PR creation.
+func PullRequestCreate(client *Client, user, repoOwner, repoName, title, notes string) error {
 	head := fmt.Sprintf(`%s:master`, user)
 	// head := `master`
 	base := `master`
 
-	upstream, _, err := client.Repositories.Get(client.Context, user, repo)
+	upstream, _, err := client.Repositories.Get(client.Context, repoOwner, repoName)
 	if nil != err {
 		return err
 	}

@@ -3,6 +3,7 @@ package print
 import (
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
@@ -38,8 +39,12 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	s := sse.New()
 	C := make(chan PrintMessage)
 	go func() {
+		sendCount:=0
 		for m := range C {
-			glog.Infof(`About to SendJSON: data = %v`, m.Data)
+			sendCount++
+			if 0==sendCount%10 {
+				glog.Infof(`About to SendJSON: data = %v`, m.Data)
+			}
 			s.SendJSON(`id`, m.Event, m.Data)
 		}
 		s.SendJSON(`id`, `done`, nil)
@@ -52,15 +57,43 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 			delete(endpoints, key)
 			endpointsL.Unlock()
 		}()
+		// t := time.NewTicker(time.Second)
 
-		repoDir, err := git.RepoDir(pr.Username, pr.Repo)
+		// go func() {
+		// 	for range t.C {
+		// 		C <- PrintMessage{Event: `tick`, Data: `Hi there`}
+		// 	}
+		// 	glog.Infof(`Quitting timer ticker`)
+		// }()
+		// defer func() {
+		// 	t.Stop()
+		// 	close(tickC)
+		// }()
+		tickC := make(chan bool, 1)
+		defer func() {
+			tickC <- true
+		}()
+		go func() {
+			for {
+				time.Sleep(time.Second)
+				select {
+				case <-tickC:
+					glog.Infof(`Quitting timer ticker`)
+					return
+				default:
+					C <- PrintMessage{Event: `tick`, Data: `Hi there`}
+				}
+			}
+		}()
+
+		repoDir, err := git.RepoDir(pr.Username, pr.RepoOwner, pr.RepoName)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}
 			return
 		}
 
 		// pdfPath, err := PrintInContainer(repoDir, pr.Book, C)
-		pdfPath, err := PrintLocal(repoDir, pr.Book, C)
+		pdfPath, err := PrintLocal(repoDir, pr.Book, pr.PrintOrScreen, C)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}
 		} else {
@@ -72,5 +105,5 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	glog.Infof("Serving SSE for %s", key)
 	s.ServeHTTP(w, r)
-	glog.Infof("Exiting handler for SSE %s", pr.Repo)
+	glog.Infof("Exiting handler for SSE %s/%s", pr.RepoOwner, pr.RepoName)
 }

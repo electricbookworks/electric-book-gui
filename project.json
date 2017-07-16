@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test":"mocha -r ts-node/register src/**/*_test.ts"
+  },
+  "compilerOptions": {
+  	"types": ["node","core-js"]
+  }
+}

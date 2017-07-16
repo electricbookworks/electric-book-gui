@@ -1,0 +1,7 @@
+---
+dependencies:
+  - role: rvm_io.ruby
+    tags: ruby
+    rvm1_rubies: ['ruby-2.4.0']
+    rvm1_user: "root"
+    rvm1_install_path: /usr/local/rvm

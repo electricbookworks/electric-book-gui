@@ -1,8 +1,10 @@
 package print
 
 type PrintRequest struct {
-	Repo     string
-	Book     string
-	Username string
-	Token    string
+	Username  string
+	RepoOwner string
+	RepoName  string
+	Book      string
+	Token     string
+	PrintOrScreen string
 }

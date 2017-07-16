@@ -1,0 +1,26 @@
+.flashes {
+	.flash {
+		position: relative;
+		margin: 1em auto;
+		h1 {
+			font-size: 1.2em;
+		}
+		border: 3px solid $color-primary;
+		border-width: 2px;
+		border-radius: .25em;
+		padding: 1em;
+		&.success {
+			border-color: $color-success;
+			background-color: $color-success-light;
+		}
+		&.info {
+			border-color: $color-info;
+			background-color: $color-info-light;
+		}
+		&.error {
+			border-color: $color-error;
+			background-color: $color-error-light;
+
+		}
+	}
+}

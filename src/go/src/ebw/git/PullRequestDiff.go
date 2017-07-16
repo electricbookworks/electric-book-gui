@@ -1,6 +1,7 @@
 package git
 
 import (
+	"encoding/json"
 	"crypto/sha1"
 	"fmt"
 	"io/ioutil"
@@ -8,6 +9,8 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/golang/glog"
+	
 	"ebw/util"
 )
 
@@ -21,6 +24,15 @@ type PullRequestDiff struct {
 	Equal bool `json:"equal"`
 }
 
+func (prd *PullRequestDiff) String() string {
+	r, err := json.Marshal(prd)
+	if nil!=err {
+		glog.Errorf(`Failed JSON marshal of %v: %s`, prd, err.Error())
+		return err.Error()
+	}
+	return string(r)
+}
+
 // HashFile returns the hash of the file at fn
 func HashFile(fn string) (string, error) {
 	raw, err := ioutil.ReadFile(fn)
@@ -30,6 +42,25 @@ func HashFile(fn string) (string, error) {
 	return fmt.Sprintf("%x", sha1.Sum(raw)), nil
 }
 
+func GetPathDiff(localRoot, remoteRoot, path string) (*PullRequestDiff, error) {
+	d := &PullRequestDiff{Path:path}
+	localPath, remotePath := filepath.Join(localRoot, path), filepath.Join(remoteRoot,path)
+	localExists, err := util.FileExists(localPath)
+	if nil!=err {
+		return nil, err
+	}
+	remoteExists, err := util.FileExists(remotePath)
+	if nil!=err {
+		return nil, err
+	}
+	if localExists {
+		d.LocalPath = localPath
+	}
+	if remoteExists {
+		d.RemotePath = remotePath
+	}
+	return d, nil
+}
 func GetPathDiffList(localPath, remotePath string, pathRegexp string) ([]*PullRequestDiff, error) {
 	reg, err := regexp.Compile(pathRegexp)
 	if nil != err {

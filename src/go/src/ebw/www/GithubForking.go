@@ -11,6 +11,7 @@ import (
 
 var _ = glog.Infof
 
+// githubCreateFork forks an existing repo
 func githubCreateFork(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
@@ -18,17 +19,48 @@ func githubCreateFork(c *Context) error {
 		return nil
 	}
 
-	/** @TODO Need to add nonce to prevent issues */
-	c.D[`RepoName`] = c.P(`repo_name`)
-	c.D[`NewName`] = c.P(`new_name`)
-	if "fork" != c.P(`action`) {
-		return c.Render(`repo_fork.html`, nil)
-	}
-
-	if err := git.DuplicateRepo(client, client.Token,
-		c.P(`repo_name`), c.P(`new_name`)); nil != err {
+	/* These fields are defined in public/es6/AddNewBookDialog.html */
+	repoUserAndName := c.P(`collaborate_repo`)
+	redirectUrl, err := pathRepoEdit(c, repoUserAndName)
+	if nil != err {
+		/** @TODO Provide a more useful error explaining that the
+		 * user/repo format is required to make a repo fork.
+		 */
 		return err
 	}
 
-	return c.Redirect(`/`)
+	if err := git.ContributeToRepo(client, repoUserAndName); nil != err {
+		return err
+	}
+
+	return c.Redirect(redirectUrl)
+}
+
+// githubCreateNew creates a New book - ie a duplication of the
+// base electric-book template.
+func githubCreateNew(c *Context) error {
+	panic(`githubCreateNew`)
+	client := Client(c.W, c.R)
+	if nil == client {
+		// GithubClient will have redirected us
+		return nil
+	}
+
+	/* These fields are defined in public/es6/AddNewBookDialog.html */
+	repoNewName := c.P(`repo_new`)
+
+	redirectUrl, err := pathRepoEdit(c, c.Client.Username+"/"+repoNewName)
+	if nil != err {
+		/** @TODO Provide a more useful error explaining that the
+		 * user/repo format is required to make a repo fork.
+		 */
+		return err
+	}
+
+	if err := git.DuplicateRepo(client, client.Token,
+		`electricbookworks/electric-book`, repoNewName); nil != err {
+		return err
+	}
+
+	return c.Redirect(redirectUrl)
 }

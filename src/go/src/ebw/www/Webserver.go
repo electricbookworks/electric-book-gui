@@ -1,6 +1,7 @@
 package www
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -13,10 +14,12 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"github.com/uniplaces/carbon"
 	"golang.org/x/net/webdav"
 
 	"ebw/api/jsonrpc"
 	"ebw/print"
+	"ebw/util"
 )
 
 func webdavRoutes(r *mux.Router, prefix string) {
@@ -39,6 +42,10 @@ func WebError(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func RunWebServer(bind string) error {
+	// Initialize the sessions manager
+	if err := initSessions(); nil != err {
+		return err
+	}
 	r := mux.NewRouter()
 	r.Handle(`/`, WebHandler(repoList))
 	webdavRoutes(r, `/webdav`)
@@ -46,15 +53,28 @@ func RunWebServer(bind string) error {
 	r.HandleFunc(`/rpc/API/json`, jsonrpc.HttpHandlerFunc)
 	r.HandleFunc(`/rpc/API/json/ws`, jsonrpc.WsHandlerFunc)
 	r.Handle(`/github/login`, WebHandler(githubLogin))
-	r.HandleFunc(`/github/auth`, githubAuth)
+	r.Handle(`/github/auth`, WebHandler(githubAuth))
+	r.Handle(`/github/token/{token}`, WebHandler(githubSetToken))
 
-	r.Handle(`/github/create-fork`, WebHandler(githubCreateFork))
-	r.Handle(`/repo/{repo}/update`, WebHandler(repoUpdate))
-	r.Handle(`/repo/{repo}`, WebHandler(repoView))
-	r.Handle(`/repo/{repo}/pull/{number}`, WebHandler(pullRequestView))
-	r.Handle(`/repo/{repo}/pull/{number}/close`, WebHandler(pullRequestClose))
-	r.Handle(`/repo/{repo}/pull_new`, WebHandler(pullRequestCreate))
+	r.Handle(`/github/create/fork`, WebHandler(githubCreateFork))
+	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
+	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
+	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
+	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
+	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
+	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
+	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
+	r.Handle(`/repo/{repoOwner}/{repoName}/push/{remote}/{branch}`, WebHandler(repoPushRemote))
+
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict`, WebHandler(repoConflict))
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/abort`, WebHandler(repoConflictAbort))
+	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/resolve`, WebHandler(repoConflictResolve))
+
 	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
+	r.Handle(`/jekyll/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jeckylRepoServer))
 
 	r.Handle(`/logoff`, WebHandler(LogoffHandler))
 	r.Handle(`/to-github`, WebHandler(ToGithubHandler))
@@ -72,10 +92,56 @@ func RunWebServer(bind string) error {
 	return http.ListenAndServe(bind, nil)
 }
 
+// pathRepoEdit returns the URL path to edit the given repo
+func pathRepoEdit(c *Context, repoUserAndName string) (string, error) {
+	parts := strings.Split(repoUserAndName, `/`)
+	// @TODO If we move to storing the repoUser in the path as well,
+	// we'll need to make this 1==len(parts) and error condition
+	if 1 == len(parts) {
+		return fmt.Sprintf(`/repo/%s/update`, parts[0]), nil
+	}
+	if 2 != len(parts) {
+		return ``, util.Error(fmt.Errorf(`Expected user/name format for repoUserAndName(%s)`, repoUserAndName))
+	}
+	return fmt.Sprintf(`/repo/%s/update`, parts[1]), nil
+}
+
 func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{}) error {
 	t := template.New("").Funcs(map[string]interface{}{
 		"Rand": func() string {
 			return fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int())
+		},
+		"json": func(in interface{}) string {
+			raw, err := json.Marshal(in)
+			if nil != err {
+				return err.Error()
+			}
+			return string(raw)
+		},
+		`JS`: func(in string) template.JS {
+			return template.JS(in)
+		},
+		`JSStr`: func(in string) template.JSStr {
+			return template.JSStr(in)
+		},
+		"humantime": func(in interface{}) string {
+			t, ok := in.(time.Time)
+			if !ok {
+				return "NOT time.Time"
+			}
+			ct := carbon.NewCarbon(t)
+			// ct = carbon.Now().SubMinutes(20)
+			s, err := ct.DiffForHumans(nil, false, false, false)
+			if nil != err {
+				return err.Error()
+			}
+			return s
+		},
+		"raw": func(in string) template.HTML {
+			return template.HTML(in)
+		},
+		"IsSpecialUser": func(username string) bool {
+			return "craigmj" == username || "arthurattwell" == username
 		},
 	})
 	if err := filepath.Walk("public", func(name string, info os.FileInfo, err error) error {

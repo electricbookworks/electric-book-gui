@@ -54,3 +54,4 @@
 		}
 		return new joinIterators([els[Symbol.iterator](), new querySelectorAllIterator(qs)]);
 	}	
+
