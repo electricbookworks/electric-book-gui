@@ -47,7 +47,11 @@ func (r *Repo) PullRequestFetch(number int) error {
 		return err
 	}
 	remoteName := fmt.Sprintf(`_pull_request_%d`, number)
-	if err := r.AddRemote(remoteName, pr.Head.Repo.GetCloneURL()); nil != err {
+	cloneUrl, err := r.Client.AddAuth(pr.Head.Repo.GetCloneURL())
+	if nil != err {
+		return err
+	}
+	if err := r.AddRemote(remoteName, cloneUrl); nil != err {
 		return err
 	}
 	if err := r.FetchRemote(remoteName); nil != err {
