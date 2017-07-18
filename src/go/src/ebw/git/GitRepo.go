@@ -4,7 +4,6 @@ import (
 	"sort"
 	"sync"
 
-	// "github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/util"
@@ -65,24 +64,26 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 		perPage = 100
 	}
 
-	repos, _, err := client.Repositories.List(client.Context, "",
-		&github.RepositoryListOptions{
-			ListOptions: github.ListOptions{
-				PerPage: 5000,
-				Page:    page,
-			},
-			Affiliation: `owner,collaborator,organization_member`,
-			Direction:   `asc`,
-			// is `name` valid here?
-			// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
-			// suggests valid values are created, updated, pushed,
-			// full_name. Default: full_name
-			Sort:       `name`,
-			Visibility: `all`,
-		})
-
-	if nil != err {
-		return nil, util.Error(err)
+	repos := []*github.Repository{}
+	opts := &github.RepositoryListOptions{
+		Affiliation: `owner,collaborator,organization_member`,
+		Direction:   `asc`,
+		// is `name` valid here?
+		// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
+		// suggests valid values are created, updated, pushed,
+		// full_name. Default: full_name
+		Sort:       `name`,
+		Visibility: `all`,
+	}
+	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
+		r, res, err := client.Repositories.List(client.Context, "", opts)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		repos = append(repos, r...)
+		return res, err
+	}); nil != err {
+		return nil, err
 	}
 
 	C := make(chan *GitRepo)

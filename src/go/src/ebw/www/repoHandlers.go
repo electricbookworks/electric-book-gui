@@ -246,21 +246,13 @@ func pullRequestList(c *Context) error {
 
 // pullRequestMerge merges a pull request and sends the user to the
 // conflict page.
-// TODO: Scrap this entire method and merge it with repoMergeRemoteBranch
 func pullRequestMerge(c *Context) error {
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
 	prNumber := int(c.PI(`number`))
-	// TODO: Extract the description from the actual PR.
-	if err := repo.MergeWith(``, ``, git.ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
-		return err
-	}
-	if err := repo.PullRequestFetch(prNumber); nil != err {
-		return err
-	}
-	if err := repo.PullRequestMerge(prNumber); nil != err {
+	if err := repo.PullPR(prNumber); nil != err {
 		return err
 	}
 	return c.Redirect(pathRepoConflict(repo))

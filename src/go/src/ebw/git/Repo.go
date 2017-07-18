@@ -618,8 +618,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 // FetchRemote fetches the named remote for the repo.
 func (r *Repo) FetchRemote(remoteName string) error {
-	t := util.NewTimer(`FetchRemote(` + remoteName + `)`)
-	defer t.Close()
 	// We're assuming that our configured repo has the right permissions,
 	// which we should probably check
 	remote, err := r.Remotes.Lookup(remoteName)
@@ -627,23 +625,19 @@ func (r *Repo) FetchRemote(remoteName string) error {
 		return util.Error(err)
 	}
 	defer remote.Free()
-	t.Mark(`Going to Fetch()`)
-	if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
-		return err
-	}
-	// if err := remote.Fetch([]string{}, &git2go.FetchOptions{
-	// 	RemoteCallbacks: git2go.RemoteCallbacks{
-	// 		CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
-	// 			// glog.Infof(`CredentialsCallback: url=%s, username_from_url=%s, allows_types = %d`, url, username_from_url, allowed_types)
-	// 			errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
-	// 			// glog.Infof("NewCredUserpassPlaintext returned %d, %v", errCode, cred)
-	// 			t.Mark(`Returned credentials`)
-	// 			return git2go.ErrorCode(errCode), &cred
-	// 		},
-	// 	},
-	// }, ``); nil != err {
-	// 	return util.Error(err)
+	// if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
+	// 	return err
 	// }
+	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
+		RemoteCallbacks: git2go.RemoteCallbacks{
+			CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
+				errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
+				return git2go.ErrorCode(errCode), &cred
+			},
+		},
+	}, ``); nil != err {
+		return util.Error(err)
+	}
 	return nil
 }
 
@@ -1428,4 +1422,53 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 		return ``, nil, err
 	}
 	return name, head.Target(), err
+}
+
+// PullPR pulls the given PR into the repo, doing a our-their merge
+// on conflicted files.
+func (r *Repo) PullPR(prNumber int) error {
+	// TODO: Extract the description from the actual PR. - use
+	// OUR-THEIR on conflicted files only.
+	if err := r.MergeWith(``, ``, ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
+		return err
+	}
+	if err := r.PullRequestFetch(prNumber); nil != err {
+		return err
+	}
+	if err := r.PullRequestMerge(prNumber); nil != err {
+		return err
+	}
+	return nil
+}
+
+// PullUpstream pulls the repos upstream into the repo, merging per
+// git merge rules.
+func (r *Repo) PullUpstream() error {
+	if err := r.MergeWith(`upstream`, `master`,
+		ResolveMergeGit, // resolve all files by git merge resolution
+		false,           // Use resolveMergeGit for conflicted and non-conflicted files
+		0,               // PR Number
+		`Merging with original series.`); nil != err {
+		return err
+	}
+	return nil
+}
+
+// PullOrigin pulls the repos origin into the repo, mergine per git merge
+// rules.
+func (r *Repo) PullOrigin() error {
+	if err := r.MergeWith(`origin`, `master`,
+		ResolveMergeGit, // resolve all files by git merge resolution
+		false,           // Use resolveMergeGit for conflicted and non-conflicted files
+		0,               // PR Number
+		`Merging with github.`); nil != err {
+		return err
+	}
+	return nil
+}
+
+// CommitIfNoConflicts will commit the changes to the repo if there
+// are no conflicted files in the repo.
+func (r *Repo) CommitIfNoConflicts() (bool, error) {
+	return false, fmt.Errorf(`Repo.CommitIfNoConflicts not implemented`)
 }

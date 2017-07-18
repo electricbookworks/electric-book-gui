@@ -42,6 +42,9 @@ const (
 func (rs RepoState) LocalInSync() bool {
 	return 0 == rs&(EBMChangesStaged|EBMChangesUnstaged|EBMConflicted|EBMBehind|EBMAhead|EBMUnimplemented)
 }
+func (rs RepoState) LocalChanges() bool {
+	return rs.LocalChangesStaged() || rs.LocalChangesUnstaged()
+}
 func (rs RepoState) LocalChangesStaged() bool {
 	return 0 < rs&EBMChangesStaged
 }

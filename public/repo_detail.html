@@ -3,6 +3,7 @@
 
 {{$repoOwner := .RepoOwner}}
 {{$repoName := .RepoName}}
+{{$state := .ERepo.MustRepoState}}
 
 
 <main id="repo-detail" class="constrain-page">
@@ -12,6 +13,9 @@
             <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
             <div class="action-group">
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
+                {{if $state.LocalChanges -}}
+                <a href="#" class="btn" id="cancelAllChanges">Cancel all changes</a>
+                {{- end}}
             </div>
         </div>
         {{if .Repo.Description}}
@@ -19,7 +23,6 @@
         {{end}}
         <div class="detail-container">
 
-            {{$state := .ERepo.MustRepoState}}
             {{if $state.LocalInSync}}
             <p>Your book is ready for editing. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit files</a></p>
             {{end}}
@@ -63,7 +66,6 @@
         </div>
     </section>
 
-{{if false}}
     {{if .PullRequests}}
     <section class="repo-detail-section">
 
@@ -98,9 +100,8 @@
         </div>
     </section>
     {{end}}
-{{end}}
 
-{{if false}}
+
     {{if .StagedFiles}}
     <section class="repo-detail-section">
         <div class="title-links">
@@ -117,7 +118,6 @@
         </div>
     </section>
     {{end}}
-{{end}}
  </main>
 
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDetailPage">

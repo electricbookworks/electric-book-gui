@@ -5,6 +5,8 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+
+	"ebw/util"
 )
 
 type PullRequestInfo struct {
@@ -23,16 +25,17 @@ func TotalPRs(client *Client, userName, repoName string) (*PullRequestInfo, erro
 	pr.waiting.Add(1)
 	go func() {
 		defer pr.waiting.Done()
-		listOptions := github.ListOptions{
-			Page: 0, PerPage: 1000,
-		}
-		options := &github.PullRequestListOptions{
-			ListOptions: listOptions,
-		}
-		pullRequests, _, err := client.PullRequests.List(client.Context, userName,
-			repoName, options)
-
-		if nil != err {
+		options := &github.PullRequestListOptions{}
+		pullRequests := []*github.PullRequest{}
+		if err := GithubPaginate(&options.ListOptions, func() (*github.Response, error) {
+			pr, res, err := client.PullRequests.List(client.Context,
+				userName, repoName, options)
+			if nil != err {
+				return nil, util.Error(err)
+			}
+			pullRequests = append(pullRequests, pr...)
+			return res, err
+		}); nil != err {
 			glog.Errorf(`Error on totalprs(%s): %s`, repoName, err.Error())
 			return
 		}
