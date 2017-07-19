@@ -8,7 +8,7 @@ import (
 // a ListOptions class to determine the pagination.
 func GithubPaginate(list *github.ListOptions, get func() (*github.Response, error)) error {
 	*list = github.ListOptions{
-		Page:    0,
+		Page:    1,
 		PerPage: 30,
 	}
 	for {
@@ -19,7 +19,7 @@ func GithubPaginate(list *github.ListOptions, get func() (*github.Response, erro
 		if 0 == r.NextPage {
 			return nil
 		}
-		list.Page = list.Page + 1
+		list.Page = r.NextPage
 	}
 	return nil
 }

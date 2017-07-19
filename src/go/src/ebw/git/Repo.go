@@ -13,6 +13,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	"github.com/sirupsen/logrus"
 	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
@@ -42,6 +43,8 @@ type Repo struct {
 	EBWRepoStatus *EBWRepoStatus
 
 	state RepoState
+
+	Log *logrus.Entry
 }
 
 func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
@@ -115,6 +118,8 @@ func (r *Repo) ConfigPath(path ...string) string {
 	return filepath.Join(parts...)
 }
 
+// NewRepoForDir returns a new repo configured for the given
+// directory.
 func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 	repo, err := git2go.OpenRepository(repoDir)
 	if nil != err {
@@ -539,7 +544,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	originBranch, err := r.Repository.LookupBranch(`origin/master`, git2go.BranchRemote)
 	if nil != err {
-		return 0, util.Error(fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error()))
+		return 0, r.LogError(fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error()))
 	}
 	defer originBranch.Free()
 
@@ -547,7 +552,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	localHead, err := r.Repository.Head()
 	if nil != err {
-		return 0, util.Error(fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error()))
+		return 0, r.LogError(fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error()))
 	}
 	defer localHead.Free()
 
@@ -555,7 +560,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	localAhead, localBehind, err := r.Repository.AheadBehind(localHead.Target(), originBranch.Target())
 	if nil != err {
-		return 0, fmt.Errorf(`Failed to get AheadBehind for local and origin branches: %s`, err.Error())
+		return 0, r.LogError(fmt.Errorf(`Failed to get AheadBehind for local and origin branches: %s`, err.Error()))
 	}
 	if 0 < localAhead {
 		state |= EBMAhead
@@ -617,7 +622,7 @@ func (r *Repo) FetchRemote(remoteName string) error {
 	// which we should probably check
 	remote, err := r.Remotes.Lookup(remoteName)
 	if nil != err {
-		return util.Error(err)
+		return r.LogError(err)
 	}
 	defer remote.Free()
 	// if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
@@ -631,7 +636,7 @@ func (r *Repo) FetchRemote(remoteName string) error {
 			},
 		},
 	}, ``); nil != err {
-		return util.Error(err)
+		return r.LogError(err)
 	}
 	return nil
 }

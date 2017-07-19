@@ -11,13 +11,10 @@ import (
 func FetchRemote(repo *git2go.Repository, remoteName string) (*git2go.Remote, error) {
 	// We're assuming that our configured repo has the right permissions,
 	// which we should probably check
-	t := util.NewTimer(`FetchRemote(` + remoteName + `)`)
-	defer t.Close()
 	remote, err := repo.Remotes.Lookup(remoteName)
 	if nil != err {
 		return nil, util.Error(err)
 	}
-	t.Mark(`Going to Fetch remote`)
 	if err := remote.Fetch([]string{}, nil, ``); nil != err {
 		return nil, util.Error(err)
 	}

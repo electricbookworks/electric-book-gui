@@ -1,9 +1,12 @@
 package util
 
 import (
+	"fmt"
 	"reflect"
+	"runtime"
 
 	"github.com/golang/glog"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/ibrt/go-xerror.v2/xerror"
 
 	git2go "gopkg.in/libgit2/git2go.v25"
@@ -37,6 +40,29 @@ func ToError(args []interface{}) error {
 	}
 	return xerror.New("ERROR: %v", args)
 
+}
+
+// LogError logs an error on a logrus entry
+func LogError(log *logrus.Entry, e ...interface{}) error {
+	if 0 == len(e) {
+		return nil
+	}
+	_, file, line, _ := runtime.Caller(1)
+	gerr, ok := e[0].(*git2go.GitError)
+	if ok {
+		log.WithFields(logrus.Fields{
+			`file`: fmt.Sprintf(`%s:%d`, file, line),
+		}).Errorf(`git2go.GitError: %s`, gerr.Error())
+		return gerr
+	}
+	err := ToError(e)
+	if nil == err {
+		return nil
+	}
+	log.WithFields(logrus.Fields{
+		`file`: fmt.Sprintf(`%s:%d`, file, line),
+	}).Error(err.Error())
+	return err
 }
 
 func Error(e ...interface{}) error {

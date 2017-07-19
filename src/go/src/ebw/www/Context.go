@@ -142,6 +142,7 @@ func (c *Context) Repo() (*git.Repo, error) {
 	if nil != err {
 		return nil, err
 	}
+	repo.Log = c.Log
 	c.AddDefer(repo.Free)
 	return repo, nil
 }

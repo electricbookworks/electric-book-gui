@@ -4,6 +4,7 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/util"
@@ -80,11 +81,14 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 		if nil != err {
 			return nil, util.Error(err)
 		}
+		glog.Infof(`Fetched %d repos, res.NextPage = %d`, len(r), res.NextPage)
+
 		repos = append(repos, r...)
 		return res, err
 	}); nil != err {
 		return nil, err
 	}
+	glog.Infof(`FetchRepos: len repos = %d`, len(repos))
 
 	C := make(chan *GitRepo)
 	var waitForFileChecks sync.WaitGroup
