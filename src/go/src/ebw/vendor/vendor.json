@@ -163,6 +163,12 @@
 			"revisionTime": "2017-03-21T23:07:31Z"
 		},
 		{
+			"checksumSHA1": "O2d6k/wJgvPgEfYKO6VvL1zOCc4=",
+			"path": "github.com/sirupsen/logrus",
+			"revision": "e49c59d69b89746796d48156991108c80faf1d7d",
+			"revisionTime": "2017-07-18T14:06:42Z"
+		},
+		{
 			"checksumSHA1": "KQbjJA5UVHD322X6nLlIUgVWt0o=",
 			"path": "github.com/uniplaces/carbon",
 			"revision": "2ed00d8a452957d017135066f4e9bda33821d426",
@@ -203,6 +209,12 @@
 			"path": "golang.org/x/oauth2/internal",
 			"revision": "1e695b1c8febf17aad3bfa7bf0a819ef94b98ad5",
 			"revisionTime": "2016-10-06T21:47:20Z"
+		},
+		{
+			"checksumSHA1": "VmSgg0+AGPLOL6WYjSNMKqelZhI=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "4cd6d1a821c7175768725b55ca82f14683a29ea4",
+			"revisionTime": "2017-07-14T13:21:52Z"
 		},
 		{
 			"checksumSHA1": "1hiENF6HC+Fs8Xh6xmIkT+d/rrc=",

@@ -20,7 +20,7 @@
         {{range .Repos}}
         <li class="repo">
             <div class="repo-details">
-                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
+                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
 
                 <div>
                 {{- if eq .Owner.GetLogin $userLogin}}My
@@ -40,9 +40,9 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update">Manage</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage</a>
               {{if .GetTotalPRs}}
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=pull">Review Submissions ({{.GetTotalPRs}})</a>
               {{end}}
             </div>
         </li>

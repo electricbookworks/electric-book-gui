@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	// "net/http"
@@ -196,12 +197,40 @@ func repoUpdate(c *Context) error {
 	repoOwner := c.Vars[`repoOwner`]
 	repoName := c.Vars[`repoName`]
 
-	url := c.P(`url`)
-	if _, err := git.Checkout(client, repoOwner, repoName, url); nil != err {
+	repoUrl := c.P(`url`)
+	if _, err := git.Checkout(client, repoOwner, repoName, repoUrl); nil != err {
 		return err
 	}
 
-	// redirect the user to repoView
+	next := c.P(`next`)
+
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	// Handle auto-processing of the repo state
+	changed, err := repo.AutoProcessState()
+	if nil != err {
+		return err
+	}
+	if changed {
+		return c.Redirect(`/repo/%s/%s/update?next=%s`, repoOwner, repoName, url.QueryEscape(next))
+	}
+
+	switch next {
+	case `conflict`:
+		return c.Redirect(pathRepoPull(repo))
+	case `edit`:
+		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
+	case `pull`:
+		return c.Redirect(pathRepoDetail(repo))
+	case `detail`:
+	case ``:
+		return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
+	default:
+		return c.Redirect(next)
+	}
+
 	return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 }
 
@@ -359,6 +388,29 @@ func repoPushRemote(c *Context) error {
 	}
 	if err := repo.Push(c.Vars[`remote`], c.Vars[`branch`]); nil != err {
 		return err
+	}
+	return c.Redirect(pathRepoDetail(repo))
+}
+
+// repoMergeRemote only handles merging with upstream or origin / master
+// branch.
+func repoMergeRemote(c *Context) error {
+	remote := c.Vars[`remote`]
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	switch remote {
+	case `upstream`:
+		if err := repo.PullUpstream(); nil != err {
+			return err
+		}
+	case `origin`:
+		if err := repo.PullOrigin(); nil != err {
+			return err
+		}
+	default:
+		return fmt.Errorf(`Cannot call repoMergeRemote with remote %s`, remote)
 	}
 	return c.Redirect(pathRepoDetail(repo))
 }

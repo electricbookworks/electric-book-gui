@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
+	"github.com/sirupsen/logrus"
 
 	"ebw/git"
 	"ebw/util"
@@ -26,6 +27,7 @@ type Context struct {
 	Client  *git.Client
 	Session *sessions.Session
 	Defers  []func()
+	Log     *logrus.Entry
 }
 
 type WebHandler func(c *Context) error
@@ -45,11 +47,16 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Client:  client,
 		Session: session,
 		Defers:  []func(){},
+		Log: logrus.New().WithFields(logrus.Fields{
+			`username`: client.Username,
+		}),
 	}
 	defer c.runDefers()
+	c.Log.Infof(`Starting processing web request %s`, r.URL.String())
 	if err := f(c); nil != err {
 		WebError(w, r, err)
 	}
+	c.Log.Infof(`Finished processing web request %s`, r.URL.String())
 }
 
 func (c *Context) AddDefer(f func()) {

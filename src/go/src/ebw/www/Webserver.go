@@ -60,6 +60,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
 	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
+	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))

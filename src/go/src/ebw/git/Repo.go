@@ -485,9 +485,13 @@ func (r *Repo) CanCreatePR() (bool, error) {
 	return r.EBWRepoStatus.LastPRHash != head.Target().String(), nil
 }
 
+// ResetState resets a repo's state so that the next call to GetRepoState
+// will recompute the repo's state.
+func (r *Repo) ResetState() {
+	r.state = StateNotSet
+}
+
 func (r *Repo) GetRepoState() (RepoState, error) {
-	timer := util.NewTimer(`GetRepoState`)
-	defer timer.Close()
 	if r.state != 0 && r.state != StateNotSet {
 		return r.state, nil
 	}
@@ -504,8 +508,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMUnimplemented
 	}
 
-	timer.Mark(`Got State`)
-
 	// glog.Infof("state = %d, fetching StatusCount", state)
 
 	// Work out changes on the local repository, and how those
@@ -514,8 +516,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if nil != err {
 		return 0, err
 	}
-
-	timer.Mark(`StatusCount`)
 
 	// In theory on EBM, we're not interested in workingDirChanages, since
 	// any changes made on the EBM are immediately staged.
@@ -534,8 +534,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 	if err := r.FetchRemote(`origin`); nil != err {
 		return 0, err
 	}
-
-	timer.Mark(`FetchRemote origin`)
 
 	// glog.Infof("fetched remote, going to lookupbranch")
 
@@ -566,8 +564,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMBehind
 	}
 
-	timer.Mark(`AheadBehind`)
-
 	// glog.Infof("Checking for upstreamRemote")
 
 	// A BRANCH points to a Commit, so we need to resolve
@@ -583,7 +579,6 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		if err := r.FetchRemote(`upstream`); nil != err {
 			return 0, err
 		}
-		timer.Mark(`FetchRemote upstream`)
 		// glog.Infof("Looking up upstream/master")
 		upstreamBranch, err := r.Repository.LookupBranch(`upstream/master`, git2go.BranchRemote)
 		if nil != err {
@@ -1451,10 +1446,14 @@ func (r *Repo) PullUpstream() error {
 		`Merging with original series.`); nil != err {
 		return err
 	}
+	_, err := r.CommitIfNoConflicts()
+	if nil != err {
+		return err
+	}
 	return nil
 }
 
-// PullOrigin pulls the repos origin into the repo, mergine per git merge
+// PullOrigin pulls the repos origin into the repo, merging per git merge
 // rules.
 func (r *Repo) PullOrigin() error {
 	if err := r.MergeWith(`origin`, `master`,
@@ -1464,11 +1463,107 @@ func (r *Repo) PullOrigin() error {
 		`Merging with github.`); nil != err {
 		return err
 	}
+
+	_, err := r.CommitIfNoConflicts()
+	if nil != err {
+		return err
+	}
+
 	return nil
 }
 
 // CommitIfNoConflicts will commit the changes to the repo if there
 // are no conflicted files in the repo.
+// Returns true if the commit succeeded, false otherwise.
 func (r *Repo) CommitIfNoConflicts() (bool, error) {
-	return false, fmt.Errorf(`Repo.CommitIfNoConflicts not implemented`)
+	hasConflicts, err := r.HasConflictedFiles()
+	if nil != err {
+		return false, err
+	}
+	if !hasConflicts {
+		_, err := r.Commit(`merged`, `Auto-merged because no conflicts`)
+		if nil != err {
+			return false, err
+		}
+		return true, nil
+	}
+	return false, nil
+}
+
+// HasConflictedFiles returns true if the repo has any conflicted files
+func (r *Repo) HasConflictedFiles() (bool, error) {
+	if r.Repository.State()&git2go.RepositoryStateMerge != git2go.RepositoryStateMerge {
+		// Cannot have conflicted files if not in merge state
+		return false, nil
+	}
+	sl, err := r.StatusList()
+	if nil != err {
+		return false, err
+	}
+	defer sl.Free()
+	entryCount, err := sl.EntryCount()
+	if nil != err {
+		return false, err
+	}
+	for i := 0; i < entryCount; i++ {
+		se, err := sl.ByIndex(i)
+		if nil != err {
+			return false, err
+		}
+		if se.Status&git2go.StatusConflicted == git2go.StatusConflicted {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+// AutoProcessState runs automatic state processing on a repo, and returns
+// true if the repo state has changed
+func (r *Repo) AutoProcessState() (bool, error) {
+	state, err := r.GetRepoState()
+	if nil != err {
+		return false, err
+	}
+
+	// If we're conflicted, we can't do anything except handle the conflict.
+	if state.LocalConflicted() {
+		return false, nil
+	}
+	// If we've got local changes, staged or unstaged, we don't
+	// need in particular to do anything
+	// if state.LocalChanges() {
+	// }
+	// if state.LocalChangesStaged() {
+	// }
+	// if state.LocalChangedUnstaged() {
+	// }
+	// If we're ahead, and not behind, we can PUSH
+	if state.LocalAhead() && !state.LocalBehind() {
+		err := r.PushOrigin()
+		if nil != err {
+			return false, err
+		}
+		r.ResetState()
+		return true, nil
+	}
+	// If we're behind, and have no local changes, we can PULL
+	if state.LocalBehind() && !state.LocalAhead() && !state.LocalChanges() {
+		err := r.PullOrigin()
+		if nil != err {
+			return false, err
+		}
+		r.ResetState()
+		return true, nil
+	}
+	// ParentAhead and ParentBehind are handled by the user intervention
+	// if state.ParentAhead() {
+	// }
+	// if state.ParentBehind() {
+	// }
+	return false, nil
+}
+
+// PushOrigin is a shorthand to push the repo to origin/master.
+func (r *Repo) PushOrigin() error {
+	return r.Push(`origin`, `master`)
 }

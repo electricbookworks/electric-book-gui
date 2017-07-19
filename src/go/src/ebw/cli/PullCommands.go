@@ -26,9 +26,9 @@ func PullCommand() *commander.Command {
 			}
 			switch args[0] {
 			case `upstream`:
-				// return repo.PullUpstream()
+				return repo.PullUpstream()
 			case `origin`:
-				// return repo.PullOrigin()
+				return repo.PullOrigin()
 			default:
 				matches := regexp.MustCompile(`^pr(\d+)$`).FindStringSubmatch(args[0])
 				if nil == matches {

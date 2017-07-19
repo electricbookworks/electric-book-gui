@@ -17,3 +17,7 @@ func pathRepoConflict(repo *git.Repo) string {
 func pathMergeRemote(repo *git.Repo, remoteName, remoteBranch string) string {
 	return fmt.Sprintf("/repo/%s/%s/merge/%s/%s", repo.RepoOwner, repo.RepoName, remoteName, remoteBranch)
 }
+
+func pathRepoPull(repo *git.Repo) string {
+	return fmt.Sprintf(`/repo/%s/%s/pull`, repo.RepoOwner, repo.RepoName)
+}
