@@ -17,6 +17,11 @@ type GitRepo struct {
 	totalPRs   *PullRequestInfo
 }
 
+// CanPush returns true if this user can push to the repo, or false otherwise
+func (g *GitRepo) CanPush() bool {
+	return g.Repository.GetPermissions()[`push`]
+}
+
 // GetRepoOwner returns the github username of the
 // owner of the repo.
 func (g *GitRepo) RepoOwner() string {

@@ -21,6 +21,9 @@
         <li class="repo">
             <div class="repo-details">
                 <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
+                {{if not .CanPush}}
+                <div>READ ONLY REPO - YOU CAN ONLY FORK THIS REPO</div>
+                {{end}}
 
                 <div>
                 {{- if eq .Owner.GetLogin $userLogin}}My

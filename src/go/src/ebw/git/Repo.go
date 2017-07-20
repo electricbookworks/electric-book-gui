@@ -1446,6 +1446,15 @@ func (r *Repo) PullPR(prNumber int) error {
 	return nil
 }
 
+// CanPush returns true if the user can push to the repo.
+func (r *Repo) CanPush() (bool, error) {
+	repo, err := r.GithubRepo()
+	if nil != err {
+		return false, err
+	}
+	return repo.GetPermissions()[`push`], nil
+}
+
 // PullUpstream pulls the repos upstream into the repo, merging per
 // git merge rules.
 func (r *Repo) PullUpstream() error {
