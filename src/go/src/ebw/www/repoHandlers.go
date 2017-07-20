@@ -219,11 +219,9 @@ func repoUpdate(c *Context) error {
 
 	switch next {
 	case `conflict`:
-		return c.Redirect(pathRepoPull(repo))
+		return c.Redirect(pathRepoConflict(repo))
 	case `edit`:
 		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
-	case `pull`:
-		return c.Redirect(pathRepoDetail(repo))
 	case `detail`:
 	case ``:
 		return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
@@ -246,31 +244,7 @@ func pullRequestClose(c *Context) error {
 	if err := git.PullRequestClose(client, repoOwner, repoName, number); nil != err {
 		return err
 	}
-	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
-}
-
-// pullRequestList shows a list of all the open (and perhaps closed)
-// PR's for a repo.
-func pullRequestList(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
-
-	pullRequests, err := git.ListPullRequests(client, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-
-	c.D[`UserName`] = client.Username
-	c.D[`RepoOwner`] = repoOwner
-	c.D[`RepoName`] = repoName
-
-	c.D[`PullRequests`] = pullRequests
-
-	return c.Render(`pull_request_list.html`, nil)
+	return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 }
 
 // pullRequestMerge merges a pull request and sends the user to the

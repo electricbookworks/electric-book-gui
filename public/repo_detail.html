@@ -120,11 +120,12 @@
     <section class="repo-detail-section">
         <div class="title-links">
             <h3>Changes to commit</h3>
-            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Commit these changes</a>
-
-            {{if $state.LocalChanges -}}
-            <a href="#" class="btn" id="cancelAllChanges">Discard these changes</a>
-            {{- end}}
+            <div class="action-group">
+                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Commit these changes</a>
+                {{if $state.LocalChanges -}}
+                <a href="#" class="btn" id="cancelAllChanges">Discard these changes</a>
+                {{- end}}
+            </div>
         </div>
         <ol type="1">
         {{range .StagedFiles}}

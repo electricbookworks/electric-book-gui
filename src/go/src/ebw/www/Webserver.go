@@ -64,7 +64,6 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
-	r.Handle(`/repo/{repoOwner}/{repoName}/pull`, WebHandler(pullRequestList))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
