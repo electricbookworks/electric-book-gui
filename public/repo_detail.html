@@ -83,7 +83,7 @@
     {{if .PullRequests}}
     <section class="repo-detail-section">
         <div class="title-links">
-            <div><h3>Submissions to review</h3></div>
+            <div><h3 id="review">Submissions to review</h3></div>
             <div class="edit-links action-group" >
                 <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull"{{end}} class="btn">Review submissions</a>
             </div>
