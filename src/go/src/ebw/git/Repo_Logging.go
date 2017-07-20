@@ -16,8 +16,8 @@ func (r *Repo) Infof(format string, args ...interface{}) {
 	}).Infof(format, args...)
 }
 
-// LogError logs an error if an error is set, or returns nil
-func (r *Repo) LogError(err error) error {
+// Error logs an error if an error is set, or returns nil
+func (r *Repo) Error(err error) error {
 	if nil == err {
 		return nil
 	}

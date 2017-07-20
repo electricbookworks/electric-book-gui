@@ -485,7 +485,7 @@ func (r *Repo) CanCreatePR() (bool, error) {
 	}
 	head, err := r.Repository.Head()
 	if nil != err {
-		return false, util.Error(err)
+		return false, r.Error(err)
 	}
 	return r.EBWRepoStatus.LastPRHash != head.Target().String(), nil
 }
@@ -496,6 +496,8 @@ func (r *Repo) ResetState() {
 	r.state = StateNotSet
 }
 
+// GetRepoState returns the RepoState for the repo, cached
+// if the repo state has been computed before.
 func (r *Repo) GetRepoState() (RepoState, error) {
 	if r.state != 0 && r.state != StateNotSet {
 		return r.state, nil
@@ -544,7 +546,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	originBranch, err := r.Repository.LookupBranch(`origin/master`, git2go.BranchRemote)
 	if nil != err {
-		return 0, r.LogError(fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error()))
+		return 0, r.Error(fmt.Errorf(`Failed to lookup branch origin/master: %s`, err.Error()))
 	}
 	defer originBranch.Free()
 
@@ -552,7 +554,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	localHead, err := r.Repository.Head()
 	if nil != err {
-		return 0, r.LogError(fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error()))
+		return 0, r.Error(fmt.Errorf(`Failed fetching head for local branch: %s`, err.Error()))
 	}
 	defer localHead.Free()
 
@@ -560,7 +562,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	localAhead, localBehind, err := r.Repository.AheadBehind(localHead.Target(), originBranch.Target())
 	if nil != err {
-		return 0, r.LogError(fmt.Errorf(`Failed to get AheadBehind for local and origin branches: %s`, err.Error()))
+		return 0, r.Error(fmt.Errorf(`Failed to get AheadBehind for local and origin branches: %s`, err.Error()))
 	}
 	if 0 < localAhead {
 		state |= EBMAhead
@@ -587,14 +589,14 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		// glog.Infof("Looking up upstream/master")
 		upstreamBranch, err := r.Repository.LookupBranch(`upstream/master`, git2go.BranchRemote)
 		if nil != err {
-			return 0, util.Error(fmt.Errorf(`Failed to lookup branch upstream/master: %s`, err.Error()))
+			return 0, r.Error(fmt.Errorf(`Failed to lookup branch upstream/master: %s`, err.Error()))
 		}
 		defer upstreamBranch.Free()
 
 		// glog.Infof("Checking upstream ahead/behind")
 		originAhead, originBehind, err := r.Repository.AheadBehind(originBranch.Target(), upstreamBranch.Target())
 		if nil != err {
-			return 0, util.Error(fmt.Errorf(`Failed to get AheadBehind for origin and upstream branches: %s`, err.Error()))
+			return 0, r.Error(fmt.Errorf(`Failed to get AheadBehind for origin and upstream branches: %s`, err.Error()))
 		}
 		if 0 < originAhead {
 			state |= ParentBehind
@@ -622,7 +624,7 @@ func (r *Repo) FetchRemote(remoteName string) error {
 	// which we should probably check
 	remote, err := r.Remotes.Lookup(remoteName)
 	if nil != err {
-		return r.LogError(err)
+		return r.Error(err)
 	}
 	defer remote.Free()
 	// if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
@@ -636,7 +638,7 @@ func (r *Repo) FetchRemote(remoteName string) error {
 			},
 		},
 	}, ``); nil != err {
-		return r.LogError(err)
+		return r.Error(err)
 	}
 	return nil
 }
@@ -649,7 +651,7 @@ func (r *Repo) Stash(msg string) (*git2go.Oid, error) {
 	}
 	oid, err := r.Stashes.Save(sig, msg, git2go.StashIncludeUntracked)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	return oid, nil
 }
@@ -672,18 +674,18 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 	}
 	remote, err := FetchRemote(r.Repository, remoteName)
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer remote.Free()
 
 	branchReference, err := r.References.Lookup(`refs/remotes/` + remoteName + `/` + branchName)
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer branchReference.Free()
 	remoteCommit, err := r.LookupAnnotatedCommit(branchReference.Target())
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer remoteCommit.Free()
 
@@ -695,7 +697,7 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error {
 	analysis, _, err := r.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	if git2go.MergeAnalysisNone == analysis {
 		glog.Infof(`MergeAnalysisNone - no merge possible (unused)`)
@@ -719,7 +721,7 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 	// }
 	defaultMergeOptions, err := git2go.DefaultMergeOptions()
 	if nil != err {
-		return err
+		return r.Error(err)
 	}
 	if err := r.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
@@ -727,8 +729,7 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 		nil,
 		//&git2go.CheckoutOpts{},
 	); nil != err {
-		fmt.Fprintf(os.Stderr, "ERROR on Merge: %s\n", err.Error())
-		return err
+		return r.Error(err)
 	}
 	return nil
 }
@@ -744,15 +745,15 @@ func (r *Repo) PullAbort() error {
 	}
 	head, err := r.Repository.Head()
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	commit, err := r.LookupCommit(head.Target())
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer commit.Free()
 	if err := r.Repository.ResetToCommit(commit, git2go.ResetHard, nil); nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	return nil
 }
@@ -762,11 +763,11 @@ func (r *Repo) PullAbort() error {
 func (r *Repo) treeForCommit(commitId *git2go.Oid) (*git2go.Tree, error) {
 	co, err := r.Repository.Lookup(commitId)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	c, err := co.AsCommit()
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	return c.Tree()
 }
@@ -791,29 +792,29 @@ func (r *Repo) MergeCommits(includeHead bool) ([]*git2go.Commit, error) {
 	if includeHead {
 		head, err := r.Repository.Head()
 		if err != nil {
-			return nil, util.Error(err)
+			return nil, r.Error(err)
 		}
 		defer head.Free()
 
 		headCommit, err := r.LookupCommit(head.Target())
 		if err != nil {
-			return nil, util.Error(err)
+			return nil, r.Error(err)
 		}
 		commits = append(commits, headCommit)
 	}
 
 	mergeHeads, err := r.Repository.MergeHeads()
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	for _, h := range mergeHeads {
 		obj, err := r.Repository.Lookup(h)
 		if nil != err {
-			return nil, util.Error(err)
+			return nil, r.Error(err)
 		}
 		c, err := obj.AsCommit()
 		if nil != err {
-			return nil, util.Error(err)
+			return nil, r.Error(err)
 		}
 		commits = append(commits, c)
 	}
@@ -827,7 +828,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 	if FileWorking == version {
 		exists, err := util.FileExists(r.RepoPath(path))
 		if nil != err {
-			return false, []byte{}, err
+			return false, []byte{}, r.Error(err)
 		}
 		if !exists {
 			return false, []byte{}, nil
@@ -836,21 +837,21 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		if nil != err {
 			return false, []byte{}, util.Error(err)
 		}
-		return true, raw, err
+		return true, raw, r.Error(err)
 	}
 	switch version {
 	case FileTheir:
 		mergeHeads, err := r.MergeHeads()
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		if 1 != len(mergeHeads) {
-			return false, []byte{}, util.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
+			return false, []byte{}, r.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
 		}
 
 		tree, err := r.treeForCommit(mergeHeads[0])
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 
 		te, err := tree.EntryByPath(path)
@@ -859,35 +860,35 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 				return false, []byte{}, nil
 			}
 
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		fileId = te.Id
 	case FileOur:
 		headRef, err := r.Head()
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		tree, err := r.treeForCommit(headRef.Target())
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		te, err := tree.EntryByPath(path)
 		if nil != err {
 			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
 				return false, []byte{}, nil
 			}
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		fileId = te.Id
 	default:
 		index, err := r.Repository.Index()
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		conflict, err := index.GetConflict(path)
 		if nil != err {
 			// An error can occur if the file is not conflicted
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		switch version {
 		case FileAncestor:
@@ -897,7 +898,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		case FileTheir:
 			fileId = conflict.Their.Id
 		default:
-			return false, []byte{}, util.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
+			return false, []byte{}, r.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
 		}
 	}
 
@@ -908,12 +909,12 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 	}
 	file, err := r.Repository.Lookup(fileId)
 	if nil != err {
-		return false, []byte{}, util.Error(err)
+		return false, []byte{}, r.Error(err)
 	}
 	defer file.Free()
 	blob, err := file.AsBlob()
 	if nil != err {
-		return false, []byte{}, util.Error(err)
+		return false, []byte{}, r.Error(err)
 	}
 	return true, blob.Contents(), nil
 }
@@ -944,12 +945,12 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 
 	N, err := statusList.EntryCount()
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	for i := 0; i < N; i++ {
 		entry, err := statusList.ByIndex(i)
 		if nil != err {
-			return util.Error(err)
+			return r.Error(err)
 		}
 		// If we're only resetting conflicted files, we just move
 		// along if the current file isn't conflicted
@@ -980,7 +981,7 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 		glog.Infof(`Updating file %s`, file.Path)
 		exists, raw, err := r.FileCat(file.Path, filePreference)
 		if nil != err {
-			return err
+			return r.Error(err)
 		}
 		if !exists {
 			// It seems for modified files in conflict, we can't rely on
@@ -992,12 +993,12 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 			// that clearly has existence in both repos.
 			glog.Infof(`Deleting file %s`, file.Path)
 			if err := os.Remove(fullPath); nil != err && !os.IsNotExist(err) {
-				return util.Error(err)
+				return r.Error(err)
 			}
 			return nil
 		}
 		if err := ioutil.WriteFile(fullPath, raw, 0644); nil != err {
-			return util.Error(err)
+			return r.Error(err)
 		}
 	}
 	return nil
@@ -1008,7 +1009,7 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 func (r *Repo) AddToIndex(path string) error {
 	index, err := r.Index()
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer index.Free()
 	exists, err := util.FileExists(r.RepoPath(path))
@@ -1020,17 +1021,17 @@ func (r *Repo) AddToIndex(path string) error {
 			// Adding a pre-existing file shouldn't be an issue,
 			// since it's the file contents, not the file name,
 			// that is important about the adding.
-			return util.Error(err)
+			return r.Error(err)
 		}
 	} else {
 		if err = index.RemoveByPath(path); nil != err {
 			// I might need to consider what happens if I
 			// remove a file that isn't in the Index.
-			return util.Error(err)
+			return r.Error(err)
 		}
 	}
 	if err := index.Write(); nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	return nil
 }
@@ -1074,23 +1075,23 @@ func (r *Repo) Commit(message string, notes string) (*git2go.Oid, error) {
 	glog.Infof(`Committing with signatures Name:%s, Email:%s`, r.Client.Username, r.Client.User.GetEmail())
 	index, err := r.Index()
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	defer index.Free()
 	treeId, err := index.WriteTree()
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	tree, err := r.LookupTree(treeId)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	defer tree.Free()
 
 	//Getting repo HEAD
 	head, err := r.Head()
 	if err != nil {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	defer head.Free()
 
@@ -1102,9 +1103,8 @@ func (r *Repo) Commit(message string, notes string) (*git2go.Oid, error) {
 
 	oid, err := r.CreateCommit(`HEAD`, author, author, message, tree, commits...)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
-	glog.Infof(`COMMIT Created: oid = %s`, oid.String())
 
 	return oid, nil
 }

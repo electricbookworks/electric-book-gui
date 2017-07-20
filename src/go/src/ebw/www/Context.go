@@ -33,11 +33,24 @@ type Context struct {
 type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if e := recover(); nil != e {
+			if err, ok := e.(error); ok {
+				WebError(w, r, err)
+				return
+			}
+			WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
+		}
+	}()
 	client, _ := git.ClientFromWebRequest(w, r)
 	session, err := store.Get(r, `ebw-session`)
 	if nil != err {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+	flds := logrus.Fields{}
+	if nil != client && `` != client.Username {
+		flds = logrus.Fields{`username`: client.Username}
 	}
 	c := &Context{
 		R:       r,
@@ -47,9 +60,7 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Client:  client,
 		Session: session,
 		Defers:  []func(){},
-		Log: logrus.New().WithFields(logrus.Fields{
-			`username`: client.Username,
-		}),
+		Log:     logrus.New().WithFields(flds),
 	}
 	defer c.runDefers()
 	c.Log.Infof(`Starting processing web request %s`, r.URL.String())
