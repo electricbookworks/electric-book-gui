@@ -3832,7 +3832,8 @@ body {
     background-color: #05ffce;
     border-bottom-width: 0px; }
     .btn.disabled:hover {
-      background-color: inherit; }
+      background-color: inherit;
+      color: inherit; }
   .btn.btn-inverse {
     color: #009E7F;
     background-color: white; }
