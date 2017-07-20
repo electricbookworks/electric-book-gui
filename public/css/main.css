@@ -4632,3 +4632,6 @@ legend {
 
 .form-fork [type="text"] {
   width: 30em; }
+
+a[disabled='disabled'] {
+  color: #666; }

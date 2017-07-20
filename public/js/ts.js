@@ -238,7 +238,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a New Series</h1><fieldset><label><input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new series.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing series.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New Series</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new series.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New Series\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the owner and repo for the series you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -261,7 +261,7 @@ var CommitMessageDialog = (function () {
         var t = CommitMessageDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"commitMessage\">Enter the commit message\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label><label for=\"commitNotes\">Further notes about the commit\n\t\t<textarea name=\"commitNotes\" id=\"commitNotes\" rows=\"5\">\n\t\t</textarea>\n\t\t</label></fieldset><button class=\"btn\">Commit</button></div>";
+            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label></fieldset><button class=\"btn\">Commit</button></div>";
             t = d.firstElementChild;
             CommitMessageDialog._template = t;
         }
@@ -270,7 +270,6 @@ var CommitMessageDialog = (function () {
             title: n.childNodes[0],
             instructions: n.childNodes[1],
             message: n.childNodes[2].childNodes[0].childNodes[1],
-            notes: n.childNodes[2].childNodes[1].childNodes[1],
             commit: n.childNodes[3],
         };
         this.el = n;
@@ -471,7 +470,7 @@ var conflict_MergeInstructions = (function () {
         var t = conflict_MergeInstructions._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"merge-instructions\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
+            d.innerHTML = "<div class=\"merge-instructions\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the merge editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
             t = d.firstElementChild;
             conflict_MergeInstructions._template = t;
         }
@@ -2837,7 +2836,7 @@ var CommitMessageDialog$1 = (function (_super) {
             evt.preventDefault();
             _this.resolve({
                 Message: _this.$.message.value,
-                Notes: _this.$.notes.value,
+                Notes: "",
                 Cancelled: false
             });
             _this.resolve = undefined;
@@ -2856,7 +2855,6 @@ var CommitMessageDialog$1 = (function (_super) {
                 return;
             case DialogEvents.Opened:
                 if (this.clearOnOpen) {
-                    this.$.notes.value = "";
                     this.$.message.value = "";
                 }
                 return;

@@ -449,9 +449,9 @@ func repoMergeRemoteBranch(c *Context) error {
 			args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
 		} else {
 			if `upstream` == remote {
-				args.Description = `You are merging with the original book you are contributing to.`
+				args.Description = `You are merging with the original project you are contributing to.`
 			} else {
-				args.Description = `You are merging with your Github repo.`
+				args.Description = `You are merging with your GitHub repo.`
 			}
 		}
 	}

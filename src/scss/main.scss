@@ -41,3 +41,7 @@ $bp-xl: 80em;
 
 //@import 'typography';
 @import 'forms';
+
+a[disabled='disabled'] {
+	color: $color-darkgray;
+}

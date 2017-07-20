@@ -31,7 +31,6 @@ export namespace R {
 		title: HTMLHeadingElement,
 		instructions: HTMLDivElement,
 		message: HTMLInputElement,
-		notes: HTMLTextAreaElement,
 		commit: HTMLButtonElement,
 		};
 	export interface EditorImage {
@@ -96,13 +95,13 @@ export class AddNewBookDialog {
 		let t = AddNewBookDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div><div><h1>Add a New Series</h1><fieldset><label><input type="radio" value="new"/>
-				Start a new series.
+			d.innerHTML = `<div><div><h1>Add a project</h1><fieldset><label><input type="radio" value="new"/>
+				Start a new project.
 			</label><label><input type="radio" value="collaborate"/>
-				Collaborate on an existing series.
-			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New Series</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new series.
+				Collaborate on an existing project.
+			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
-		</label><input type="submit" class="btn" value="New Series"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the owner and repo for the series you will collaborate on.
+		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
@@ -129,11 +128,8 @@ export class CommitMessageDialog {
 		let t = CommitMessageDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div><h1>Title</h1><div>Instructions</div><fieldset><label for="commitMessage">Enter the commit message
+			d.innerHTML = `<div><h1>Title</h1><div>Instructions</div><fieldset><label for="commitMessage">Describe your changes
 		<input type="text" name="commitMessage" id="commitMessage"/>
-		</label><label for="commitNotes">Further notes about the commit
-		<textarea name="commitNotes" id="commitNotes" rows="5">
-		</textarea>
 		</label></fieldset><button class="btn">Commit</button></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			CommitMessageDialog._template = t;
@@ -143,7 +139,6 @@ export class CommitMessageDialog {
 			title: n.childNodes[0] as HTMLHeadingElement,
 			instructions: n.childNodes[1] as HTMLDivElement,
 			message: n.childNodes[2].childNodes[0].childNodes[1] as HTMLInputElement,
-			notes: n.childNodes[2].childNodes[1].childNodes[1] as HTMLTextAreaElement,
 			commit: n.childNodes[3] as HTMLButtonElement,
 		};
 		this.el = n;
@@ -421,7 +416,7 @@ export class conflict_MergeInstructions {
 		let t = conflict_MergeInstructions._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="merge-instructions"><div class="instructions-button">?</div><div class="instructions-text"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>`;
+			d.innerHTML = `<div class="merge-instructions"><div class="instructions-button">?</div><div class="instructions-text"><h1>Working with the merge editor</h1><p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			conflict_MergeInstructions._template = t;
 		}
