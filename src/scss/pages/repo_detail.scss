@@ -53,6 +53,9 @@
 
 
     .pull-request-item {
+      &:first-child {
+        border-top: 1px solid $color-lightgray;
+      }
       border-bottom: 1px solid $color-lightgray;
       
       .row {
