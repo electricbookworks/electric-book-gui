@@ -88,10 +88,10 @@
                 <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull"{{end}} class="btn">Review submissions</a>
             </div>
         </div>
-        <div class="edits">
-        {{if $state.LocalChanges}}
-            <div>You cannot review submissions until you have committed your changes.</div>
+        {{if not $state.LocalChanges}}
+            <div><p>You cannot review submissions until you have committed your changes.</p></div>
         {{end}}
+        <div class="edits">
             {{range .PullRequests}}
             <div class="pull-request-item">
                 <div class="row">

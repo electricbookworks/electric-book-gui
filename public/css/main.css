@@ -4419,8 +4419,6 @@ body {
 #repo-detail .repo-detail-section {
   margin-bottom: 1em; }
   #repo-detail .repo-detail-section .edits {
-    border: 1px solid #ddd;
-    background-color: white;
     margin-bottom: 2em;
     padding-top: 1em;
     display: flex;
