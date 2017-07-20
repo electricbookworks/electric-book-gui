@@ -68,7 +68,8 @@ func PrintLocal(repoPath, bookName, printOrScreen string, C chan PrintMessage) (
 	cmd := exec.Command(`prince`, `-v`, `-l`, `file-list`, `-o`,
 		`../../../_output/`+outputName, `--javascript`)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	cmd.Dir = filepath.Join(repoPath, bookConfig.GetDestinationDir(bookName, `text`))
+	cmd.Dir = filepath.Join(repoPath,
+		bookConfig.GetDestinationDir(bookName, `text`))
 	if err := cmd.Run(); nil != err {
 		glog.Errorf(`Error %s: prince -v -l file-list -o ../../../_output/%s : %s`,
 			cmd.Dir, outputName, err.Error())
