@@ -4539,6 +4539,11 @@ textarea {
     background-color: #71B8AA;
     cursor: default;
     position: relative; }
+    .cta[disabled]:hover,
+    .btn[disabled]:hover,
+    [type="submit"][disabled]:hover {
+      background-color: #71B8AA;
+      color: inherit; }
 
 .btn-wide,
 .input-wide,
@@ -4634,4 +4639,5 @@ legend {
   width: 30em; }
 
 a[disabled='disabled'] {
-  color: #666; }
+  color: #666;
+  cursor: default; }

@@ -44,4 +44,5 @@ $bp-xl: 80em;
 
 a[disabled='disabled'] {
 	color: $color-darkgray;
+	cursor: default;
 }

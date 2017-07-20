@@ -40,6 +40,10 @@ textarea {
         background-color: $color-offgray;
         cursor: default;
         position: relative;
+        &:hover {
+            background-color: $color-offgray;
+            color: inherit;
+        }
         // top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
     }
 }
