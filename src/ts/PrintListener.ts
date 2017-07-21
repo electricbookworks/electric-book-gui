@@ -1,22 +1,53 @@
 import {EBW} from './EBW';
+import {FileListDialog, FileListDialogResult} from './FileListDialog';
 import EventSource = require('./sse');
 
 export class PrintListener {
+	protected listDialog: FileListDialog;
+
 	constructor(protected repoOwner:string, 
 		protected repoName:string, 
 		protected book:string=`book`,
 		protected format:string=`print`) {
+		this.listDialog = new FileListDialog();
+
 		if (``==this.book) {
 			this.book = `book`;
 		}
 		if ((`print`!=format) && (`screen`!=format)) {
 			EBW.Error(`PrintListener format parameter must be either 'print' or 'screen'`);
+			return;
 		}
-		EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format).then(
-			([url])=>{
+		EBW.API().FindFileLists(repoOwner, repoName).then(
+			([files]:[string[]])=>{
+				console.log(`Files directories are `, files);
+				// debugger;
+				// files.push(files[0]);
+				if (2>files.length) {
+					return Promise.resolve<string>(``);
+				}
+				return this.listDialog.Open(files)
+					.then(
+						(res:FileListDialogResult)=>{
+							if (res.Cancelled) {
+								return Promise.resolve<string>(undefined);
+							} else {
+								return Promise.resolve<string>(res.FileList);
+							}
+						});
+			}).then(
+			(filedir?:string)=>{
+				if ('undefined'==typeof filedir) {
+					return Promise.resolve<[any]>([undefined]);
+				}
+				return EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format, filedir);
+			}).then(
+			([url]:[string])=>{
+				if ('undefined'==typeof url) {
+					return;
+				}
 				this.startListener(url);
-			})
-		.catch( EBW.Error );
+			}).catch( EBW.Error );
 	}
 	startListener(key:string) {
 		let url = document.location.protocol +

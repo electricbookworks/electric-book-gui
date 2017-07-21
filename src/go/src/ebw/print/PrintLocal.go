@@ -13,7 +13,48 @@ import (
 	"ebw/util"
 )
 
-func PrintLocal(repoPath, bookName, printOrScreen string, C chan PrintMessage) (string, error) {
+// FindFileLists finds all the 'file-list' files in the repoPath,
+// and returns an array of the directories where they were found
+// relative to the repoPath
+func FindFileLists(repoPath string) ([]string, error) {
+	glog.Infof(`FindFileLists(%s)`, repoPath)
+	files := []string{}
+	if err := filepath.Walk(repoPath, func(path string, fi os.FileInfo, err error) error {
+		if nil != err {
+			return err
+		}
+		// If the file is a directory, we just ignore it
+		if fi.IsDir() {
+			return nil
+		}
+		if `file-list` == filepath.Base(path) {
+			rel, err := filepath.Rel(repoPath, filepath.Dir(path))
+			if nil != err {
+				return util.Error(err)
+			}
+			// Ensure that no part of the file path starts with _
+			parts := filepath.SplitList(rel)
+			include := true
+			for _, p := range parts {
+				glog.Infof(`Checking part %s of %s`, p, rel)
+				if strings.HasPrefix(p, `_`) {
+					include = false
+				}
+			}
+			if include {
+				files = append(files, rel)
+			}
+		}
+		return nil
+	}); nil != err {
+		return nil, util.Error(err)
+	}
+	glog.Infof(`Returning files = %s`, strings.Join(files, `,`))
+	return files, nil
+}
+
+func PrintLocal(repoPath, bookName, printOrScreen, fileList string, C chan PrintMessage) (string, error) {
+
 	if `` == printOrScreen {
 		printOrScreen = `print`
 	}

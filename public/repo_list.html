@@ -18,12 +18,10 @@
 
     <ul class="repo-list">
         {{range .Repos}}
+        {{- if .CanPush}}
         <li class="repo">
             <div class="repo-details">
                 <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
-                {{if not .CanPush}}
-                <div>READ ONLY REPO - YOU CAN ONLY FORK THIS REPO</div>
-                {{end}}
 
                 <div>
                 {{- if eq .Owner.GetLogin $userLogin}}My
@@ -49,7 +47,7 @@
               {{end}}
             </div>
         </li>
-        {{end}}
+        {{- end}}{{end}}
         <li class="repo">
             <div class="repo-add-repo">
                 <a data-open="repo-new-modal" class="btn">Add a project</a>

@@ -166,7 +166,7 @@ class APIWs {
 		return this._rpc("CommitOnly",  arguments );
 	}
 	
-	PrintPdfEndpoint (repoOwner,repoName,book,format) {
+	PrintPdfEndpoint (repoOwner,repoName,book,format,fileList) {
 		return this._rpc("PrintPdfEndpoint",  arguments );
 	}
 	
@@ -180,6 +180,10 @@ class APIWs {
 	
 	MergeFileOriginal (repoOwner,repoName,path,version) {
 		return this._rpc("MergeFileOriginal",  arguments );
+	}
+	
+	FindFileLists (repoOwner,repoName) {
+		return this._rpc("FindFileLists",  arguments );
 	}
 	
 

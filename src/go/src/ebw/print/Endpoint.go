@@ -39,10 +39,10 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 	s := sse.New()
 	C := make(chan PrintMessage)
 	go func() {
-		sendCount:=0
+		sendCount := 0
 		for m := range C {
 			sendCount++
-			if 0==sendCount%10 {
+			if 0 == sendCount%10 {
 				glog.Infof(`About to SendJSON: data = %v`, m.Data)
 			}
 			s.SendJSON(`id`, m.Event, m.Data)
@@ -93,7 +93,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// pdfPath, err := PrintInContainer(repoDir, pr.Book, C)
-		pdfPath, err := PrintLocal(repoDir, pr.Book, pr.PrintOrScreen, C)
+		pdfPath, err := PrintLocal(repoDir, pr.Book, pr.PrintOrScreen, pr.FileList, C)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}
 		} else {

@@ -4,6 +4,8 @@ export namespace EL {
 	export type CommitMessageDialog =	HTMLDivElement;
 	export type EditorImage =	HTMLDivElement;
 	export type FSFileList_File =	HTMLUListElement;
+	export type FileListDialog =	HTMLDivElement;
+	export type FileListDialog_Item =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLDivElement;
@@ -37,6 +39,13 @@ export namespace R {
 		};
 	export interface FSFileList_File {
 		name: HTMLDivElement,
+		};
+	export interface FileListDialog {
+		list: HTMLUListElement,
+		};
+	export interface FileListDialog_Item {
+		input: HTMLInputElement,
+		title: HTMLSpanElement,
 		};
 	export interface FoundationRevealDialog {
 		content: HTMLDivElement,
@@ -178,6 +187,46 @@ export class FSFileList_File {
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
 			name: n.childNodes[0] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class FileListDialog {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.FileListDialog;
+	constructor() {
+		let t = FileListDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div><p>Choose the project version you want to print:</p><ul>
+	</ul></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			FileListDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			list: n.childNodes[1] as HTMLUListElement,
+		};
+		this.el = n;
+	}
+}
+export class FileListDialog_Item {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.FileListDialog_Item;
+	constructor() {
+		let t = FileListDialog_Item._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul><li data-set="this"><input type="radio" name="file-list"/><span/></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
+			FileListDialog_Item._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
+			input: n.childNodes[0] as HTMLInputElement,
+			title: n.childNodes[1] as HTMLSpanElement,
 		};
 		this.el = n;
 	}
