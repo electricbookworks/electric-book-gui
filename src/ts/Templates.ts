@@ -104,9 +104,9 @@ export class AddNewBookDialog {
 		let t = AddNewBookDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div><div><h1>Add a project</h1><fieldset><label><input type="radio" value="new"/>
+			d.innerHTML = `<div><div><h1>Add a project</h1><fieldset><label><input type="radio" value="new" name="new-project-type"/>
 				Start a new project.
-			</label><label><input type="radio" value="collaborate"/>
+			</label><label><input type="radio" value="collaborate" name="new-project-type"/>
 				Collaborate on an existing project.
 			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
@@ -199,14 +199,14 @@ export class FileListDialog {
 		let t = FileListDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div><p>Choose the project version you want to print:</p><ul>
+			d.innerHTML = `<div><h1>Print Version</h1><p>Choose the project version you want to print:</p><ul class="file-list-dialog-list">
 	</ul></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			FileListDialog._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
-			list: n.childNodes[1] as HTMLUListElement,
+			list: n.childNodes[2] as HTMLUListElement,
 		};
 		this.el = n;
 	}

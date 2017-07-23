@@ -241,7 +241,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -316,13 +316,13 @@ var FileListDialog = (function () {
         var t = FileListDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><p>Choose the project version you want to print:</p><ul>\n\t</ul></div>";
+            d.innerHTML = "<div><h1>Print Version</h1><p>Choose the project version you want to print:</p><ul class=\"file-list-dialog-list\">\n\t</ul></div>";
             t = d.firstElementChild;
             FileListDialog._template = t;
         }
         var n = t.cloneNode(true);
         this.$ = {
-            list: n.childNodes[1],
+            list: n.childNodes[2],
         };
         this.el = n;
     }
@@ -827,11 +827,11 @@ var PrintListener = (function () {
         }
         EBW.API().FindFileLists(repoOwner, repoName).then(function (_a) {
             var files = _a[0];
-            console.log("Files directories are ", files);
+            // console.log(`Files directories are `, files);
             // debugger;
             // files.push(files[0]);
             if (2 > files.length) {
-                return Promise.resolve("");
+                return Promise.resolve(0 == files.length ? "" : files[0]);
             }
             return _this.listDialog.Open(files)
                 .then(function (res) {

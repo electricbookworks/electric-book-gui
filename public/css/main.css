@@ -4024,6 +4024,9 @@ body {
   align-items: flex-start;
   width: 100%; }
 
+.file-list-dialog-list {
+  list-style: none; }
+
 .landing-page {
   max-width: 40em; }
 

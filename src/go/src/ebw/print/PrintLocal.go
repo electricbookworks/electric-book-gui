@@ -53,8 +53,8 @@ func FindFileLists(repoPath string) ([]string, error) {
 	return files, nil
 }
 
-func PrintLocal(repoPath, bookName, printOrScreen, fileList string, C chan PrintMessage) (string, error) {
-
+func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan PrintMessage) (string, error) {
+	glog.Infof(`PrintLocal: fileListDir = %s`, fileListDir)
 	if `` == printOrScreen {
 		printOrScreen = `print`
 	}
@@ -106,14 +106,20 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileList string, C chan Print
 			return ``, err
 		}
 	}
+	outputDir := filepath.Join(repoPath, `_output`)
+	os.Mkdir(outputDir, 0755)
+
 	cmd := exec.Command(`prince`, `-v`, `-l`, `file-list`, `-o`,
-		`../../../_output/`+outputName, `--javascript`)
+		filepath.Join(outputDir, outputName), `--javascript`)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	cmd.Dir = filepath.Join(repoPath,
-		bookConfig.GetDestinationDir(bookName, `text`))
+	cmd.Dir = filepath.Join(repoPath, `_html`, fileListDir)
+
+	// THIS ONE WORKS
+	//	cmd.Dir = filepath.Join(repoPath, bookConfig.GetDestinationDir(bookName, `text`))
+
 	if err := cmd.Run(); nil != err {
-		glog.Errorf(`Error %s: prince -v -l file-list -o ../../../_output/%s : %s`,
-			cmd.Dir, outputName, err.Error())
+		glog.Errorf(`Error %s: prince -v -l file-list -o %s/%s : %s`,
+			cmd.Dir, outputDir, outputName, err.Error())
 		return ``, err
 	}
 

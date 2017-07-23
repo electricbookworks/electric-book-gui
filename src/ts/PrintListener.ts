@@ -20,11 +20,11 @@ export class PrintListener {
 		}
 		EBW.API().FindFileLists(repoOwner, repoName).then(
 			([files]:[string[]])=>{
-				console.log(`Files directories are `, files);
+				// console.log(`Files directories are `, files);
 				// debugger;
 				// files.push(files[0]);
 				if (2>files.length) {
-					return Promise.resolve<string>(``);
+					return Promise.resolve<string>(0==files.length ? `` : files[0]);
 				}
 				return this.listDialog.Open(files)
 					.then(
