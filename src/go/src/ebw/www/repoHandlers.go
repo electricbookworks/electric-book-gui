@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	// "net/http"
@@ -196,12 +197,38 @@ func repoUpdate(c *Context) error {
 	repoOwner := c.Vars[`repoOwner`]
 	repoName := c.Vars[`repoName`]
 
-	url := c.P(`url`)
-	if _, err := git.Checkout(client, repoOwner, repoName, url); nil != err {
+	repoUrl := c.P(`url`)
+	if _, err := git.Checkout(client, repoOwner, repoName, repoUrl); nil != err {
 		return err
 	}
 
-	// redirect the user to repoView
+	next := c.P(`next`)
+
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	// Handle auto-processing of the repo state
+	changed, err := repo.AutoProcessState()
+	if nil != err {
+		return err
+	}
+	if changed {
+		return c.Redirect(`/repo/%s/%s/update?next=%s`, repoOwner, repoName, url.QueryEscape(next))
+	}
+
+	switch next {
+	case `conflict`:
+		return c.Redirect(pathRepoConflict(repo))
+	case `edit`:
+		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
+	case `detail`:
+	case ``:
+		return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
+	default:
+		return c.Redirect(next)
+	}
+
 	return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 }
 
@@ -217,50 +244,18 @@ func pullRequestClose(c *Context) error {
 	if err := git.PullRequestClose(client, repoOwner, repoName, number); nil != err {
 		return err
 	}
-	return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
-}
-
-// pullRequestList shows a list of all the open (and perhaps closed)
-// PR's for a repo.
-func pullRequestList(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
-
-	pullRequests, err := git.ListPullRequests(client, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-
-	c.D[`UserName`] = client.Username
-	c.D[`RepoOwner`] = repoOwner
-	c.D[`RepoName`] = repoName
-
-	c.D[`PullRequests`] = pullRequests
-
-	return c.Render(`pull_request_list.html`, nil)
+	return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 }
 
 // pullRequestMerge merges a pull request and sends the user to the
 // conflict page.
-// TODO: Scrap this entire method and merge it with repoMergeRemoteBranch
 func pullRequestMerge(c *Context) error {
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
 	prNumber := int(c.PI(`number`))
-	// TODO: Extract the description from the actual PR.
-	if err := repo.MergeWith(``, ``, git.ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
-		return err
-	}
-	if err := repo.PullRequestFetch(prNumber); nil != err {
-		return err
-	}
-	if err := repo.PullRequestMerge(prNumber); nil != err {
+	if err := repo.PullPR(prNumber); nil != err {
 		return err
 	}
 	return c.Redirect(pathRepoConflict(repo))
@@ -371,6 +366,29 @@ func repoPushRemote(c *Context) error {
 	return c.Redirect(pathRepoDetail(repo))
 }
 
+// repoMergeRemote only handles merging with upstream or origin / master
+// branch.
+func repoMergeRemote(c *Context) error {
+	remote := c.Vars[`remote`]
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	switch remote {
+	case `upstream`:
+		if err := repo.PullUpstream(); nil != err {
+			return err
+		}
+	case `origin`:
+		if err := repo.PullOrigin(); nil != err {
+			return err
+		}
+	default:
+		return fmt.Errorf(`Cannot call repoMergeRemote with remote %s`, remote)
+	}
+	return c.Redirect(pathRepoDetail(repo))
+}
+
 func repoMergeRemoteBranch(c *Context) error {
 	var args struct {
 		Resolve     string `schema:"resolve"`
@@ -405,9 +423,9 @@ func repoMergeRemoteBranch(c *Context) error {
 			args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
 		} else {
 			if `upstream` == remote {
-				args.Description = `You are merging with the original book you are contributing to.`
+				args.Description = `You are merging with the original project you are contributing to.`
 			} else {
-				args.Description = `You are merging with your Github repo.`
+				args.Description = `You are merging with your GitHub repo.`
 			}
 		}
 	}

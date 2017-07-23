@@ -123,7 +123,7 @@ func (rpc *API) CommitOnly(repoOwner, repoName, message, notes string) error {
 	return err
 }
 
-func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (string, error) {
+func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format, fileList string) (string, error) {
 	if `` == book {
 		book = `book`
 	}
@@ -137,6 +137,7 @@ func (rpc *API) PrintPdfEndpoint(repoOwner, repoName, book, format string) (stri
 		Username:      rpc.Client.Username,
 		Token:         rpc.Client.Token,
 		PrintOrScreen: format,
+		FileList:      fileList,
 	}
 	return print.MakeEndpoint(pr), nil
 }
@@ -233,4 +234,17 @@ func (rpc *API) MergeFileOriginal(repoOwner, repoName, path string, version stri
 		return false, ``, err
 	}
 	return exists, string(raw), nil
+}
+
+func (rpc *API) FindFileLists(repoOwner, repoName string) ([]string, error) {
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return nil, err
+	}
+	defer r.Free()
+	files, err := print.FindFileLists(r.RepoPath())
+	if nil != err {
+		return nil, err
+	}
+	return files, err
 }

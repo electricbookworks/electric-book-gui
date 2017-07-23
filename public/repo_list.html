@@ -7,7 +7,7 @@
     <div class="header-bar">
         <h1>Dashboard</h1>
         <div class="action-group">
-            <a data-open="repo-new-modal" class="btn">Add a New Series</a>
+            <a data-open="repo-new-modal" class="btn">Add a project</a>
         </div>
     </div>
     {{if IsSpecialUser .UserName}}
@@ -18,9 +18,10 @@
 
     <ul class="repo-list">
         {{range .Repos}}
+        {{- if .CanPush}}
         <li class="repo">
             <div class="repo-details">
-                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update">{{.Name}}</a></h2>
+                <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
 
                 <div>
                 {{- if eq .Owner.GetLogin $userLogin}}My
@@ -40,16 +41,16 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update">Manage</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage</a>
               {{if .GetTotalPRs}}
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/pull">Review Submissions ({{.GetTotalPRs}})</a>
+              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
               {{end}}
             </div>
         </li>
-        {{end}}
+        {{- end}}{{end}}
         <li class="repo">
             <div class="repo-add-repo">
-                <a data-open="repo-new-modal" class="btn">Add a New Series</a>
+                <a data-open="repo-new-modal" class="btn">Add a project</a>
             </div>
         </li>
     </ul>

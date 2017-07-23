@@ -27,6 +27,7 @@ $bp-xl: 80em;
 @import 'widgets/files_show_tag';
 @import 'widgets/toolbar_menu.scss';
 @import 'widgets/header-bar';
+@import 'widgets/printlistener_filelistdialog';
 // @import 'repositories';
 // @import 'html-checker';
 
@@ -41,3 +42,8 @@ $bp-xl: 80em;
 
 //@import 'typography';
 @import 'forms';
+
+a[disabled='disabled'] {
+	color: $color-darkgray;
+	cursor: default;
+}

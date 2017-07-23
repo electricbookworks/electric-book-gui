@@ -3832,7 +3832,8 @@ body {
     background-color: #05ffce;
     border-bottom-width: 0px; }
     .btn.disabled:hover {
-      background-color: inherit; }
+      background-color: inherit;
+      color: inherit; }
   .btn.btn-inverse {
     color: #009E7F;
     background-color: white; }
@@ -4022,6 +4023,9 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   width: 100%; }
+
+.file-list-dialog-list {
+  list-style: none; }
 
 .landing-page {
   max-width: 40em; }
@@ -4419,8 +4423,6 @@ body {
 #repo-detail .repo-detail-section {
   margin-bottom: 1em; }
   #repo-detail .repo-detail-section .edits {
-    border: 1px solid #ddd;
-    background-color: white;
     margin-bottom: 2em;
     padding-top: 1em;
     display: flex;
@@ -4448,7 +4450,10 @@ body {
   #repo-detail .repo-detail-section .file-item {
     text-decoration: underline; }
   #repo-detail .repo-detail-section .pull-request-item {
+    padding: 1em 0;
     border-bottom: 1px solid #ddd; }
+    #repo-detail .repo-detail-section .pull-request-item:first-child {
+      border-top: 1px solid #ddd; }
     #repo-detail .repo-detail-section .pull-request-item .row {
       margin-left: 0em;
       margin-right: 0em; }
@@ -4539,6 +4544,11 @@ textarea {
     background-color: #71B8AA;
     cursor: default;
     position: relative; }
+    .cta[disabled]:hover,
+    .btn[disabled]:hover,
+    [type="submit"][disabled]:hover {
+      background-color: #71B8AA;
+      color: inherit; }
 
 .btn-wide,
 .input-wide,
@@ -4632,3 +4642,7 @@ legend {
 
 .form-fork [type="text"] {
   width: 30em; }
+
+a[disabled='disabled'] {
+  color: #666;
+  cursor: default; }

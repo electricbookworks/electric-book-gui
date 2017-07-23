@@ -23,7 +23,7 @@ export class CommitMessageDialog extends Template {
 			evt.stopPropagation(); evt.preventDefault();
 			this.resolve({
 				Message:this.$.message.value, 
-				Notes:this.$.notes.value,
+				Notes:``,
 				Cancelled: false});
 			this.resolve = undefined;
 			this.dialog.Close();
@@ -41,7 +41,6 @@ export class CommitMessageDialog extends Template {
 				return;
 			case FoundationRevealDialogEvents.Opened:
 				if (this.clearOnOpen) {
-					this.$.notes.value = ``;
 					this.$.message.value = ``;
 				}
 				return;

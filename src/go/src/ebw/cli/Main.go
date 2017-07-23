@@ -45,7 +45,8 @@ func Main() {
 	if err := commander.Execute(flag.Args(),
 		BookCommands,
 		CliCommand,
-		GithubCommand); nil != err {
+		GithubCommand,
+		PullCommand); nil != err {
 		glog.Error(err)
 		os.Exit(1)
 	}

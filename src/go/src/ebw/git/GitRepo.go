@@ -4,7 +4,7 @@ import (
 	"sort"
 	"sync"
 
-	// "github.com/golang/glog"
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/util"
@@ -15,6 +15,11 @@ type GitRepo struct {
 
 	lastCommit *CommitInfo
 	totalPRs   *PullRequestInfo
+}
+
+// CanPush returns true if this user can push to the repo, or false otherwise
+func (g *GitRepo) CanPush() bool {
+	return g.Repository.GetPermissions()[`push`]
 }
 
 // GetRepoOwner returns the github username of the
@@ -65,25 +70,30 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 		perPage = 100
 	}
 
-	repos, _, err := client.Repositories.List(client.Context, "",
-		&github.RepositoryListOptions{
-			ListOptions: github.ListOptions{
-				PerPage: 5000,
-				Page:    page,
-			},
-			Affiliation: `owner,collaborator,organization_member`,
-			Direction:   `asc`,
-			// is `name` valid here?
-			// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
-			// suggests valid values are created, updated, pushed,
-			// full_name. Default: full_name
-			Sort:       `name`,
-			Visibility: `all`,
-		})
-
-	if nil != err {
-		return nil, util.Error(err)
+	repos := []*github.Repository{}
+	opts := &github.RepositoryListOptions{
+		Affiliation: `owner,collaborator,organization_member`,
+		Direction:   `asc`,
+		// is `name` valid here?
+		// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
+		// suggests valid values are created, updated, pushed,
+		// full_name. Default: full_name
+		Sort:       `name`,
+		Visibility: `all`,
 	}
+	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
+		r, res, err := client.Repositories.List(client.Context, "", opts)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		glog.Infof(`Fetched %d repos, res.NextPage = %d`, len(r), res.NextPage)
+
+		repos = append(repos, r...)
+		return res, err
+	}); nil != err {
+		return nil, err
+	}
+	glog.Infof(`FetchRepos: len repos = %d`, len(repos))
 
 	C := make(chan *GitRepo)
 	var waitForFileChecks sync.WaitGroup

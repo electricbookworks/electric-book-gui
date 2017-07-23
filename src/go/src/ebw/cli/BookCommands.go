@@ -52,6 +52,8 @@ func BookCommands() *commander.Command {
 				BookPRMergeCommand,
 				BookMergeInfo,
 				BookFetchCommand,
+				BookLocalChangesCommand,
+				BookRevertLocalChangesCommand,
 			)
 		})
 }
@@ -736,5 +738,33 @@ func BookMergeInfo() *commander.Command {
 				fmt.Println(mfi)
 			}
 			return nil
+		})
+}
+
+func BookLocalChangesCommand() *commander.Command {
+	return commander.NewCommand(`local-changes`,
+		`List local changes`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.PrintLocalChanges()
+		})
+}
+
+func BookRevertLocalChangesCommand() *commander.Command {
+	return commander.NewCommand(`revert-local-changes`,
+		`List local changes`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.RevertLocalChanges()
 		})
 }

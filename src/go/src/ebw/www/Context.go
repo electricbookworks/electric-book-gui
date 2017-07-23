@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
+	"github.com/sirupsen/logrus"
 
 	"ebw/git"
 	"ebw/util"
@@ -26,16 +27,30 @@ type Context struct {
 	Client  *git.Client
 	Session *sessions.Session
 	Defers  []func()
+	Log     *logrus.Entry
 }
 
 type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if e := recover(); nil != e {
+			if err, ok := e.(error); ok {
+				WebError(w, r, err)
+				return
+			}
+			WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
+		}
+	}()
 	client, _ := git.ClientFromWebRequest(w, r)
 	session, err := store.Get(r, `ebw-session`)
 	if nil != err {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+	flds := logrus.Fields{}
+	if nil != client && `` != client.Username {
+		flds = logrus.Fields{`username`: client.Username}
 	}
 	c := &Context{
 		R:       r,
@@ -45,11 +60,14 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Client:  client,
 		Session: session,
 		Defers:  []func(){},
+		Log:     logrus.New().WithFields(flds),
 	}
 	defer c.runDefers()
+	c.Log.Infof(`Starting processing web request %s`, r.URL.String())
 	if err := f(c); nil != err {
 		WebError(w, r, err)
 	}
+	c.Log.Infof(`Finished processing web request %s`, r.URL.String())
 }
 
 func (c *Context) AddDefer(f func()) {
@@ -135,6 +153,7 @@ func (c *Context) Repo() (*git.Repo, error) {
 	if nil != err {
 		return nil, err
 	}
+	repo.Log = c.Log
 	c.AddDefer(repo.Free)
 	return repo, nil
 }

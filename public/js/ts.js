@@ -151,8 +151,8 @@ var APIWs = (function () {
     APIWs.prototype.CommitOnly = function (repoOwner, repoName, message, notes) {
         return this.rpc("CommitOnly", [repoOwner, repoName, message, notes]);
     };
-    APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format) {
-        return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format]);
+    APIWs.prototype.PrintPdfEndpoint = function (repoOwner, repoName, book, format, fileList) {
+        return this.rpc("PrintPdfEndpoint", [repoOwner, repoName, book, format, fileList]);
     };
     APIWs.prototype.MergedFileCat = function (repoOwner, repoName, path) {
         return this.rpc("MergedFileCat", [repoOwner, repoName, path]);
@@ -162,6 +162,9 @@ var APIWs = (function () {
     };
     APIWs.prototype.MergeFileOriginal = function (repoOwner, repoName, path, version) {
         return this.rpc("MergeFileOriginal", [repoOwner, repoName, path, version]);
+    };
+    APIWs.prototype.FindFileLists = function (repoOwner, repoName) {
+        return this.rpc("FindFileLists", [repoOwner, repoName]);
     };
     return APIWs;
 }());
@@ -238,7 +241,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a New Series</h1><fieldset><label><input type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new series.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tCollaborate on an existing series.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New Series</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new series.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New Series\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the owner and repo for the series you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -261,7 +264,7 @@ var CommitMessageDialog = (function () {
         var t = CommitMessageDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"commitMessage\">Enter the commit message\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label><label for=\"commitNotes\">Further notes about the commit\n\t\t<textarea name=\"commitNotes\" id=\"commitNotes\" rows=\"5\">\n\t\t</textarea>\n\t\t</label></fieldset><button class=\"btn\">Commit</button></div>";
+            d.innerHTML = "<div><h1>Title</h1><div>Instructions</div><fieldset><label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label></fieldset><button class=\"btn\">Commit</button></div>";
             t = d.firstElementChild;
             CommitMessageDialog._template = t;
         }
@@ -270,7 +273,6 @@ var CommitMessageDialog = (function () {
             title: n.childNodes[0],
             instructions: n.childNodes[1],
             message: n.childNodes[2].childNodes[0].childNodes[1],
-            notes: n.childNodes[2].childNodes[1].childNodes[1],
             commit: n.childNodes[3],
         };
         this.el = n;
@@ -308,6 +310,41 @@ var FSFileList_File = (function () {
         this.el = n;
     }
     return FSFileList_File;
+}());
+var FileListDialog = (function () {
+    function FileListDialog() {
+        var t = FileListDialog._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div><h1>Print Version</h1><p>Choose the project version you want to print:</p><ul class=\"file-list-dialog-list\">\n\t</ul></div>";
+            t = d.firstElementChild;
+            FileListDialog._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            list: n.childNodes[2],
+        };
+        this.el = n;
+    }
+    return FileListDialog;
+}());
+var FileListDialog_Item = (function () {
+    function FileListDialog_Item() {
+        var t = FileListDialog_Item._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<ul><li data-set=\"this\"><input type=\"radio\" name=\"file-list\"/><span/></li></ul>";
+            t = d.firstElementChild.childNodes[0];
+            FileListDialog_Item._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            input: n.childNodes[0],
+            title: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return FileListDialog_Item;
 }());
 var FoundationRevealDialog = (function () {
     function FoundationRevealDialog() {
@@ -471,7 +508,7 @@ var conflict_MergeInstructions = (function () {
         var t = conflict_MergeInstructions._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div class=\"merge-instructions\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the Merge Editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will have is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
+            d.innerHTML = "<div class=\"merge-instructions\"><div class=\"instructions-button\">?</div><div class=\"instructions-text\"><h1>Working with the merge editor</h1><p>The file being submitted is displayed in the editor on the <span class=\"editor-side\">THEIRSIDE</span> side.</p><p>The final file you will save is displayed in the editor on the <span class=\"editor-side\">OURSIDE</span> side.</p><p>Use the small buttons to the left of lines to transfer changes between sides.</p><p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p><p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p></div></div>";
             t = d.firstElementChild;
             conflict_MergeInstructions._template = t;
         }
@@ -610,6 +647,17 @@ var RepoDetailPage = (function () {
     function RepoDetailPage(context) {
         this.context = context;
         RepoMergeDirectButton.init(this.context);
+        document.getElementById("cancelAllChanges").addEventListener("click", function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
+                .then(function (b) {
+                if (b) {
+                    document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
+                    return;
+                }
+            });
+        });
         // let dialog = new RepoMergeDialog(context, undefined);
         // RepoMergeButton.init(this.context, dialog);
         // dialog.MergeEvent.add(this.mergeEvent, this);
@@ -634,6 +682,132 @@ var ControlTag = (function () {
     return ControlTag;
 }());
 
+var DialogEvents;
+(function (DialogEvents) {
+    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
+    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
+})(DialogEvents || (DialogEvents = {}));
+/**
+ * FoundationRevealDialog is a class that implements
+ * a Foundation Reveal dialog. It has a public 'Events'
+ * signals.Signal that receives 'opened' and 'closed'
+ * events when the respective action happens on the dialog.
+ */
+var FoundationRevealDialog$1 = (function (_super) {
+    tslib_1.__extends(FoundationRevealDialog$$1, _super);
+    function FoundationRevealDialog$$1(openElement, content) {
+        var _this = _super.call(this) || this;
+        _this.Events = new signals.Signal();
+        _this.$el = jQuery(_this.el);
+        if (openElement) {
+            openElement.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.$el.foundation('open');
+            });
+        }
+        _this.$el.bind('open.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Opened);
+        });
+        _this.$el.bind('closed.zf.reveal', function (evt) {
+            _this.Events.dispatch(DialogEvents.Closed);
+        });
+        if (content) {
+            _this.Set(content);
+        }
+        // The el must be inserted into the DOM before Foundation is
+        // called on it, otherwise Foundation doesn't properly position
+        // the dialog.
+        document.body.appendChild(_this.el);
+        // TSFoundation required because Typescript can be really stupid.
+        TSFoundation.Reveal(_this.$el);
+        return _this;
+    }
+    // Set the content of the dialog to the given
+    // element.
+    FoundationRevealDialog$$1.prototype.Set = function (el) {
+        this.$.content.innerText = '';
+        this.$.content.appendChild(el);
+    };
+    FoundationRevealDialog$$1.prototype.Open = function () {
+        this.$el.foundation('open');
+    };
+    FoundationRevealDialog$$1.prototype.Close = function () {
+        this.$el.foundation('close');
+    };
+    return FoundationRevealDialog$$1;
+}(FoundationRevealDialog));
+
+var FileListDialogItem = (function (_super) {
+    tslib_1.__extends(FileListDialogItem, _super);
+    function FileListDialogItem(path, dialog) {
+        var _this = _super.call(this) || this;
+        _this.path = path;
+        _this.dialog = dialog;
+        _this.$.title.textContent = path;
+        _this.$.input.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            _this.dialog.Close(_this.path);
+        });
+        return _this;
+    }
+    FileListDialogItem.prototype.isSet = function () {
+        return (this.$.input.checked);
+    };
+    return FileListDialogItem;
+}(FileListDialog_Item));
+
+var FileListDialog$1 = (function (_super) {
+    tslib_1.__extends(FileListDialog$$1, _super);
+    function FileListDialog$$1() {
+        var _this = _super.call(this) || this;
+        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+        _this.dialog.Events.add(_this.dialogEvent, _this);
+        return _this;
+    }
+    FileListDialog$$1.prototype.Close = function (filePath) {
+        this.resolve({
+            FileList: filePath,
+            Cancelled: false
+        });
+        this.resolve = undefined;
+        this.dialog.Close();
+    };
+    FileListDialog$$1.prototype.dialogEvent = function (evt) {
+        switch (evt) {
+            case DialogEvents.Closed:
+                // If the commit button was pressed, we have resolved
+                // the promise, and have cleared this.resolve
+                if (this.resolve) {
+                    this.resolve({ Cancelled: true });
+                }
+                return;
+            case DialogEvents.Opened:
+                return;
+        }
+        
+    };
+    // Open returns a Promise that will return a string[]. The string[]
+    // will either contain two elements: 
+    FileListDialog$$1.prototype.Open = function (fileList) {
+        var _this = this;
+        this.$.list.innerText = "";
+        this.items = [];
+        for (var _i = 0, fileList_1 = fileList; _i < fileList_1.length; _i++) {
+            var f = fileList_1[_i];
+            var i = new FileListDialogItem(f, this);
+            this.$.list.appendChild(i.el);
+            this.items.push(i);
+        }
+        return new Promise(function (resolve, reject) {
+            _this.resolve = resolve;
+            _this.dialog.Open();
+        });
+    };
+    return FileListDialog$$1;
+}(FileListDialog));
+
 var PrintListener = (function () {
     function PrintListener(repoOwner, repoName, book, format) {
         if (book === void 0) { book = "book"; }
@@ -643,17 +817,43 @@ var PrintListener = (function () {
         this.repoName = repoName;
         this.book = book;
         this.format = format;
+        this.listDialog = new FileListDialog$1();
         if ("" == this.book) {
             this.book = "book";
         }
         if (("print" != format) && ("screen" != format)) {
             EBW.Error("PrintListener format parameter must be either 'print' or 'screen'");
+            return;
         }
-        EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format).then(function (_a) {
+        EBW.API().FindFileLists(repoOwner, repoName).then(function (_a) {
+            var files = _a[0];
+            // console.log(`Files directories are `, files);
+            // debugger;
+            // files.push(files[0]);
+            if (2 > files.length) {
+                return Promise.resolve(0 == files.length ? "" : files[0]);
+            }
+            return _this.listDialog.Open(files)
+                .then(function (res) {
+                if (res.Cancelled) {
+                    return Promise.resolve(undefined);
+                }
+                else {
+                    return Promise.resolve(res.FileList);
+                }
+            });
+        }).then(function (filedir) {
+            if ('undefined' == typeof filedir) {
+                return Promise.resolve([undefined]);
+            }
+            return EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format, filedir);
+        }).then(function (_a) {
             var url = _a[0];
+            if ('undefined' == typeof url) {
+                return;
+            }
             _this.startListener(url);
-        })
-            .catch(EBW.Error);
+        }).catch(EBW.Error);
     }
     PrintListener.prototype.startListener = function (key) {
         var _this = this;
@@ -1066,62 +1266,6 @@ var RepoFileEditorCM$1 = (function (_super) {
     };
     return RepoFileEditorCM$$1;
 }(RepoFileEditorCM));
-
-var DialogEvents;
-(function (DialogEvents) {
-    DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
-    DialogEvents[DialogEvents["Closed"] = 2] = "Closed";
-})(DialogEvents || (DialogEvents = {}));
-/**
- * FoundationRevealDialog is a class that implements
- * a Foundation Reveal dialog. It has a public 'Events'
- * signals.Signal that receives 'opened' and 'closed'
- * events when the respective action happens on the dialog.
- */
-var FoundationRevealDialog$1 = (function (_super) {
-    tslib_1.__extends(FoundationRevealDialog$$1, _super);
-    function FoundationRevealDialog$$1(openElement, content) {
-        var _this = _super.call(this) || this;
-        _this.Events = new signals.Signal();
-        _this.$el = jQuery(_this.el);
-        if (openElement) {
-            openElement.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                evt.stopPropagation();
-                _this.$el.foundation('open');
-            });
-        }
-        _this.$el.bind('open.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Opened);
-        });
-        _this.$el.bind('closed.zf.reveal', function (evt) {
-            _this.Events.dispatch(DialogEvents.Closed);
-        });
-        if (content) {
-            _this.Set(content);
-        }
-        // The el must be inserted into the DOM before Foundation is
-        // called on it, otherwise Foundation doesn't properly position
-        // the dialog.
-        document.body.appendChild(_this.el);
-        // TSFoundation required because Typescript can be really stupid.
-        TSFoundation.Reveal(_this.$el);
-        return _this;
-    }
-    // Set the content of the dialog to the given
-    // element.
-    FoundationRevealDialog$$1.prototype.Set = function (el) {
-        this.$.content.innerText = '';
-        this.$.content.appendChild(el);
-    };
-    FoundationRevealDialog$$1.prototype.Open = function () {
-        this.$el.foundation('open');
-    };
-    FoundationRevealDialog$$1.prototype.Close = function () {
-        this.$el.foundation('close');
-    };
-    return FoundationRevealDialog$$1;
-}(FoundationRevealDialog));
 
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {
@@ -2826,7 +2970,7 @@ var CommitMessageDialog$1 = (function (_super) {
             evt.preventDefault();
             _this.resolve({
                 Message: _this.$.message.value,
-                Notes: _this.$.notes.value,
+                Notes: "",
                 Cancelled: false
             });
             _this.resolve = undefined;
@@ -2845,7 +2989,6 @@ var CommitMessageDialog$1 = (function (_super) {
                 return;
             case DialogEvents.Opened:
                 if (this.clearOnOpen) {
-                    this.$.notes.value = "";
                     this.$.message.value = "";
                 }
                 return;

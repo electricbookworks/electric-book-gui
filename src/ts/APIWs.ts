@@ -172,8 +172,8 @@ export class APIWs {
 		return this.rpc("CommitOnly",  [repoOwner,repoName,message,notes] );
 	}
 	
-	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string,format:string) {
-		return this.rpc("PrintPdfEndpoint",  [repoOwner,repoName,book,format] );
+	PrintPdfEndpoint (repoOwner:string,repoName:string,book:string,format:string,fileList:string) {
+		return this.rpc("PrintPdfEndpoint",  [repoOwner,repoName,book,format,fileList] );
 	}
 	
 	MergedFileCat (repoOwner:string,repoName:string,path:string) {
@@ -186,6 +186,10 @@ export class APIWs {
 	
 	MergeFileOriginal (repoOwner:string,repoName:string,path:string,version:string) {
 		return this.rpc("MergeFileOriginal",  [repoOwner,repoName,path,version] );
+	}
+	
+	FindFileLists (repoOwner:string,repoName:string) {
+		return this.rpc("FindFileLists",  [repoOwner,repoName] );
 	}
 	
 }

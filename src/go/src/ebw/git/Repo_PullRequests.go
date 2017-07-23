@@ -22,6 +22,19 @@ func (r *Repo) PullRequest(number int) (*github.PullRequest, error) {
 
 // PullRequestList returns a list of the PullRequests for this repo.
 func (r *Repo) PullRequestList() ([]*PullRequest, error) {
+	prs := []*github.PullRequest{}
+	opts := &github.PullRequestListOptions{}
+	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
+		t, resp, err := r.Client.Client.PullRequests.List(
+			r.Client.Context, r.RepoOwner, r.RepoName, opts)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		prs = append(prs, t...)
+		return resp, err
+	}); nil != err {
+		return nil, err
+	}
 	prs, _, err := r.Client.Client.PullRequests.List(r.Client.Context, r.RepoOwner, r.RepoName,
 		&github.PullRequestListOptions{
 			ListOptions: github.ListOptions{
@@ -29,6 +42,7 @@ func (r *Repo) PullRequestList() ([]*PullRequest, error) {
 				PerPage: 5000,
 			},
 		})
+
 	if nil != err {
 		return nil, util.Error(err)
 	}

@@ -151,7 +151,10 @@ func UpdateFile(client *Client, user, repoOwner, repoName, path string, content 
 	if nil != err {
 		return err
 	}
-	if err := ioutil.WriteFile(filepath.Join(repoDir, path), content, 0644); nil != err {
+	// Ensure that the parent directory exists for the file
+	fullfile := filepath.Join(repoDir, path)
+	os.MkdirAll(filepath.Dir(fullfile), 0755)
+	if err := ioutil.WriteFile(fullfile, content, 0644); nil != err {
 		return util.Error(err)
 	}
 	repo, err := git2go.OpenRepository(repoDir)

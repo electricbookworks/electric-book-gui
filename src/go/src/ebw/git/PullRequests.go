@@ -16,10 +16,18 @@ import (
 // ListPullRequests returns a list of the Pull Requests for the
 // given repoOwner/repoName
 func ListPullRequests(client *Client, repoOwner, repoName string) ([]*github.PullRequest, error) {
-	requests, _, err := client.PullRequests.List(client.Context,
-		repoOwner, repoName, &github.PullRequestListOptions{})
-	if nil != err {
-		return nil, util.Error(err)
+	opts := &github.PullRequestListOptions{}
+	requests := []*github.PullRequest{}
+	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
+		r, res, err := client.PullRequests.List(client.Context,
+			repoOwner, repoName, opts)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		requests = append(requests, r...)
+		return res, err
+	}); nil != err {
+		return nil, err
 	}
 	return requests, nil
 }
@@ -98,14 +106,20 @@ func PullRequestDiffList(client *Client, repoOwner, repoName string,
 	if nil != err {
 		return nil, err
 	}
-	files, _, err := client.PullRequests.ListFiles(client.Context,
-		repoOwner, repoName,
-		pr.GetNumber(), &github.ListOptions{
-			PerPage: 1000,
-		})
-	if nil != err {
-		return nil, util.Error(err)
+	files := []*github.CommitFile{}
+	opts := &github.ListOptions{}
+	if err := GithubPaginate(opts, func() (*github.Response, error) {
+		f, res, err := client.PullRequests.ListFiles(client.Context,
+			repoOwner, repoName, pr.GetNumber(), opts)
+		if nil != err {
+			return nil, util.Error(err)
+		}
+		files = append(files, f...)
+		return res, err
+	}); nil != err {
+		return nil, err
 	}
+
 	diffs := make([]*PullRequestDiff, len(files))
 	for i, p := range files {
 		diffs[i], err = GetPathDiff(localPath, remotePath, p.GetFilename())
@@ -121,14 +135,6 @@ func PullRequestDiffList(client *Client, repoOwner, repoName string,
 func PullRequestUpdate(client *Client, user, repoOwner, repoName string,
 	sha string, path string, content []byte) error {
 	return UpdateFile(client, user, repoOwner, repoName, path, content)
-	// localPath, err := RepoDir(user, repo)
-	// if nil != err {
-	// 	return err
-	// }
-	// if err := ioutil.WriteFile(filepath.Join(localPath, path), content, 0644); nil != err {
-	// 	return util.Error(err)
-	// }
-	// return nil
 }
 
 func PullRequestClose(client *Client, repoOwner, repoName string, number int) error {
