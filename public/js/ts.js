@@ -1245,6 +1245,19 @@ var RepoFileEditorCM$1 = (function (_super) {
     RepoFileEditorCM$$1.prototype.File = function () {
         return this.file;
     };
+    RepoFileEditorCM$$1.prototype.Rename = function (name) {
+        var _this = this;
+        return this.file.Rename(name)
+            .then(function () {
+            console.log("Rename is concluded: this.file = ", _this.file);
+            var list = document.querySelectorAll("[ebw-bind=\"current-filename\"]");
+            for (var i = 0; i < list.length; i++) {
+                var e = list.item(i);
+                e.textContent = name;
+            }
+            return Promise.resolve();
+        });
+    };
     RepoFileEditorCM$$1.prototype.setBoundFilenames = function () {
         var filename = 'CHOOSE A FILE';
         if (this.file) {
@@ -1426,10 +1439,11 @@ var RepoEditorPage_RenameFileDialog$1 = (function (_super) {
         Eventify(_this.el, {
             "click": function (evt) {
                 var toName = _this.$.filename.value;
-                _this.editor.File().Rename(toName)
-                    .then(function (fc) {
+                _this.editor.Rename(toName)
+                    .then(function () {
                     _this.dialog.Close();
-                });
+                })
+                    .catch(EBW.Error);
             },
             "change": function (evt) {
             }
@@ -1438,7 +1452,7 @@ var RepoEditorPage_RenameFileDialog$1 = (function (_super) {
         _this.dialog.Events.add(function (act) {
             switch (act) {
                 case DialogEvents.Opened:
-                    _this.$.filename.value = '';
+                    _this.$.filename.value = _this.editor.File().Name();
                     _this.$.filename.focus();
                     _this.$.current_name.innerText = _this.editor.File().Name();
                     break;
@@ -2305,9 +2319,6 @@ var RepoEditorPage = (function () {
     RepoEditorPage.instantiate = function () {
         var el = document.getElementById("repo-editor-page");
         if (el) {
-            console.error("RepoEditorPage should be constructed directly to receive ProseIgnoreFunction");
-            debugger;
-            console.log("Instantiating RepoEditorPage");
             var repoOwner = el.getAttribute('repo-owner');
             var repoName = el.getAttribute('repo-name');
             // let volume = new VolumeElement()
@@ -2521,10 +2532,11 @@ var FileDisplayEvent;
 })(FileDisplayEvent || (FileDisplayEvent = {}));
 var FileDisplay = (function (_super) {
     tslib_1.__extends(FileDisplay, _super);
-    function FileDisplay(context, parent, file) {
+    function FileDisplay(context, parent, file, mergingInfo) {
         var _this = _super.call(this) || this;
         _this.context = context;
         _this.file = file;
+        _this.mergingInfo = mergingInfo;
         _this.Listen = new signals.Signal();
         _this.$.path.innerText = file.Path();
         _this.fileEvent(undefined, FileEvent.StatusChanged, undefined);
@@ -2571,19 +2583,26 @@ var FileListDisplayEvent;
 })(FileListDisplayEvent || (FileListDisplayEvent = {}));
 var FileListDisplay = (function (_super) {
     tslib_1.__extends(FileListDisplay, _super);
-    function FileListDisplay(context, parent, fileList) {
+    function FileListDisplay(context, parent, fileList, mergingInfo) {
         var _this = _super.call(this) || this;
         _this.context = context;
         _this.parent = parent;
+        _this.mergingInfo = mergingInfo;
         _this.Listen = new signals.Signal();
         fileList.Listen.add(_this.fileListEvent, _this);
+        if (_this.mergingInfo.IsPRMerge()) {
+            _this.el.classList.add("pr-merge");
+        }
+        else {
+            _this.el.classList.add("not-pr-merge");
+        }
         _this.parent.appendChild(_this.el);
         return _this;
     }
     FileListDisplay.prototype.fileListEvent = function (e, f) {
         switch (e) {
             case FileListEvent.FileNew:
-                var fd = new FileDisplay(this.context, this.el, f);
+                var fd = new FileDisplay(this.context, this.el, f, this.mergingInfo);
                 fd.Listen.add(this.fileDisplayEvent, this);
                 break;
         }
@@ -3115,16 +3134,16 @@ var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
         this.context = context;
+        this.mergingInfo = new MergingInfo(document.getElementById("merging-info"));
+        this.closePRDialog = new ClosePRDialog(false);
         var fileList = new FileList(context);
-        var fileListDisplay = new FileListDisplay(context, document.getElementById("staged-files-list"), fileList);
+        var fileListDisplay = new FileListDisplay(context, document.getElementById("staged-files-list"), fileList, this.mergingInfo);
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
         this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
         this.commitDialog = new CommitMessageDialog$1(false);
         new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
-        this.mergingInfo = new MergingInfo(document.getElementById("merging-info"));
-        this.closePRDialog = new ClosePRDialog(false);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");
             if (showing)
@@ -3176,7 +3195,6 @@ var RepoConflictPage = (function () {
         });
     }
     RepoConflictPage.prototype.fileListEvent = function (e, f) {
-        console.log("FileListEvent in RepoConflictPage: ", f);
         this.editor.Merge(f);
     };
     return RepoConflictPage;
@@ -3343,7 +3361,7 @@ var EBW = (function () {
                         new RepoDetailPage(context);
                         break;
                     case 'RepoConflictPage':
-                        new RepoConflictPage(context);
+                        new RepoConflictPage(context, el);
                         break;
                 }
             }

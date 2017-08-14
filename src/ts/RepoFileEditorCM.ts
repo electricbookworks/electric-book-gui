@@ -243,6 +243,18 @@ export class RepoFileEditorCM extends Template {
 	File() : FSFileEdit {
 		return this.file;
 	}
+	Rename(name:string) : Promise<void> {
+		return this.file.Rename(name)
+		.then( ()=>{
+			console.log(`Rename is concluded: this.file = `, this.file);
+			let list = document.querySelectorAll(`[ebw-bind="current-filename"]`);
+			for (let i=0; i<list.length; i++) {
+				let e = list.item(i) as HTMLElement;
+				e.textContent = name;
+			}
+			return Promise.resolve();
+		});
+	}
 	protected setBoundFilenames() {
 		let filename = 'CHOOSE A FILE';
 		if (this.file) {

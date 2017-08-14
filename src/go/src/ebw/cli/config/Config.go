@@ -14,6 +14,7 @@ import (
 
 type githubUser struct {
 	Name  string `yaml:"name"`
+	Alias string `yaml:"alias"`
 	Token string `yaml:"token"`
 }
 
@@ -54,6 +55,17 @@ func (c *conf) GetUserNamed(name string) (*githubUser, error) {
 		}
 	}
 	return nil, fmt.Errorf(`Failed to find user named '%s'`, name)
+}
+
+// GetUserAlias returns the user with the given alias, failing
+// finding such a user, it returns the user with the given name.
+func (c *conf) GetUserAlias(name string) (*githubUser, error) {
+	for _, u := range c.Users {
+		if u.Alias == name {
+			return u, nil
+		}
+	}
+	return c.GetUserNamed(name)
 }
 
 // SetUser sets the default user for this session.

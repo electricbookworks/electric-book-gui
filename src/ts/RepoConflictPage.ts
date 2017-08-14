@@ -19,8 +19,11 @@ export class RepoConflictPage {
 	protected mergingInfo: MergingInfo;
 
 	constructor(protected context:Context) {
+		this.mergingInfo = new MergingInfo(document.getElementById(`merging-info`));
+		this.closePRDialog = new ClosePRDialog(false);
+
 		let fileList = new FileList(context);
-		let fileListDisplay = new FileListDisplay(context, document.getElementById(`staged-files-list`), fileList);
+		let fileListDisplay = new FileListDisplay(context, document.getElementById(`staged-files-list`), fileList, this.mergingInfo);
 
 		fileListDisplay.el.addEventListener(`file-click`, (evt:CustomEvent)=> {
 			this.fileListEvent(undefined, evt.detail.file);
@@ -30,8 +33,6 @@ export class RepoConflictPage {
 		this.commitDialog = new CommitMessageDialog(false);
 		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
 
-		this.mergingInfo = new MergingInfo(document.getElementById(`merging-info`));
-		this.closePRDialog = new ClosePRDialog(false);
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
@@ -94,7 +95,6 @@ export class RepoConflictPage {
 		})
 	}
 	fileListEvent(e:FileListDisplayEvent, f:File) : void {
-		console.log(`FileListEvent in RepoConflictPage: `, f);
 		this.editor.Merge(f);
 	}
 }
