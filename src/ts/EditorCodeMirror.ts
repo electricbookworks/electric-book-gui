@@ -36,4 +36,30 @@ export class EditorCodeMirror {
 	focus() : void {
 		this.cm.focus();
 	}
+
+	/**
+	 * setModeOnFilename sets the editor mode / highlighting
+	 * based on the filename of the file you're editing.
+	 */
+	setModeOnFilename(filename:string) {
+		let r = /\.([^\.]+)$/;
+		let res = r.exec(filename);
+		if (2==res.length) {
+			let suffix = res[1];
+			let modes = new Map<string,string>();
+			modes.set('md','markdown');
+			modes.set('js','javascript');
+			modes.set('css','css');
+			modes.set('scss','sass');
+			modes.set('sass','sass');
+			modes.set('yaml','yaml');
+			modes.set('yml','yaml');
+			modes.set('xml','xml');
+
+			let mode = modes.get(res[1]);
+			if (mode) {
+				this.cm.setOption(`mode`, mode);
+			}
+		}
+	}
 }

@@ -934,6 +934,30 @@ var EditorCodeMirror = (function () {
     EditorCodeMirror.prototype.focus = function () {
         this.cm.focus();
     };
+    /**
+     * setModeOnFilename sets the editor mode / highlighting
+     * based on the filename of the file you're editing.
+     */
+    EditorCodeMirror.prototype.setModeOnFilename = function (filename) {
+        var r = /\.([^\.]+)$/;
+        var res = r.exec(filename);
+        if (2 == res.length) {
+            var suffix = res[1];
+            var modes = new Map();
+            modes.set('md', 'markdown');
+            modes.set('js', 'javascript');
+            modes.set('css', 'css');
+            modes.set('scss', 'sass');
+            modes.set('sass', 'sass');
+            modes.set('yaml', 'yaml');
+            modes.set('yml', 'yaml');
+            modes.set('xml', 'xml');
+            var mode = modes.get(res[1]);
+            if (mode) {
+                this.cm.setOption("mode", mode);
+            }
+        }
+    };
     return EditorCodeMirror;
 }());
 
@@ -1235,6 +1259,7 @@ var RepoFileEditorCM$1 = (function (_super) {
             _this.setBoundFilenames();
             _this.setText(t);
             _this.restoreHistoryFor(_this.file.Name());
+            _this.textEditor.setModeOnFilename(file.Name());
             _this.textEditor.focus();
             _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
         })
@@ -1303,11 +1328,14 @@ var FSFileEdit = (function () {
     };
     FSFileEdit.prototype.Rename = function (toPath) {
         var _this = this;
+        var oldName = this.fc.Name;
         return this.FS.Rename(this.fc.Name, toPath)
             .then(function (_a) {
             var fOld = _a[0], fNew = _a[1];
+            _this.FS.Sync(oldName);
             _this.fc = fNew;
-            _this.signalDirty();
+            _this.Sync();
+            // this.signalDirty();
             return Promise.resolve([fOld, fNew]);
         });
     };

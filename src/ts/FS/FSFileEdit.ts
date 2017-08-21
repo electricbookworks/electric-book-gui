@@ -34,11 +34,14 @@ export class FSFileEdit {
 			});
 	}
 	Rename(toPath:string):Promise<[FileContent,FileContent]> {
+		let oldName = this.fc.Name;
 		return this.FS.Rename(this.fc.Name,toPath)
 		.then(
 			([fOld, fNew]:[FileContent,FileContent])=>{
+				this.FS.Sync(oldName);
 				this.fc = fNew;
-				this.signalDirty();
+				this.Sync();
+				// this.signalDirty();
 				return Promise.resolve<[FileContent,FileContent]>([fOld, fNew]);
 			});
 	}

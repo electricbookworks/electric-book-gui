@@ -232,6 +232,7 @@ export class RepoFileEditorCM extends Template {
 				this.setBoundFilenames();
 				this.setText(t);
 				this.restoreHistoryFor(this.file.Name());
+				this.textEditor.setModeOnFilename(file.Name());
 				this.textEditor.focus();
 				this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 			})
