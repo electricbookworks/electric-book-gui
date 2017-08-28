@@ -157,6 +157,9 @@ var APIWs = (function () {
     APIWs.prototype.MergedFileCat = function (repoOwner, repoName, path) {
         return this.rpc("MergedFileCat", [repoOwner, repoName, path]);
     };
+    APIWs.prototype.MergedFileGit = function (repoOwner, repoName, path) {
+        return this.rpc("MergedFileGit", [repoOwner, repoName, path]);
+    };
     APIWs.prototype.SaveMergingFile = function (repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent) {
         return this.rpc("SaveMergingFile", [repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent]);
     };

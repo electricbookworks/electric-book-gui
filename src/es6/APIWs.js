@@ -174,6 +174,10 @@ class APIWs {
 		return this._rpc("MergedFileCat",  arguments );
 	}
 	
+	MergedFileGit (repoOwner,repoName,path) {
+		return this._rpc("MergedFileGit",  arguments );
+	}
+	
 	SaveMergingFile (repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent) {
 		return this._rpc("SaveMergingFile",  arguments );
 	}

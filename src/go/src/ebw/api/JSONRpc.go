@@ -178,6 +178,22 @@ func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (bool, string, b
 	return workingExists, string(working), theirExists, string(their), nil
 }
 
+// MergedFileGit returns the git merged version of the file
+func (rpc *API) MergedFileGit(repoOwner, repoName, path string) (bool, string, error) {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return false, ``, err
+	}
+	defer repo.Free()
+
+	//func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error)
+	mergeable, raw, err := repo.FileGit(path)
+	if nil != err {
+		return false, ``, err
+	}
+	return mergeable, string(raw), nil
+}
+
 // SaveMergingFile saves the 'Working' and 'Their' versions of the working
 // file into our repo and our their-tree.
 func (rpc *API) SaveMergingFile(repoOwner, repoName string, path string, workingExists bool, workingContent string, theirExists bool, theirContent string) (string, error) {
