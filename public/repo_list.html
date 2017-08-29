@@ -10,11 +10,23 @@
             <a data-open="repo-new-modal" class="btn">Add a project</a>
         </div>
     </div>
-    {{if IsSpecialUser .UserName}}
-    <div>
-    <a href="/github/token/b718f9693c3c85b6fac6b0cf82458b9f7532c15d">Login as timatcore</a>
+
+    <div class="invitations">
+    <p>You have {{.Invites | len}} invitations.</p>
+    {{range .Invites}}
+    <div class="invite">
+        <div class="text">
+            <p>You have been invited by {{if .Inviter.Name}}{{.Inviter.Name}}{{else}}{{.Inviter.Login}}{{end}} to 
+               contribute to the <a href="https://github.com/{{.Repo.FullName}}">{{.Repo.Name}}</a> project.
+            </p>
+        </div>
+        <div class="actions">
+           <a href="/github/invite/{{.ID}}?accept=yes" class="btn">Accept</a>
+           <a href="/github/invite/{{.ID}}?accept=no" class="btn">Decline</a>
+        </div>
     </div>
     {{end}}
+    </div>
 
     <ul class="repo-list">
         {{range .Repos}}

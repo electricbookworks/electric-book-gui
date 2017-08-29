@@ -101,9 +101,6 @@ export class RepoEditorPage {
 	static instantiate() {
 		let el = document.getElementById(`repo-editor-page`);
 		if (el) {
-			console.error(`RepoEditorPage should be constructed directly to receive ProseIgnoreFunction`);
-			debugger;
-			console.log(`Instantiating RepoEditorPage`);
 			let repoOwner = el.getAttribute('repo-owner');
 			let repoName = el.getAttribute('repo-name');
 			// let volume = new VolumeElement()

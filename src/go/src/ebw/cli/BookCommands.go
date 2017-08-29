@@ -510,7 +510,7 @@ func BookPullAbortCommand() *commander.Command {
 
 func BookCatCommand() *commander.Command {
 	fs := flag.NewFlagSet(`cat`, flag.ExitOnError)
-	version := fs.Int(`v`, 2, `Version 2=ours, 3=theirs`)
+	version := fs.Int(`v`, 2, `Version 1=ancestor, 2=ours, 3=theirs`)
 	return commander.NewCommand(`cat`,
 		`Cat the file contents of the named files`,
 		fs,

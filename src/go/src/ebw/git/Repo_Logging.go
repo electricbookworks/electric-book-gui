@@ -18,6 +18,9 @@ func (r *Repo) Infof(format string, args ...interface{}) {
 
 // Error logs an error if an error is set, or returns nil
 func (r *Repo) Error(err error) error {
+	if nil == r.Log {
+		r.Log = logrus.New().WithFields(logrus.Fields{`username`: r.Client.Username})
+	}
 	if nil == err {
 		return nil
 	}

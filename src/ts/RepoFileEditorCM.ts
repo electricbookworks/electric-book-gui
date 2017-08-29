@@ -232,6 +232,7 @@ export class RepoFileEditorCM extends Template {
 				this.setBoundFilenames();
 				this.setText(t);
 				this.restoreHistoryFor(this.file.Name());
+				this.textEditor.setModeOnFilename(file.Name());
 				this.textEditor.focus();
 				this.EditEvents.dispatch(EditorEvents.CHANGED, this.file);
 			})
@@ -242,6 +243,18 @@ export class RepoFileEditorCM extends Template {
 	}
 	File() : FSFileEdit {
 		return this.file;
+	}
+	Rename(name:string) : Promise<void> {
+		return this.file.Rename(name)
+		.then( ()=>{
+			console.log(`Rename is concluded: this.file = `, this.file);
+			let list = document.querySelectorAll(`[ebw-bind="current-filename"]`);
+			for (let i=0; i<list.length; i++) {
+				let e = list.item(i) as HTMLElement;
+				e.textContent = name;
+			}
+			return Promise.resolve();
+		});
 	}
 	protected setBoundFilenames() {
 		let filename = 'CHOOSE A FILE';

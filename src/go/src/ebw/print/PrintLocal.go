@@ -53,6 +53,8 @@ func FindFileLists(repoPath string) ([]string, error) {
 	return files, nil
 }
 
+// PrintLocal prints the book using the localhost for printing - not as safe as printing
+// in a container, but on the other hand much easier to manage/code.
 func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan PrintMessage) (string, error) {
 	glog.Infof(`PrintLocal: fileListDir = %s`, fileListDir)
 	if `` == printOrScreen {
@@ -63,6 +65,8 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	if nil != err {
 		return ``, err
 	}
+	configDestination := bookConfig.GetDestinationDir()
+
 	outputName := bookName + `-` + printOrScreen + `.pdf`
 
 	if err := Rvm(repoPath, `gem`, `install`, `bundler`).Run(); nil != err {
@@ -99,7 +103,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	}
 	if bookConfig.MathjaxEnabled {
 		cmd := exec.Command(`phantomjs`, `render-mathjax.js`)
-		cmd.Dir = filepath.Join(repoPath, `_site`, `assets`, `js`)
+		cmd.Dir = filepath.Join(repoPath, configDestination /*`_site`*/, `assets`, `js`)
 		cmd.Stderr, cmd.Stdout = os.Stderr, os.Stdout
 		if err := cmd.Run(); nil != err {
 			glog.Errorf(`Error %s: phantomjs render-mathjax.js : %s`, cmd.Dir, err.Error())
@@ -112,7 +116,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	cmd := exec.Command(`prince`, `-v`, `-l`, `file-list`, `-o`,
 		filepath.Join(outputDir, outputName), `--javascript`)
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	cmd.Dir = filepath.Join(repoPath, `_html`, fileListDir)
+	cmd.Dir = filepath.Join(repoPath, configDestination /*`_html`*/, fileListDir)
 
 	// THIS ONE WORKS
 	//	cmd.Dir = filepath.Join(repoPath, bookConfig.GetDestinationDir(bookName, `text`))

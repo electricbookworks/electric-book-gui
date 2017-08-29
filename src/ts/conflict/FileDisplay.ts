@@ -1,6 +1,7 @@
 import {Context} from '../Context';
 import {File, FileEvent} from './File';
 import {conflict_FileDisplay as Template} from '../Templates';
+import {MergingInfo} from './MergingInfo';
 import signals = require('signals');
 
 export enum FileDisplayEvent {
@@ -10,7 +11,7 @@ export enum FileDisplayEvent {
 export class FileDisplay extends Template {
 	public Listen: signals.Signal;
 
-	constructor(protected context:Context, parent:HTMLElement, protected file:File) {
+	constructor(protected context:Context, parent:HTMLElement, protected file:File, protected mergingInfo:MergingInfo) {
 		super();
 		this.Listen = new signals.Signal();
 

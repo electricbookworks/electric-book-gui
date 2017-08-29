@@ -71,9 +71,15 @@ func repoList(c *Context) error {
 		return err
 	}
 
+	invites, err := client.UserInvitations()
+	if nil != err {
+		return err
+	}
+
 	return c.Render("repo_list.html", map[string]interface{}{
 		"Repos":    repos,
 		"UserName": client.Username,
+		"Invites":  invites,
 	})
 }
 
@@ -433,4 +439,24 @@ func repoMergeRemoteBranch(c *Context) error {
 		return err
 	}
 	return c.Redirect(pathRepoConflict(repo))
+}
+
+func githubInvitationAcceptOrDecline(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		// GithubClient will redirect us
+		return nil
+	}
+	accept := `yes` == c.P(`accept`)
+	if err := client.GithubInvitationAccept(int(c.PI(`id`)), accept); nil != err {
+		return err
+	}
+
+	if accept {
+		c.FlashSuccess(`Invitation Accepted`, `You have accepted the invitation.`, nil)
+	} else {
+		c.FlashSuccess(`Invitation Declined`, `You have declined the invitation.`, nil)
+	}
+
+	return c.Redirect(`/`)
 }

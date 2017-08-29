@@ -68,7 +68,8 @@ func RepoDir(user, repoOwner, repoName string) (string, error) {
 
 // Checkout checks out the github repo into the cached directory system,
 // and returns the path to the root of the repo. If the client is already
-// checked out, it updates from the origin server.
+// checked out, it updates from the origin server. Returns the directory
+// and a possible error.
 func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, error) {
 	if `` == repoUrl {
 		repoUrl = fmt.Sprintf(`https://%s:%s@github.com/%s/%s`,
@@ -83,7 +84,6 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 		}
 		repoUrl = ux.String()
 	}
-	glog.Infof(`Cloning/updating %s/%s from %s`, repoOwner, repoName, repoUrl)
 	// We cannot create the directory for the repo if we are going
 	// to clone - that will cause a 'directory already exists' error.
 	// So we only create the parent directory, then determine whether
@@ -92,6 +92,9 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 	if nil != err {
 		return ``, err
 	}
+	fmt.Fprintf(os.Stderr, `Cloning/updating %s/%s from %s into %s`, repoOwner, repoName, repoUrl, repoDir)
+	glog.Infof(`Cloning/updating %s/%s from %s into %s`, repoOwner, repoName, repoUrl, repoDir)
+
 	os.MkdirAll(filepath.Dir(repoDir), 0755)
 	_, err = os.Stat(repoDir)
 	if nil == err {

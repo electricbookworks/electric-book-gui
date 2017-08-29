@@ -26,11 +26,17 @@ const (
 	FileOur                  = 2
 	FileTheir                = 3
 	FileWorking              = 4
+	FileMerge                = 5
 )
 
 var ErrNoGithubParent = errors.New(`This repo has no github parent: it was not forked.`)
 var ErrNotInConflictedState = errors.New(`This repo is not in a conflicted state.`)
 
+// Repo is a struct mapped to a directory on dist with a checked-out
+// github repo. The directory does not necessarily have to be configured
+// against the server git_cache, but could be retrieved with
+// NewRepoForDir(..), which allows creating the repo against an existing
+// directory possibly in a different location.
 type Repo struct {
 	*git2go.Repository
 	Dir   string
@@ -47,10 +53,31 @@ type Repo struct {
 	Log *logrus.Entry
 }
 
+// Checkout checks out the repository into the repo directory.
+func (r *Repo) Checkout() error {
+	_, err := Checkout(r.Client, r.RepoOwner, r.RepoName, ``)
+	if nil != err {
+		return err
+	}
+	return nil
+}
+
+// NewRepo returns a new Repo struct configured against the directory
+// with the checked-out repo.
 func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return nil, err
+	}
+	_, err = os.Stat(repoDir)
+	if nil != err {
+		if os.IsNotExist(err) {
+			if _, err := Checkout(client, repoOwner, repoName, ``); nil != err {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
 	}
 
 	repo, err := git2go.OpenRepository(repoDir)
@@ -133,7 +160,7 @@ func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 		Client:     client,
 		state:      StateNotSet,
 	}
-	// RepoOwnerAndName will cache the owner and name resultss
+	// RepoOwnerAndName will cache the owner and name results
 	_, _, err = r.RepoOwnerAndName()
 	if nil != err {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
@@ -821,10 +848,26 @@ func (r *Repo) MergeCommits(includeHead bool) ([]*git2go.Commit, error) {
 	return commits, nil
 }
 
+// FileBlob returns the file contents as a Blob
+func (r *Repo) FileBlob(fileId *git2go.Oid) ([]byte, error) {
+	file, err := r.Repository.Lookup(fileId)
+	if nil != err {
+		return []byte{}, r.Error(err)
+	}
+	defer file.Free()
+	blob, err := file.AsBlob()
+	if nil != err {
+		return []byte{}, r.Error(err)
+	}
+	defer blob.Free()
+	return blob.Contents(), nil
+}
+
 // FileCat returns the contents of a conflicted or merged file.
 // The first bool parameter indicates whether the files exists.
 func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 	var fileId *git2go.Oid
+	var err error
 	if FileWorking == version {
 		exists, err := util.FileExists(r.RepoPath(path))
 		if nil != err {
@@ -839,47 +882,61 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		}
 		return true, raw, r.Error(err)
 	}
+
 	switch version {
 	case FileTheir:
-		mergeHeads, err := r.MergeHeads()
+		fileId, err = r.fileTheir(path)
 		if nil != err {
-			return false, []byte{}, r.Error(err)
+			return false, []byte{}, err
 		}
-		if 1 != len(mergeHeads) {
-			return false, []byte{}, r.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
-		}
-
-		tree, err := r.treeForCommit(mergeHeads[0])
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-
-		te, err := tree.EntryByPath(path)
-		if nil != err {
-			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-				return false, []byte{}, nil
-			}
-
-			return false, []byte{}, r.Error(err)
-		}
-		fileId = te.Id
 	case FileOur:
-		headRef, err := r.Head()
+		fileId, err = r.fileOur(path)
+		if nil != err {
+			return false, []byte{}, err
+		}
+	case FileMerge:
+		index, err := r.Repository.Index()
 		if nil != err {
 			return false, []byte{}, r.Error(err)
 		}
-		tree, err := r.treeForCommit(headRef.Target())
+		conflict, err := index.GetConflict(path)
+		if nil != err {
+			// An error can occur if the file is not conflicted
+			return false, []byte{}, r.Error(err)
+		}
+
+		theirFileId, err := r.fileTheir(path)
+		if nil != err {
+			return false, []byte{}, err
+		}
+		ourFileId, err := r.fileOur(path)
+		if nil != err {
+			return false, []byte{}, err
+		}
+		their, err := r.FileBlob(theirFileId)
+		if nil != err {
+			return false, []byte{}, err
+		}
+		our, err := r.FileBlob(ourFileId)
+		if nil != err {
+			return false, []byte{}, err
+		}
+		ancestor, err := r.FileBlob(conflict.Ancestor.Id)
+		if nil != err {
+			return false, []byte{}, err
+		}
+		res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
+			git2go.MergeFileInput{Contents: our},
+			git2go.MergeFileInput{Contents: their},
+			&git2go.MergeFileOptions{
+				Favor: git2go.MergeFileFavorNormal,
+				Flags: git2go.MergeFileDefault,
+			})
 		if nil != err {
 			return false, []byte{}, r.Error(err)
 		}
-		te, err := tree.EntryByPath(path)
-		if nil != err {
-			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-				return false, []byte{}, nil
-			}
-			return false, []byte{}, r.Error(err)
-		}
-		fileId = te.Id
+		fmt.Println(`Automergeable = `, res.Automergeable)
+		return true, res.Contents, nil
 	default:
 		index, err := r.Repository.Index()
 		if nil != err {
@@ -907,16 +964,108 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		glog.Infof(`Got fileId IsZero() for %s (v=%d)`, path, version)
 		return false, []byte{}, nil
 	}
-	file, err := r.Repository.Lookup(fileId)
+	raw, err := r.FileBlob(fileId)
 	if nil != err {
 		return false, []byte{}, r.Error(err)
 	}
-	defer file.Free()
-	blob, err := file.AsBlob()
+	return true, raw, nil
+}
+
+// fileTheir returns the 'their' version of the file at the given path. This is the
+// same as the version of the file in the HEAD of the branch we're merging with.
+// If the file does not exist, (nil,nil) is returned.
+func (r *Repo) fileTheir(path string) (*git2go.Oid, error) {
+	mergeHeads, err := r.MergeHeads()
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	if 1 != len(mergeHeads) {
+		return nil, r.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
+	}
+	tree, err := r.treeForCommit(mergeHeads[0])
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	if nil == tree {
+		return nil, r.Error(fmt.Errorf(`Failed to find treeForCommit(mergeHeads[0]))`))
+	}
+	te, err := tree.EntryByPath(path)
+	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			return nil, err
+		}
+		return nil, r.Error(err)
+	}
+	return te.Id, nil
+}
+
+// fileOur returns the 'our' version of the file at the given path. This is the
+// same as the version of the file in the current HEAD of this branch. If the file
+// does not exist in 'our' branch, (nil,nil) is returned.
+func (r *Repo) fileOur(path string) (*git2go.Oid, error) {
+	headRef, err := r.Head()
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	tree, err := r.treeForCommit(headRef.Target())
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	te, err := tree.EntryByPath(path)
+	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			return nil, nil
+		}
+		return nil, r.Error(err)
+	}
+	return te.Id, nil
+}
+
+// FileGit returns the GIT version of a conflicted file. The first bool return
+// indicates whether the file can be automerged.
+func (r *Repo) FileGit(path string) (automergeable bool, raw []byte, err error) {
+
+	index, err := r.Repository.Index()
 	if nil != err {
 		return false, []byte{}, r.Error(err)
 	}
-	return true, blob.Contents(), nil
+	conflict, err := index.GetConflict(path)
+	if nil != err {
+		// An error can occur if the file is not conflicted
+		return false, []byte{}, r.Error(err)
+	}
+
+	theirFileId, err := r.fileTheir(path)
+	if nil != err {
+		return false, []byte{}, err
+	}
+	ourFileId, err := r.fileOur(path)
+	if nil != err {
+		return false, []byte{}, err
+	}
+	their, err := r.FileBlob(theirFileId)
+	if nil != err {
+		return false, []byte{}, err
+	}
+	our, err := r.FileBlob(ourFileId)
+	if nil != err {
+		return false, []byte{}, err
+	}
+	ancestor, err := r.FileBlob(conflict.Ancestor.Id)
+	if nil != err {
+		return false, []byte{}, err
+	}
+	res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
+		git2go.MergeFileInput{Contents: our},
+		git2go.MergeFileInput{Contents: their},
+		&git2go.MergeFileOptions{
+			Favor: git2go.MergeFileFavorNormal,
+			Flags: git2go.MergeFileDefault,
+		})
+	if nil != err {
+		return false, []byte{}, r.Error(err)
+	}
+	return res.Automergeable, res.Contents, nil
 }
 
 // ResetConflictedFilesInWorkingDir goes through conflicted files in the
@@ -1155,7 +1304,7 @@ func (r *Repo) CloseConflict(message, notes string) error {
 // be required.
 func (r *Repo) Cleanup() error {
 	if err := r.Repository.StateCleanup(); nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	return r.CleanupConflictTemporaryFiles()
 }
@@ -1166,12 +1315,12 @@ func (r *Repo) Cleanup() error {
 func (r *Repo) Push(remoteName, branchName string) error {
 	remote, err := r.Repository.Remotes.Lookup(remoteName)
 	if nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	defer remote.Free()
 	ref := fmt.Sprintf(`+refs/heads/%s`, branchName)
 	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	return nil
 }
@@ -1199,19 +1348,16 @@ func (r *Repo) TheirTree() *FileTree {
 func (r *Repo) IndexEntry(path string) (*git2go.IndexEntry, error) {
 	index, err := r.Index()
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	defer index.Free()
 	i, err := index.Find(path)
 	if nil != err {
-		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-			glog.Errorf(`ERROR IS ErrNotFound`)
-		}
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	entry, err := index.EntryByIndex(i)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	return entry, nil
 }
@@ -1243,7 +1389,7 @@ func (r *Repo) FileInfoFromIndex(path string) (*FileInfo, error) {
 		// regular files, here I calculate the hash fo the blob
 		// contents only.
 		if nil != err {
-			return nil, fmt.Errorf("ERROR ON AsBlob for %s: %s\n", path, err.Error())
+			return nil, r.Error(fmt.Errorf("ERROR ON AsBlob() for %s: %s\n", path, err.Error()))
 		} else {
 			h := sha1.New()
 			h.Write(b.Contents())
@@ -1398,7 +1544,7 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 				if git2go.IsErrorCode(err, git2go.ErrNotFound) {
 					break
 				}
-				return ``, nil, util.Error(err)
+				return ``, nil, r.Error(err)
 			}
 			br.Free()
 		}
@@ -1406,13 +1552,13 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 
 	commit, err := r.LookupCommit(head.Target())
 	if nil != err {
-		return ``, nil, util.Error(err)
+		return ``, nil, r.Error(err)
 	}
 	defer commit.Free()
 
 	br, err := r.Repository.CreateBranch(name, commit, force)
 	if nil != err {
-		return ``, nil, util.Error(err)
+		return ``, nil, r.Error(err)
 	}
 	br.Free()
 

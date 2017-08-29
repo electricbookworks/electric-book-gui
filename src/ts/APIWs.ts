@@ -180,6 +180,10 @@ export class APIWs {
 		return this.rpc("MergedFileCat",  [repoOwner,repoName,path] );
 	}
 	
+	MergedFileGit (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("MergedFileGit",  [repoOwner,repoName,path] );
+	}
+	
 	SaveMergingFile (repoOwner:string,repoName:string,path:string,workingExists:boolean,workingContent:string,theirExists:boolean,theirContent:string) {
 		return this.rpc("SaveMergingFile",  [repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent] );
 	}

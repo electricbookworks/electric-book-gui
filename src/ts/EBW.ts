@@ -29,7 +29,7 @@ export class EBW {
 						new RepoDetailPage(context);
 						break;
 					case 'RepoConflictPage':
-						new RepoConflictPage(context);
+						new RepoConflictPage(context, el);
 						break;
 				}
 			}

@@ -27,11 +27,12 @@ export class RepoEditorPage_RenameFileDialog extends Template {
 		Eventify(this.el, {
 			"click": (evt:any)=>{
 				let toName = this.$.filename.value;
-				this.editor.File().Rename(toName)
+				this.editor.Rename(toName)
 				.then(
-					(fc:FileContent[])=>{
+					()=>{
 						this.dialog.Close();
-					});
+					})
+				.catch(EBW.Error);
 			},
 			"change": (evt:any)=>{
 
@@ -41,7 +42,7 @@ export class RepoEditorPage_RenameFileDialog extends Template {
 		this.dialog.Events.add( (act:DialogEvents)=>{
 			switch (act) {
 				case DialogEvents.Opened:
-					this.$.filename.value = '';
+					this.$.filename.value = this.editor.File().Name();
 					this.$.filename.focus();
 					this.$.current_name.innerText = this.editor.File().Name();
 					break;

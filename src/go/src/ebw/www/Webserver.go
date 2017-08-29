@@ -58,6 +58,7 @@ func RunWebServer(bind string) error {
 
 	r.Handle(`/github/create/fork`, WebHandler(githubCreateFork))
 	r.Handle(`/github/create/new`, WebHandler(githubCreateNew))
+	r.Handle(`/github/invite/{id}`, WebHandler(githubInvitationAcceptOrDecline))
 	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
