@@ -63,11 +63,11 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Log:     logrus.New().WithFields(flds),
 	}
 	defer c.runDefers()
-	c.Log.Infof(`Starting processing web request %s`, r.URL.String())
+	// c.Log.Infof(`Starting processing web request %s`, r.URL.String())
 	if err := f(c); nil != err {
 		WebError(w, r, err)
 	}
-	c.Log.Infof(`Finished processing web request %s`, r.URL.String())
+	// c.Log.Infof(`Finished processing web request %s`, r.URL.String())
 }
 
 func (c *Context) AddDefer(f func()) {
@@ -106,6 +106,12 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 		}
 		c.D[`Flashes`] = flashes
 	}
+
+	freeSpace, err := git.DiskSpaceFree()
+	if nil != err {
+		return err
+	}
+	c.D[`DiskSpaceFree`] = freeSpace / uint64(1024*1024)
 
 	return Render(c.W, c.R, templ, c.D)
 }

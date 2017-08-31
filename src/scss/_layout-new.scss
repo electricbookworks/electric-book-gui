@@ -17,12 +17,17 @@ body {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: baseline;
 		padding-top: 1em;
 
+		div {
+			padding: 0 1em 1em 1em;
+		}
+
 		@include inverse;
 		border-top: 1px solid darken($color-inverse-bg, 10%);
+
 		// height: 1em;
 	}
 	article {

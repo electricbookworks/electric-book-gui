@@ -3785,12 +3785,14 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: space-between;
     align-items: baseline;
     padding-top: 1em;
     background-color: #009E7F;
     color: white;
     border-top: 1px solid #006b56; }
+    body footer div {
+      padding: 0 1em 1em 1em; }
     body footer a {
       color: white; }
       body footer a:hover {
