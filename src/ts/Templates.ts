@@ -12,6 +12,8 @@ export namespace EL {
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
 	export type RepoFileEditorCM =	HTMLDivElement;
+	export type RepoFileViewerFile =	HTMLDivElement;
+	export type RepoFileViewerPage =	HTMLDivElement;
 	export type RepoMergeDialog =	HTMLDivElement;
 	export type conflict_ClosePRDialog =	HTMLDivElement;
 	export type conflict_FileDisplay =	HTMLLIElement;
@@ -66,6 +68,14 @@ export namespace R {
 	export interface RepoFileEditorCM {
 		textEditor: HTMLDivElement,
 		imageEditor: HTMLDivElement,
+		};
+	export interface RepoFileViewerFile {
+		img: HTMLImageElement,
+		filename: HTMLDivElement,
+		};
+	export interface RepoFileViewerPage {
+		search: HTMLInputElement,
+		data: HTMLDivElement,
 		};
 	export interface RepoMergeDialog {
 		title: HTMLHeadingElement,
@@ -355,6 +365,47 @@ export class RepoFileEditorCM {
 		this.$ = {
 			textEditor: n.childNodes[0] as HTMLDivElement,
 			imageEditor: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoFileViewerFile {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoFileViewerFile;
+	constructor() {
+		let t = RepoFileViewerFile._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="repo-file-viewer-file"><div class="image"><img/></div><div class="filename"/></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoFileViewerFile._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			img: n.childNodes[0].childNodes[0] as HTMLImageElement,
+			filename: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoFileViewerPage {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoFileViewerPage;
+	constructor() {
+		let t = RepoFileViewerPage._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="repo-file-viewer"><div class="searchbar"><input type="text" placeholder="Enter search text to find images."/></div><div class="data">
+	</div></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoFileViewerPage._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			search: n.childNodes[0].childNodes[0] as HTMLInputElement,
+			data: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}

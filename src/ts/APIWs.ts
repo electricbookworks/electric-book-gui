@@ -196,4 +196,12 @@ export class APIWs {
 		return this.rpc("FindFileLists",  [repoOwner,repoName] );
 	}
 	
+	SearchForFiles (repoOwner:string,repoName:string,fileRegex:string) {
+		return this.rpc("SearchForFiles",  [repoOwner,repoName,fileRegex] );
+	}
+	
+	UpdateFileBinary (repoOwner:string,repoName:string,path:string,contentB64:string) {
+		return this.rpc("UpdateFileBinary",  [repoOwner,repoName,path,contentB64] );
+	}
+	
 }

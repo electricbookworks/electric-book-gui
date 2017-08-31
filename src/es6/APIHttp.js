@@ -185,6 +185,14 @@ class API {
 		return this._rpc("FindFileLists",  arguments );
 	}
 	
+	SearchForFiles(repoOwner,repoName,fileRegex) {
+		return this._rpc("SearchForFiles",  arguments );
+	}
+	
+	UpdateFileBinary(repoOwner,repoName,path,contentB64) {
+		return this._rpc("UpdateFileBinary",  arguments );
+	}
+	
 
 	flatten(callback, context=null) {
 		return function(argsArray) {

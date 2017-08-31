@@ -169,6 +169,12 @@ var APIWs = (function () {
     APIWs.prototype.FindFileLists = function (repoOwner, repoName) {
         return this.rpc("FindFileLists", [repoOwner, repoName]);
     };
+    APIWs.prototype.SearchForFiles = function (repoOwner, repoName, fileRegex) {
+        return this.rpc("SearchForFiles", [repoOwner, repoName, fileRegex]);
+    };
+    APIWs.prototype.UpdateFileBinary = function (repoOwner, repoName, path, contentB64) {
+        return this.rpc("UpdateFileBinary", [repoOwner, repoName, path, contentB64]);
+    };
     return APIWs;
 }());
 
@@ -451,6 +457,42 @@ var RepoFileEditorCM = (function () {
         this.el = n;
     }
     return RepoFileEditorCM;
+}());
+var RepoFileViewerFile = (function () {
+    function RepoFileViewerFile() {
+        var t = RepoFileViewerFile._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"repo-file-viewer-file\"><div class=\"image\"><img/></div><div class=\"filename\"/></div>";
+            t = d.firstElementChild;
+            RepoFileViewerFile._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            img: n.childNodes[0].childNodes[0],
+            filename: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return RepoFileViewerFile;
+}());
+var RepoFileViewerPage = (function () {
+    function RepoFileViewerPage() {
+        var t = RepoFileViewerPage._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"repo-file-viewer\"><div class=\"searchbar\"><input type=\"text\" placeholder=\"Enter search text to find images.\"/></div><div class=\"data\">\n\t</div></div>";
+            t = d.firstElementChild;
+            RepoFileViewerPage._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            search: n.childNodes[0].childNodes[0],
+            data: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return RepoFileViewerPage;
 }());
 var conflict_ClosePRDialog = (function () {
     function conflict_ClosePRDialog() {
@@ -2441,6 +2483,25 @@ var File$1 = (function () {
             return Promise.resolve();
         });
     };
+    // FetchGit fetches the git merged content for the file
+    File.prototype.FetchGit = function (source) {
+        var _this = this;
+        if (this.cache.has("git")) {
+            return Promise.resolve();
+        }
+        this.ListenRPC.dispatch(source, true, "FetchGit");
+        return this.context.API()
+            .MergedFileGit(this.context.RepoOwner, this.context.RepoName, this.path)
+            .then(function (_a) {
+            var automerged = _a[0], text = _a[1];
+            var gitFile = new FileContent$1(true, text);
+            _this.cache.set("git", gitFile);
+            _this.ListenRPC.dispatch(source, false, "FetchGit");
+            // TODO: Should it be WorkingChanged that we're sending?
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, gitFile);
+            return Promise.resolve();
+        });
+    };
     File.prototype.RevertOur = function (source) {
         var _this = this;
         this.ListenRPC.dispatch(source, true, "RevertOur");
@@ -3194,6 +3255,7 @@ var RepoConflictPage = (function () {
         document.getElementById("action-commit").addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
+            // TODO: Should check whether editor should save before committing.
             _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
                 .then(function (r) {
                 if (r.Cancelled) {
@@ -3376,6 +3438,210 @@ var PullRequestMergePage = (function () {
     return PullRequestMergePage;
 }());
 
+var DOMInsert = (function () {
+    function DOMInsert(parent) {
+        this.parent = parent;
+    }
+    DOMInsert.prototype.Insert = function (el) {
+        if ('function' == typeof this.parent) {
+            this.parent(el);
+        }
+        else {
+            this.parent.appendChild(el);
+        }
+    };
+    return DOMInsert;
+}());
+
+var RepoFileViewerFile$1 = (function (_super) {
+    tslib_1.__extends(RepoFileViewerFile$$1, _super);
+    function RepoFileViewerFile$$1(context, filename, parent, page) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.filename = filename;
+        _this.page = page;
+        _this.version = 1;
+        _this.Refresh();
+        _this.$.filename.textContent = _this.filename ? _this.filename : "Drop a file to upload.";
+        parent.Insert(_this.el);
+        _this.el.addEventListener('drop', function (evt) {
+            evt.preventDefault(); // Necessary so the browser doesn't just display the dropped item
+            _this.page.FileDrop(_this, evt);
+        });
+        _this.el.addEventListener('drag', function (evt) {
+        });
+        _this.el.addEventListener('dragover', function (evt) {
+            evt.preventDefault();
+        });
+        _this.el.addEventListener("dragend", function (evt) {
+            evt.preventDefault();
+            var dt = evt.dataTransfer;
+            if (dt.items) {
+                for (var i = 0; i < dt.items.length; i++) {
+                    dt.items.remove(i);
+                }
+            }
+            else {
+                dt.clearData();
+            }
+        });
+        return _this;
+    }
+    RepoFileViewerFile$$1.prototype.Refresh = function () {
+        var src = "/img/plus.svg";
+        if ("" != this.filename) {
+            src = "/www/" + this.context.RepoOwner + "/" + this.context.RepoName + "/repo/" + this.filename + "?v=" + (this.version++);
+        }
+        this.$.img.setAttribute('src', src);
+    };
+    RepoFileViewerFile$$1.prototype.Filename = function () {
+        return this.filename;
+    };
+    // IsAddButton returns true if this RepoFileViewerFile is in fact just the generic
+    // 'add a new file' button
+    RepoFileViewerFile$$1.prototype.IsAddButton = function () {
+        return "" == this.filename;
+    };
+    return RepoFileViewerFile$$1;
+}(RepoFileViewerFile));
+
+var EditField = (function () {
+    function EditField(el, page) {
+        var _this = this;
+        this.el = el;
+        this.page = page;
+        this.value = el.value;
+        this.el.addEventListener("keyup", function (evt) {
+            var v = el.value;
+            if (v != _this.value) {
+                _this.value = v;
+                page.ValueChanged(v);
+            }
+        });
+    }
+    return EditField;
+}());
+var LoadFiles = (function () {
+    function LoadFiles(context, listener) {
+        this.context = context;
+        this.listener = listener;
+    }
+    LoadFiles.prototype.Search = function (s) {
+        var _this = this;
+        console.log("LoadFiles.Search(" + s + ")");
+        this.searchingFor = s;
+        EBW.API()
+            .SearchForFiles(this.context.RepoOwner, this.context.RepoName, s)
+            .then(function (_a) {
+            var search = _a[0], files = _a[1];
+            if (search != _this.searchingFor) {
+                return;
+            }
+            _this.listener.FilesFound(files);
+        });
+    };
+    return LoadFiles;
+}());
+var RepoFileViewerPage$1 = (function (_super) {
+    tslib_1.__extends(RepoFileViewerPage$$1, _super);
+    function RepoFileViewerPage$$1(context, parent) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.add = new RepoFileViewerFile$1(_this.context, "", new DOMInsert(_this.$.data), _this);
+        _this.inserter = new DOMInsert(function (el) {
+            _this.$.data.insertBefore(el, _this.add.el);
+        });
+        parent.appendChild(_this.el);
+        _this.$.search.focus();
+        _this.loadFiles = new LoadFiles(context, _this);
+        new EditField(_this.$.search, _this);
+        return _this;
+    }
+    RepoFileViewerPage$$1.prototype.ValueChanged = function (s) {
+        s = s + ".*\\.(png|jpg|jpeg|svg|gif|tiff)$";
+        this.loadFiles.Search(s);
+    };
+    RepoFileViewerPage$$1.prototype.FilesFound = function (files) {
+        console.log("FilesFound: ", files);
+        var e = this.$.data.firstChild;
+        while (e) {
+            var next = e.nextSibling;
+            if (e != this.add.el) {
+                this.$.data.removeChild(e);
+            }
+            e = next;
+        }
+        for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
+            var f = files_1[_i];
+            new RepoFileViewerFile$1(this.context, f, this.inserter, this);
+        }
+    };
+    RepoFileViewerPage$$1.prototype.FileDrop = function (src, evt) {
+        var _this = this;
+        var dt = evt.dataTransfer;
+        if (dt.items) {
+            var _loop_1 = function (i) {
+                var item = dt.items[i];
+                if (item.kind == "file") {
+                    //console.log(`filename = `, item.name);
+                }
+                // READ THE FILE
+                var reader = new FileReader();
+                reader.addEventListener("loadend", function (evt) {
+                    //console.log(`READ file. result=`, reader.result);
+                    //console.log(`Replacing file ${this.filename} with result`);
+                    var u8 = new Uint8Array(reader.result); //Uint8Array.from(reader.result);
+                    //console.log(`u8 = `, u8);
+                    var blen = u8.byteLength;
+                    //console.log(`blen = `, blen);
+                    var binary = "";
+                    for (var i_1 = 0; i_1 < blen; i_1++) {
+                        binary += String.fromCharCode(u8[i_1]);
+                    }
+                    var p;
+                    if ("" != src.Filename()) {
+                        p = Promise.resolve(src.Filename());
+                    }
+                    else {
+                        p = EBW.Prompt("Enter full path and filename for uploaded file.");
+                    }
+                    p.then(function (s) {
+                        if ("" == s)
+                            return Promise.resolve("");
+                        return EBW.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
+                            .then(function () {
+                            return Promise.resolve(s);
+                        });
+                    })
+                        .then(function (s) {
+                        if ("" != s) {
+                            if (!src.IsAddButton()) {
+                                src.Refresh();
+                            }
+                            else {
+                                new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
+                            }
+                            EBW.Toast("Image uploaded");
+                        }
+                    })
+                        .catch(EBW.Error);
+                });
+                reader.readAsArrayBuffer(item.getAsFile());
+            };
+            for (var i = 0; i < dt.items.length; i++) {
+                _loop_1(i);
+            }
+        }
+        else {
+            alert("dt.files- unexpected file upload result");
+            for (var i = 0; i < dt.files.length; i++) {
+                var file = dt.files[i];
+            }
+        }
+    };
+    return RepoFileViewerPage$$1;
+}(RepoFileViewerPage));
+
 var EBW = (function () {
     function EBW() {
         if (null == EBW.instance) {
@@ -3392,7 +3658,11 @@ var EBW = (function () {
                         new RepoDetailPage(context);
                         break;
                     case 'RepoConflictPage':
-                        new RepoConflictPage(context, el);
+                        new RepoConflictPage(context);
+                        break;
+                    case 'RepoFileViewerPage':
+                        console.log("Creating RepoFileViewerPage");
+                        new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
                         break;
                 }
             }
@@ -3442,6 +3712,7 @@ var EBW = (function () {
     return EBW;
 }());
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOMContentLoaded - EBW");
     new EBW();
 });
 

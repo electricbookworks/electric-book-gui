@@ -1763,7 +1763,7 @@ func (r *Repo) RevertLocalChanges() error {
 	return nil
 }
 
-// PrintLocalChanges prints all locally chnaged files that aren't changed.
+// PrintLocalChanges prints all locally chnaged files that aren't staged.
 func (r *Repo) PrintLocalChanges() error {
 	deltas, err := r.DiffsIndexToWt()
 	if nil != err {
@@ -1778,4 +1778,57 @@ func (r *Repo) PrintLocalChanges() error {
 // RunGit runs git in the repo directory with the given arguments.
 func (r *Repo) RunGit(args ...string) error {
 	return runGitDir(r.RepoPath(), args)
+}
+
+// SearchForFiles returns a list of all files that match the given regexp.
+// It ignores all files that are ignored in Git, and skips all ignored directories.
+func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string, error) {
+	reg, err := regexp.Compile(fn)
+	if nil != err {
+		return nil, err
+	}
+	paths := []string{}
+	repoPath := r.RepoPath()
+	if err := filepath.Walk(r.RepoPath(), func(path string, fi os.FileInfo, err error) error {
+		p, err := filepath.Rel(repoPath, path)
+		if nil != err {
+			return r.Error(err)
+		}
+		if `.` == p {
+			return nil
+		}
+		glog.Infof(`path = %s, rel = %s`, path, p)
+		ignore, err := r.Repository.IsPathIgnored(p)
+		if nil != err {
+			return r.Error(err)
+		}
+		if fi.IsDir() {
+			if ignore {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		if !ignore && reg.MatchString(p) && (nil == filter || filter(p)) {
+			paths = append(paths, p)
+		}
+		return nil
+	}); nil != err {
+		return nil, err
+	}
+	glog.Infof(`SearchForFiles %s returned %v`, fn, paths)
+	return paths, nil
+}
+
+// UpdateFileBinary writes the given file and updates it in git.
+func (r *Repo) UpdateFileBinary(path string, raw []byte) error {
+	// glog.Infof(`Writing file of length %d to %s`, len(raw), r.RepoPath(path))
+	err := ioutil.WriteFile(r.RepoPath(path), raw, 0755)
+	if nil != err {
+		return r.Error(err)
+	}
+	if err := r.AddToIndex(path); nil != err {
+		return r.Error(err)
+	}
+	return nil
 }

@@ -4520,6 +4520,43 @@ body {
         .repo-list .repo .repo-manage a:first-child {
           margin-top: 0em; }
 
+.repo-file-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between; }
+  .repo-file-viewer .search {
+    flex-grow: 0; }
+  .repo-file-viewer .data {
+    display: grid;
+    grid-template-columns: repeat(6, 15fr);
+    grid-column-gap: 2em;
+    align-items: stretch;
+    position: relative; }
+
+.repo-file-viewer-file {
+  width: 100%;
+  border: 2px solid lightgray;
+  padding: 1em;
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch; }
+  .repo-file-viewer-file .image {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; }
+    .repo-file-viewer-file .image img {
+      width: 100%; }
+  .repo-file-viewer-file .filename {
+    flex-grow: 0;
+    font-size: 0.5em;
+    font-weight: bold; }
+
 input,
 textarea,
 .btn {

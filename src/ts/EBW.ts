@@ -8,6 +8,7 @@ import {RepoEditorPage} from './RepoEditorPage';
 import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
+import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
 	static instance : EBW;
@@ -29,7 +30,11 @@ export class EBW {
 						new RepoDetailPage(context);
 						break;
 					case 'RepoConflictPage':
-						new RepoConflictPage(context, el);
+						new RepoConflictPage(context);
+						break;
+					case 'RepoFileViewerPage':
+						console.log(`Creating RepoFileViewerPage`); 
+						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);
 						break;
 				}
 			}
@@ -75,5 +80,6 @@ export class EBW {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	console.log(`DOMContentLoaded - EBW`);
 	new EBW();
 });

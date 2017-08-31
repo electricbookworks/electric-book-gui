@@ -54,6 +54,7 @@ func BookCommands() *commander.Command {
 				BookFetchCommand,
 				BookLocalChangesCommand,
 				BookRevertLocalChangesCommand,
+				BookConflictedFilesCommand,
 			)
 		})
 }
@@ -766,5 +767,26 @@ func BookRevertLocalChangesCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.RevertLocalChanges()
+		})
+}
+
+func BookConflictedFilesCommand() *commander.Command {
+	return commander.NewCommand(`conflicts`,
+		`List conflicted files`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			conflicts, err := repo.ListRepoConflicts()
+			if nil != err {
+				return err
+			}
+			for _, c := range conflicts {
+				fmt.Println(c)
+			}
+			return nil
 		})
 }

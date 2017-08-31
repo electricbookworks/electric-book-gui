@@ -33,7 +33,6 @@ export class RepoConflictPage {
 		this.commitDialog = new CommitMessageDialog(false);
 		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
 
-
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
 				let el = document.getElementById(`files`);
@@ -56,6 +55,7 @@ export class RepoConflictPage {
 
 		document.getElementById(`action-commit`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
+			// TODO: Should check whether editor should save before committing.
 			this.commitDialog.Open(`Resolve Conflict`, `The merge will be resolved.`)
 			.then(
 				(r:CommitMessageDialogResult) => {

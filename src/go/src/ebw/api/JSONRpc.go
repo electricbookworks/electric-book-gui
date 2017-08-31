@@ -7,6 +7,7 @@ package api
 //go:generate golait2 -logtostderr gen -out ../../../../ts/APIWs.ts -type API -in ebw/api/JSONRpc.go -tem typescriptWs
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/google/go-github/github"
 
@@ -55,6 +56,7 @@ func (rpc *API) GetFileString(repoOwner, repoName, path string) (string, error) 
 func (rpc *API) UpdateFile(repoOwner, repoName, path, content string) error {
 	return git.UpdateFile(rpc.Client, rpc.User, repoOwner, repoName, path, []byte(content))
 }
+
 func (rpc *API) StageFile(repoOwner, repoName, path string) error {
 	err := git.StageFile(rpc.Client, repoOwner, repoName, path)
 	if nil != err {
@@ -263,4 +265,30 @@ func (rpc *API) FindFileLists(repoOwner, repoName string) ([]string, error) {
 		return nil, err
 	}
 	return files, err
+}
+
+func (rpc *API) SearchForFiles(repoOwner, repoName, fileRegex string) (string, []string, error) {
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return fileRegex, nil, err
+	}
+	defer r.Free()
+	files, err := r.SearchForFiles(fileRegex, nil)
+	if nil != err {
+		return fileRegex, nil, err
+	}
+	return fileRegex, files, nil
+}
+
+func (rpc *API) UpdateFileBinary(repoOwner, repoName, path string, contentB64 string) error {
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer r.Free()
+	raw, err := base64.StdEncoding.DecodeString(contentB64)
+	if nil != err {
+		return err
+	}
+	return r.UpdateFileBinary(path, raw)
 }

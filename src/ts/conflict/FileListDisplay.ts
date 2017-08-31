@@ -13,7 +13,9 @@ export enum FileListDisplayEvent {
 export class FileListDisplay extends Template {
 	public Listen: signals.Signal;
 
-	constructor(protected context:Context, protected parent:HTMLElement, fileList: FileList, protected mergingInfo:MergingInfo) {
+	constructor(protected context:Context, protected parent:HTMLElement, 
+		fileList: FileList, protected mergingInfo:MergingInfo) 
+	{
 		super();
 		this.Listen = new signals.Signal();
 

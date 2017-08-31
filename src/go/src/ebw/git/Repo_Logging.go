@@ -37,3 +37,17 @@ func (r *Repo) Error(err error) error {
 	}).Error(err)
 	return err
 }
+
+// Errorf logs an error from the formatter and arguments describing the error
+func (r *Repo) Errorf(formatter string, args ...interface{}) error {
+	if nil == r.Log {
+		r.Log = logrus.New().WithFields(logrus.Fields{`username`: r.Client.Username})
+	}
+	_, file, line, _ := runtime.Caller(1)
+
+	err := fmt.Errorf(formatter, args...)
+	r.Log.WithFields(logrus.Fields{
+		`file`: fmt.Sprintf(`%s:%d`, file, line),
+	}).Error(err)
+	return err
+}

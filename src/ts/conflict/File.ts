@@ -78,6 +78,24 @@ export class File {
 				return Promise.resolve();
 			});
 	}
+	// FetchGit fetches the git merged content for the file
+	FetchGit(source:any):Promise<void>{
+		if (this.cache.has(`git`)) {
+			return Promise.resolve();
+		}
+		this.ListenRPC.dispatch(source, true, `FetchGit`);
+		return this.context.API()
+		.MergedFileGit(this.context.RepoOwner, this.context.RepoName, this.path)
+		.then(
+			([automerged, text]:[boolean,string])=> {
+				let gitFile = new FileContent(true, text);
+				this.cache.set(`git`, gitFile);
+				this.ListenRPC.dispatch(source, false, `FetchGit`);
+				// TODO: Should it be WorkingChanged that we're sending?
+				this.Listen.dispatch(source, FileEvent.WorkingChanged, gitFile);
+				return Promise.resolve();
+		});
+	}
 	RevertOur(source:any) : Promise<FileContent> {
 		this.ListenRPC.dispatch(source, true, `RevertOur`);
 		return this.mergeFileOriginal("our")

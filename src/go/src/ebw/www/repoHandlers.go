@@ -18,6 +18,18 @@ import (
 	"ebw/util"
 )
 
+func repoFileViewer(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	return c.Render(`repo_file_viewer.html`, nil)
+}
+
 func repoCommit(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
