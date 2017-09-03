@@ -816,17 +816,21 @@ var RepoDetailPage = (function () {
     function RepoDetailPage(context) {
         this.context = context;
         RepoMergeDirectButton.init(this.context);
-        document.getElementById("cancelAllChanges").addEventListener("click", function (evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
-                .then(function (b) {
-                if (b) {
-                    document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
-                    return;
-                }
+        var el = document.getElementById("cancelAllChanges");
+        if (el) {
+            el.addEventListener("click", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
+                    .then(function (b) {
+                    if (b) {
+                        document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
+                        return;
+                    }
+                });
             });
-        });
+        }
+        
         // let dialog = new RepoMergeDialog(context, undefined);
         // RepoMergeButton.init(this.context, dialog);
         // dialog.MergeEvent.add(this.mergeEvent, this);

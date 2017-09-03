@@ -110,6 +110,9 @@ func githubAuth(c *Context) error {
 	gc := github.NewClient(tc)
 
 	user, _, err := gc.Users.Get(c.Context(), "")
+
+	glog.Infof(`GitHub Logged in %s:%s`, user.GetLogin(), token.AccessToken)
+
 	for _, username := range config.Config.AllowedUsers {
 		r := regexp.MustCompile(username)
 		if r.MatchString(user.GetLogin()) {

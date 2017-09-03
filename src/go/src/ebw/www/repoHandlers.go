@@ -132,7 +132,6 @@ func repoView(c *Context) error {
 }
 
 func repoDetails(c *Context) error {
-	glog.Infof("repoDetails p1")
 	client := Client(c.W, c.R)
 	if nil == client {
 		return nil
@@ -140,13 +139,11 @@ func repoDetails(c *Context) error {
 	repoOwner := c.Vars[`repoOwner`]
 	repoName := c.Vars[`repoName`]
 
-	glog.Infof("repoDetails p2")
 	repo, _, err := client.Repositories.Get(c.Context(), repoOwner, repoName)
 	if nil != err {
 		return err
 	}
 
-	glog.Infof("repoDetails p3 - pull requests fetch")
 	prs, err := git.ListPullRequests(client, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -155,8 +152,6 @@ func repoDetails(c *Context) error {
 	c.D[`PrCount`] = len(prs)
 
 	var aheadBehind *git.RepoDiffStats
-
-	glog.Infof("repoDetails p4 - ahead behind")
 
 	if nil != repo.Parent {
 		aheadBehind, err = git.CompareCommits(client,
@@ -171,14 +166,11 @@ func repoDetails(c *Context) error {
 		}
 	}
 
-	glog.Infof("repoDetails p5 - erepo")
 	erepo, err := git.NewRepo(client, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
 	defer erepo.Free()
-
-	glog.Infof("repoDetails p6 - staged files")
 
 	stagedFiles, err := erepo.StagedFiles()
 	if nil != err {
@@ -194,14 +186,10 @@ func repoDetails(c *Context) error {
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
 
-	glog.Infof("repoDetails p7 - ListAllRepoFiles")
-
 	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
-
-	glog.Infof("repoDetails p8 - render")
 
 	return c.Render(`repo_detail.html`, map[string]interface{}{
 		"Repo": repo,
