@@ -1319,6 +1319,7 @@ func (r *Repo) Push(remoteName, branchName string) error {
 	}
 	defer remote.Free()
 	ref := fmt.Sprintf(`+refs/heads/%s`, branchName)
+	r.Infof(`going to remote.Push with ref = %s`, ref)
 	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
 		return r.Error(err)
 	}

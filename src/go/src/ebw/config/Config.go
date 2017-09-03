@@ -21,6 +21,35 @@ type printserver struct {
 	Token  string `yaml:"token"`
 }
 
+type errorMailer struct {
+	To   string `yaml:"to"`
+	From string `yaml:"from"`
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+}
+
+func (e errorMailer) FromTo() (string, string) {
+	t, f := e.To, e.From
+	if `` == f {
+		f = `errors@electricbook.works`
+	}
+	if `` == t {
+		t = `craig@lateral.co.za`
+	}
+	return f, t
+}
+func (e errorMailer) HostPort() (string, int) {
+	h := e.Host
+	if `` == h {
+		h = `localhost`
+	}
+	p := e.Port
+	if 0 == p {
+		p = 587
+	}
+	return h, p
+}
+
 type config struct {
 	Github         *github     `yaml:"github"`
 	Server         string      `yaml:"server"`
@@ -35,6 +64,7 @@ type config struct {
 	RubyVersion    string      `yaml:"ruby_version"`
 	SessionAuth    string      `yaml:"session_auth"`
 	SessionEncrypt string      `yaml:"session_encrypt"`
+	ErrorMail      errorMailer `yaml:"error_mail"`
 }
 
 func (c config) String() string {

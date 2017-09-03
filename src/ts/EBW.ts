@@ -3,6 +3,7 @@ import {APIWs} from './APIWs';
 import {Context} from './Context';
 import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
+import {LoginTokenList} from './LoginTokenList';
 import {RepoDetailPage} from './RepoDetailPage';
 import {RepoEditorPage} from './RepoEditorPage';
 import {RepoConflictPage} from './RepoConflictPage';
@@ -17,8 +18,8 @@ export class EBW {
 		if (null==EBW.instance) {
 			EBW.instance = this;
 			this.api = new APIWs();
-			console.log(`Activating foundation on the document`);
 			jQuery(document).foundation();
+			LoginTokenList.init();
 
 			let el = document.getElementById(`ebw-context`);
 			let context : Context;

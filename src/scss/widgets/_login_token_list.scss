@@ -1,0 +1,21 @@
+.login-token-list {
+
+	.token-input {
+		// display: flex;
+		// flex-direction: row;
+		// justify-content:space-between;
+		// align-items: baseline;
+		display: grid;
+		grid-template-columns: 30fr 70fr 6em;
+		grid-column-gap: 1em;
+		align-items: baseline;
+		
+		input {
+			// flex-grow: 1;
+			padding-right: 1em;
+		}
+		button {
+			// flex-grow: 0;
+		}
+	}
+}

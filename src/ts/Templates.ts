@@ -7,6 +7,7 @@ export namespace EL {
 	export type FileListDialog =	HTMLDivElement;
 	export type FileListDialog_Item =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
+	export type LoginTokenList =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLDivElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
@@ -51,6 +52,12 @@ export namespace R {
 		};
 	export interface FoundationRevealDialog {
 		content: HTMLDivElement,
+		};
+	export interface LoginTokenList {
+		name: HTMLInputElement,
+		token: HTMLInputElement,
+		add: HTMLButtonElement,
+		list: HTMLUListElement,
 		};
 	export interface MergeEditor {
 		mergely: HTMLDivElement,
@@ -257,6 +264,29 @@ export class FoundationRevealDialog {
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
 			content: n.childNodes[0] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class LoginTokenList {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.LoginTokenList;
+	constructor() {
+		let t = LoginTokenList._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="login-token-list"><div class="token-input"><input type="text" placeholder="name"/><input type="text" placeholder="token"/><button class="btn">Add</button></div><ul class="token-list">
+	</ul></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			LoginTokenList._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			name: n.childNodes[0].childNodes[0] as HTMLInputElement,
+			token: n.childNodes[0].childNodes[1] as HTMLInputElement,
+			add: n.childNodes[0].childNodes[2] as HTMLButtonElement,
+			list: n.childNodes[1] as HTMLUListElement,
 		};
 		this.el = n;
 	}

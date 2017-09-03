@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang/glog"
 	// "github.com/google/go-github/github"
+	"gopkg.in/gomail.v2"
 
 	"ebw/book"
 	"ebw/config"
@@ -471,4 +472,43 @@ func githubInvitationAcceptOrDecline(c *Context) error {
 	}
 
 	return c.Redirect(`/`)
+}
+
+func errorReporter(c *Context) error {
+	var args struct {
+		When        string `schema:"when"`
+		User        string `schema:"user"`
+		Error       string `schema:"error"`
+		Description string `schema:"description"`
+	}
+	if err := c.Decode(&args); nil != err {
+		return err
+	}
+	// LOG the error to an email address
+	raw, _ := json.Marshal(&args)
+	to, from := config.Config.ErrorMail.FromTo()
+	host, port := config.Config.ErrorMail.HostPort()
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", from)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", `Error report: `, args.Error)
+	m.SetBody("text/plain", string(raw))
+
+	d := gomail.Dialer{Host: host, Port: port}
+	if err := d.DialAndSend(m); err != nil {
+		glog.Error(err)
+		return err
+	}
+
+	return c.Render(`error_report_sent.html`, nil)
+}
+
+func repoStatus(c *Context) error {
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	c.D[`RepoStatus`] = 
+	return c.Redirect(pathRepoDetail(repo))	
 }

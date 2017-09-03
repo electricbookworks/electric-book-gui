@@ -4045,6 +4045,14 @@ body {
     align-items: flex-end;
     justify-content: flex-end; }
 
+.login-token-list .token-input {
+  display: grid;
+  grid-template-columns: 30fr 70fr 6em;
+  grid-column-gap: 1em;
+  align-items: baseline; }
+  .login-token-list .token-input input {
+    padding-right: 1em; }
+
 .landing-page {
   max-width: 40em; }
 

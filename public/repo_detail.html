@@ -15,6 +15,10 @@
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>
             </div>
         </div>
+        
+        <div>
+        <a class="btn" href="/error/generate">Generate an error</a>
+        </div>
 
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>

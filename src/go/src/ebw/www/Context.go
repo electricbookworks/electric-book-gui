@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	// "github.com/google/go-github/github"
 	// "github.com/golang/glog"
@@ -65,7 +66,7 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer c.runDefers()
 	// c.Log.Infof(`Starting processing web request %s`, r.URL.String())
 	if err := f(c); nil != err {
-		WebError(w, r, err)
+		c.WebError(err)
 	}
 	// c.Log.Infof(`Finished processing web request %s`, r.URL.String())
 }
@@ -170,6 +171,7 @@ func (c *Context) Decode(i interface{}) error {
 	if err := c.R.ParseForm(); nil != err {
 		return util.Error(err)
 	}
+	schemaDecoder.IgnoreUnknownKeys(true)
 	if err := schemaDecoder.Decode(i, c.R.URL.Query()); nil != err {
 		return util.Error(err)
 	}
@@ -177,4 +179,12 @@ func (c *Context) Decode(i interface{}) error {
 		return util.Error(err)
 	}
 	return nil
+}
+
+func (c *Context) WebError(err error) {
+	c.W.WriteHeader(http.StatusInternalServerError)
+	c.Render(`error.html`, map[string]interface{}{
+		`Err`:  err,
+		`When`: time.Now().Format(time.RFC3339),
+	})
 }

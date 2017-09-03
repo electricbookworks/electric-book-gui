@@ -70,6 +70,12 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repoOwner}/{repoName}/push/{remote}/{branch}`, WebHandler(repoPushRemote))
+	r.Handle(`/repo/{repoOwner}/{repoName}/status`, WebHandler(repoStatus))
+
+	r.Handle(`/error/generate`, WebHandler(func(c *Context) error {
+		return fmt.Errorf(`This is an error that I'm auto-generating`)
+	}))
+	r.Handle(`/error/report`, WebHandler(errorReporter))
 
 	r.Handle(`/repo/{repoOwner}/{repoName}/conflict`, WebHandler(repoConflict))
 	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/abort`, WebHandler(repoConflictAbort))
@@ -168,11 +174,9 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		}
 		return nil
 	}); nil != err {
-		WebError(w, r, err)
 		return err
 	}
 	if err := t.ExecuteTemplate(w, tmpl, data); nil != err {
-		WebError(w, r, err)
 		return err
 	}
 	return nil
