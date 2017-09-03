@@ -509,6 +509,6 @@ func repoStatus(c *Context) error {
 	if nil != err {
 		return err
 	}
-	c.D[`RepoStatus`] = 
-	return c.Redirect(pathRepoDetail(repo))	
+	c.D[`RepoStatus`] = repo.EBWRepoStatus
+	return c.Render(`repo_status.html`, nil)
 }
