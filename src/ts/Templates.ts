@@ -7,6 +7,7 @@ export namespace EL {
 	export type FileListDialog =	HTMLDivElement;
 	export type FileListDialog_Item =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
+	export type LoginTokenDisplay =	HTMLUListElement;
 	export type LoginTokenList =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLDivElement;
@@ -52,6 +53,10 @@ export namespace R {
 		};
 	export interface FoundationRevealDialog {
 		content: HTMLDivElement,
+		};
+	export interface LoginTokenDisplay {
+		link: HTMLAnchorElement,
+		delete: HTMLAnchorElement,
 		};
 	export interface LoginTokenList {
 		name: HTMLInputElement,
@@ -264,6 +269,26 @@ export class FoundationRevealDialog {
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
 			content: n.childNodes[0] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class LoginTokenDisplay {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.LoginTokenDisplay;
+	constructor() {
+		let t = LoginTokenDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul><li data-set="this" class="token-display"><a href="">LINK</a><a href="">X</a></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
+			LoginTokenDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
+			link: n.childNodes[0] as HTMLAnchorElement,
+			delete: n.childNodes[1] as HTMLAnchorElement,
 		};
 		this.el = n;
 	}

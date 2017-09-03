@@ -372,6 +372,24 @@ var FoundationRevealDialog = (function () {
     }
     return FoundationRevealDialog;
 }());
+var LoginTokenDisplay = (function () {
+    function LoginTokenDisplay() {
+        var t = LoginTokenDisplay._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<ul><li data-set=\"this\" class=\"token-display\"><a href=\"\">LINK</a><a href=\"\">X</a></li></ul>";
+            t = d.firstElementChild.childNodes[0];
+            LoginTokenDisplay._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            link: n.childNodes[0],
+            delete: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return LoginTokenDisplay;
+}());
 var LoginTokenList = (function () {
     function LoginTokenList() {
         var t = LoginTokenList._template;
@@ -680,23 +698,36 @@ var AddNewBookDialog$$1 = (function (_super) {
     return AddNewBookDialog$$1;
 }(AddNewBookDialog$1));
 
-var TokenDisplay = (function () {
-    function TokenDisplay(parent, t) {
-        var a = document.createElement("a");
-        a.setAttribute("href", "/github/token/" + t.token);
-        a.innerText = t.name;
-        var li = document.createElement("li");
-        li.appendChild(a);
-        parent.appendChild(li);
+var TokenDisplay = (function (_super) {
+    tslib_1.__extends(TokenDisplay, _super);
+    function TokenDisplay(parent, t, list) {
+        var _this = _super.call(this) || this;
+        _this.t = t;
+        _this.list = list;
+        _this.$.link.href = "/github/token/" + _this.t.token;
+        _this.$.link.innerText = _this.t.name;
+        _this.$.delete.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            _this.el.remove();
+            _this.list.RemoveToken(_this.t);
+        });
+        parent.appendChild(_this.el);
+        return _this;
     }
+    TokenDisplay.removeToken = function (name) {
+        var d = document.getElementById("token-list-item-" + t.name);
+        if (d) {
+            d.remove();
+        }
+    };
     return TokenDisplay;
-}());
+}(LoginTokenDisplay));
 var LoginTokenList$1 = (function (_super) {
     tslib_1.__extends(LoginTokenList$$1, _super);
     function LoginTokenList$$1(parent) {
         var _this = _super.call(this) || this;
         _this.GetTokens().map(function (t) {
-            new TokenDisplay(_this.$.list, t);
+            new TokenDisplay(_this.$.list, t, _this);
         });
         _this.$.add.addEventListener("click", function (evt) {
             evt.preventDefault();
@@ -707,7 +738,7 @@ var LoginTokenList$1 = (function (_super) {
                 return;
             }
             if ("" == token) {
-                alert("You need to provide a token value.");
+                alert("You need to provide a token value");
                 return;
             }
             _this.AddToken({ name: name, token: token });
@@ -729,7 +760,18 @@ var LoginTokenList$1 = (function (_super) {
         var tokens = this.GetTokens();
         tokens.push(t);
         localStorage.setItem("ebw-token-list", JSON.stringify(tokens));
-        new TokenDisplay(this.$.list, t);
+        new TokenDisplay(this.$.list, t, this);
+    };
+    LoginTokenList$$1.prototype.RemoveToken = function (t) {
+        var tokens = this.GetTokens();
+        var newt = [];
+        for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+            var ot = tokens_1[_i];
+            if ((ot.name != t.name) || (ot.token != t.token)) {
+                newt.push(ot);
+            }
+        }
+        localStorage.setItem("ebw-token-list", JSON.stringify(newt));
     };
     LoginTokenList$$1.init = function () {
         console.log("seeking LoginTokenList");

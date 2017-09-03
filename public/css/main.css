@@ -4053,6 +4053,15 @@ body {
   .login-token-list .token-input input {
     padding-right: 1em; }
 
+.login-token-list .token-list .token-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.3em; }
+  .login-token-list .token-list .token-display:hover {
+    background-color: #eee; }
+
 .landing-page {
   max-width: 40em; }
 

@@ -1,19 +1,29 @@
-import {LoginTokenList as Template} from './Templates';
+import {LoginTokenList as Template, LoginTokenDisplay} from './Templates';
 
 interface Token {
 	name:string;
 	token:string;
 }
 
-class TokenDisplay {
-	constructor(parent:HTMLElement, t:Token) {
+class TokenDisplay extends LoginTokenDisplay {
+	constructor(parent:HTMLElement, protected t:Token, protected list:LoginTokenList) {
+		super();
 
-		let a = document.createElement(`a`);
-		a.setAttribute(`href`, `/github/token/${t.token}`);
-		a.innerText = t.name;
-		let li = document.createElement(`li`);
-		li.appendChild(a);
-		parent.appendChild(li);
+		this.$.link.href = `/github/token/${this.t.token}`;
+		this.$.link.innerText = this.t.name;
+
+		this.$.delete.addEventListener(`click`, (evt)=>{
+			evt.preventDefault();
+			this.el.remove();
+			this.list.RemoveToken(this.t);
+		})
+		parent.appendChild(this.el);
+	}
+	static removeToken(name:string) {
+		let d = document.getElementById(`token-list-item-` + t.name);
+		if (d) {
+			d.remove();
+		}
 	}
 }
 
@@ -22,7 +32,7 @@ export class LoginTokenList extends Template {
 		super();
 
 		this.GetTokens().map( (t)=>{
-			new TokenDisplay(this.$.list, t);
+			new TokenDisplay(this.$.list, t, this);
 		});
 
 		this.$.add.addEventListener(`click`, (evt)=>{
@@ -34,7 +44,7 @@ export class LoginTokenList extends Template {
 				return;
 			}
 			if (``==token) {
-				alert(`You need to provide a token value.`);
+				alert(`You need to provide a token value`);
 				return;
 			}
 			this.AddToken({name:name,token:token});
@@ -55,7 +65,17 @@ export class LoginTokenList extends Template {
 		let tokens = this.GetTokens();
 		tokens.push(t);
 		localStorage.setItem(`ebw-token-list`, JSON.stringify(tokens));
-		new TokenDisplay(this.$.list, t);
+		new TokenDisplay(this.$.list, t, this);
+	}
+	RemoveToken(t:Token):void {
+		let tokens = this.GetTokens();
+		let newt = [] as Token[];
+		for (let ot of tokens) {
+			if ((ot.name != t.name) || (ot.token!=t.token)) {
+				newt.push(ot);
+			}
+		}
+		localStorage.setItem(`ebw-token-list`, JSON.stringify(newt));
 	}
 	static init() {
 		console.log(`seeking LoginTokenList`); 
