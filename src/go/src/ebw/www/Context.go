@@ -99,6 +99,11 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 		c.D[`User`] = c.Client.User
 	}
 
+	if nil != c.Client {
+		c.D[`Token`] = c.Client.Token
+		c.D[`UserLogin`] = c.Client.Username
+	}
+
 	_, ok = c.D[`Flashes`]
 	if !ok {
 		flashes, err := c.Flashes()
