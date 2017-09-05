@@ -2,13 +2,13 @@
 {{template "_nav_main.html" .}}
 
 <main id="pull-request-view">
-	<div class="pr-topbar">Changes for Review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
+	<div class="pr-topbar">Changes for review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
 	<div class="workspace">
 		<nav id="differences">
 			<div id="pr-files-list">
 			</div>
 			<div>
-				<a href="{{.PullRequest.Number}}/close" class="btn">Close Changes</a>
+				<a href="{{.PullRequest.Number}}/close" class="btn">Close changes</a>
 			</div>
 		</nav>
 		<div id="mergely-container">
