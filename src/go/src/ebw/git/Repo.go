@@ -721,6 +721,8 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 
 // mergeAnnotatedCommit does an actual merge of the given AnnotatedCommit
 // with the HEAD of the repo.
+// If we receive a ErrConflict error from libgit2's Merge command, we ignore it-
+// since we will resolve Conflicts ourselves.
 func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error {
 	analysis, _, err := r.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
 	if nil != err {
@@ -742,20 +744,20 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 		glog.Infof(`MergeAnalysisUnborn - HEAD is unborn and merge not possible`)
 	}
 
-	// master, err := repo.LookupBranch(`origin/master`, git2go.BranchRemote)
-	// if nil != err {
-	// 	return err
-	// }
 	defaultMergeOptions, err := git2go.DefaultMergeOptions()
 	if nil != err {
 		return r.Error(err)
 	}
 	if err := r.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
-		// &git2go.MergeOptions{},
-		nil,
-		//&git2go.CheckoutOpts{},
+		&git2go.CheckoutOpts{},
 	); nil != err {
+		// We handle Merge Conflict && Conflict ourselves, so we're not actually worried about this error...???
+		if git2go.IsErrorCode(err, git2go.ErrMergeConflict) || git2go.IsErrorCode(err, git2go.ErrConflict) {
+			glog.Infof(`Merge returned MergeConflict %v, ErrConflict %v`, git2go.IsErrorCode(err, git2go.ErrMergeConflict),
+				git2go.IsErrorCode(err, git2go.ErrConflict))
+			return nil
+		}
 		return r.Error(err)
 	}
 	return nil
