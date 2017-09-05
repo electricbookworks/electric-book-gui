@@ -878,7 +878,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		}
 		raw, err := ioutil.ReadFile(r.RepoPath(path))
 		if nil != err {
-			return false, []byte{}, util.Error(err)
+			return false, []byte{}, r.Error(err)
 		}
 		return true, raw, r.Error(err)
 	}
@@ -959,8 +959,8 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		}
 	}
 
-	if fileId.IsZero() {
-		// I'm guessing this could occur if the file does not exist
+	if nil == fileId || fileId.IsZero() {
+		// This can occur if the file does not exist
 		glog.Infof(`Got fileId IsZero() for %s (v=%d)`, path, version)
 		return false, []byte{}, nil
 	}
@@ -992,7 +992,7 @@ func (r *Repo) fileTheir(path string) (*git2go.Oid, error) {
 	te, err := tree.EntryByPath(path)
 	if nil != err {
 		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-			return nil, err
+			return nil, nil
 		}
 		return nil, r.Error(err)
 	}
@@ -1431,29 +1431,35 @@ func (r *Repo) MergeFileInfo(path string) (*MergeFileInfo, error) {
 // within a EBW Server structured git repo.
 func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conflicted bool, prNumber int, description string) error {
 	if 0 == prNumber {
+		glog.Infof(`Pull`)
 		if err := r.Pull(remote, branch); nil != err {
 			return err
 		}
 	} else {
+		glog.Infof(`PullRequestFetch`)
 		if err := r.PullRequestFetch(prNumber); nil != err {
 			return err
 		}
+		glog.Infof(`PullRequestMerge`)
 		if err := r.PullRequestMerge(prNumber); nil != err {
 			return err
 		}
 	}
 	switch resolve {
 	case ResolveMergeOur:
+		glog.Infof(`ResetConflictedFilesInWorkingDir`)
 		if err := r.ResetConflictedFilesInWorkingDir(true, conflicted, nil); nil != err {
 			return err
 		}
 	case ResolveMergeTheir:
+		glog.Infof(`ResetConflictedFilesInWorkingDir`)
 		if err := r.ResetConflictedFilesInWorkingDir(false, conflicted, nil); nil != err {
 			return err
 		}
 	}
 
 	// Synchronize the TheirTree with the FileTheir items
+	glog.Infof(`TheirTree.Sync`)
 	if err := r.TheirTree().Sync(r, FileTheir); nil != err {
 		return err
 	}
@@ -1462,6 +1468,7 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 	// full meta-data information on this merge, even after we've
 	// messed with the filesystem / index.
 	r.EBWRepoStatus.MergingDescription = description
+	glog.Infof(`StatusListFilenames`)
 	files, err := r.StatusListFilenames()
 	if nil != err {
 		return err
@@ -1473,6 +1480,7 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 		r.EBWRepoStatus.MergingPRNumber = 0
 	}
 
+	glog.Infof(`writeEBWRepoStatus`)
 	if err = r.writeEBWRepoStatus(); nil != err {
 		return err
 	}
@@ -1576,17 +1584,21 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 func (r *Repo) PullPR(prNumber int) error {
 	// We revert local changes before pulling a PR - we should never
 	// have local changes from using EBM
+	glog.Infof(`About to RevertLocalChanges`)
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
 	// TODO: Extract the description from the actual PR. - use
 	// OUR-THEIR on conflicted files only.
+	glog.Infof(`Calling MergeWith`)
 	if err := r.MergeWith(``, ``, ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
 		return err
 	}
+	glog.Infof(`PullRequestFetch`)
 	if err := r.PullRequestFetch(prNumber); nil != err {
 		return err
 	}
+	glog.Infof(`PullRequestMerge`)
 	if err := r.PullRequestMerge(prNumber); nil != err {
 		return err
 	}
@@ -1798,7 +1810,6 @@ func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string,
 		if `.` == p {
 			return nil
 		}
-		glog.Infof(`path = %s, rel = %s`, path, p)
 		ignore, err := r.Repository.IsPathIgnored(p)
 		if nil != err {
 			return r.Error(err)
@@ -1817,19 +1828,35 @@ func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string,
 	}); nil != err {
 		return nil, err
 	}
-	glog.Infof(`SearchForFiles %s returned %v`, fn, paths)
 	return paths, nil
 }
 
 // UpdateFileBinary writes the given file and updates it in git.
 func (r *Repo) UpdateFileBinary(path string, raw []byte) error {
-	// glog.Infof(`Writing file of length %d to %s`, len(raw), r.RepoPath(path))
 	err := ioutil.WriteFile(r.RepoPath(path), raw, 0755)
 	if nil != err {
 		return r.Error(err)
 	}
 	if err := r.AddToIndex(path); nil != err {
 		return r.Error(err)
+	}
+	return nil
+}
+
+// DumpIndex dumps the current contents of the git index to stdout
+func (r *Repo) DumpIndex() error {
+	idx, err := r.Repository.Index()
+	if nil != err {
+		return r.Error(err)
+	}
+	defer idx.Free()
+	N := idx.EntryCount()
+	for i := uint(0); i < N; i++ {
+		e, err := idx.EntryByIndex(i)
+		if nil != err {
+			return r.Error(err)
+		}
+		fmt.Println(e.Path, e.Id.String())
 	}
 	return nil
 }

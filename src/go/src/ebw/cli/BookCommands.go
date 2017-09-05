@@ -55,6 +55,7 @@ func BookCommands() *commander.Command {
 				BookLocalChangesCommand,
 				BookRevertLocalChangesCommand,
 				BookConflictedFilesCommand,
+				BookDumpIndexCommand,
 			)
 		})
 }
@@ -788,5 +789,19 @@ func BookConflictedFilesCommand() *commander.Command {
 				fmt.Println(c)
 			}
 			return nil
+		})
+}
+
+func BookDumpIndexCommand() *commander.Command {
+	return commander.NewCommand(`dump-index`,
+		`Dump the git index`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.DumpIndex()
 		})
 }
