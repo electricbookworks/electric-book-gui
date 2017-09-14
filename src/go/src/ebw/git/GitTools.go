@@ -298,7 +298,8 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, o
 	//  and if not, create a newRepo for the user
 	workingDir := filepath.Join(os.TempDir(), repoOwner, newRepo)
 	os.MkdirAll(workingDir, 0755)
-	// defer os.RemoveAll(filepath.Join(workingDir, newRepo))
+
+	defer os.RemoveAll(filepath.Join(workingDir, newRepo))
 
 	// if orgName==``, then github will use client.Username
 	_, _, err := client.Repositories.Create(client.Context, orgName, &github.Repository{
@@ -341,54 +342,10 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, o
 		}
 	}
 
-	// // 3. Clone our destionation repo
-	// if err := runGitDir(workingDir, []string{
-	// 	`clone`,
-	// 	`https://` + client.Username + ":" + githubPassword + "@github.com/" +
-	// 		destRepo + ".git",
-	// }); nil != err {
-	// 	return util.Error(err)
-	// }
-
-	// srcDirLen := len(filepath.Join(workingDir, repoName+".source"))
-
-	// // 4. Copy all files from .source
-	// if err := filepath.Walk(filepath.Join(workingDir, repoName+".source"), func(path string, info os.FileInfo, err error) error {
-	// 	if `.git` == path {
-	// 		return filepath.SkipDir
-	// 	}
-	// 	if info.IsDir() {
-	// 		return nil
-	// 	}
-	// 	srcPath := path[srcDirLen+1:]
-	// 	destFile := filepath.Join(destDir, srcPath)
-	// 	os.MkdirAll(filepath.Dir(destFile), 0755)
-	// 	if err := copyFile(path, destFile); nil != err {
-	// 		return err
-	// 	}
-	// 	return nil
-	// }); nil != err {
-	// 	return util.Error(err)
-	// }
-
-	// // 5. Add all copied files
-	// if err := runGitDir(destDir, []string{`add`, `.`}); nil != err {
-	// 	return util.Error(err)
-	// }
-	// if err := runGitDir(destDir, []string{`commit`, `-m`, `Initial import`}); nil != err {
-	// 	return util.Error(err)
-	// }
-
-	// // 6. Mirror-push to the newRepo
-	// if err := runGitDir(filepath.Join(workingDir, repoName), []string{
-	// 	`push`, `-u`, `origin`, `master`,
-	// }); nil != err {
-	// 	return util.Error(err)
-	// }
-	// // 4. Delete the temporary working directory
-	// if err := os.RemoveAll(workingDir); nil != err {
-	// 	return util.Error(err)
-	// }
+	// 4. Delete the temporary working directory
+	if err := os.RemoveAll(workingDir); nil != err {
+		return util.Error(err)
+	}
 	return nil
 }
 
