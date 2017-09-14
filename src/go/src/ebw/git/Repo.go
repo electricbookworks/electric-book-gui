@@ -1,6 +1,8 @@
 package git
 
 import (
+	"bufio"
+	"bytes"
 	"crypto/sha1"
 	"errors"
 	"fmt"
@@ -1859,6 +1861,66 @@ func (r *Repo) DumpIndex() error {
 			return r.Error(err)
 		}
 		fmt.Println(e.Path, e.Id.String())
+	}
+	return nil
+}
+
+// gitConfigure configures the user name and email for the repo.
+func (r *Repo) gitConfigure() error {
+	config, err := r.Repository.Config()
+	if nil != err {
+		return r.Error(err)
+	}
+	defer config.Free()
+	if err := config.SetString(`user.name`, r.Client.Username); nil != err {
+		return r.Error(err)
+	}
+	if err := config.SetString(`user.email`, r.Client.User.GetEmail()); nil != err {
+		return r.Error(err)
+	}
+
+	if err := r.UpdateGitConfig(); nil != err {
+		return r.Error(err)
+	}
+	return nil
+}
+
+// gitUpdate updates the git repo from origin/master
+func (r *Repo) gitUpdate() error {
+	if err := r.gitConfigure(); nil != err {
+		return err
+	}
+	if err := r.RunGit(`pull`, `origin`, `master`); nil != err {
+		return err
+	}
+	return nil
+}
+
+// UpdateGitConfig updates the git config file with current user's
+// username and token, so that command-line git commands workb
+func (r *Repo) UpdateGitConfig() error {
+	raw, err := ioutil.ReadFile(r.RepoPath(`.git`, `config`))
+	if nil != err {
+		return r.Error(err)
+	}
+	out, err := os.Create(r.RepoPath(`.git`, `config`))
+	if nil != err {
+		return r.Error(err)
+	}
+	defer out.Close()
+
+	lines := bufio.NewScanner(bytes.NewReader(raw))
+	match := regexp.MustCompile(`^(\s*url\s*=\s*https?://).*@github.com/`)
+	repl := fmt.Sprintf(`%s:%s@github.com/`, r.Client.Username, r.Client.Token)
+	for lines.Scan() {
+		t := lines.Text()
+		m := match.FindStringSubmatch(t)
+		if nil != m {
+			t = m[1] + repl + t[len(m[0]):]
+		}
+		fmt.Fprintln(out, t)
+		// Don't know why, but this doesn't work :
+		// fmt.Fprintln(out, match.ReplaceAllString(t, "$1" + repl))
 	}
 	return nil
 }

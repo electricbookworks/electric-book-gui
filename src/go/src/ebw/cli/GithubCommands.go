@@ -21,7 +21,8 @@ func GithubCommand() *commander.Command {
 				DeleteRepoCommand,
 				RemoteCommand,
 				BranchNameCommand,
-				RootDirCommand)
+				RootDirCommand,
+				UpdateConfigCommand)
 		})
 }
 
@@ -147,5 +148,20 @@ func RootDirCommand() *commander.Command {
 			}
 			fmt.Println(root)
 			return nil
+		})
+}
+
+func UpdateConfigCommand() *commander.Command {
+	return commander.NewCommand(
+		`update-config`,
+		`Update the github config`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			return repo.UpdateGitConfig()
 		})
 }

@@ -268,53 +268,6 @@ func pullRequestMerge(c *Context) error {
 	return c.Redirect(pathRepoConflict(repo))
 }
 
-// pullRequestView is deprecated. I'm leaving it here just for a few
-// revisions, then it can be cut.
-func pullRequestView(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
-
-	c.D[`UserName`] = client.Username
-	c.D[`RepoOwner`] = repoOwner
-	c.D[`RepoName`] = repoName
-
-	pullRequestNumber := int(c.PI(`number`))
-
-	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, pullRequestNumber)
-	if nil != err {
-		return err
-	}
-	c.D[`PullRequest`] = pr
-	if nil != err {
-		return err
-	}
-
-	// Need to checkout both the repo and the PR
-	if _, err = git.Checkout(client, repoOwner, repoName, ``); nil != err {
-		return err
-	}
-	js := json.NewEncoder(os.Stdout)
-	js.SetIndent(``, `  `)
-	js.Encode(pr)
-	if _, err = git.PullRequestCheckout(client, *pr.Head.Repo.CloneURL, *pr.Head.SHA); nil != err {
-		return err
-	}
-
-	diffs, err := git.PullRequestDiffList(client, repoOwner, repoName, pr)
-	if nil != err {
-		return err
-	}
-	c.D[`Diffs`] = diffs
-	c.D[`SHA`] = *pr.Head.SHA
-	c.D[`PullURL`] = *pr.Head.Repo.CloneURL
-
-	return c.Render(`pull_request_view.html`, nil)
-}
-
 func pullRequestCreate(c *Context) error {
 	repo, err := c.Repo()
 	if nil != err {

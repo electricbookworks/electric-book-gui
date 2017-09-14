@@ -66,7 +66,7 @@ func githubCreateNew(c *Context) error {
 	}
 
 	if err := git.DuplicateRepo(client, client.Token,
-		`electricbookworks/electric-book`, repoNewName); nil != err {
+		`electricbookworks/electric-book`, c.P(`org_name`), repoNewName); nil != err {
 		return err
 	}
 

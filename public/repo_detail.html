@@ -15,10 +15,6 @@
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>
             </div>
         </div>
-        
-        <div>
-        <a class="btn" href="/error/generate">Generate an error</a>
-        </div>
 
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>
@@ -94,7 +90,7 @@
             </div>
  -->
          </div>
-        {{if not $state.LocalChanges}}
+        {{if $state.LocalChanges}}
             <div><p>You cannot review submissions until you have committed your changes.</p></div>
         {{end}}
         <div class="edits">

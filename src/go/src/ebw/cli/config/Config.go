@@ -4,12 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 
 	"github.com/golang/glog"
-
+	git2go "gopkg.in/libgit2/git2go.v25"
 	"gopkg.in/yaml.v2"
+
+	"ebw/util"
 )
 
 type githubUser struct {
@@ -24,6 +27,7 @@ type conf struct {
 }
 
 var Config conf
+var ErrUnknownUser = fmt.Errorf(`Unknown user`)
 
 // ReadConfigFile reads the configuration file
 func ReadConfigFile(in string) error {
@@ -33,6 +37,11 @@ func ReadConfigFile(in string) error {
 // GetUser returns the currently configured user based on the
 // configuration settings.
 func (c *conf) GetUser() (*githubUser, error) {
+	user, token, err := getUserForDir(``)
+	if nil == err {
+		return &githubUser{Name: user, Alias: user, Token: token}, nil
+	}
+
 	if 0 == len(c.Users) {
 		return nil, errors.New("No users defined")
 	}
@@ -86,7 +95,46 @@ func (c *conf) readFile(in string) error {
 	glog.Infof(`Reading config file %s`, in)
 	raw, err := ioutil.ReadFile(in)
 	if nil != err {
-		return err
+		glog.Infof(`Failed to read config file %s`, in)
+		return nil
 	}
 	return yaml.Unmarshal(raw, c)
+}
+
+// getUserForDir returns the user and token for the git repo containing
+// the given directory. If an empty string is supplied as the directory, the
+// current working directory is used instead.
+func getUserForDir(d string) (user, token string, err error) {
+	if `` == d {
+		d, err = os.Getwd()
+		if nil != err {
+			return ``, ``, util.Error(err)
+		}
+	}
+	repo, err := git2go.OpenRepositoryExtended(d, 0, `/`)
+	if nil != err {
+		return ``, ``, util.Error(err)
+	}
+	defer repo.Free()
+
+	origin, err := repo.Remotes.Lookup(`origin`)
+	if nil != err {
+		return ``, ``, util.Error(err)
+	}
+	defer origin.Free()
+
+	u, err := url.Parse(origin.Url())
+	if nil != err {
+		return ``, ``, util.Error(err)
+	}
+
+	if nil == u.User {
+		return ``, ``, ErrUnknownUser
+	}
+	password, ok := u.User.Password()
+	if !ok {
+		return ``, ``, ErrUnknownUser
+	}
+
+	return u.User.Username(), password, nil
 }

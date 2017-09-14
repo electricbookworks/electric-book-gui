@@ -51,42 +51,6 @@ func PullRequestDir(sha string) (string, error) {
 	return filepath.Join(prRoot, sha), nil
 }
 
-// PullRequestCheckout checks out the given
-// remoteUrl with given sha
-func PullRequestCheckout(client *Client, remoteUrl, sha string) (string, error) {
-	remoteUrl, err := client.AddAuth(remoteUrl)
-	if nil != err {
-		return ``, err
-	}
-	glog.Infof(`PullRequestCheckout(remote = %s, sha = %s)`, remoteUrl, sha)
-	prRoot, err := PullRequestDir(``)
-	os.MkdirAll(prRoot, 0755)
-	prDir := filepath.Join(prRoot, sha)
-	_, err = os.Stat(prDir)
-	if nil == err {
-		// Update from origin / master
-		if err = runGitDir(prDir, []string{`pull`, `origin`, `master`}); nil != err {
-			return ``, err
-		}
-	} else {
-		if !os.IsNotExist(err) {
-			return ``, util.Error(err)
-		}
-		glog.Infof("Going to clone %s", remoteUrl)
-		if err = runGitDir(prRoot, []string{`clone`, remoteUrl, sha}); nil != err {
-			return ``, err
-		}
-	}
-
-	if err = gitConfig(client, prDir); nil != err {
-		return ``, err
-	}
-	if err = runGitDir(prDir, []string{`checkout`, sha}); nil != err {
-		return ``, err
-	}
-	return prDir, nil
-}
-
 func PullRequestDiffListByNumber(client *Client, repoOwner, repoName string,
 	prNumber int) ([]*PullRequestDiff, error) {
 	pr, _, err := client.PullRequests.Get(client.Context, repoOwner, repoName, prNumber)

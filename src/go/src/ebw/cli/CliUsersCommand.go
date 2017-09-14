@@ -40,6 +40,7 @@ func CliUserCommand() *commander.Command {
 				return err
 			}
 			fmt.Println(u.Name)
+			fmt.Println(u.Token)
 			return nil
 		})
 }

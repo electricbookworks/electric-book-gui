@@ -10,6 +10,9 @@ import (
 	"ebw/util"
 )
 
+// GetUserForDir returns the user and token for the git repo containing
+// the given directory. If an empty string is supplied as the directory, the
+// current working directory is used instead.
 func GetUserForDir(d string) (user, token string, err error) {
 	if `` == d {
 		d, err = os.Getwd()
@@ -43,5 +46,4 @@ func GetUserForDir(d string) (user, token string, err error) {
 	}
 
 	return u.User.Username(), password, nil
-
 }
