@@ -29,7 +29,6 @@ type githubToken struct {
 
 // githubLogin forwards the user to login on Github
 func githubLogin(c *Context) error {
-	glog.Infof(`landingHandler - reading config file`)
 	err := cliConfig.ReadConfigFile(filepath.Join(os.Getenv("HOME"), ".ebw.yml"))
 	if nil != err {
 		glog.Error(err)
@@ -48,7 +47,9 @@ func githubLogin(c *Context) error {
 	p.Add(`state`, state)
 
 	return c.Render("landing.html", map[string]interface{}{
-		"AuthURL": `https://github.com/login/oauth/authorize?` + p.Encode()})
+		"AuthURL":              `https://github.com/login/oauth/authorize?` + p.Encode(),
+		"ConfigAllowAutoLogin": config.Config.AllowAutoLogin,
+	})
 }
 
 // githubAuth receives github's oauth2 authorization response
