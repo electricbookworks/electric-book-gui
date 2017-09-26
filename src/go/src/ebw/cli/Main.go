@@ -48,6 +48,7 @@ func Main() {
 		GithubCommand,
 		PullCommand,
 		WhichUserCommand,
+		GitCommands,
 	); nil != err {
 		glog.Error(err)
 		os.Exit(1)

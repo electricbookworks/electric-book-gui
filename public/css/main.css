@@ -4374,17 +4374,21 @@ body {
           top: 0;
           bottom: 0;
           left: 0;
-          right: 0;
-          display: flex;
-          flex-direction: row;
-          align-items: stretch;
-          justify-content: space-between; }
+          right: 0; }
           #repo-conflict #work #editor #editor-work > div > div {
             float: none;
             flex-grow: 0; }
           #repo-conflict #work #editor #editor-work > div > .mergely-column {
             flex-grow: 1; }
-          #repo-conflict #work #editor #editor-work > div .CodeMirror {
+          #repo-conflict #work #editor #editor-work > div.CodeMirror {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0; }
+          #repo-conflict #work #editor #editor-work > div .CodeMirror, #repo-conflict #work #editor #editor-work > div.CodeMirror {
+            font-size: 1em;
+            font-family: 'Inconsolata',monospace;
             height: 100%; }
 
 #staged-files-list {

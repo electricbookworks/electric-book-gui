@@ -56,14 +56,14 @@ func RepoDir(user, repoOwner, repoName string) (string, error) {
 	if nil != err {
 		return ``, util.Error(err)
 	}
-	root = filepath.Join(root, config.Config.GitCache, `repos`, user)
+	root = filepath.Join(root, config.Config.GitCache, user)
 	if `` == repoOwner {
 		return root, nil
 	}
 	if `` == repoName {
 		return filepath.Join(root, repoOwner), nil
 	}
-	return filepath.Join(root, repoOwner, repoName, `/repo`), nil
+	return filepath.Join(root, repoOwner, repoName), nil
 }
 
 // Checkout checks out the github repo into the cached directory system,
@@ -287,7 +287,8 @@ func copyFile(src, dest string) error {
 // the EBW electric-book repo.
 // See https://help.github.com/articles/duplicating-a-repository/
 // for more information.
-func DuplicateRepo(client *Client, githubPassword string, templateRepo string, orgName string, newRepo string) error {
+func DuplicateRepo(client *Client, githubPassword string,
+	templateRepo string, orgName string, newRepo string) error {
 	repoName := filepath.Base(newRepo)
 
 	repoOwner := orgName

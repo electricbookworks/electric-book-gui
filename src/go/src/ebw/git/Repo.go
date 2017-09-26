@@ -124,26 +124,24 @@ func (r *Repo) RepoPath(path ...string) string {
 // TheirPath returns the path to the `their` version of a file
 // used during Merge resolution.
 func (r *Repo) TheirPath(path ...string) string {
-	if 0 == len(path) {
-		return filepath.Join(filepath.Dir(r.Dir), `merge-their`)
+	begin := []string{r.Dir, `.git`, `ebw-config`, `merge-their`}
+	parts := make([]string, len(begin)+len(path))
+	copy(parts, begin)
+	if 0 < len(path) {
+		copy(parts[len(begin):], path)
 	}
-	parts := make([]string, len(path)+2)
-	parts[0] = filepath.Dir(r.Dir)
-	parts[1] = `merge-their`
-	copy(parts[2:], path)
 	return filepath.Join(parts...)
 }
 
 // ConfigPath returns the path mapped into the
 // EBW `config` directory
 func (r *Repo) ConfigPath(path ...string) string {
-	if 0 == len(path) {
-		return filepath.Join(filepath.Dir(r.Dir), `ebw-config`)
+	begin := []string{r.Dir, `.git`, `ebw-config`}
+	parts := make([]string, len(begin)+len(path))
+	copy(parts, begin)
+	if 0 < len(path) {
+		copy(parts[len(begin):], path)
 	}
-	parts := make([]string, len(path)+2)
-	parts[0] = filepath.Dir(r.Dir)
-	parts[1] = `ebw-config`
-	copy(parts[2:], path)
 	return filepath.Join(parts...)
 }
 
@@ -382,27 +380,27 @@ func GitStatusToString(status git2go.Status) string {
 func GitRepositoryStateToString(state git2go.RepositoryState) string {
 	switch state {
 	case git2go.RepositoryStateNone:
-		return "RepositoryStateNone"
+		return "git2go.RepositoryStateNone"
 	case git2go.RepositoryStateMerge:
-		return "RepositoryStateMerge"
+		return "git2go.RepositoryStateMerge"
 	case git2go.RepositoryStateRevert:
-		return "RepositoryStateRevert"
+		return "git2go.RepositoryStateRevert"
 	case git2go.RepositoryStateCherrypick:
-		return "RepositoryStateCherrypick"
+		return "git2go.RepositoryStateCherrypick"
 	case git2go.RepositoryStateBisect:
-		return "RepositoryStateBisect"
+		return "git2go.RepositoryStateBisect"
 	case git2go.RepositoryStateRebase:
-		return "RepositoryStateRebase"
+		return "git2go.RepositoryStateRebase"
 	case git2go.RepositoryStateRebaseInteractive:
-		return "RepositoryStateRebaseInteractive"
+		return "git2go.RepositoryStateRebaseInteractive"
 	case git2go.RepositoryStateRebaseMerge:
-		return "RepositoryStateRebaseMerge"
+		return "git2go.RepositoryStateRebaseMerge"
 	case git2go.RepositoryStateApplyMailbox:
-		return "RepositoryStateApplyMailbox"
+		return "git2go.RepositoryStateApplyMailbox"
 	case git2go.RepositoryStateApplyMailboxOrRebase:
-		return "RepositoryStateApplyMailboxOrRebase"
+		return "git2go.RepositoryStateApplyMailboxOrRebase"
 	}
-	return "State-UNKNOWN-"
+	return "git2go.State-UNKNOWN-"
 }
 
 // GithubRepo returns the github Repository for this repo.
@@ -542,6 +540,14 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMConflicted
 	default:
 		state |= EBMUnimplemented
+	}
+
+	hasConflictedFiles, err := r.HasConflictedFiles()
+	if nil != err {
+		return 0, err
+	}
+	if hasConflictedFiles {
+		state |= EBMConflicted
 	}
 
 	// glog.Infof("state = %d, fetching StatusCount", state)
@@ -906,7 +912,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		conflict, err := index.GetConflict(path)
 		if nil != err {
 			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(err)
+			return false, []byte{}, r.Error(fmt.Errorf(`File %s is not conflicted seeking version FileMerge: %s`, path, err.Error()))
 		}
 
 		theirFileId, err := r.fileTheir(path)
@@ -939,6 +945,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		if nil != err {
 			return false, []byte{}, r.Error(err)
 		}
+		defer res.Free()
 		fmt.Println(`Automergeable = `, res.Automergeable)
 		return true, res.Contents, nil
 	default:
@@ -949,7 +956,7 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 		conflict, err := index.GetConflict(path)
 		if nil != err {
 			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(err)
+			return false, []byte{}, r.Error(fmt.Errorf(`File %s is not conflicted: %s`, path, err.Error()))
 		}
 		switch version {
 		case FileAncestor:
@@ -1622,7 +1629,9 @@ func (r *Repo) CanPush() (bool, error) {
 // git merge rules.
 func (r *Repo) PullUpstream() error {
 	// We revert local changes before pulling - we should never
-	// have local changes from using EBM
+	// have local changes from using EBM, since everything that is
+	// saved is automatically added to the index. And we shouldn't be pulling
+	// upstream if we haven't committed our index.
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
@@ -1680,33 +1689,6 @@ func (r *Repo) CommitIfNoConflicts() (bool, error) {
 			return false, err
 		}
 		return true, nil
-	}
-	return false, nil
-}
-
-// HasConflictedFiles returns true if the repo has any conflicted files
-func (r *Repo) HasConflictedFiles() (bool, error) {
-	if r.Repository.State()&git2go.RepositoryStateMerge != git2go.RepositoryStateMerge {
-		// Cannot have conflicted files if not in merge state
-		return false, nil
-	}
-	sl, err := r.StatusList()
-	if nil != err {
-		return false, err
-	}
-	defer sl.Free()
-	entryCount, err := sl.EntryCount()
-	if nil != err {
-		return false, err
-	}
-	for i := 0; i < entryCount; i++ {
-		se, err := sl.ByIndex(i)
-		if nil != err {
-			return false, err
-		}
-		if se.Status&git2go.StatusConflicted == git2go.StatusConflicted {
-			return true, nil
-		}
 	}
 	return false, nil
 }

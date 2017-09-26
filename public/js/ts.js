@@ -3351,6 +3351,101 @@ var MergingInfo = (function () {
     return MergingInfo;
 }());
 
+var SingleEditor = (function () {
+    function SingleEditor(context, parent) {
+        this.context = context;
+        this.parent = parent;
+        this.Listen = new signals.Signal();
+        this.editor = new EditorCodeMirror(parent);
+    }
+    SingleEditor.prototype.WorkingSide = function () {
+        return "-";
+    };
+    SingleEditor.prototype.TheirSide = function () {
+        return '-';
+    };
+    SingleEditor.prototype.getWorkingText = function () {
+        return this.editor.getValue();
+    };
+    SingleEditor.prototype.setWorkingText = function (s) {
+        this.editor.setValue(s);
+    };
+    SingleEditor.prototype.isWorkingDeleted = function () {
+        return this.isDeleted;
+    };
+    SingleEditor.prototype.SaveFile = function () {
+        if (this.file) {
+            var f_1 = this.file;
+            var w = this.getWorkingText();
+            // We pass ourselves as the source, so that we don't update
+            // our editor when the change event arrives
+            this.file.SetWorkingContent(this, this.isWorkingDeleted() ? undefined :
+                this.getWorkingText());
+            return this.file.Save()
+                .then(function () {
+                EBW.Toast("Saved " + f_1.Path());
+                return Promise.resolve("");
+            });
+        }
+        return Promise.reject("No file to save");
+    };
+    SingleEditor.prototype.FileEventListener = function (source, e, fc) {
+        // If we were ourselves the source of the event, we ignore it.
+        if (source == this) {
+            return;
+        }
+        switch (e) {
+            case FileEvent.WorkingChanged:
+                this.setWorkingText(fc.Raw);
+                break;
+            case FileEvent.StatusChanged:
+                break;
+        }
+    };
+    // Merge starts merging a file.
+    SingleEditor.prototype.Merge = function (file) {
+        var _this = this;
+        console.log("Merge: " + file.Path());
+        if (this.file && this.file.Path() == file.Path()) {
+            return; // Nothing to do if we're selecting the same file
+        }
+        // Save any file we're currently editing
+        if (this.file) {
+            this.SaveFile();
+            this.file.Listen.remove(this.FileEventListener, this);
+            this.file = undefined;
+        }
+        // Controls must receive update before we do.
+        // TODO : Actually, the controls should listen to US, not to the
+        // file, and we should have an 'EditorStateModel'...
+        //this.controls.SetFile(file);
+        // VERY importantly, we don't listen to the file 
+        // until after we've concluded the FetchContent, because
+        // we won't have an editor to populate when FetchContent
+        // sends its signals that the content has changed.
+        // However, because we configure ourselves as the source,
+        // if we were listening, it shouldn't be a problem...
+        var p = file.FetchContent(this)
+            .then(function () {
+            return Promise.all([file.WorkingFile(), file.TheirFile()]);
+        })
+            .then(function (args) {
+            var _a = [args[0], args[1]], working = _a[0], their = _a[1];
+            _this.file = file;
+            _this.file.Listen.add(_this.FileEventListener, _this);
+            console.log("About to set file contents to ", working.Raw);
+            if (working.Exists) {
+                _this.editor.setValue(working.Raw);
+            }
+            else {
+                _this.editor.setValue("");
+            }
+            _this.editor.setModeOnFilename(file.Path());
+        });
+    };
+    return SingleEditor;
+}());
+
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;
@@ -3362,9 +3457,18 @@ var RepoConflictPage = (function () {
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
-        this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
+        if (this.mergingInfo.IsPRMerge()) {
+            this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
+            new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
+        }
+        else {
+            var work = document.getElementById("editor-work");
+            work.classList.add("not-pr-merge");
+            this.editor = new SingleEditor(context, work);
+            document.getElementById("editor-label-panes").style.display = 'none';
+            document.getElementById("copy-button-dropdown").style.display = 'none';
+        }
         this.commitDialog = new CommitMessageDialog$1(false);
-        new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");
             if (showing)

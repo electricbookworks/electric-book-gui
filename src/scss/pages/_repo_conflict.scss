@@ -93,14 +93,20 @@
 			#editor-work {
 				flex-grow: 1;
 				position: relative;
+
+				// display: flex;
+				// flex-direction: row;
+				// justify-content: space-between;
+				// align-items: stretch;
+
 				&>div {
 					position: absolute;
 					top: 0; bottom: 0; left:0; right:0;
 
-					display: flex;
-					flex-direction: row;
-					align-items: stretch;
-					justify-content: space-between;
+					// display: flex;
+					// flex-direction: row;
+					// align-items: stretch;
+					// justify-content: space-between;
 					& > div {
 						float:none;
 						flex-grow: 0;
@@ -108,9 +114,18 @@
 					& > .mergely-column {
 						flex-grow: 1;
 					}
-					.CodeMirror {
+					&.CodeMirror {
+						position: absolute;
+						top: 0;
+						bottom: 0;
+						left: 0;
+						right: 0;
+					} 
+					.CodeMirror, &.CodeMirror {
+						font-size: 1em;
+						font-family: 'Inconsolata',monospace;
 						height: 100%;
-					}
+					} 
 				}
 			}
 		}

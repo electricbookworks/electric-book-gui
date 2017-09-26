@@ -1,3 +1,5 @@
+
+import {ConflictEditor} from './conflict/ConflictEditor';
 import {Context} from './Context';
 import {ControlTag} from './ControlTag';
 import {EBW} from './EBW';
@@ -9,11 +11,12 @@ import {MergeInstructions} from './conflict/MergeInstructions';
 import {CommitMessageDialogResult, CommitMessageDialog} from './CommitMessageDialog';
 import {ClosePRDialog, ClosePRDialogResult} from './conflict/ClosePRDialog';
 import {MergingInfo} from './conflict/MergingInfo';
+import {SingleEditor} from './conflict/SingleEditor';
 
 // RepoConflictPage handles conflict-merging for the repo.
 // It's main data is generated in public/repo_conflict.html
 export class RepoConflictPage {
-	protected editor: MergeEditor;
+	protected editor: ConflictEditor;
 	protected commitDialog: CommitMessageDialog;
 	protected closePRDialog: ClosePRDialog;
 	protected mergingInfo: MergingInfo;
@@ -29,9 +32,17 @@ export class RepoConflictPage {
 			this.fileListEvent(undefined, evt.detail.file);
 		});
 
-		this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
+		if (this.mergingInfo.IsPRMerge()) {
+			this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
+			new MergeInstructions(document.getElementById('merge-instructions'), this.editor as MergeEditor);
+		} else {
+			let work = document.getElementById(`editor-work`);
+			work.classList.add(`not-pr-merge`);
+			this.editor = new SingleEditor(context, work);
+			document.getElementById(`editor-label-panes`).style.display = 'none';
+			document.getElementById(`copy-button-dropdown`).style.display = 'none';
+		}
 		this.commitDialog = new CommitMessageDialog(false);
-		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{

@@ -29,7 +29,8 @@ func BookCommands() *commander.Command {
 				BookContributeCommand,
 				BookCloneCommand,
 				BookCreatePullRequestCommand,
-				BookMergeUpstreamCommand,
+				BookPullUpstreamCommand,
+				BookPullOriginCommand,
 				BookStatusCommand,
 				BookStatusCountCommand,
 				BookStateCommand,
@@ -55,13 +56,17 @@ func BookCommands() *commander.Command {
 				BookLocalChangesCommand,
 				BookRevertLocalChangesCommand,
 				BookConflictedFilesCommand,
+				BookHasConflictsCommand,
 				BookDumpIndexCommand,
+				BookTheirPathCommand,
+				BookOurPathCommand,
 			)
 		})
 }
 
 func BookNewCommand() *commander.Command {
 	fs := flag.NewFlagSet(`new`, flag.ExitOnError)
+	org := fs.String(`org`, ``, `Organization to add new book, if not to own user account`)
 	template := fs.String(`template`, `electricbookworks/electric-book`, `Book generation template`)
 
 	return commander.NewCommand(`new`,
@@ -76,7 +81,7 @@ func BookNewCommand() *commander.Command {
 				return err
 			}
 
-			return BookNew(client, *template, args[0])
+			return BookNew(client, *template, *org, args[0])
 		})
 }
 
@@ -171,8 +176,8 @@ func BookClone(client *git.Client, repoName string) error {
 
 // BookNew creates a new book with the newRepoName for the current client,
 // based on the templateRepo given.
-func BookNew(client *git.Client, templateRepo, newRepoName string) error {
-	if err := git.DuplicateRepo(client, client.Token, templateRepo, newRepoName); nil != err {
+func BookNew(client *git.Client, templateRepo, orgName, newRepoName string) error {
+	if err := git.DuplicateRepo(client, client.Token, templateRepo, orgName, newRepoName); nil != err {
 		return err
 	}
 
@@ -181,121 +186,35 @@ func BookNew(client *git.Client, templateRepo, newRepoName string) error {
 		"", newRepoName)
 }
 
-func BookMergeUpstreamCommand() *commander.Command {
-	fs := flag.NewFlagSet(`merge-upstream`, flag.ExitOnError)
-	remote := fs.String(`remote`, `origin`, `The name of the upstream remote`)
-	return commander.NewCommand(`merge-upstream`,
+func BookPullUpstreamCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pull-upstream`, flag.ExitOnError)
+	return commander.NewCommand(`pull-upstream`,
 		`Merge the current working directory with changes from the upstream master`,
 		fs,
 		func(args []string) error {
-			workingDir, err := os.Getwd()
+			repo, err := cliRepo()
 			if nil != err {
 				return util.Error(err)
-			}
-			client, err := git.ClientFromCLIConfig()
-			if nil != err {
-				return err
-			}
-
-			repo, err := git2go.OpenRepository(workingDir)
-			if nil != err {
-				return err
 			}
 			defer repo.Free()
-
-			remote, err := git.FetchRemoteForRepoDir(client, workingDir, *remote)
-			defer remote.Free()
-
-			refs, err := remote.FetchRefspecs()
-			if nil != err {
-				return err
-			}
-			for _, r := range refs {
-				fmt.Println(r)
-			}
-
-			heads, err := remote.Ls()
-			if nil != err {
-				return err
-			}
-
-			head, err := repo.Head()
-			if nil != err {
-				return util.Error(err)
-			}
-			defer head.Free()
-			var masterId *git2go.Oid
-
-			for _, h := range heads {
-				// fmt.Println(h.Name)
-				if `refs/heads/master` == h.Name {
-					ahead, behind, err := repo.AheadBehind(head.Target(), h.Id)
-					if nil != err {
-						return util.Error(err)
-					}
-					fmt.Printf("Ahead by %d, Behind by %d\n", ahead, behind)
-					masterId = h.Id
-				}
-			}
-			if nil == masterId {
-				return fmt.Errorf(`Failed to find remote master head`)
-			}
-			ancestorId, err := repo.MergeBase(head.Target(), masterId)
-			if nil != err {
-				return util.Error(err)
-			}
-			fmt.Printf("Found ancestory %s\n", ancestorId)
-
-			masterCommit, err := repo.LookupAnnotatedCommit(masterId)
-			if nil != err {
-				return util.Error(err)
-			}
-			fmt.Printf("Master is annotated commit %s\n", masterCommit)
-			defer masterCommit.Free()
-
-			analysis, _, err := repo.MergeAnalysis([]*git2go.AnnotatedCommit{masterCommit})
-			if nil != err {
-				fmt.Fprintf(os.Stderr, "ERROR on MergeAnalysis: %s\n", err.Error())
-				return err
-			}
-			if git2go.MergeAnalysisNone == analysis {
-				fmt.Println(`MergeAnalysisNone - no merge possible (unused)`)
-			}
-			if 0 < analysis&git2go.MergeAnalysisNormal {
-				fmt.Println(`MergeAnalysisNormal - normal merge required`)
-			}
-			if 0 < analysis&git2go.MergeAnalysisUpToDate {
-				fmt.Println(`MergeAnalysisUpToDate - your HEAD is up to date`)
-			}
-			if 0 < analysis&git2go.MergeAnalysisFastForward {
-				fmt.Println(`MergeAnalysisFastForward - your HEAD hasn't diverged`)
-			}
-			if 0 < analysis&git2go.MergeAnalysisUnborn {
-				fmt.Println(`MergeAnalysisUnborn - HEAD is unborn and merge not possible`)
-			}
-
-			// master, err := repo.LookupBranch(`origin/master`, git2go.BranchRemote)
-			// if nil != err {
-			// 	return err
-			// }
-			defaultMergeOptions, err := git2go.DefaultMergeOptions()
-			if nil != err {
-				return err
-			}
-			if err := repo.Merge([]*git2go.AnnotatedCommit{masterCommit},
-				&defaultMergeOptions,
-				// &git2go.MergeOptions{},
-				nil,
-				//&git2go.CheckoutOpts{},
-			); nil != err {
-				fmt.Fprintf(os.Stderr, "ERROR on Merge: %s\n", err.Error())
-				return err
-			}
-
-			return nil
+			return repo.PullUpstream()
 		})
 }
 
+func BookPullOriginCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pull-origin`, flag.ExitOnError)
+	return commander.NewCommand(`pull-origin`,
+		`Merge the current working directory with changes from the origin master`,
+		fs,
+		func(args []string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return util.Error(err)
+			}
+			defer repo.Free()
+			return repo.PullOrigin()
+		})
+}
 func BookStatusCommand() *commander.Command {
 	fs := flag.NewFlagSet(`status`, flag.ExitOnError)
 	return commander.NewCommand(`status`, `Show status of book repo files`,
@@ -803,5 +722,59 @@ func BookDumpIndexCommand() *commander.Command {
 			}
 			defer repo.Free()
 			return repo.DumpIndex()
+		})
+}
+
+func BookHasConflictsCommand() *commander.Command {
+	return commander.NewCommand(`has-conflicts`,
+		`Displays whether the repo has conflicts or not`,
+		nil,
+		func([]string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			c, err := repo.HasConflictedFiles()
+			if nil != err {
+				return err
+			}
+			if c {
+				fmt.Println("YES")
+			} else {
+				fmt.Println("NO")
+				os.Exit(1)
+			}
+			return nil
+		})
+}
+
+func BookTheirPathCommand() *commander.Command {
+	return commander.NewCommand(`their-path`,
+		`Show path to their files during a merge`,
+		nil,
+		func(args []string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			fmt.Println(repo.TheirPath(args...))
+			return nil
+		})
+}
+
+func BookOurPathCommand() *commander.Command {
+	return commander.NewCommand(`our-path`,
+		`Show path to our files during a merge`,
+		nil,
+		func(args []string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Free()
+			fmt.Println(repo.RepoPath(args...))
+			return nil
 		})
 }

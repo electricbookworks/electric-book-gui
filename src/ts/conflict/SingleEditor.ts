@@ -1,20 +1,22 @@
+import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {File,FileEvent,FileContent} from './File';
 
 import signals = require('signals');
 import CodeMirror = require('codemirror');
+import {EditorCodeMirror} from '../EditorCodeMirror';
 
-export class SingleEditor {
+export class SingleEditor implements ConflictEditor {
 	public Listen:signals.Signal;
 	protected file:File;
-	protected editor:CodeMirror.Editor;
+	protected editor:EditorCodeMirror;
 	protected isDeleted:boolean;
 
 	constructor(protected context:Context,
 		protected parent:HTMLElement) {
 		this.Listen = new signals.Signal();
-		this.editor = CodeMirror(parent);
+		this.editor = new EditorCodeMirror(parent);
 	}
 	WorkingSide():string {
 		return "-";
@@ -25,13 +27,12 @@ export class SingleEditor {
 	getWorkingText() : string {
 		return this.editor.getValue();
 	}
-	setWorkingText(s:string) {
+	setWorkingText(s:string) : void{
 		this.editor.setValue(s);
 	}
 	isWorkingDeleted() : boolean {
 		return this.isDeleted;
 	}
-
 	SaveFile() : Promise<string> {
 		if (this.file) {
 			let f = this.file;
@@ -99,35 +100,13 @@ export class SingleEditor {
 				this.file = file;
 
 				this.file.Listen.add(this.FileEventListener, this);
-
-				let text = working.Raw;
-
-				// Create a new Mergely Editor for each file
-				this.parent.textContent = ``;
-				this.mergelyDiv = document.createElement(`div`) as HTMLDivElement;
-				this.parent.appendChild(this.mergelyDiv);
-				let m = jQuery(this.mergelyDiv);
-				m.mergely(
-				{
-					cmsettings : {
-						readOnly: false, 
-						lineNumbers: true,
-						lineWrapping: true,
-					},
-					lhs_cmsettings: {
-						readOnly: (!this.editBoth) && (!this.editLeft)
-					},
-					rhs_cmsettings: {
-						readOnly: (!this.editBoth) && this.editLeft
-					},
-					editor_height: "100%",
-					lhs: function(setValue:(v:string)=>void) {
-						setValue(lhsText);
-					},
-					rhs: function(setValue:(v:string)=>void) {
-						setValue(rhsText);
-					},
-				});	
+				console.log(`About to set file contents to `, working.Raw);
+				if (working.Exists) {
+					this.editor.setValue(working.Raw);
+				} else {
+					this.editor.setValue(``);
+				}
+				this.editor.setModeOnFilename(file.Path());
 			}
 		);
 	}
