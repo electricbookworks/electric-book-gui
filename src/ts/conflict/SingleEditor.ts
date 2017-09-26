@@ -2,6 +2,7 @@ import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {File,FileEvent,FileContent} from './File';
+import {MergeEditorControlBar,MergeEditorAction} from './MergeEditorControlBar';
 
 import signals = require('signals');
 import CodeMirror = require('codemirror');
@@ -12,12 +13,49 @@ export class SingleEditor implements ConflictEditor {
 	protected file:File;
 	protected editor:EditorCodeMirror;
 	protected isDeleted:boolean;
+	protected controls:MergeEditorControlBar;
 
 	constructor(protected context:Context,
 		protected parent:HTMLElement) {
 		this.Listen = new signals.Signal();
 		this.editor = new EditorCodeMirror(parent);
+
+		this.controls = new MergeEditorControlBar();
+		this.controls.Listen.add(this.controlAction, this);		
 	}
+
+	controlAction(act:MergeEditorAction) {
+		switch(act) {
+			case MergeEditorAction.Save:
+				this.SaveFile()
+				.catch( EBW.Error );
+				break;
+			case MergeEditorAction.Delete:
+				break;
+			case MergeEditorAction.Resolve:
+				this.SaveFile()
+				.then(
+					()=>{
+						// undefined so we receive notifications
+						return this.file.Stage(undefined);
+					})
+				.then(
+					()=>{
+						EBW.Toast(`Resolved changes on ${this.file.Path()}`);
+					})
+				.catch(EBW.Error);
+				break;
+			case MergeEditorAction.RevertOur:
+				this.file.RevertOur(undefined);
+				break;
+			case MergeEditorAction.RevertTheir:
+				this.file.RevertOurToTheir(undefined);
+				break;
+			case MergeEditorAction.RevertGit:
+				this.file.RevertOurToGit(undefined);
+				break;
+		}
+	}	
 	WorkingSide():string {
 		return "-";
 	}
@@ -51,7 +89,7 @@ export class SingleEditor implements ConflictEditor {
 		}
 		return Promise.reject(`No file to save`);
 	}
-	FileEventListener(source:any, e:FileEvent, fc:FileContent) {
+	FileEventListener(source:any, e:FileEvent, fc:FileContent) : void {
 		// If we were ourselves the source of the event, we ignore it.
 		if (source==this) {
 			return;

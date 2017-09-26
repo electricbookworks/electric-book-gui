@@ -62,7 +62,7 @@ func GitFileCatCommand() *commander.Command {
 				return err
 			}
 			for _, fn := range args {
-				raw, err := g.CatFileVersion(fn, ver)
+				raw, err := g.CatFileVersion(fn, ver, nil)
 				if nil != err {
 					return err
 				}

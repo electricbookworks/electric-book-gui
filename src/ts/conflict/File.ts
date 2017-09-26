@@ -66,11 +66,13 @@ export class File {
 		return this.context.API()
 		.MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
 		.then(
-			([workingExists, working, theirExists, their]:[boolean,string,boolean,string])=>{
+			([workingExists, working, theirExists, their, gitMerge]:[boolean,string,boolean,string,string])=>{
 				let workingFile = new FileContent(workingExists, working);
 				let theirFile = new FileContent(theirExists, their);
+				let gitFile = new FileContent(true, gitMerge);
 				this.cache.set(`working`, workingFile);
 				this.cache.set(`their`, theirFile);
+				this.cache.set(`git`, gitFile)
 
 				this.ListenRPC.dispatch(source, false, `FetchContent`);
 				this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
@@ -106,6 +108,28 @@ export class File {
 				this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
 				return Promise.resolve(fc);
 			});
+	}
+	RevertOurToTheir(source:any) : Promise<FileContent> {
+		this.ListenRPC.dispatch(source, true, `RevertOurToTheir`);
+		return this.mergeFileOriginal("their")
+		.then(
+			(fc:FileContent)=>{
+				this.cache.set(`working`, fc);
+				this.ListenRPC.dispatch(source, false, `RevertOur`);
+				this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+				return Promise.resolve(fc);
+			})
+	}
+	RevertOurToGit(source: any) : Promise<FileContent>{ 
+		this.ListenRPC.dispatch(source, true, `RevertOurToGit`);
+		return this.mergeFileOriginal("git")
+		.then(
+			(fc:FileContent)=>{
+				this.cache.set(`working`, fc)
+				this.ListenRPC.dispatch(source, false, `RevertOurToGit`);
+				this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+				return Promise.resolve(fc);
+			})
 	}
 	RevertTheir(source:any) : Promise<FileContent> {
 		this.ListenRPC.dispatch(source, true,`RevertTheir`);

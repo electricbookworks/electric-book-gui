@@ -45,21 +45,21 @@ func ParseGitFileVersion(in string) (GitFileVersion, error) {
 }
 
 // catFileGit returns the git merge of the file between their HEAD and our HEAD
-func (g *Git) catFileGit(path string) ([]byte, error) {
-	raw, err := g.CatFileVersion(path, GFV_THEIR_HEAD)
+func (g *Git) catFileGit(path string) (bool, []byte, error) {
+	raw, err := g.CatFileVersion(path, GFV_THEIR_HEAD, nil)
 	their, err := g.mergeFileInput(path, raw, err)
 	if nil != err {
-		return nil, err
+		return false, nil, err
 	}
-	raw, err = g.CatFileVersion(path, GFV_OUR_HEAD)
+	raw, err = g.CatFileVersion(path, GFV_OUR_HEAD, nil)
 	our, err := g.mergeFileInput(path, raw, err)
 	if nil != err {
-		return nil, err
+		return false, nil, err
 	}
-	raw, err = g.CatFileVersion(path, GFV_ANCESTOR)
+	raw, err = g.CatFileVersion(path, GFV_ANCESTOR, nil)
 	ancestor, err := g.mergeFileInput(path, raw, err)
 	if nil != err {
-		return nil, err
+		return false, nil, err
 	}
 
 	res, err := git2go.MergeFile(ancestor,
@@ -70,11 +70,10 @@ func (g *Git) catFileGit(path string) ([]byte, error) {
 			Flags: git2go.MergeFileDefault,
 		})
 	if nil != err {
-		return []byte{}, g.Error(err)
+		return false, []byte{}, g.Error(err)
 	}
 	defer res.Free()
-	fmt.Println(`Automergeable = `, res.Automergeable)
-	return res.Contents, nil
+	return res.Automergeable, res.Contents, nil
 }
 
 // ListConflictedFiles returns a list of the files that are conflicted in the repo.
@@ -116,7 +115,10 @@ func (g *Git) ListConflictedFiles() ([]string, error) {
 
 // CatFileVersion returns the contents of the path for the given
 // GitFileVersion
-func (g *Git) CatFileVersion(path string, v GitFileVersion) ([]byte, error) {
+func (g *Git) CatFileVersion(path string, v GitFileVersion, auto *bool) ([]byte, error) {
+	if nil != auto {
+		*auto = true
+	}
 	switch v {
 	case GFV_ANCESTOR:
 		return g.readPathFromIndexStage(path, 1)
@@ -145,7 +147,14 @@ func (g *Git) CatFileVersion(path string, v GitFileVersion) ([]byte, error) {
 		}
 		return g.readDiskFile(g.PathTheir(path))
 	case GFV_GIT_MERGED:
-		return g.catFileGit(path)
+		automergeable, raw, err := g.catFileGit(path)
+		if nil != err {
+			return nil, err
+		}
+		if nil != auto {
+			*auto = automergeable
+		}
+		return raw, err
 	case GFV_INDEX:
 		conflicted, err := g.IsFileConflicted(path)
 		if nil != err {

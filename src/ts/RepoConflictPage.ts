@@ -39,9 +39,11 @@ export class RepoConflictPage {
 			let work = document.getElementById(`editor-work`);
 			work.classList.add(`not-pr-merge`);
 			this.editor = new SingleEditor(context, work);
-			document.getElementById(`editor-label-panes`).style.display = 'none';
-			document.getElementById(`copy-button-dropdown`).style.display = 'none';
 		}
+		// items to be hidden in a PR merge or a not-pr-merge are controlled
+		// by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
+		// class
+		
 		this.commitDialog = new CommitMessageDialog(false);
 
 		new ControlTag(document.getElementById(`files-show-tag`),

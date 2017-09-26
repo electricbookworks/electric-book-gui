@@ -4319,6 +4319,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: stretch; }
+    #repo-conflict #work.pr-merge .not-pr-merge {
+      display: none !important; }
+    #repo-conflict #work.not-pr-merge .pr-merge {
+      display: none !important; }
     #repo-conflict #work #files {
       flex-grow: 0;
       width: 30em;

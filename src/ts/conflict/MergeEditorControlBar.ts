@@ -24,6 +24,10 @@ export class MergeEditorControlBar {
 	protected CopyWorkingButton : HTMLElement;
 	protected CopyTheirButton: HTMLElement;
 
+	protected RevertSingleOurButton: HTMLElement;
+	protected RevertSingleTheirButton: HTMLElement;
+	protected RevertSingleGitButton: HTMLElement;
+
 	protected buttons: HTMLElement[];
 
 	protected file: File;
@@ -53,6 +57,10 @@ export class MergeEditorControlBar {
 		this.CopyWorkingButton = this.get(`copy-working`);
 		this.CopyTheirButton = this.get(`copy-their`);
 
+		this.RevertSingleOurButton =this.get(`single-revert-our`);
+		this.RevertSingleTheirButton = this.get(`single-revert-their`);
+		this.RevertSingleGitButton = this.get(`single-revert-git`);
+
 		this.buttons = new Array<HTMLElement>();
 
 		let ln = (key:string, act:MergeEditorAction) => {
@@ -75,6 +83,10 @@ export class MergeEditorControlBar {
 		ln(`save`, MergeEditorAction.Save);
 		ln(`delete`, MergeEditorAction.Delete);
 		ln(`resolve`, MergeEditorAction.Resolve);
+
+		ln(`single-revert-our`, MergeEditorAction.RevertOur);
+		ln(`single-revert-their`, MergeEditorAction.RevertTheir);
+		ln(`single-revert-git`, MergeEditorAction.RevertGit);
 	}
 	SetFile(f:File) {
 		if (this.file) {

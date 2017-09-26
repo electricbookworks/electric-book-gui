@@ -2601,11 +2601,13 @@ var File$1 = (function () {
         return this.context.API()
             .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
             .then(function (_a) {
-            var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3];
+            var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3], gitMerge = _a[4];
             var workingFile = new FileContent$1(workingExists, working);
             var theirFile = new FileContent$1(theirExists, their);
+            var gitFile = new FileContent$1(true, gitMerge);
             _this.cache.set("working", workingFile);
             _this.cache.set("their", theirFile);
+            _this.cache.set("git", gitFile);
             _this.ListenRPC.dispatch(source, false, "FetchContent");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
             _this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
@@ -2638,6 +2640,28 @@ var File$1 = (function () {
             .then(function (fc) {
             _this.cache.set("working", fc);
             _this.ListenRPC.dispatch(source, false, "RevertOur");
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+            return Promise.resolve(fc);
+        });
+    };
+    File.prototype.RevertOurToTheir = function (source) {
+        var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertOurToTheir");
+        return this.mergeFileOriginal("their")
+            .then(function (fc) {
+            _this.cache.set("working", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertOur");
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+            return Promise.resolve(fc);
+        });
+    };
+    File.prototype.RevertOurToGit = function (source) {
+        var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertOurToGit");
+        return this.mergeFileOriginal("git")
+            .then(function (fc) {
+            _this.cache.set("working", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertOurToGit");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
             return Promise.resolve(fc);
         });
@@ -2861,6 +2885,9 @@ var MergeEditorControlBar = (function () {
         this.RevertTheirButton = this.get("revert-their");
         this.CopyWorkingButton = this.get("copy-working");
         this.CopyTheirButton = this.get("copy-their");
+        this.RevertSingleOurButton = this.get("single-revert-our");
+        this.RevertSingleTheirButton = this.get("single-revert-their");
+        this.RevertSingleGitButton = this.get("single-revert-git");
         this.buttons = new Array();
         var ln = function (key, act) {
             var el = _this.get(key);
@@ -2884,6 +2911,9 @@ var MergeEditorControlBar = (function () {
         ln("save", MergeEditorAction.Save);
         ln("delete", MergeEditorAction.Delete);
         ln("resolve", MergeEditorAction.Resolve);
+        ln("single-revert-our", MergeEditorAction.RevertOur);
+        ln("single-revert-their", MergeEditorAction.RevertTheir);
+        ln("single-revert-git", MergeEditorAction.RevertGit);
     }
     MergeEditorControlBar.prototype.get = function (key) {
         return document.getElementById("merge-editor-control-" + key);
@@ -3357,7 +3387,40 @@ var SingleEditor = (function () {
         this.parent = parent;
         this.Listen = new signals.Signal();
         this.editor = new EditorCodeMirror(parent);
+        this.controls = new MergeEditorControlBar();
+        this.controls.Listen.add(this.controlAction, this);
     }
+    SingleEditor.prototype.controlAction = function (act) {
+        var _this = this;
+        switch (act) {
+            case MergeEditorAction.Save:
+                this.SaveFile()
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.Delete:
+                break;
+            case MergeEditorAction.Resolve:
+                this.SaveFile()
+                    .then(function () {
+                    // undefined so we receive notifications
+                    return _this.file.Stage(undefined);
+                })
+                    .then(function () {
+                    EBW.Toast("Resolved changes on " + _this.file.Path());
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.RevertOur:
+                this.file.RevertOur(undefined);
+                break;
+            case MergeEditorAction.RevertTheir:
+                this.file.RevertOurToTheir(undefined);
+                break;
+            case MergeEditorAction.RevertGit:
+                this.file.RevertOurToGit(undefined);
+                break;
+        }
+    };
     SingleEditor.prototype.WorkingSide = function () {
         return "-";
     };
@@ -3465,9 +3528,10 @@ var RepoConflictPage = (function () {
             var work = document.getElementById("editor-work");
             work.classList.add("not-pr-merge");
             this.editor = new SingleEditor(context, work);
-            document.getElementById("editor-label-panes").style.display = 'none';
-            document.getElementById("copy-button-dropdown").style.display = 'none';
         }
+        // items to be hidden in a PR merge or a not-pr-merge are controlled
+        // by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
+        // class
         this.commitDialog = new CommitMessageDialog$1(false);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");

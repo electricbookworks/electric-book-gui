@@ -196,7 +196,7 @@ func BookPullUpstreamCommand() *commander.Command {
 			if nil != err {
 				return util.Error(err)
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PullUpstream()
 		})
 }
@@ -211,7 +211,7 @@ func BookPullOriginCommand() *commander.Command {
 			if nil != err {
 				return util.Error(err)
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PullOrigin()
 		})
 }
@@ -224,7 +224,7 @@ func BookStatusCommand() *commander.Command {
 			if nil != err {
 				return util.Error(err)
 			}
-			defer repo.Free()
+			defer repo.Close()
 
 			return repo.PrintStatusList()
 		})
@@ -240,7 +240,7 @@ func BookStatusCountCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			indexCount, wtCount, err := repo.StatusCount()
 			if nil != err {
 				return err
@@ -259,7 +259,7 @@ func BookStateCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			fmt.Println(git.GitRepositoryStateToString(repo.State()))
 			return nil
 		})
@@ -278,7 +278,7 @@ func BookUpstreamCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			gr, err := repo.GithubRepo()
 			if nil != err {
 				return err
@@ -300,7 +300,7 @@ func BookSetUpstreamRemoteCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.SetUpstreamRemote()
 		})
 }
@@ -314,7 +314,7 @@ func BookEBMStateCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			state, err := repo.GetRepoState()
 			if nil != err {
 				return err
@@ -333,7 +333,7 @@ func BookStagedFilesCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			staged, err := repo.StagedFiles()
 			if nil != err {
 				return err
@@ -358,7 +358,7 @@ func BookStashCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			oid, err := repo.Stash(msg)
 			if nil != err {
 				return err
@@ -377,7 +377,7 @@ func BookUnstashCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.Unstash()
 		})
 }
@@ -393,7 +393,7 @@ func BookFetchCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.FetchRemote(*remote)
 		})
 }
@@ -410,7 +410,7 @@ func BookPullCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.Pull(*remote, *branch)
 		})
 }
@@ -424,7 +424,7 @@ func BookPullAbortCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PullAbort()
 		})
 }
@@ -440,7 +440,7 @@ func BookCatCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			for _, f := range files {
 				exists, contents, err := repo.FileCat(f, git.FileVersion(*version))
 				if nil != err {
@@ -466,7 +466,7 @@ func BookMergeHeadsCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			heads, err := repo.MergeHeads()
 			if nil != err {
 				return err
@@ -506,7 +506,7 @@ func BookResetConflictedCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 
 			return repo.ResetConflictedFilesInWorkingDir(
 				!*theirs,
@@ -524,7 +524,7 @@ func BookCleanupCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			if err := repo.Cleanup(); nil != err {
 				return err
 			}
@@ -544,7 +544,7 @@ func BookPushCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			if err := repo.Push(*remote, *branch); nil != err {
 				return err
 			}
@@ -561,7 +561,7 @@ func BookPRListCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			prs, err := repo.PullRequestList()
 			if nil != err {
 				return err
@@ -584,7 +584,7 @@ func BookPRDetailCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			if 0 == *number {
 				prs, err := repo.PullRequestList()
 				if nil != err {
@@ -619,7 +619,7 @@ func BookPRFetchCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PullRequestFetch(*number)
 		})
 }
@@ -635,7 +635,7 @@ func BookPRMergeCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PullRequestMerge(*number)
 		})
 }
@@ -650,7 +650,7 @@ func BookMergeInfo() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			for _, f := range files {
 				mfi, err := repo.MergeFileInfo(f)
 				if nil != err {
@@ -671,7 +671,7 @@ func BookLocalChangesCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.PrintLocalChanges()
 		})
 }
@@ -685,7 +685,7 @@ func BookRevertLocalChangesCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.RevertLocalChanges()
 		})
 }
@@ -699,7 +699,7 @@ func BookConflictedFilesCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			conflicts, err := repo.ListRepoConflicts()
 			if nil != err {
 				return err
@@ -720,7 +720,7 @@ func BookDumpIndexCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			return repo.DumpIndex()
 		})
 }
@@ -734,7 +734,7 @@ func BookHasConflictsCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			c, err := repo.HasConflictedFiles()
 			if nil != err {
 				return err
@@ -758,7 +758,7 @@ func BookTheirPathCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			fmt.Println(repo.TheirPath(args...))
 			return nil
 		})
@@ -773,7 +773,7 @@ func BookOurPathCommand() *commander.Command {
 			if nil != err {
 				return err
 			}
-			defer repo.Free()
+			defer repo.Close()
 			fmt.Println(repo.RepoPath(args...))
 			return nil
 		})

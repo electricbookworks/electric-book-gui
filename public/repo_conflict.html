@@ -11,7 +11,7 @@
 		    <button class="btn" id="action-commit">Okay, accept update</button>
 		</div>
 	</div>
-	<div id="work">
+	<div id="work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
 		<div id="files" class="showing">
 			<div id="files-show-tag" class="showing">
 				<object class="hidden" type="image/svg+xml" data="/img/file-folder-open.svg">
@@ -28,7 +28,7 @@
 		<div id="editor">
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
-					<div class="drop-down" id="copy-button-dropdown">
+					<div class="drop-down pr-merge">
 						<button class="btn">Copy</button>
 						<div class="hover">
 							<a class="btn" id="merge-editor-control-copy-working">My version to incoming</a>
@@ -39,10 +39,14 @@
 					<div class="drop-down">
 						<div class="btn">Revert</div>
 						<div class="hover">
-							<a class="btn" id="merge-editor-control-revert-our">My version to my original</a>
+							<a class="btn pr-merge" id="merge-editor-control-revert-our">My version to my original</a>
 							<!-- <a class="btn" id="merge-editor-control-revert-git" disabled>
 							Ours to git merge result</a>-->
-							<a class="btn" id="merge-editor-control-revert-their">Incoming to incoming original</a>
+							<a class="btn pr-merge" id="merge-editor-control-revert-their">Incoming to incoming original</a>
+
+							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-our">To my original</a>
+							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-their">To their original</a>
+							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-git">To git merge attempt</a>
 						</div>
 					</div>
 
@@ -52,10 +56,10 @@
 					<a class="btn" id="merge-editor-control-delete" disabled style="display: none;">Delete this file</a>
 					
 				</div>
-				<div id="merge-instructions">
+				<div class="pr-merge" id="merge-instructions">
 				</div>
 			</div>
-			<div id="editor-label-panes">
+			<div id="editor-label-panes" class="pr-merge">
 				<div>My version</div>
 				<div>Incoming version</div>
 			</div>

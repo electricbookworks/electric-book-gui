@@ -166,7 +166,7 @@ func (c *Context) Repo() (*git.Repo, error) {
 		return nil, err
 	}
 	repo.Log = c.Log
-	c.AddDefer(repo.Free)
+	c.AddDefer(repo.Close)
 	return repo, nil
 }
 

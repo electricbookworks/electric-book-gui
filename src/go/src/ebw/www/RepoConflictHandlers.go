@@ -13,7 +13,8 @@ func repoConflict(c *Context) error {
 		return err
 	}
 
-	stagedFiles, err := repo.MergingFilesList()
+	// only show conflicted files if we're not merging a PR
+	stagedFiles, err := repo.MergingFilesList(0 == repo.EBWRepoStatus.MergingPRNumber)
 	if nil != err {
 		return err
 	}

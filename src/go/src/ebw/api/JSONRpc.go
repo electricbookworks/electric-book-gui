@@ -70,7 +70,7 @@ func (rpc *API) StageFileAndReturnMergingState(repoOwner, repoName, path string)
 	if nil != err {
 		return ``, err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	err = git.StageFile(rpc.Client, repoOwner, repoName, path)
 	if nil != err {
 		return ``, err
@@ -111,7 +111,7 @@ func (rpc *API) CommitAll(repoOwner, repoName, message, notes string) error {
 	if nil != err {
 		return err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	_, err = repo.CommitAll(message, notes)
 	return err
 }
@@ -120,7 +120,7 @@ func (rpc *API) CommitOnly(repoOwner, repoName, message, notes string) error {
 	if nil != err {
 		return err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	_, err = repo.Commit(message, notes)
 	return err
 }
@@ -152,7 +152,7 @@ func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (bool, string, b
 	if nil != err {
 		return retErr(err)
 	}
-	defer repo.Free()
+	defer repo.Close()
 
 	working, their := []byte{}, []byte{}
 	workingTree, theirTree := repo.WorkingTree(), repo.TheirTree()
@@ -186,7 +186,7 @@ func (rpc *API) MergedFileGit(repoOwner, repoName, path string) (bool, string, e
 	if nil != err {
 		return false, ``, err
 	}
-	defer repo.Free()
+	defer repo.Close()
 
 	//func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error)
 	mergeable, raw, err := repo.FileGit(path)
@@ -238,6 +238,8 @@ func (rpc *API) MergeFileOriginal(repoOwner, repoName, path string, version stri
 		v = git.FileOur
 	case "their":
 		v = git.FileTheir
+	case "git":
+		v = git.FileMerge
 	default:
 		return false, ``, fmt.Errorf(`Unrecognized version request: %s`, version)
 	}

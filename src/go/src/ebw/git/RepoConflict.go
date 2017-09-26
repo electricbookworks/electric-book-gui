@@ -34,6 +34,17 @@ func (r *Repo) HasConflictedFiles() (bool, error) {
 	return 0 < len(conflicts), nil
 }
 
+// IsFileConflicted returns whether the given file is in conflict in the repo
+func (r *Repo) IsFileConflicted(path string) (bool, error) {
+	return r.Git.IsFileConflicted(path)
+}
+
+// ListConflictedFiles returns a list of all the currently conflicted files in the
+// repo
+func (r *Repo) ListConflictedFiles() ([]string, error) {
+	return r.Git.ListConflictedFiles()
+}
+
 // ListRepoConflicts lists all the conflicted files in the repo. (The repo must be
 // in a Merge state in order for there to be conflicted files at all.)
 // It doesn't appear to be necessary that the repo is in a merge state in order to

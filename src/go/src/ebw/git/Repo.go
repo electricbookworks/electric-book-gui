@@ -53,6 +53,17 @@ type Repo struct {
 	state RepoState
 
 	Log *logrus.Entry
+	Git *Git
+}
+
+// Close closes the repo and any resources it is using
+func (r *Repo) Close() {
+	if nil != r.Repository {
+		r.Repository.Free()
+	}
+	if nil != r.Git {
+		r.Git.Close()
+	}
 }
 
 // Checkout checks out the repository into the repo directory.
@@ -95,6 +106,10 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 		state:      StateNotSet,
 	}
 	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
+		return nil, err
+	}
+	r.Git, err = OpenGit(repoDir, nil)
+	if nil != err {
 		return nil, err
 	}
 	return r, nil
@@ -165,7 +180,10 @@ func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 	if nil != err {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
-
+	r.Git, err = OpenGit(repoDir, nil)
+	if nil != err {
+		return nil, err
+	}
 	return r, nil
 }
 
@@ -876,110 +894,28 @@ func (r *Repo) FileBlob(fileId *git2go.Oid) ([]byte, error) {
 // FileCat returns the contents of a conflicted or merged file.
 // The first bool parameter indicates whether the files exists.
 func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
-	var fileId *git2go.Oid
-	var err error
-	if FileWorking == version {
-		exists, err := util.FileExists(r.RepoPath(path))
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		if !exists {
-			return false, []byte{}, nil
-		}
-		raw, err := ioutil.ReadFile(r.RepoPath(path))
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		return true, raw, r.Error(err)
-	}
-
+	var auto bool
+	var v GitFileVersion
 	switch version {
-	case FileTheir:
-		fileId, err = r.fileTheir(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
 	case FileOur:
-		fileId, err = r.fileOur(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
+		v = GFV_OUR_HEAD
+	case FileTheir:
+		v = GFV_THEIR_WD
+	case FileAncestor:
+		v = GFV_ANCESTOR
+	case FileWorking:
+		v = GFV_OUR_WD
 	case FileMerge:
-		index, err := r.Repository.Index()
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		conflict, err := index.GetConflict(path)
-		if nil != err {
-			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(fmt.Errorf(`File %s is not conflicted seeking version FileMerge: %s`, path, err.Error()))
-		}
-
-		theirFileId, err := r.fileTheir(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		ourFileId, err := r.fileOur(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		their, err := r.FileBlob(theirFileId)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		our, err := r.FileBlob(ourFileId)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		ancestor, err := r.FileBlob(conflict.Ancestor.Id)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
-			git2go.MergeFileInput{Contents: our},
-			git2go.MergeFileInput{Contents: their},
-			&git2go.MergeFileOptions{
-				Favor: git2go.MergeFileFavorNormal,
-				Flags: git2go.MergeFileDefault,
-			})
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		defer res.Free()
-		fmt.Println(`Automergeable = `, res.Automergeable)
-		return true, res.Contents, nil
-	default:
-		index, err := r.Repository.Index()
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		conflict, err := index.GetConflict(path)
-		if nil != err {
-			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(fmt.Errorf(`File %s is not conflicted: %s`, path, err.Error()))
-		}
-		switch version {
-		case FileAncestor:
-			fileId = conflict.Ancestor.Id
-		case FileOur:
-			fileId = conflict.Our.Id
-		case FileTheir:
-			fileId = conflict.Their.Id
-		default:
-			return false, []byte{}, r.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
-		}
+		v = GFV_GIT_MERGED
 	}
-
-	if nil == fileId || fileId.IsZero() {
-		// This can occur if the file does not exist
-		glog.Infof(`Got fileId IsZero() for %s (v=%d)`, path, version)
-		return false, []byte{}, nil
-	}
-	raw, err := r.FileBlob(fileId)
+	raw, err := r.Git.CatFileVersion(path, v, &auto)
 	if nil != err {
-		return false, []byte{}, r.Error(err)
+		if os.IsNotExist(err) {
+			return false, nil, nil
+		}
+		return false, nil, err
 	}
-	return true, raw, nil
+	return true, raw, err
 }
 
 // fileTheir returns the 'their' version of the file at the given path. This is the
@@ -1035,48 +971,8 @@ func (r *Repo) fileOur(path string) (*git2go.Oid, error) {
 // FileGit returns the GIT version of a conflicted file. The first bool return
 // indicates whether the file can be automerged.
 func (r *Repo) FileGit(path string) (automergeable bool, raw []byte, err error) {
-
-	index, err := r.Repository.Index()
-	if nil != err {
-		return false, []byte{}, r.Error(err)
-	}
-	conflict, err := index.GetConflict(path)
-	if nil != err {
-		// An error can occur if the file is not conflicted
-		return false, []byte{}, r.Error(err)
-	}
-
-	theirFileId, err := r.fileTheir(path)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	ourFileId, err := r.fileOur(path)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	their, err := r.FileBlob(theirFileId)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	our, err := r.FileBlob(ourFileId)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	ancestor, err := r.FileBlob(conflict.Ancestor.Id)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
-		git2go.MergeFileInput{Contents: our},
-		git2go.MergeFileInput{Contents: their},
-		&git2go.MergeFileOptions{
-			Favor: git2go.MergeFileFavorNormal,
-			Flags: git2go.MergeFileDefault,
-		})
-	if nil != err {
-		return false, []byte{}, r.Error(err)
-	}
-	return res.Automergeable, res.Contents, nil
+	raw, err = r.Git.CatFileVersion(path, GFV_GIT_MERGED, &automergeable)
+	return
 }
 
 // ResetConflictedFilesInWorkingDir goes through conflicted files in the
@@ -1501,9 +1397,18 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 
 // MergingFilesList returns a slice of all the files in the
 // repo that are merging, with a status indication for each.
-func (r *Repo) MergingFilesList() ([]*IndexFileStatusAbbreviated, error) {
-	files := make([]*IndexFileStatusAbbreviated, len(r.EBWRepoStatus.MergingFiles))
-	for i, path := range r.EBWRepoStatus.MergingFiles {
+func (r *Repo) MergingFilesList(conflictedOnly bool) ([]*IndexFileStatusAbbreviated, error) {
+	files := make([]*IndexFileStatusAbbreviated, 0, len(r.EBWRepoStatus.MergingFiles))
+	for _, path := range r.EBWRepoStatus.MergingFiles {
+		if conflictedOnly {
+			conflicted, err := r.IsFileConflicted(path)
+			if nil != err {
+				return nil, err
+			}
+			if !conflicted {
+				continue
+			}
+		}
 		rs, err := r.MergeFileResolutionState(path)
 		if nil != err {
 			return nil, err
@@ -1512,7 +1417,7 @@ func (r *Repo) MergingFilesList() ([]*IndexFileStatusAbbreviated, error) {
 			Path:   path,
 			Status: rs.String(),
 		}
-		files[i] = f
+		files = append(files, f)
 	}
 	return files, nil
 }
