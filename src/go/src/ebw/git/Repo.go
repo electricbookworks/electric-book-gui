@@ -1,8 +1,6 @@
 package git
 
 import (
-	"bufio"
-	"bytes"
 	"crypto/sha1"
 	"errors"
 	"fmt"
@@ -1786,28 +1784,5 @@ func (r *Repo) gitUpdate() error {
 // UpdateGitConfig updates the git config file with current user's
 // username and token, so that command-line git commands workb
 func (r *Repo) UpdateGitConfig() error {
-	raw, err := ioutil.ReadFile(r.RepoPath(`.git`, `config`))
-	if nil != err {
-		return r.Error(err)
-	}
-	out, err := os.Create(r.RepoPath(`.git`, `config`))
-	if nil != err {
-		return r.Error(err)
-	}
-	defer out.Close()
-
-	lines := bufio.NewScanner(bytes.NewReader(raw))
-	match := regexp.MustCompile(`^(\s*url\s*=\s*https?://).*@github.com/`)
-	repl := fmt.Sprintf(`%s:%s@github.com/`, r.Client.Username, r.Client.Token)
-	for lines.Scan() {
-		t := lines.Text()
-		m := match.FindStringSubmatch(t)
-		if nil != m {
-			t = m[1] + repl + t[len(m[0]):]
-		}
-		fmt.Fprintln(out, t)
-		// Don't know why, but this doesn't work :
-		// fmt.Fprintln(out, match.ReplaceAllString(t, "$1" + repl))
-	}
-	return nil
+	return r.Git.UpdateRemoteGithubIdentity(r.Client.Username, r.Client.Token)
 }

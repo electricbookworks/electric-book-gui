@@ -1,10 +1,14 @@
 package git
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	git2go "gopkg.in/libgit2/git2go.v25"
 
@@ -153,6 +157,40 @@ func (g *Git) SetUsernameEmail(name, email string) error {
 		if err = config.SetString(`user.email`, email); nil != err {
 			return g.Error(err)
 		}
+	}
+	return nil
+}
+
+// UpdateRemoteGithubIdentity updates all github remotes for the git repo
+// inserting the given username and password for each URL.
+func (g *Git) UpdateRemoteGithubIdentity(username, password string) error {
+	configFile := g.Path(`.git`, `config`)
+	raw, err := ioutil.ReadFile(configFile)
+	if nil != err {
+		return g.Error(err)
+	}
+	if err := ioutil.WriteFile(configFile+`-backup`, raw, 0644); nil != err {
+		return g.Error(err)
+	}
+	out, err := os.Create(configFile)
+	if nil != err {
+		return g.Error(err)
+	}
+	defer out.Close()
+
+	lines := bufio.NewScanner(bytes.NewReader(raw))
+	match := regexp.MustCompile(`^(\s*(push)?url\s*=\s*https?://).*@github.com/`)
+	repl := fmt.Sprintf(`%s:%s@github.com/`, username, password)
+	for lines.Scan() {
+		t := lines.Text()
+		m := match.FindStringSubmatch(t)
+		if nil != m {
+			t = m[1] + repl + t[len(m[0]):]
+			fmt.Println(`MATCH: `, m)
+		}
+		fmt.Fprintln(out, t)
+		// Don't know why, but this doesn't work :
+		// fmt.Fprintln(out, match.ReplaceAllString(t, "$1" + repl))
 	}
 	return nil
 }

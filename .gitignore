@@ -12,8 +12,7 @@ tools/ansible/hosts-*
 electricbook-*.yml
 git_cache/pr_requests/*
 git_cache/repos/*
-!git_cache/pr_requests/README.md
-!git_cache/repos/README.md
+!git_cache/README.md
 node_modules
 public/css/*.css
 src/go/src/gopkg.in/libgit2

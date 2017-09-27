@@ -45,6 +45,7 @@ func GitCommands() *commander.Command {
 				GitRepoStateCommand,
 				GitSetRemoteUserPasswordCommand,
 				GitSetUsernameEmailCommand,
+				GitUpdateRemoteGithubIdentityCommand,
 			)
 		})
 }
@@ -212,5 +213,26 @@ func GitSetUsernameEmailCommand() *commander.Command {
 				email = args[1]
 			}
 			return g.SetUsernameEmail(user, email)
+		})
+}
+
+func GitUpdateRemoteGithubIdentityCommand() *commander.Command {
+	fs := flag.NewFlagSet(`update-github-identity`, flag.ExitOnError)
+	u := fs.String(`u`, ``, `Username for github`)
+	p := fs.String(`p`, ``, `Password for github`)
+	return commander.NewCommand(`update-github-identity`,
+		`Set the username and password for all github remotes`,
+		fs,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			if `` == *u {
+				return fmt.Errorf(`You need to provide a username (-u)`)
+			}
+			if `` == *p {
+				return fmt.Errorf(`You need to provide a password (-p)`)
+			}
+
+			return g.UpdateRemoteGithubIdentity(*u, *p)
 		})
 }
