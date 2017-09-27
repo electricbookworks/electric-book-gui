@@ -35,6 +35,8 @@ func GitCommands() *commander.Command {
 		nil,
 		func(args []string) error {
 			return commander.Execute(args,
+				GitFetchRefspecsCommand,
+				GitFetchRemoteCommand,
 				GitFileCatCommand,
 				GitFileConflictedCommand,
 				GitHasConflictsCommand,
@@ -45,8 +47,43 @@ func GitCommands() *commander.Command {
 				GitRepoStateCommand,
 				GitSetRemoteUserPasswordCommand,
 				GitSetUsernameEmailCommand,
+				GitFileDiffsCommand,
+				GitFileDiffsConflictCommand,
 				GitUpdateRemoteGithubIdentityCommand,
 			)
+		})
+}
+
+func GitFetchRefspecsCommand() *commander.Command {
+	return commander.NewCommand(`fetch-refspecs`, `fetch refspecs for a remote`,
+		nil,
+		func(remotes []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, r := range remotes {
+				specs, err := g.FetchRefspecs(r)
+				if nil != err {
+					return err
+				}
+				fmt.Printf("%s:\n  %s\n---\n", r, strings.Join(specs, "  \n  "))
+			}
+			return nil
+		})
+}
+
+func GitFetchRemoteCommand() *commander.Command {
+	return commander.NewCommand(`fetch`, `fetch a remote repo`,
+		nil,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, r := range args {
+				if err := g.FetchRemote(r); nil != err {
+					return err
+				}
+				// fmt.Println(`fetched `, r)
+			}
+			return nil
 		})
 }
 
@@ -91,6 +128,64 @@ func GitFileConflictedCommand() *commander.Command {
 			} else {
 				fmt.Println(`not conflicted`)
 				os.Exit(1)
+			}
+			return nil
+		})
+}
+
+func GitFileDiffsCommand() *commander.Command {
+	return commander.NewCommand(`file-diffs`,
+		`Return the file diffs between HEAD and the given remote/branch`,
+		nil,
+		func(branches []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, b := range branches {
+				head, err := g.GetBranch(`HEAD`)
+				if nil != err {
+					return err
+				}
+				defer head.Free()
+				other, err := g.GetBranch(b)
+				if nil != err {
+					return err
+				}
+				defer other.Free()
+				diffs, err := g.CommitFileDiffs(head, other)
+				if nil != err {
+					return err
+				}
+				fmt.Println(`Diffs HEAD ->`, b, `:`)
+				for _, d := range diffs {
+					fmt.Println(d)
+				}
+				fmt.Println(`---`)
+			}
+			return nil
+		})
+}
+
+func GitFileDiffsConflictCommand() *commander.Command {
+	return commander.NewCommand(`file-diffs-conflict`,
+		`Set all file diffs between HEAD and the given remote/branch to be conflicted`,
+		nil,
+		func(branches []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, b := range branches {
+				head, err := g.GetBranch(`HEAD`)
+				if nil != err {
+					return err
+				}
+				defer head.Free()
+				other, err := g.GetBranch(b)
+				if nil != err {
+					return err
+				}
+				defer other.Free()
+				if err := g.ConflictFileDiffs(head, other); nil != err {
+					return err
+				}
 			}
 			return nil
 		})
@@ -215,7 +310,6 @@ func GitSetUsernameEmailCommand() *commander.Command {
 			return g.SetUsernameEmail(user, email)
 		})
 }
-
 func GitUpdateRemoteGithubIdentityCommand() *commander.Command {
 	fs := flag.NewFlagSet(`update-github-identity`, flag.ExitOnError)
 	u := fs.String(`u`, ``, `Username for github`)

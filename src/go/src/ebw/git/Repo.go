@@ -788,7 +788,7 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 }
 
 // PullAbort aborts a merge that is in progress. This isn't quite
-// live `git merge --abort`, because this is in fact simply a RESET
+// like `git merge --abort`, because this is in fact simply a RESET
 // to HEAD, which occurs in spite of, or while ignoring, any changed
 // files in WD. `git merge --abort`, though, will fail if there are modified
 // files in WD (or something like that).
@@ -1784,5 +1784,8 @@ func (r *Repo) gitUpdate() error {
 // UpdateGitConfig updates the git config file with current user's
 // username and token, so that command-line git commands workb
 func (r *Repo) UpdateGitConfig() error {
-	return r.Git.UpdateRemoteGithubIdentity(r.Client.Username, r.Client.Token)
+	if err := r.Git.UpdateRemoteGithubIdentity(r.Client.Username, r.Client.Token); nil != err {
+		return err
+	}
+	return nil
 }

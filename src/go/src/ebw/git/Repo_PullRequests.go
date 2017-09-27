@@ -86,7 +86,7 @@ func (r *Repo) PullRequestMerge(number int) error {
 	// remote and the remote's relevant branch
 
 	// DOES THIS NOT ASSUME THAT WE'VE GOT THE SHA IN OUR REPO FOR THE REMOTE
-	// PR?
+	// PR - we do, because we pulled the entire remote
 	prId, err := git2go.NewOid(pr.Head.GetSHA())
 	if nil != err {
 		return util.Error(err)
