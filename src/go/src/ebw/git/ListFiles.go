@@ -157,24 +157,7 @@ func UpdateFile(client *Client, user, repoOwner, repoName, path string, content 
 	if err := ioutil.WriteFile(fullfile, content, 0644); nil != err {
 		return util.Error(err)
 	}
-	repo, err := git2go.OpenRepository(repoDir)
-	if nil != err {
-		return util.Error(err)
-	}
-	defer repo.Free()
-
-	index, err := repo.Index()
-	if nil != err {
-		return util.Error(err)
-	}
-	defer index.Free()
-	if err := index.AddByPath(path); nil != err {
-		return util.Error(err)
-	}
-	if err := index.Write(); nil != err {
-		return util.Error(err)
-	}
-	return nil
+	return StageFile(client, repoOwner, repoName, path)
 }
 
 // SaveWorkingFile saves the named file on the repo in the working directory.

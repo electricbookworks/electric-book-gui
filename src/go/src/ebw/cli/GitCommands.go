@@ -35,22 +35,43 @@ func GitCommands() *commander.Command {
 		nil,
 		func(args []string) error {
 			return commander.Execute(args,
+				GitCommitCommand,
 				GitFetchRefspecsCommand,
 				GitFetchRemoteCommand,
 				GitFileCatCommand,
 				GitFileConflictedCommand,
+				GitFileDiffsCommand,
+				GitFileDiffsConflictCommand,
 				GitHasConflictsCommand,
 				GitListConflictsCommand,
+				GitMergeAutoCommand,
+				GitMergeConflictCommand,
 				GitPathOurCommand,
 				GitPathTheirCommand,
+				GitPrintEBWStatusCommand,
+				GitPullAbortCommand,
 				GitRemoteUserCommand,
+				GitRemoveConflictCommand,
 				GitRepoStateCommand,
 				GitSetRemoteUserPasswordCommand,
 				GitSetUsernameEmailCommand,
-				GitFileDiffsCommand,
-				GitFileDiffsConflictCommand,
 				GitUpdateRemoteGithubIdentityCommand,
 			)
+		})
+}
+
+func GitCommitCommand() *commander.Command {
+	return commander.NewCommand(`commit`, `commit all staged changes`,
+		nil,
+		func(msg []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			oid, err := g.Commit(strings.Join(msg, " "))
+			if nil != err {
+				return err
+			}
+			fmt.Println("Commit #", oid.String())
+			return nil
 		})
 }
 
@@ -226,6 +247,26 @@ func GitListConflictsCommand() *commander.Command {
 		})
 }
 
+func GitMergeAutoCommand() *commander.Command {
+	return commander.NewCommand(`merge-auto`, `Automatically merge the given remote/branch and automatically resolve`,
+		nil,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			return g.MergeBranch(args[0], git.ResolveAutomatically)
+		})
+}
+
+func GitMergeConflictCommand() *commander.Command {
+	return commander.NewCommand(`merge-conflict`, `Merge with the given remote/branch and leave all items in a conflicted state.`,
+		nil,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			return g.MergeBranch(args[0], git.ResolveConflicted)
+		})
+}
+
 func GitPathOurCommand() *commander.Command {
 	return commander.NewCommand(`path-our`, `Path to a file in our git repo directory`,
 		nil,
@@ -248,6 +289,29 @@ func GitPathTheirCommand() *commander.Command {
 		})
 }
 
+func GitPrintEBWStatusCommand() *commander.Command {
+	return commander.NewCommand(`ebw-status`,
+		`Print the EBW Repo Status for the repo`,
+		nil,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			g.PrintEBWRepoStatus(os.Stdout)
+			return nil
+		})
+}
+
+func GitPullAbortCommand() *commander.Command {
+	return commander.NewCommand(`pull-abort`,
+		`Abort the in-process pull operation`,
+		nil,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			return g.PullAbort()
+		})
+}
+
 func GitRemoteUserCommand() *commander.Command {
 	return commander.NewCommand(`remote-user`, `Show the user and password for the given remote`,
 		nil,
@@ -263,6 +327,21 @@ func GitRemoteUserCommand() *commander.Command {
 				return err
 			}
 			fmt.Println(user, `:`, pass)
+			return nil
+		})
+}
+
+func GitRemoveConflictCommand() *commander.Command {
+	return commander.NewCommand(`remove-conflict`, `Remove the conflict on the given file`,
+		nil,
+		func(files []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, f := range files {
+				if err := g.RemoveConflict(f); nil != err {
+					return err
+				}
+			}
 			return nil
 		})
 }

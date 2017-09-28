@@ -110,14 +110,17 @@
 				// justify-content: space-between;
 				// align-items: stretch;
 
+				&.pr-merge>div {					
+					display: flex;
+					flex-direction: row;
+					align-items: stretch;
+					justify-content: space-between;
+				}
 				&>div {
 					position: absolute;
 					top: 0; bottom: 0; left:0; right:0;
 
-					// display: flex;
-					// flex-direction: row;
-					// align-items: stretch;
-					// justify-content: space-between;
+
 					& > div {
 						float:none;
 						flex-grow: 0;
@@ -194,6 +197,16 @@
 			&.status-resolved {
 				&>.status {
 					background-color: $color-status-resolved;
+				}
+			}
+			&.status-error {
+				&>.status {
+					background-color: $color-status-error;
+				}
+			}
+			&.status-conflict {
+				&>.status {
+					background-color: $color-status-conflict;
 				}
 			}
 			&.rpc {

@@ -36,7 +36,7 @@ export class FileDisplay extends Template {
 		switch (event) {
 			case FileEvent.StatusChanged:
 				this.$.status.innerText = this.file.Status();
-				this.el.classList.remove(`status-new`,`status-modified`,`status-resolved`,`status-deleted`);
+				this.el.classList.remove(`status-new`,`status-modified`,`status-resolved`,`status-deleted`,`status-conflict`,`status-error`);
 				this.el.classList.add(`status-${this.file.Status()}`);				
 				break;
 		}

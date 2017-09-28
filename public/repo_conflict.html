@@ -3,11 +3,11 @@
 
 <main id="repo-conflict">
 	<div id="topbar">
-		<div><span class="merging-description">{{.Merging.MergingDescription}}</span>
+		<div><span class="merging-description">You are merging {{.Merging.MergingDescription}}.</span>
 		Changes in this update conflict with your recent edits. Balance each conflicted file, and click Okay.
 		</div>
 		<div class="toolbar-menu">
-		    <button class="btn" id="action-abort">Cancel this update</a>
+		    <button class="btn" id="action-abort">Cancel this update</button>
 		    <button class="btn" id="action-commit">Okay, accept update</button>
 		</div>
 	</div>
@@ -63,7 +63,7 @@
 				<div>My version</div>
 				<div>Incoming version</div>
 			</div>
-			<div id="editor-work">
+			<div id="editor-work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
 			</div>
 		</div>
 	</div>

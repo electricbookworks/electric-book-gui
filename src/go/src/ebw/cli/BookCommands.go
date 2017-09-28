@@ -620,7 +620,7 @@ func BookPRFetchCommand() *commander.Command {
 				return err
 			}
 			defer repo.Close()
-			return repo.PullRequestFetch(*number)
+			return repo.PullRequestFetch(*number, nil)
 		})
 }
 

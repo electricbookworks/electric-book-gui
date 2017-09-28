@@ -2,9 +2,28 @@ package git
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 
 	git2go "gopkg.in/libgit2/git2go.v25"
+)
+
+type MergeResolution int
+
+const (
+	// ResolveAutomatically will attempt to auto-merge
+	// all files. If a file can be auto-merged, it will be added to the
+	// index and wd in a resolved state, and marked as resolved in the index.
+	// If the file cannot be automatically resolved, it will be marked as
+	// conflicted in the index, and the WD will contain the git-merge
+	// result.
+	ResolveAutomatically MergeResolution = 1
+	// ResolveConficted will leave all files in the merge in a
+	// conflicted state, even in the situation where Git might have been
+	// able to resolve the merge.
+	ResolveConflicted = 2
 )
 
 // FileDiff contains a difference between two versions of a single file
@@ -92,8 +111,16 @@ func (g *Git) writeConflict(index *git2go.Index, baseTree *git2go.Tree, t *FileD
 }
 
 // CommitFileDiffs returns a slice of FileDiffs for all differences between the
-// two commits. oldObject an dnewObject need to be objects that can resolve to Trees / Commits.
+// two commits. oldObject and newObject need to be objects that can resolve to Trees / Commits.
+// If null==oldObject, oldObject will be set to the current repo HEAD.
 func (g *Git) CommitFileDiffs(oldObject, newObject *git2go.Object) ([]*FileDiff, error) {
+	var err error
+	if nil == oldObject {
+		oldObject, err = g.GetBranch(`HEAD`)
+		if nil != err {
+			return nil, err
+		}
+	}
 	oldTree, err := g.objectToTree(oldObject)
 	if nil != err {
 		return nil, err
@@ -130,8 +157,16 @@ func (g *Git) CommitFileDiffs(oldObject, newObject *git2go.Object) ([]*FileDiff,
 }
 
 // ConflictFileDiffs sets all file differences between the two supplied commits
-// to a conflict state.
+// to a conflict state. If nil==oldCommitObject, oldCommitObject will be set to the
+// current repo's HEAD
 func (g *Git) ConflictFileDiffs(oldCommitObject, newCommitObject *git2go.Object) error {
+	var err error
+	if nil == oldCommitObject {
+		oldCommitObject, err = g.GetBranch(`HEAD`)
+		if nil != err {
+			return err
+		}
+	}
 	oldCommit, err := g.objectToCommit(oldCommitObject)
 	if nil != err {
 		return err
@@ -175,4 +210,80 @@ func (g *Git) ConflictFileDiffs(oldCommitObject, newCommitObject *git2go.Object)
 		return g.Error(err)
 	}
 	return nil
+}
+
+// writeTheirsForConflictedFiles writes the `their` version of all conflicted
+// files for this repo.
+func (g *Git) writeTheirsForConflictedFiles(commitObject *git2go.Object) error {
+	return g.writeConflictedFiles(commitObject,
+		func(c git2go.IndexConflict) *git2go.IndexEntry {
+			return c.Their
+		}, g.PathTheir)
+}
+
+// writeOursForConflictedFiles writes the `our` version of all conflicted
+// files for this repo.
+func (g *Git) writeOursForConflictedFiles() error {
+	head, err := g.GetBranch(`HEAD`)
+	if nil != err {
+		return err
+	}
+	defer head.Free()
+	return g.writeConflictedFiles(head, func(c git2go.IndexConflict) *git2go.IndexEntry {
+		return c.Our
+	}, g.Path)
+}
+
+// writeConflictedFiles is a generic method to write all the conflicted files in the
+// repo with version from the commitObject, entry chosen with the chooseEntry function,
+// and the destination path computed with the pathfn.
+// This method is only really intended for use from the writeOursForConflictedFiles() and the
+// writeTheirForConflictedFiles(..) methods.
+func (g *Git) writeConflictedFiles(commitObject *git2go.Object,
+	chooseEntry func(git2go.IndexConflict) *git2go.IndexEntry, pathfn func(path ...string) string) error {
+	return g.WalkConflicts(func(conflict git2go.IndexConflict) error {
+		entry := chooseEntry(conflict)
+		if nil != entry {
+			if nil != entry.Id && !entry.Id.IsZero() {
+				// we've got a solid file we can write
+				fmt.Println(`writeConflictedFiles reading `, entry.Path)
+				raw, err := g.readPathForTreeObject(commitObject, entry.Path)
+				if nil != err {
+					if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+						// We didn't find the path in the commit object.
+						// This should not occur - so for now we'll report an error
+						err = fmt.Errorf(`Failed to find %s in commit object`, entry.Path)
+						// os.Remove(pathfn(entry.Path))
+						return g.Error(err)
+					}
+					return err
+				}
+				dest := pathfn(entry.Path)
+				fmt.Println(`writeConflictedFIles writing`, dest)
+				os.MkdirAll(filepath.Dir(dest), 0755)
+				if err := ioutil.WriteFile(dest, raw, 0644); nil != err {
+					return g.Error(fmt.Errorf(`Failed writing '%s': %s`, dest, err.Error()))
+				}
+				return nil
+			}
+			// We don't have an entry Id - implies this file does not exist, so we delete
+			// it. We don't worry if there's an error - after all, it might no be there
+			fmt.Println(`writeConflictedFiles deleting`, pathfn(entry.Path))
+			os.Remove(pathfn(entry.Path))
+			return nil
+		}
+		// the entry we have chosen is nil. We need to make sure we don't have
+		// such a file.
+		path := ``
+		if nil != conflict.Our {
+			path = conflict.Our.Path
+		}
+		if `` == path {
+			path = conflict.Their.Path
+		}
+		// delete the file if it exists
+		fmt.Println(`writeConflictdFiles deleting (pt2)`, pathfn(path))
+		os.Remove(pathfn(path))
+		return nil
+	})
 }

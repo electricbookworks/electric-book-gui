@@ -351,8 +351,6 @@ func repoMergeRemote(c *Context) error {
 
 func repoMergeRemoteBranch(c *Context) error {
 	var args struct {
-		Resolve     string `schema:"resolve"`
-		Conflicted  bool   `schema:"conflicted"`
 		PRNumber    int    `schema:"pr_number"`
 		Description string `schema:"description"`
 	}
@@ -360,38 +358,48 @@ func repoMergeRemoteBranch(c *Context) error {
 		return err
 	}
 
-	var resolve git.ResolveMergeOption
-	switch args.Resolve {
-	case `our`:
-		resolve = git.ResolveMergeOur
-	case `their`:
-		resolve = git.ResolveMergeTheir
-	case `git`:
-		fallthrough
-	default:
-		return fmt.Errorf(`Only supported resolve param values are 'their' and 'our'`)
-	}
-
-	remote, branch := c.Vars[`remote`], c.Vars[`branch`]
+	remote, _ := c.Vars[`remote`], c.Vars[`branch`]
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
 
-	if `` == args.Description {
-		if 0 < args.PRNumber {
-			args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
-		} else {
-			if `upstream` == remote {
-				args.Description = `You are merging with the original project you are contributing to.`
-			} else {
-				args.Description = `You are merging with your GitHub repo.`
+	if 0 == args.PRNumber {
+		switch remote {
+		case `upstream`:
+			if err := repo.Git.PullUpstream(); nil != err {
+				return err
 			}
+		case `origin`:
+			if err := repo.Git.PullOrigin(); nil != err {
+				return err
+			}
+		default:
+			return fmt.Errorf(`You can't use repoMergeRemoteBranch to merge with remote %s`, remote)
 		}
+	} else {
+		return fmt.Errorf(`You can't use repoMergeRemoteBranch to merge with a PR`)
+		// if err := repo.PullPR(args.PRNumber); nil != err {
+		// 	return err
+		// }
 	}
-	if err := repo.MergeWith(remote, branch, resolve, args.Conflicted, args.PRNumber, args.Description); nil != err {
-		return err
-	}
+	// OLD CODE FOLLOWS: Can all be deleted once *Git is fine.
+	// if err := repo.Git.MergePullRequest()
+	//
+	// if `` == args.Description {
+	// 	if 0 < args.PRNumber {
+	// 		args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
+	// 	} else {
+	// 		if `upstream` == remote {
+	// 			args.Description = `You are merging with the original project you are contributing to.`
+	// 		} else {
+	// 			args.Description = `You are merging with your GitHub repo.`
+	// 		}
+	// 	}
+	// }
+	// if err := repo.MergeWith(remote, branch, resolve, args.Conflicted, args.PRNumber, args.Description); nil != err {
+	// 	return err
+	// }
 	return c.Redirect(pathRepoConflict(repo))
 }
 

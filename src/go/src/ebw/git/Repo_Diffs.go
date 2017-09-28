@@ -98,38 +98,12 @@ func (r *Repo) RevertDiffDelta(rd *DiffDelta) error {
 // DiffsIndexToWt returns the RepoDiffs for the difference between the
 // index and the working tree.
 func (r *Repo) DiffsIndexToWt() ([]*DiffDelta, error) {
-	slist, err := r.Repository.StatusList(&git2go.StatusOptions{
-		Show:  git2go.StatusShowWorkdirOnly,
-		Flags: 0,
-		// PathSpec: nil,
-	})
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	defer slist.Free()
-	n, err := slist.EntryCount()
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	diffs := make([]*DiffDelta, 0, n)
-
-	for i := 0; i < n; i++ {
-		se, err := slist.ByIndex(i)
-		if nil != err {
-			return nil, r.Error(err)
-		}
-		if r.IsStatusWt(se.Status) {
-			diffs = append(diffs, &DiffDelta{Type: IndexToWt, DiffDelta: se.IndexToWorkdir})
-		}
-	}
-
-	return diffs, nil
-
+	return r.Git.ListDiffsIndexToWt()
 }
 
-// IsStatusWt returns true if the given status relates to a
+// isWorktreeStatus returns true if the given status relates to a
 // Worktree item.
-func (r *Repo) IsStatusWt(status git2go.Status) bool {
+func isWorktreeStatus(status git2go.Status) bool {
 	for _, s := range []git2go.Status{
 		git2go.StatusWtNew,
 		git2go.StatusWtModified,

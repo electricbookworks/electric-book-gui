@@ -73,17 +73,6 @@ func (g *Git) IsFileConflicted(path string) (bool, error) {
 		return false, g.Error(err)
 	}
 	return true, nil
-	// i, err := index.EntryByPath(path)
-	// if nil != err {
-	// 	return false, g.Error(err)
-	// }
-	// entry, err := index.EntryByIndex(i)
-	// if nil != err {
-	// 	return false, g.Error(err)
-	// }
-	// defer entry.Free()
-	// return entry.Is
-	// return false, g.Error(fmt.Errorf(`Not implemented`))
 }
 
 // IsMerging returns true if the repo is merging

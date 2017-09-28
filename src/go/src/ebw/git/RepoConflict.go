@@ -27,11 +27,7 @@ func (rc *RepoConflict) String() string {
 // HasConflictedFiles returns true if the repo has conflicted files,
 // false if there are no conflicts in the repo.
 func (r *Repo) HasConflictedFiles() (bool, error) {
-	conflicts, err := r.ListRepoConflicts()
-	if nil != err {
-		return false, err
-	}
-	return 0 < len(conflicts), nil
+	return r.Git.HasConflicts()
 }
 
 // IsFileConflicted returns whether the given file is in conflict in the repo
@@ -39,8 +35,8 @@ func (r *Repo) IsFileConflicted(path string) (bool, error) {
 	return r.Git.IsFileConflicted(path)
 }
 
-// ListConflictedFiles returns a list of all the currently conflicted files in the
-// repo
+// ListConflictedFiles returns a list of all the currently conflicted
+// files in the repo
 func (r *Repo) ListConflictedFiles() ([]string, error) {
 	return r.Git.ListConflictedFiles()
 }

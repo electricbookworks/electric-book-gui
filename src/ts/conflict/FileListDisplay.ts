@@ -20,11 +20,6 @@ export class FileListDisplay extends Template {
 		this.Listen = new signals.Signal();
 
 		fileList.Listen.add(this.fileListEvent, this);
-		if (this.mergingInfo.IsPRMerge()) {
-			this.el.classList.add(`pr-merge`);
-		} else {
-			this.el.classList.add(`not-pr-merge`);
-		}
 		this.parent.appendChild(this.el);
 	}
 	fileListEvent(e:FileListEvent, f:File) : void{

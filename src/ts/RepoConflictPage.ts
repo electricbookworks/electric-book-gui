@@ -32,12 +32,13 @@ export class RepoConflictPage {
 			this.fileListEvent(undefined, evt.detail.file);
 		});
 
+		console.log(`mergingInfo = `, this.mergingInfo);
 		if (this.mergingInfo.IsPRMerge()) {
+			console.log(`THIS MERGE IS A PR MERGE`);
 			this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
 			new MergeInstructions(document.getElementById('merge-instructions'), this.editor as MergeEditor);
 		} else {
 			let work = document.getElementById(`editor-work`);
-			work.classList.add(`not-pr-merge`);
 			this.editor = new SingleEditor(context, work);
 		}
 		// items to be hidden in a PR merge or a not-pr-merge are controlled
@@ -64,7 +65,9 @@ export class RepoConflictPage {
 			return;
 		}
 		let listjs = filesEl.innerText;
-		fileList.load(JSON.parse(listjs));
+		let fileListData = JSON.parse(listjs);
+		console.log(`Loaded fileList: `, fileListData);
+		fileList.load(fileListData);
 
 		document.getElementById(`action-commit`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();

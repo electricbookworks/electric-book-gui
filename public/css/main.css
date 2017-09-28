@@ -4373,6 +4373,11 @@ body {
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
         position: relative; }
+        #repo-conflict #work #editor #editor-work.pr-merge > div {
+          display: flex;
+          flex-direction: row;
+          align-items: stretch;
+          justify-content: space-between; }
         #repo-conflict #work #editor #editor-work > div {
           position: absolute;
           top: 0;
@@ -4423,6 +4428,10 @@ body {
         background-color: #ddd; }
       #staged-files-list > ul > li.status-resolved > .status {
         background-color: #009e7f; }
+      #staged-files-list > ul > li.status-error > .status {
+        background-color: #f05a50; }
+      #staged-files-list > ul > li.status-conflict > .status {
+        background-color: #f8e080; }
       #staged-files-list > ul > li.rpc {
         background-color: yellow; }
 

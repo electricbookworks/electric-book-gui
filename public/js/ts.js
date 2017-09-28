@@ -2804,7 +2804,7 @@ var FileDisplay = (function (_super) {
         switch (event) {
             case FileEvent.StatusChanged:
                 this.$.status.innerText = this.file.Status();
-                this.el.classList.remove("status-new", "status-modified", "status-resolved", "status-deleted");
+                this.el.classList.remove("status-new", "status-modified", "status-resolved", "status-deleted", "status-conflict", "status-error");
                 this.el.classList.add("status-" + this.file.Status());
                 break;
         }
@@ -2835,12 +2835,6 @@ var FileListDisplay = (function (_super) {
         _this.mergingInfo = mergingInfo;
         _this.Listen = new signals.Signal();
         fileList.Listen.add(_this.fileListEvent, _this);
-        if (_this.mergingInfo.IsPRMerge()) {
-            _this.el.classList.add("pr-merge");
-        }
-        else {
-            _this.el.classList.add("not-pr-merge");
-        }
         _this.parent.appendChild(_this.el);
         return _this;
     }
@@ -3370,10 +3364,10 @@ var MergingInfo = (function () {
     function MergingInfo(dataEl) {
         if (!dataEl) {
             dataEl = document.getElementById("merging-info");
-            var js = JSON.parse(dataEl.innerText);
-            this.PRNumber = js.MergingPRNumber;
-            this.Description = js.MergingDescription;
         }
+        var js = JSON.parse(dataEl.innerText);
+        this.PRNumber = js.MergingPRNumber;
+        this.Description = js.MergingDescription;
     }
     MergingInfo.prototype.IsPRMerge = function () {
         return (0 < this.PRNumber);
@@ -3520,13 +3514,14 @@ var RepoConflictPage = (function () {
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
+        console.log("mergingInfo = ", this.mergingInfo);
         if (this.mergingInfo.IsPRMerge()) {
+            console.log("THIS MERGE IS A PR MERGE");
             this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
             new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         }
         else {
             var work = document.getElementById("editor-work");
-            work.classList.add("not-pr-merge");
             this.editor = new SingleEditor(context, work);
         }
         // items to be hidden in a PR merge or a not-pr-merge are controlled
@@ -3548,7 +3543,9 @@ var RepoConflictPage = (function () {
             return;
         }
         var listjs = filesEl.innerText;
-        fileList.load(JSON.parse(listjs));
+        var fileListData = JSON.parse(listjs);
+        console.log("Loaded fileList: ", fileListData);
+        fileList.load(fileListData);
         document.getElementById("action-commit").addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();

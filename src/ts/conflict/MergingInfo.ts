@@ -8,10 +8,10 @@ export class MergingInfo {
 	constructor(dataEl?:HTMLElement) {
 		if (!dataEl) {
 			dataEl = document.getElementById(`merging-info`);
-			let js : any = JSON.parse(dataEl.innerText);
-			this.PRNumber = js.MergingPRNumber;
-			this.Description = js.MergingDescription;
 		}
+		let js : any = JSON.parse(dataEl.innerText);
+		this.PRNumber = js.MergingPRNumber;
+		this.Description = js.MergingDescription;
 	}
 
 	IsPRMerge() : boolean {

@@ -22,7 +22,7 @@ func GithubCommand() *commander.Command {
 				RemoteCommand,
 				BranchNameCommand,
 				RootDirCommand,
-				UpdateConfigCommand)
+			)
 		})
 }
 
@@ -148,20 +148,5 @@ func RootDirCommand() *commander.Command {
 			}
 			fmt.Println(root)
 			return nil
-		})
-}
-
-func UpdateConfigCommand() *commander.Command {
-	return commander.NewCommand(
-		`update-config`,
-		`Update the github config`,
-		nil,
-		func([]string) error {
-			repo, err := cliRepo()
-			if nil != err {
-				return err
-			}
-			defer repo.Free()
-			return repo.UpdateGitConfig()
 		})
 }

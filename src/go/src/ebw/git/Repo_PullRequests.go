@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
-	git2go "gopkg.in/libgit2/git2go.v25"
+	// git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
 )
@@ -15,13 +15,13 @@ import (
 func (r *Repo) PullRequest(number int) (*github.PullRequest, error) {
 	pr, _, err := r.Client.Client.PullRequests.Get(r.Client.Context, r.RepoOwner, r.RepoName, number)
 	if nil != err {
-		return nil, util.Error(err)
+		return nil, r.Error(err)
 	}
 	return pr, nil
 }
 
 // PullRequestList returns a list of the PullRequests for this repo.
-func (r *Repo) PullRequestList() ([]*PullRequest, error) {
+func (r *Repo) PullRequestList() ([]*github.PullRequest, error) {
 	prs := []*github.PullRequest{}
 	opts := &github.PullRequestListOptions{}
 	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
@@ -46,21 +46,32 @@ func (r *Repo) PullRequestList() ([]*PullRequest, error) {
 	if nil != err {
 		return nil, util.Error(err)
 	}
-	res := make([]*PullRequest, len(prs))
-	for i, pr := range prs {
-		res[i] = &PullRequest{pr}
-	}
-	return res, nil
+	// res := make([]*PullRequest, len(prs))
+	// for i, pr := range prs {
+	// 	res[i] = &PullRequest{pr}
+	// }
+	return prs, nil
+}
+
+// PullRequestRemoteName returns the remote name for this PR when we
+// configure it in our repo
+func PullRequestRemoteName(pr *github.PullRequest) string {
+	return fmt.Sprintf(`_pull_request_%d`, pr.Number)
 }
 
 // PullRequestFetch fetches the numbered pull request so that it can be
-// merged with the current repo.
-func (r *Repo) PullRequestFetch(number int) error {
-	pr, err := r.PullRequest(number)
-	if nil != err {
-		return err
+// merged with the current repo. The pr can be supplied in the second
+// parameter, on the off-chance that you've already fetched it: no point
+// making two GitHub API calls.
+func (r *Repo) PullRequestFetch(number int, pr *github.PullRequest) error {
+	var err error
+	if nil == pr {
+		pr, err = r.PullRequest(number)
+		if nil != err {
+			return err
+		}
 	}
-	remoteName := fmt.Sprintf(`_pull_request_%d`, number)
+	remoteName := PullRequestRemoteName(pr)
 	cloneUrl, err := r.Client.AddAuth(pr.Head.Repo.GetCloneURL())
 	if nil != err {
 		return err
@@ -81,26 +92,30 @@ func (r *Repo) PullRequestMerge(number int) error {
 	if nil != err {
 		return err
 	}
-
-	// We've now got the PR from GitHub, so we need to pull the
-	// remote and the remote's relevant branch
-
-	// DOES THIS NOT ASSUME THAT WE'VE GOT THE SHA IN OUR REPO FOR THE REMOTE
-	// PR - we do, because we pulled the entire remote
-	prId, err := git2go.NewOid(pr.Head.GetSHA())
-	if nil != err {
-		return util.Error(err)
-	}
-	prCommit, err := r.Repository.LookupAnnotatedCommit(prId)
-	if nil != err {
-		return util.Error(err)
-	}
-	defer prCommit.Free()
-	if err := r.mergeAnnotatedCommit(prCommit); nil != err {
+	// Fetch the PR into our repo as a remote
+	if err = r.PullRequestFetch(number, pr); nil != err {
 		return err
 	}
 
-	return nil
+	return r.Git.MergePullRequest(number, PullRequestRemoteName(pr), pr.Head.GetSHA())
+
+	// // We've now got the PR from GitHub, so we need to pull the
+	// // remote and the remote's relevant branch. We have the PR's
+	// // SHA in our local repo because we're pulled the entire remote
+	// prId, err := git2go.NewOid(pr.Head.GetSHA())
+	// if nil != err {
+	// 	return util.Error(err)
+	// }
+	// prCommit, err := r.Repository.LookupAnnotatedCommit(prId)
+	// if nil != err {
+	// 	return util.Error(err)
+	// }
+	// defer prCommit.Free()
+	// if err := r.mergeAnnotatedCommit(prCommit); nil != err {
+	// 	return err
+	// }
+
+	// return nil
 }
 
 // PullRequestClose closes the given PR, with the merged indication and the given

@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	git2go "gopkg.in/libgit2/git2go.v25"
 
@@ -23,10 +25,15 @@ var _ = fmt.Print
 // Largely, it works off the git2go library, and manages a few
 // presumed things about the library, but scanning for github username-password,
 // etc.
+// It also manages the EBWRepoStatus, which is an extended-status form for
+// a Git repo.
 type Git struct {
 	Repository *git2go.Repository
 	Log        logger.Logger
 }
+
+// ConflictWalkFunc is the callback function to use with WalkConflicts
+type ConflictWalkFunc func(git2go.IndexConflict) error
 
 // OpenGit opens a Git Repo at the given directory, and configures the
 // logger for the git repo
@@ -57,10 +64,77 @@ func (g *Git) AddRemote(remoteName, cloneURL string) error {
 	return nil
 }
 
+// Commit commits the staged changes on the repo with the given message.
+func (g *Git) Commit(message string) (*git2go.Oid, error) {
+	author, err := g.DefaultSignature()
+	if nil != err {
+		return nil, err
+	}
+	index, err := g.Repository.Index()
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	defer index.Free()
+
+	treeId, err := index.WriteTree()
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	tree, err := g.Repository.LookupTree(treeId)
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	defer tree.Free()
+
+	//Getting repo HEAD
+	head, err := g.Repository.Head()
+	if err != nil {
+		return nil, g.Error(err)
+	}
+	defer head.Free()
+
+	commits, err := g.mergeCommits(true)
+	if nil != err {
+		return nil, err
+	}
+	defer FreeCommitSlice(commits)
+
+	oid, err := g.Repository.CreateCommit(`HEAD`, author, author, message, tree, commits...)
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	return oid, g.mergeCleanup()
+}
+
 // Close closes the git repo and frees any associated resources.
 func (g *Git) Close() error {
 	g.Repository.Free()
 	return nil
+}
+
+// DefaultSignature guesses at a signature for the repo based on the
+// git username and config
+func (g *Git) DefaultSignature() (*git2go.Signature, error) {
+	config, err := g.Repository.Config()
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	defer config.Free()
+	sig := &git2go.Signature{
+		When: time.Now(),
+	}
+	sig.Name, _ = config.LookupString(`user.name`)
+	if `` == sig.Name {
+		sig.Name, _, err = g.RemoteUser(`origin`)
+		if nil != err {
+			return nil, err
+		}
+	}
+	sig.Email, _ = config.LookupString(`user.email`)
+	if `` == sig.Email {
+		sig.Email = sig.Name
+	}
+	return sig, nil
 }
 
 // Error logs an error and returns an error, or returns nil if err is nil.
@@ -82,21 +156,17 @@ func (g *Git) FetchRefspecs(remoteName string) ([]string, error) {
 	return remote.FetchRefspecs()
 }
 
-// FetchRemote fetches the named remote into our repo
+// FetchRemote fetches the named remote into our repo.
 func (g *Git) FetchRemote(remoteName string) error {
+	if strings.Contains(remoteName, `/`) {
+		parts := strings.Split(remoteName, `/`)
+		remoteName = parts[0]
+	}
 	remote, err := g.Repository.Remotes.Lookup(remoteName)
 	if nil != err {
 		return g.Error(err)
 	}
 	defer remote.Free()
-
-	// if ``==username {
-	// 	username, password, err := g.RemoteUser(remoteName)
-	// 	if nil!=err {
-	// 		return err
-	// 	}
-	// }
-
 	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
 		RemoteCallbacks: git2go.RemoteCallbacks{
 			CredentialsCallback: func(remoteUrl string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
@@ -162,6 +232,37 @@ func (g *Git) GetBranch(remoteBranch string) (*git2go.Object, error) {
 	return obj, err
 }
 
+// ListDiffsIndexToWt returns the RepoDiffs for the difference between the
+// index and the working tree.
+func (g *Git) ListDiffsIndexToWt() ([]*DiffDelta, error) {
+	slist, err := g.Repository.StatusList(&git2go.StatusOptions{
+		Show:  git2go.StatusShowWorkdirOnly,
+		Flags: 0,
+		// PathSpec: nil,
+	})
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	defer slist.Free()
+	n, err := slist.EntryCount()
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	diffs := make([]*DiffDelta, 0, n)
+
+	for i := 0; i < n; i++ {
+		se, err := slist.ByIndex(i)
+		if nil != err {
+			return nil, g.Error(err)
+		}
+		if isWorktreeStatus(se.Status) {
+			diffs = append(diffs, &DiffDelta{Type: IndexToWt, DiffDelta: se.IndexToWorkdir})
+		}
+	}
+
+	return diffs, nil
+}
+
 // Path returns the disk-based path for the repo or any path inside the repo
 func (g *Git) Path(path ...string) string {
 	if 0 == len(path) {
@@ -193,6 +294,17 @@ func (g *Git) PathTheir(path ...string) string {
 	copy(parts, base)
 	copy(parts[len(base):], path)
 	return g.Path(parts...)
+}
+
+// PrintEBWRepoStatus prints the info from the EBWRepoStatus
+// to the io.Writer
+func (g *Git) PrintEBWRepoStatus(out io.Writer) {
+	rs, err := g.readEBWRepoStatus()
+	if nil != err {
+		fmt.Fprintln(out, err.Error())
+		return
+	}
+	fmt.Fprintln(out, rs.ToYaml())
 }
 
 // RemoteUser returns the username and password of the remote git user.
@@ -322,6 +434,34 @@ func (g *Git) UpdateRemoteGithubIdentity(username, password string) error {
 	// will reload any necessary settings.
 	if err = g.resetRepository(``); nil != err {
 		return err
+	}
+	return nil
+}
+
+// WalkConflicts calls the ConflictWalkFunc for every conflict in the
+// index.
+func (g *Git) WalkConflicts(f ConflictWalkFunc) error {
+	index, err := g.Repository.Index()
+	if nil != err {
+		return g.Error(err)
+	}
+	defer index.Free()
+	iter, err := index.ConflictIterator()
+	if nil != err {
+		return g.Error(err)
+	}
+	defer iter.Free()
+	for {
+		conflict, err := iter.Next()
+		if nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrIterOver) {
+				break
+			}
+			return g.Error(err)
+		}
+		if err := f(conflict); nil != err {
+			return err
+		}
 	}
 	return nil
 }
