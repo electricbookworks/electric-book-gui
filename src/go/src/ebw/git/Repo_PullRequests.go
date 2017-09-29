@@ -134,19 +134,58 @@ func (r *Repo) PullRequestClose(number int, merged bool) error {
 	return nil
 }
 
+// GetUpstreamPullRequestsCount returns the number of PR's that the
+// upstream github repo has.
+func (r *Repo) GetUpstreamPullRequestsCount() (int, error) {
+	upstream, err := r.GithubRepo()
+	if nil != err {
+		return 0, err
+	}
+	if nil == upstream.Parent {
+		return 0, r.Error(fmt.Errorf(`No Upstream owner for repo %s/%s`, r.RepoOwner, r.RepoName))
+	}
+	upstreamOwner := *upstream.Parent.Owner.Login
+	upstreamName := *upstream.Parent.Name
+
+	open, err := r.getUpstreamPullRequestsMaxNumber(upstreamOwner, upstreamName, `open`)
+	if nil != err {
+		return 0, err
+	}
+	closed, err := r.getUpstreamPullRequestsMaxNumber(upstreamOwner, upstreamName, `closed`)
+	if nil != err {
+		return 0, err
+	}
+	if open < closed {
+		return closed, nil
+	}
+	return open, nil
+}
+
+// getUpstreamPullRequestsMaxNumber returns the maximum pull request Number for the repo
+func (r *Repo) getUpstreamPullRequestsMaxNumber(upstreamOwner, upstreamName, openOrClosed string) (int, error) {
+	pr, _, err := r.Client.Client.PullRequests.List(r.Client.Context,
+		upstreamOwner, upstreamName, &github.PullRequestListOptions{
+			State: openOrClosed,
+			Sort:  `created`,
+			ListOptions: github.ListOptions{
+				Page:    1,
+				PerPage: 1,
+			},
+		})
+	if nil != err {
+		return 0, r.Error(err)
+	}
+	if 0 == len(pr) {
+		return 0, nil
+	}
+	return *pr[0].Number, nil
+}
+
 // PullRequestCreate creates a new Pull Request from the user's repo to the
 // upstream repo.
 // In order to ensure that changes to the user's repo aren't propagated
 // with the PR, we branch at the point of PR creation.
 func (r *Repo) PullRequestCreate(title, notes string) error {
-	branchName, headOid, err := r.BranchCreate(``, false)
-	if nil != err {
-		return err
-	}
-
-	head := fmt.Sprintf(`%s:%s`, r.RepoOwner, branchName)
-	base := `master`
-
 	upstream, err := r.GithubRepo()
 
 	if nil != err {
@@ -154,6 +193,14 @@ func (r *Repo) PullRequestCreate(title, notes string) error {
 	}
 	upstreamOwner := *upstream.Parent.Owner.Login
 	upstreamName := *upstream.Parent.Name
+
+	branchName, headOid, err := r.BranchCreate(``, false)
+	if nil != err {
+		return err
+	}
+
+	head := fmt.Sprintf(`%s:%s`, r.RepoOwner, branchName)
+	base := `master`
 
 	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
 		title, head, base, notes, upstreamOwner, upstreamName)

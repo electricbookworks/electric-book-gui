@@ -1227,17 +1227,30 @@ func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, 
 // BranchCreate creates the named branch on the repo. The force param is
 // set to true if you wish to overwrite an existing branch with the same
 // name. If no name is provided, this function will assign a name based on
-// the template PR_{{prN}} for the current head, where prN is the Nth PR we've
-// sent. Because, down-the-line, we might delete branches, this number isn't
-// to be considered definitive.
+// the template PR_{{username}}_{{prN}} for the current head, where prN is the N+1 for N
+// the total number of pull requests on the repo.
 func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error) {
 	head, err := r.Repository.Head()
 	if nil != err {
 		return ``, nil, util.Error(err)
 	}
+	defer head.Free()
+
+	commit, err := r.LookupCommit(head.Target())
+	if nil != err {
+		return ``, nil, r.Error(err)
+	}
+	defer commit.Free()
+
+	prCount, err := r.GetUpstreamPullRequestsCount()
+	if nil != err {
+		return ``, nil, err
+	}
+
 	if `` == name {
-		for i := 1; true; i++ {
-			name = fmt.Sprintf(`PR_%d`, i)
+		r.HasUpstreamRemote()
+		for i := prCount + 1; true; i++ {
+			name = fmt.Sprintf(`PR_%s_%d_%s`, r.Client.Username, i, commit.Object.Id().String()[0:6])
 			br, err := r.Repository.LookupBranch(name, git2go.BranchLocal)
 			if nil != err {
 				if git2go.IsErrorCode(err, git2go.ErrNotFound) {
@@ -1248,12 +1261,6 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 			br.Free()
 		}
 	}
-
-	commit, err := r.LookupCommit(head.Target())
-	if nil != err {
-		return ``, nil, r.Error(err)
-	}
-	defer commit.Free()
 
 	br, err := r.Repository.CreateBranch(name, commit, force)
 	if nil != err {
