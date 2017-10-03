@@ -69,8 +69,13 @@ func githubCreateNew(c *Context) error {
 		return err
 	}
 
+	template := c.P(`template`)
+	if `` == template {
+		template = `electricbookworks/electric-book`
+	}
+
 	if err := git.DuplicateRepo(client, client.Token,
-		`electricbookworks/electric-book`, c.P(`org_name`), repoNewName); nil != err {
+		template, c.P(`org_name`), repoNewName); nil != err {
 		return err
 	}
 

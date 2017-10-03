@@ -250,7 +250,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -259,11 +259,16 @@ var AddNewBookDialog$1 = (function () {
             chooseType: n.childNodes[0],
             newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0],
             collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0],
+            adaptationRadio: n.childNodes[0].childNodes[1].childNodes[2].childNodes[0],
             newBook: n.childNodes[1],
             repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1],
             org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1],
-            collaborate: n.childNodes[2],
-            collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
+            adaptation: n.childNodes[2],
+            adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
+            adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1],
+            template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1],
+            collaborate: n.childNodes[3],
+            collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1],
         };
         this.el = n;
     }
@@ -661,7 +666,8 @@ var AddNewBookDialog$$1 = (function (_super) {
             'choseType': function () {
                 var newBook = _this.$.newBookRadio.checked;
                 var collaborate = _this.$.collaborateRadio.checked;
-                if (!newBook && !collaborate) {
+                var adaptation = _this.$.adaptationRadio.checked;
+                if (!newBook && !collaborate && !adaptation) {
                     alert("You need to choose one or the other");
                     return;
                 }
@@ -669,9 +675,13 @@ var AddNewBookDialog$$1 = (function (_super) {
                     _this.$.newBook.style.display = 'block';
                     _this.$.repo_name.focus();
                 }
-                else {
+                else if (collaborate) {
                     _this.$.collaborate.style.display = 'block';
                     _this.$.collaborate_repo.focus();
+                }
+                else {
+                    _this.$.adaptation.style.display = 'block';
+                    _this.$.adaptation_repo_name.focus();
                 }
                 _this.$.chooseType.style.display = 'none';
             }
@@ -680,10 +690,13 @@ var AddNewBookDialog$$1 = (function (_super) {
             _this.$.chooseType.style.display = 'block';
             _this.$.newBookRadio.checked = false;
             _this.$.collaborateRadio.checked = false;
+            _this.$.adaptationRadio.checked = false;
             _this.$.newBook.style.display = 'none';
             _this.$.repo_name.value = '';
             _this.$.collaborate.style.display = 'none';
             _this.$.collaborate_repo.value = '';
+            _this.$.adaptation.style.display = 'none';
+            _this.$.adaptation_repo_name.value = '';
         });
         parent.appendChild(_this.el);
         return _this;
@@ -692,7 +705,7 @@ var AddNewBookDialog$$1 = (function (_super) {
         var list = document.querySelectorAll("[data-instance='AddNewBookDialog']");
         for (var i = 0; i < list.length; i++) {
             var el = list.item(i);
-            console.log("qsa.forEach(", el, ")");
+            // console.log(`qsa.forEach(`, el, `)`);
             new AddNewBookDialog$$1(el);
         }
     };
@@ -1188,22 +1201,7 @@ var EditorImage$1 = (function (_super) {
     FileStat[FileStat["NotExist"] = 5] = "NotExist";
 })(FileStat || (FileStat = {}));
 
-function FileStatString(fs) {
-    switch (fs) {
-        case FileStat.Exists:
-            return "Exists";
-        case FileStat.Changed:
-            return "Changed";
-        case FileStat.New:
-            return "New";
-        case FileStat.Deleted:
-            return "Deleted";
-        case FileStat.NotExist:
-            return "NotExist";
-    }
-    debugger;
-    return "-- ERROR : undefined FileStat ---";
-}
+
 var FileContent = (function () {
     function FileContent(Name, Stat, Content, Original) {
         this.Name = Name;
@@ -1271,7 +1269,7 @@ var repoEditorActionBar = (function () {
         this.saveButton.disabled = false;
         this.undoButton.disabled = false;
         this.renameButton.disabled = false;
-        console.log("repoEditorActionBar: file = ", file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file);
+        //console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
         this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete" : "Delete";
     };
     return repoEditorActionBar;
@@ -2488,13 +2486,12 @@ var RepoEditorPage = (function () {
                 .style.visibility = showing ? "visible" : "hidden";
             var f = document.getElementById("page-footer");
             f.style.display = showing ? 'flex' : 'none';
-            console.log("set footer = ", f);
+            // console.log(`set footer = `, f);
         });
         FSPrimeFromJS(this.FS, filesJson);
         document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            console.log("Starting printing...");
             EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
             new PrintListener(_this.repoOwner, _this.repoName, "book", "print");
         });

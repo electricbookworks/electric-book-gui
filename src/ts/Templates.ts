@@ -28,9 +28,14 @@ export namespace R {
 		chooseType: HTMLDivElement,
 		newBookRadio: HTMLInputElement,
 		collaborateRadio: HTMLInputElement,
+		adaptationRadio: HTMLInputElement,
 		newBook: HTMLDivElement,
 		repo_name: HTMLInputElement,
 		org_name: HTMLInputElement,
+		adaptation: HTMLDivElement,
+		adaptation_repo_name: HTMLInputElement,
+		adaptation_org_name: HTMLInputElement,
+		template: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
 		};
@@ -131,12 +136,21 @@ export class AddNewBookDialog {
 				Start a new project.
 			</label><label><input type="radio" value="collaborate" name="new-project-type"/>
 				Collaborate on an existing project.
+			</label><label><input type="radio" value="adaptation" name="new-project-type"/>
+				Create an adaptation of an existing project.
 			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label><label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
-		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
+		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Adaptation</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		</label><label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		</label><label>Enter the series that you will be adapting.
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
+		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
@@ -147,11 +161,16 @@ export class AddNewBookDialog {
 			chooseType: n.childNodes[0] as HTMLDivElement,
 			newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0] as HTMLInputElement,
 			collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0] as HTMLInputElement,
+			adaptationRadio: n.childNodes[0].childNodes[1].childNodes[2].childNodes[0] as HTMLInputElement,
 			newBook: n.childNodes[1] as HTMLDivElement,
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
-			collaborate: n.childNodes[2] as HTMLDivElement,
-			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			adaptation: n.childNodes[2] as HTMLDivElement,
+			adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
+			template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1] as HTMLInputElement,
+			collaborate: n.childNodes[3] as HTMLDivElement,
+			collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 		};
 		this.el = n;
 	}

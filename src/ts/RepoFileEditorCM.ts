@@ -56,7 +56,7 @@ class repoEditorActionBar {
 		this.saveButton.disabled = false;
 		this.undoButton.disabled = false;
 		this.renameButton.disabled = false;
-		console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
+		//console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
 		this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete": "Delete";
 	}
 

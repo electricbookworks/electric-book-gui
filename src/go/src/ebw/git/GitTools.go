@@ -282,7 +282,7 @@ func copyFile(src, dest string) error {
 }
 
 // DuplicateRepo duplicates the template repo into the user's github repos,
-//  and gives it the name newRepo.
+// and gives it the name newRepo.
 // This is used to start a new book, without being a fork of
 // the EBW electric-book repo.
 // See https://help.github.com/articles/duplicating-a-repository/
@@ -318,7 +318,7 @@ func DuplicateRepo(client *Client, githubPassword string,
 
 	glog.Infof(`Going to fork repo %s into %s/%s`, templateRepo, repoOwner, newRepo)
 
-	// 2. Checkout the templateRepo with new directory called [repoName].source
+	// 2. Checkout the templateRepo
 	if err := runGitDir(workingDir, []string{
 		`clone`,
 		`--depth`, `1`,
@@ -331,8 +331,27 @@ func DuplicateRepo(client *Client, githubPassword string,
 	if err := os.RemoveAll(filepath.Join(destDir, `.git`)); nil != err {
 		return util.Error(err)
 	}
+
 	for _, cmds := range [][]string{
 		[]string{`init`},
+	} {
+		if err := runGitDir(destDir, cmds); nil != err {
+			return util.Error(err)
+		}
+	}
+
+	clientEmail := ``
+	if nil != client.User {
+		clientEmail = client.User.GetEmail()
+	}
+	if `` == clientEmail {
+		clientEmail = client.Username + `@github.com`
+	}
+
+	for _, cmds := range [][]string{
+		[]string{`init`},
+		[]string{`config`, `user.name`, client.Username},
+		[]string{`config`, `user.email`, clientEmail},
 		[]string{`add`, `.`},
 		[]string{`commit`, `-m`, `initial commit`},
 		[]string{`remote`, `add`, `origin`, githubUrl + destRepo + `.git`},
