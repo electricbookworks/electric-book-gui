@@ -79,66 +79,75 @@ export class RepoFileViewerPage extends Template implements EditFieldListener {
 			new RepoFileViewerFile(this.context, f, this.inserter, this);
 		}
 	}
-	FileDrop(src:RepoFileViewerFile, evt:any) {
-			let dt = evt.dataTransfer;
-
-			if (dt.items) {
-				for (let i=0; i<dt.items.length; i++) {
-					let item = dt.items[i] as DataTransferItem;
-					if (item.kind == `file`) {
-						//console.log(`filename = `, item.name);
-					}
-					// READ THE FILE
-					let reader = new FileReader();
-					reader.addEventListener(`loadend`, (evt)=>{
-						//console.log(`READ file. result=`, reader.result);
-						//console.log(`Replacing file ${this.filename} with result`);
-						let u8 = new Uint8Array(reader.result);	//Uint8Array.from(reader.result);
-						//console.log(`u8 = `, u8);
-						let blen = u8.byteLength;
-						//console.log(`blen = `, blen);
-						let binary = ``;
-						for (let i=0; i<blen; i++) {
-							binary += String.fromCharCode( u8[i] );
-						}
-						let p : Promise<string>;
-						if (``!=src.Filename()) {
-							p = Promise.resolve<string>(src.Filename());
-						} else {
-							p = EBW.Prompt(`Enter full path and filename for uploaded file.`);
-						}
-						p.then(
-							(s:string)=>{
-								if (``==s) return Promise.resolve<string>(``);
-								return EBW.API().UpdateFileBinary(this.context.RepoOwner, this.context.RepoName, s, window.btoa(binary))
-								.then(
-									()=>{
-										return Promise.resolve<string>(s);
-									})
-							})
-						.then(
-							(s:string)=>{
-								if (``!=s) {
-									if (!src.IsAddButton()) {
-										src.Refresh();
-									} else {
-										new RepoFileViewerFile(this.context, s, this.inserter, this);
-									}
-									EBW.Toast(`Image uploaded`);
-								}
-							})
-						.catch(
-							EBW.Error
-						);
-					});
-					reader.readAsArrayBuffer(item.getAsFile());
-				}
-			} else {
-				alert(`dt.files- unexpected file upload result`);
-				for (let i=0; i<dt.files.length; i++) {
-					let file = dt.files[i];
-				}
+	_uploadFile(src:RepoFileViewerFile, file:any) : void {
+		// READ THE FILE
+		let reader = new FileReader();
+		reader.addEventListener(`loadend`, (evt)=>{
+			//console.log(`READ file. result=`, reader.result);
+			//console.log(`Replacing file ${this.filename} with result`);
+			let u8 = new Uint8Array(reader.result);	//Uint8Array.from(reader.result);
+			//console.log(`u8 = `, u8);
+			let blen = u8.byteLength;
+			//console.log(`blen = `, blen);
+			let binary = ``;
+			for (let i=0; i<blen; i++) {
+				binary += String.fromCharCode( u8[i] );
 			}
+			let p : Promise<string>;
+			if (``!=src.Filename()) {
+				p = Promise.resolve<string>(src.Filename());
+			} else {
+				p = EBW.Prompt(`Enter full path and filename for uploaded file.`);
+			}
+			p.then(
+				(s:string)=>{
+					if (``==s) return Promise.resolve<string>(``);
+					return EBW.API().UpdateFileBinary(this.context.RepoOwner, this.context.RepoName, s, window.btoa(binary))
+					.then(
+						()=>{
+							return Promise.resolve<string>(s);
+						})
+				})
+			.then(
+				(s:string)=>{
+					if (``!=s) {
+						if (!src.IsAddButton()) {
+							src.Refresh();
+						} else {
+							new RepoFileViewerFile(this.context, s, this.inserter, this);
+						}
+						EBW.Toast(`Image uploaded`);
+					}
+				})
+			.catch(
+				EBW.Error
+			);
+		});
+		reader.readAsArrayBuffer(file);
+	}
+	FileDrop(src:RepoFileViewerFile, evt:any) {
+		let dt = evt.dataTransfer;
+		console.log(`dt = `, dt);
+		if (dt.items) {
+			for (let i=0; i<dt.items.length; i++) {
+				let item = dt.items[i] as DataTransferItem;
+				if (item.kind == `file`) {
+					//console.log(`filename = `, item.name);
+				}
+				this._uploadFile(src,item.getAsFile());
+			}
+		} else {
+			console.log(`dt.files = `, dt.files);
 
+			for (let i=0; i<dt.files.length; i++) {
+				let file = dt.files[i];
+				let imageType = /^image\//;
+				if (!imageType.test(file.type)) {
+					alert(`You can only upload image files with this form.`);
+					continue;
+				}
+				this._uploadFile(src, file);
+			}
+		}
 	}
 }

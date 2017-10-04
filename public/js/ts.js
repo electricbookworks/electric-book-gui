@@ -3756,7 +3756,9 @@ var RepoFileViewerFile$1 = (function (_super) {
         _this.$.filename.textContent = _this.filename ? _this.filename : "Drop a file to upload.";
         parent.Insert(_this.el);
         _this.el.addEventListener('drop', function (evt) {
-            evt.preventDefault(); // Necessary so the browser doesn't just display the dropped item
+            evt.preventDefault();
+            // Necessary so the browser doesn't just display the dropped item
+            console.log("Going to run this.page.FileDrop");
             _this.page.FileDrop(_this, evt);
         });
         _this.el.addEventListener('drag', function (evt) {
@@ -3767,6 +3769,7 @@ var RepoFileViewerFile$1 = (function (_super) {
         _this.el.addEventListener("dragend", function (evt) {
             evt.preventDefault();
             var dt = evt.dataTransfer;
+            console.log("dragend: dt = ", dt);
             if (dt.items) {
                 for (var i = 0; i < dt.items.length; i++) {
                     dt.items.remove(i);
@@ -3867,66 +3870,73 @@ var RepoFileViewerPage$1 = (function (_super) {
             new RepoFileViewerFile$1(this.context, f, this.inserter, this);
         }
     };
-    RepoFileViewerPage$$1.prototype.FileDrop = function (src, evt) {
+    RepoFileViewerPage$$1.prototype._uploadFile = function (src, file) {
         var _this = this;
+        // READ THE FILE
+        var reader = new FileReader();
+        reader.addEventListener("loadend", function (evt) {
+            //console.log(`READ file. result=`, reader.result);
+            //console.log(`Replacing file ${this.filename} with result`);
+            var u8 = new Uint8Array(reader.result); //Uint8Array.from(reader.result);
+            //console.log(`u8 = `, u8);
+            var blen = u8.byteLength;
+            //console.log(`blen = `, blen);
+            var binary = "";
+            for (var i = 0; i < blen; i++) {
+                binary += String.fromCharCode(u8[i]);
+            }
+            var p;
+            if ("" != src.Filename()) {
+                p = Promise.resolve(src.Filename());
+            }
+            else {
+                p = EBW.Prompt("Enter full path and filename for uploaded file.");
+            }
+            p.then(function (s) {
+                if ("" == s)
+                    return Promise.resolve("");
+                return EBW.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
+                    .then(function () {
+                    return Promise.resolve(s);
+                });
+            })
+                .then(function (s) {
+                if ("" != s) {
+                    if (!src.IsAddButton()) {
+                        src.Refresh();
+                    }
+                    else {
+                        new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
+                    }
+                    EBW.Toast("Image uploaded");
+                }
+            })
+                .catch(EBW.Error);
+        });
+        reader.readAsArrayBuffer(file);
+    };
+    RepoFileViewerPage$$1.prototype.FileDrop = function (src, evt) {
         var dt = evt.dataTransfer;
+        console.log("dt = ", dt);
         if (dt.items) {
-            var _loop_1 = function (i) {
+            for (var i = 0; i < dt.items.length; i++) {
                 var item = dt.items[i];
                 if (item.kind == "file") {
                     //console.log(`filename = `, item.name);
                 }
-                // READ THE FILE
-                var reader = new FileReader();
-                reader.addEventListener("loadend", function (evt) {
-                    //console.log(`READ file. result=`, reader.result);
-                    //console.log(`Replacing file ${this.filename} with result`);
-                    var u8 = new Uint8Array(reader.result); //Uint8Array.from(reader.result);
-                    //console.log(`u8 = `, u8);
-                    var blen = u8.byteLength;
-                    //console.log(`blen = `, blen);
-                    var binary = "";
-                    for (var i_1 = 0; i_1 < blen; i_1++) {
-                        binary += String.fromCharCode(u8[i_1]);
-                    }
-                    var p;
-                    if ("" != src.Filename()) {
-                        p = Promise.resolve(src.Filename());
-                    }
-                    else {
-                        p = EBW.Prompt("Enter full path and filename for uploaded file.");
-                    }
-                    p.then(function (s) {
-                        if ("" == s)
-                            return Promise.resolve("");
-                        return EBW.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
-                            .then(function () {
-                            return Promise.resolve(s);
-                        });
-                    })
-                        .then(function (s) {
-                        if ("" != s) {
-                            if (!src.IsAddButton()) {
-                                src.Refresh();
-                            }
-                            else {
-                                new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
-                            }
-                            EBW.Toast("Image uploaded");
-                        }
-                    })
-                        .catch(EBW.Error);
-                });
-                reader.readAsArrayBuffer(item.getAsFile());
-            };
-            for (var i = 0; i < dt.items.length; i++) {
-                _loop_1(i);
+                this._uploadFile(src, item.getAsFile());
             }
         }
         else {
-            alert("dt.files- unexpected file upload result");
+            console.log("dt.files = ", dt.files);
             for (var i = 0; i < dt.files.length; i++) {
                 var file = dt.files[i];
+                var imageType = /^image\//;
+                if (!imageType.test(file.type)) {
+                    alert("You can only upload image files with this form.");
+                    continue;
+                }
+                this._uploadFile(src, file);
             }
         }
     };

@@ -31,7 +31,9 @@ export class RepoFileViewerFile extends Template {
 		parent.Insert(this.el);
 
 		this.el.addEventListener('drop', (evt)=>{
-			evt.preventDefault();	// Necessary so the browser doesn't just display the dropped item
+			evt.preventDefault();	
+			// Necessary so the browser doesn't just display the dropped item
+			console.log(`Going to run this.page.FileDrop`);
 			this.page.FileDrop(this, evt);
 		});
 		this.el.addEventListener('drag', (evt)=>{
@@ -42,6 +44,7 @@ export class RepoFileViewerFile extends Template {
 		this.el.addEventListener(`dragend`,(evt:DragEvent)=>{
 			evt.preventDefault();
 			let dt = evt.dataTransfer;
+			console.log(`dragend: dt = `, dt);
 			if (dt.items) {
 				for (let i=0; i<dt.items.length; i++) {
 					dt.items.remove(i);
