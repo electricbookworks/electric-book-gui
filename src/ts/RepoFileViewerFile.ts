@@ -10,7 +10,7 @@ export class RepoFileViewerFile extends Template {
 	Refresh() : void {
 		let src = `/img/plus.svg`;
 		if (``!=this.filename) {
-			src = `/www/${this.context.RepoOwner}/${this.context.RepoName}/repo/${this.filename}?v=` + (this.version++);
+			src = `/www/${this.context.RepoOwner}/${this.context.RepoName}/${this.filename}?v=` + (this.version++);
 		}
 		this.$.img.setAttribute('src', src);
 	}

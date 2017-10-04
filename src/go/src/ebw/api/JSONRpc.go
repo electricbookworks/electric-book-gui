@@ -9,6 +9,8 @@ package api
 import (
 	"encoding/base64"
 	"fmt"
+
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/git"
@@ -18,7 +20,7 @@ import (
 /*====================== API METHODS FOLLOW ========================*/
 // Version returns the version of the API running on the server.
 func (rpc *API) Version() string {
-	return "API v 0.1"
+	return "API v0.2"
 }
 
 func (rpc *API) RenameFile(repoOwner, repoName, fromPath, toPath string) error {
@@ -270,8 +272,10 @@ func (rpc *API) FindFileLists(repoOwner, repoName string) ([]string, error) {
 }
 
 func (rpc *API) SearchForFiles(repoOwner, repoName, fileRegex string) (string, []string, error) {
+	glog.Infof(`SearchForFiles(%s,%s,%s)`, repoOwner, repoName, fileRegex)
 	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {
+		glog.Error(err)
 		return fileRegex, nil, err
 	}
 	defer r.Free()

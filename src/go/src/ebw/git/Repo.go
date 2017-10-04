@@ -88,7 +88,6 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 			return nil, err
 		}
 	}
-
 	repo, err := git2go.OpenRepository(repoDir)
 	if nil != err {
 		return nil, err
@@ -101,11 +100,11 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 		RepoName:   repoName,
 		state:      StateNotSet,
 	}
-	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
-		return nil, err
-	}
 	r.Git, err = OpenGit(repoDir, nil)
 	if nil != err {
+		return nil, err
+	}
+	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
 		return nil, err
 	}
 	return r, nil
@@ -123,37 +122,43 @@ func (r *Repo) CLI() bool {
 // If you don't provide any elements,
 // the repo dir is returned.
 func (r *Repo) RepoPath(path ...string) string {
-	if 0 == len(path) {
-		return r.Dir
+	if nil == r.Git {
+		panic(`r.Git is nil`)
 	}
-	parts := make([]string, len(path)+1)
-	parts[0] = r.Dir
-	copy(parts[1:], path)
-	return filepath.Join(parts...)
+	return r.Git.Path(path...)
+	// if 0 == len(path) {
+	// 	return r.Dir
+	// }
+	// parts := make([]string, len(path)+1)
+	// parts[0] = r.Dir
+	// copy(parts[1:], path)
+	// return filepath.Join(parts...)
 }
 
 // TheirPath returns the path to the `their` version of a file
 // used during Merge resolution.
 func (r *Repo) TheirPath(path ...string) string {
-	begin := []string{r.Dir, `.git`, `ebw-config`, `merge-their`}
-	parts := make([]string, len(begin)+len(path))
-	copy(parts, begin)
-	if 0 < len(path) {
-		copy(parts[len(begin):], path)
-	}
-	return filepath.Join(parts...)
+	return r.Git.PathTheir(path...)
+	// begin := []string{r.Dir, `.git`, `ebw-config`, `merge-their`}
+	// parts := make([]string, len(begin)+len(path))
+	// copy(parts, begin)
+	// if 0 < len(path) {
+	// 	copy(parts[len(begin):], path)
+	// }
+	// return filepath.Join(parts...)
 }
 
 // ConfigPath returns the path mapped into the
 // EBW `config` directory
 func (r *Repo) ConfigPath(path ...string) string {
-	begin := []string{r.Dir, `.git`, `ebw-config`}
-	parts := make([]string, len(begin)+len(path))
-	copy(parts, begin)
-	if 0 < len(path) {
-		copy(parts[len(begin):], path)
-	}
-	return filepath.Join(parts...)
+	return r.Git.PathEBWConfig(path...)
+	// begin := []string{r.Dir, `.git`, `ebw-config`}
+	// parts := make([]string, len(begin)+len(path))
+	// copy(parts, begin)
+	// if 0 < len(path) {
+	// 	copy(parts[len(begin):], path)
+	// }
+	// return filepath.Join(parts...)
 }
 
 // NewRepoForDir returns a new repo configured for the given
@@ -1465,12 +1470,17 @@ func (r *Repo) RunGit(args ...string) error {
 // SearchForFiles returns a list of all files that match the given regexp.
 // It ignores all files that are ignored in Git, and skips all ignored directories.
 func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string, error) {
+	glog.Infof(`SearchForFiles(%s)`, fn)
+	if nil == r.Git {
+		glog.Errorf(`r.Git is nil!`)
+	}
 	reg, err := regexp.Compile(fn)
 	if nil != err {
 		return nil, err
 	}
 	paths := []string{}
 	repoPath := r.RepoPath()
+	glog.Infof(`repoPath = %s`, repoPath)
 	if err := filepath.Walk(r.RepoPath(), func(path string, fi os.FileInfo, err error) error {
 		p, err := filepath.Rel(repoPath, path)
 		if nil != err {
@@ -1479,7 +1489,7 @@ func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string,
 		if `.` == p {
 			return nil
 		}
-		ignore, err := r.Repository.IsPathIgnored(p)
+		ignore, err := r.Git.Repository.IsPathIgnored(p)
 		if nil != err {
 			return r.Error(err)
 		}
@@ -1497,6 +1507,7 @@ func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string,
 	}); nil != err {
 		return nil, err
 	}
+	glog.Infof(`SearchForFiles returning: %v`, paths)
 	return paths, nil
 }
 
