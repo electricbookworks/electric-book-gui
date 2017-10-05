@@ -1,3 +1,4 @@
+import {BoundFilename} from './BoundFilename';
 import {Eventify} from './Eventify';
 import {RepoFileEditorCM as Template} from './Templates';
 import {EditorCodeMirror} from './EditorCodeMirror';
@@ -89,6 +90,7 @@ export class RepoFileEditorCM extends Template {
 		this.textEditor = new EditorCodeMirror(this.$.textEditor);
 		this.imageEditor = new EditorImage(this.$.imageEditor, repoOwner, repoName);
 		this.parent.appendChild(this.el);
+		BoundFilename.BindAll(repoOwner, repoName);
 	}
 
 	undoEditorFile() {
@@ -248,11 +250,7 @@ export class RepoFileEditorCM extends Template {
 		return this.file.Rename(name)
 		.then( ()=>{
 			console.log(`Rename is concluded: this.file = `, this.file);
-			let list = document.querySelectorAll(`[ebw-bind="current-filename"]`);
-			for (let i=0; i<list.length; i++) {
-				let e = list.item(i) as HTMLElement;
-				e.textContent = name;
-			}
+			BoundFilename.SetFilename(name);
 			return Promise.resolve();
 		});
 	}
@@ -261,11 +259,7 @@ export class RepoFileEditorCM extends Template {
 		if (this.file) {
 			filename = this.file.Name();
 		}
-		let list = document.querySelectorAll('[ebw-bind="current-filename"]');
-		for (let i = 0; i<list.length; i++) {
-			let e = list.item(i) as HTMLElement;
-			e.textContent = filename;
-		}
+		BoundFilename.SetFilename(filename);
 	}
 
 	protected showImageEditor() {

@@ -4062,6 +4062,16 @@ body {
   .login-token-list .token-list .token-display:hover {
     background-color: #eee; }
 
+.bound-filename {
+  margin-left: 0.6em;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start; }
+  .bound-filename > a > img {
+    width: 1.4em;
+    margin-left: 0.6em; }
+
 .landing-page {
   max-width: 40em; }
 

@@ -1,6 +1,7 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
+	export type BoundFilename =	HTMLDivElement;
 	export type CommitMessageDialog =	HTMLDivElement;
 	export type EditorImage =	HTMLDivElement;
 	export type FSFileList_File =	HTMLUListElement;
@@ -38,6 +39,10 @@ export namespace R {
 		template: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
+		};
+	export interface BoundFilename {
+		filename: HTMLSpanElement,
+		a: HTMLAnchorElement,
 		};
 	export interface CommitMessageDialog {
 		title: HTMLHeadingElement,
@@ -171,6 +176,26 @@ export class AddNewBookDialog {
 			template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[3] as HTMLDivElement,
 			collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+		};
+		this.el = n;
+	}
+}
+export class BoundFilename {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.BoundFilename;
+	constructor() {
+		let t = BoundFilename._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="bound-filename"><span>Select a file to edit</span><a href="#" target="_github"><img src="/img/github-dark.svg"/></a></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			BoundFilename._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			filename: n.childNodes[0] as HTMLSpanElement,
+			a: n.childNodes[1] as HTMLAnchorElement,
 		};
 		this.el = n;
 	}

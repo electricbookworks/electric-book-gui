@@ -274,6 +274,24 @@ var AddNewBookDialog$1 = (function () {
     }
     return AddNewBookDialog;
 }());
+var BoundFilename = (function () {
+    function BoundFilename() {
+        var t = BoundFilename._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"bound-filename\"><span>Select a file to edit</span><a href=\"#\" target=\"_github\"><img src=\"/img/github-dark.svg\"/></a></div>";
+            t = d.firstElementChild;
+            BoundFilename._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            filename: n.childNodes[0],
+            a: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return BoundFilename;
+}());
 var CommitMessageDialog = (function () {
     function CommitMessageDialog() {
         var t = CommitMessageDialog._template;
@@ -1086,6 +1104,37 @@ var PrintListener = (function () {
     return PrintListener;
 }());
 
+var BoundFilename$1 = (function (_super) {
+    tslib_1.__extends(BoundFilename$$1, _super);
+    function BoundFilename$$1(repoOwner, repoName, parent, editorElement) {
+        var _this = _super.call(this) || this;
+        _this.repoOwner = repoOwner;
+        _this.repoName = repoName;
+        _this.parent = parent;
+        if (!editorElement) {
+            editorElement = document.body;
+        }
+        editorElement.addEventListener('BoundFileChanged', function (evt) {
+            _this.$.filename.innerText = evt.detail;
+            _this.$.a.href = "https://github.com/" + _this.repoOwner + "/" + _this.repoName + "/commits/master/" + evt.detail;
+        });
+        _this.parent.appendChild(_this.el);
+        console.log("BoundFilename: ", _this, _this.el);
+        return _this;
+    }
+    BoundFilename$$1.SetFilename = function (name) {
+        var evt = new CustomEvent("BoundFileChanged", { "detail": name });
+        document.body.dispatchEvent(evt);
+    };
+    BoundFilename$$1.BindAll = function (repoOwner, repoName) {
+        var els = document.querySelectorAll("[ebw-bind=\"current-filename\"]");
+        for (var i = 0; i < els.length; i++) {
+            new BoundFilename$$1(repoOwner, repoName, els.item(i), null);
+        }
+    };
+    return BoundFilename$$1;
+}(BoundFilename));
+
 var EditorCodeMirror = (function () {
     function EditorCodeMirror(parent) {
         this.cm = CodeMirror(parent, {
@@ -1292,6 +1341,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         _this.textEditor = new EditorCodeMirror(_this.$.textEditor);
         _this.imageEditor = new EditorImage$1(_this.$.imageEditor, repoOwner, repoName);
         _this.parent.appendChild(_this.el);
+        BoundFilename$1.BindAll(repoOwner, repoName);
         return _this;
     }
     RepoFileEditorCM$$1.prototype.undoEditorFile = function () {
@@ -1447,11 +1497,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         return this.file.Rename(name)
             .then(function () {
             console.log("Rename is concluded: this.file = ", _this.file);
-            var list = document.querySelectorAll("[ebw-bind=\"current-filename\"]");
-            for (var i = 0; i < list.length; i++) {
-                var e = list.item(i);
-                e.textContent = name;
-            }
+            BoundFilename$1.SetFilename(name);
             return Promise.resolve();
         });
     };
@@ -1460,11 +1506,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         if (this.file) {
             filename = this.file.Name();
         }
-        var list = document.querySelectorAll('[ebw-bind="current-filename"]');
-        for (var i = 0; i < list.length; i++) {
-            var e = list.item(i);
-            e.textContent = filename;
-        }
+        BoundFilename$1.SetFilename(filename);
     };
     RepoFileEditorCM$$1.prototype.showImageEditor = function () {
         this.$.textEditor.style.display = 'none';
@@ -1829,7 +1871,7 @@ var FSOverlay = (function () {
         var _this = this;
         return this.above.Write(path, stat, content)
             .then(function (fc) {
-            console.log("FSOverlay.Write(" + path + "): stat = " + stat);
+            // console.log(`FSOverlay.Write(${path}): stat = ${stat}`);
             if (!(fc.Stat == FileStat.Exists || fc.Stat == FileStat.NotExist)) {
                 _this.changes.add(path);
             }
