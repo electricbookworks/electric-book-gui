@@ -1322,6 +1322,10 @@ func (r *Repo) PullUpstream() error {
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
+	// We ensure we've got an upstream remote
+	if err := r.SetUpstreamRemote(); nil != err {
+		return err
+	}
 	return r.Git.PullUpstream()
 	// if err := r.MergeWith(`upstream`, `master`,
 	// 	ResolveMergeGit, // resolve all files by git merge resolution

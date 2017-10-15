@@ -382,8 +382,9 @@ func ContributeToRepo(client *Client, repoUserAndName string) error {
 		parts[0],
 		parts[1],
 		&github.RepositoryCreateForkOptions{})
-	if nil != err {
-		return err
+	if nil != err && !strings.Contains(err.Error(), "try again later") {
+		glog.Errorf("CreateFork failed : %s", err.Error())
+		return util.Error(err)
 	}
 
 	repoDir, err := RepoDir(client.Username, parts[0], parts[1])
@@ -408,13 +409,30 @@ func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string
 		repoUsername = client.Username
 	}
 
-	if err := runGitDir(workingDir, []string{
-		`clone`,
+	cloneUrl :=
 		`https://` + client.Username + ":" + client.Token +
-			"@github.com/" + repoUsername + "/" + repoName + ".git",
-	}); nil != err {
+			"@github.com/" + repoUsername + "/" + repoName + ".git"
+
+cloneAgain:
+	repo, err := git2go.Clone(cloneUrl, filepath.Join(workingDir, repoName), &git2go.CloneOptions{})
+	if nil != err {
+		if strings.Contains(err.Error(), "try again later") {
+			glog.Infof("Got 'try again later' - trying again in 2s")
+			time.Sleep(2 * time.Second)
+			goto cloneAgain // Oooh! A goto!
+		}
+		glog.Errorf("CLONE %s failed with error %s", cloneUrl, err.Error())
 		return util.Error(err)
 	}
+	repo.Free()
+
+	// if err := runGitDir(workingDir, []string{
+	// 	`clone`,
+	// 	`https://` + client.Username + ":" + client.Token +
+	// 		"@github.com/" + repoUsername + "/" + repoName + ".git",
+	// }); nil != err {
+	// 	return util.Error(err)
+	// }
 	return nil
 }
 

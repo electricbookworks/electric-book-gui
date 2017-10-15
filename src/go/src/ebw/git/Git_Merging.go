@@ -7,6 +7,7 @@ import (
 	// "os"
 	"strings"
 
+	"github.com/golang/glog"
 	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
@@ -190,12 +191,13 @@ func (g *Git) getMergeHeadObject() (*git2go.Object, error) {
 
 // mergeAutomatic performs and automatic merge with the given remote/branch remote,
 // and attempts to complete a commit if there are no conflicts. The return values
-// and a boolean indicating true if the automatic merge succeeded, false otherwise.
+// are a boolean indicating true if the automatic merge succeeded, false otherwise.
 func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, error) {
 	var err error
 	if err = g.MergeBranch(remoteName, ResolveAutomatically); nil != err {
 		return false, err
 	}
+
 	conflicted, err := g.HasConflicts()
 	if nil != err {
 		return false, err
@@ -212,8 +214,8 @@ func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, 
 		}
 		return false, nil
 	}
+	glog.Infof(`We have no conflicts, so we are going to Commit our merge`)
 	if _, err = g.Commit(`Merged automatically ` + mergeDescription); nil != err {
-		// Need to set our LastPushSHA so that we don't
 		return false, err
 	}
 	return true, nil
@@ -439,9 +441,13 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 	if nil != err {
 		return g.Error(err)
 	}
+	glog.Infof(`About to perform Merge with commit %s`, newCommitObject.Id())
 	if err := g.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
-		&git2go.CheckoutOpts{},
+		&git2go.CheckoutOpts{
+			Strategy: git2go.CheckoutForce | git2go.CheckoutRecreateMissing |
+				git2go.CheckoutAllowConflicts,
+		},
 	); nil != err {
 		// We handle Merge Conflict && Conflict ourselves, so we're not actually worried about this error...???
 		if git2go.IsErrorCode(err, git2go.ErrMergeConflict) ||
@@ -466,6 +472,8 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 		if !conflicted {
 			// No conflicts => so I'm done here. Our caller will be responsible for
 			// completing the commit
+			glog.Infof("ResolveAutomatically - no conflicts, merge is done")
+			return nil
 		}
 		if err := g.writeTheirsForConflictedFiles(newCommitObject); nil != err {
 			return err

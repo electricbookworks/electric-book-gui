@@ -185,18 +185,18 @@ func (r *Repo) getUpstreamPullRequestsMaxNumber(upstreamOwner, upstreamName, ope
 // upstream repo.
 // In order to ensure that changes to the user's repo aren't propagated
 // with the PR, we branch at the point of PR creation.
-func (r *Repo) PullRequestCreate(title, notes string) error {
+func (r *Repo) PullRequestCreate(title, notes string) (int, error) {
 	upstream, err := r.GithubRepo()
 
 	if nil != err {
-		return err
+		return 0, err
 	}
 	upstreamOwner := *upstream.Parent.Owner.Login
 	upstreamName := *upstream.Parent.Name
 
 	branchName, headOid, err := r.BranchCreate(``, false)
 	if nil != err {
-		return err
+		return 0, err
 	}
 
 	head := fmt.Sprintf(`%s:%s`, r.RepoOwner, branchName)
@@ -205,7 +205,7 @@ func (r *Repo) PullRequestCreate(title, notes string) error {
 	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
 		title, head, base, notes, upstreamOwner, upstreamName)
 
-	_, _, err = r.Client.PullRequests.Create(r.Client.Context,
+	pr, _, err := r.Client.PullRequests.Create(r.Client.Context,
 		upstreamOwner, upstreamName,
 		&github.NewPullRequest{
 			Title: &title,
@@ -214,13 +214,18 @@ func (r *Repo) PullRequestCreate(title, notes string) error {
 			// Body:  &notes,
 		})
 	if nil != err {
-		return util.Error(err)
+		return 0, r.Error(err)
 	}
 
+	if nil == r.EBWRepoStatus {
+		if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
+			return 0, err
+		}
+	}
 	r.EBWRepoStatus.LastPRHash = headOid.String()
 	if err := r.writeEBWRepoStatus(); nil != err {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return pr.GetNumber(), nil
 }

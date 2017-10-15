@@ -1,12 +1,10 @@
 package git
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/config"
@@ -114,90 +112,5 @@ func PullRequestClose(client *Client, repoOwner, repoName string, number int) er
 	if nil != err {
 		return util.Error(err)
 	}
-	return nil
-}
-
-// PullRequestCreate creates a new Pull Request from the user's repo to the
-// upstream repo.
-// In order to ensure that changes to the user's repo aren't propagated
-// with the PR, we branch at the point of PR creation.
-func PullRequestCreate(client *Client, user, repoOwner, repoName, title, notes string) error {
-	head := fmt.Sprintf(`%s:master`, user)
-	// head := `master`
-	base := `master`
-
-	upstream, _, err := client.Repositories.Get(client.Context, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-	upstreamUser := *upstream.Parent.Owner.Login
-	upstreamRepo := *upstream.Parent.Name
-
-	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
-		title, head, base, notes, upstreamUser, upstreamRepo)
-	_, _, err = client.PullRequests.Create(client.Context,
-		upstreamUser, upstreamRepo,
-		&github.NewPullRequest{
-			Title: &title,
-			Head:  &head,
-			Base:  &base,
-			// Body:  &notes,
-		})
-	if nil != err {
-		return util.Error(err)
-	}
-	// _, _, err := client.PullRequests.CreateComment(user,
-	// 	repo, prNumber, &github.PullRequestComment{
-	// 		Comment: &notes,
-	// 	})
-	return nil
-}
-
-func GithubCreatePullRequest(
-	client *Client,
-	workingDir string,
-	remote string,
-	upstreamBranch string,
-	title, notes string) error {
-	var err error
-	if `` == workingDir {
-		workingDir, err = os.Getwd()
-		if nil != err {
-			return util.Error(err)
-		}
-	}
-
-	localBranch, err := GitCurrentBranch(client, workingDir)
-	if nil != err {
-		return util.Error(err)
-	}
-
-	sourceHead := fmt.Sprintf(`%s:%s`, client.Username, localBranch)
-
-	// remote will default to 'origin'
-	_, remoteRepo, err := GitRemoteRepo(workingDir, remote)
-
-	upstream, _, err := client.Repositories.Get(client.Context,
-		client.Username, remoteRepo)
-	if nil != err {
-		return err
-	}
-	upstreamUser := *upstream.Parent.Owner.Login
-	upstreamRepo := *upstream.Parent.Name
-
-	glog.Infof(`Creating new PR: title=%s, Head=%s, Base=%s, Body=%s, User=%s, Repo=%s`,
-		title, sourceHead, upstreamBranch, notes, upstreamUser, upstreamRepo)
-	pr, _, err := client.PullRequests.Create(client.Context,
-		upstreamUser, upstreamRepo,
-		&github.NewPullRequest{
-			Title: &title,
-			Head:  &sourceHead,
-			Base:  &upstreamBranch,
-			Body:  &notes,
-		})
-	if nil != err {
-		return util.Error(err)
-	}
-	fmt.Printf("Created PR %d on %s/%s\n", *pr.Number, upstreamUser, upstreamRepo)
 	return nil
 }

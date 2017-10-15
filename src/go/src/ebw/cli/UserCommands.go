@@ -5,15 +5,18 @@ import (
 
 	"github.com/craigmj/commander"
 
-	"ebw/git"
+	"ebw/cli/config"
+	// "ebw/git"
 )
 
 func WhichUserCommand() *commander.Command {
-	return commander.NewCommand(`which-user`, `Show the user details for current dir`,
+	return commander.NewCommand(`which-user`, `Show the user details`,
 		nil,
 		func([]string) error {
-			user, token, err := git.GetUserForDir(``)
-			fmt.Println(user, token)
+			c := config.Config
+			user, err := c.GetUser()
+
+			fmt.Println(user.Name, user.Token)
 			return err
 		})
 }

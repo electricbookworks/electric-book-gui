@@ -22,8 +22,9 @@ type githubUser struct {
 }
 
 type conf struct {
-	Users       []*githubUser `yaml:"users"`
-	DefaultUser string        `yaml:"defaultUser"`
+	Users         []*githubUser `yaml:"users"`
+	DefaultUser   string        `yaml:"defaultUser"`
+	UserSpecified bool          `yaml:"-"`
 }
 
 var Config conf
@@ -37,9 +38,12 @@ func ReadConfigFile(in string) error {
 // GetUser returns the currently configured user based on the
 // configuration settings.
 func (c *conf) GetUser() (*githubUser, error) {
-	user, token, err := getUserForDir(``)
-	if nil == err {
-		return &githubUser{Name: user, Alias: user, Token: token}, nil
+	if !c.UserSpecified {
+		user, token, err := getUserForDir(``)
+		if nil == err {
+			glog.Infof(`GetUser found user for current directory: %s:%s`, user, token)
+			return &githubUser{Name: user, Alias: user, Token: token}, nil
+		}
 	}
 
 	if 0 == len(c.Users) {
@@ -82,6 +86,7 @@ func (c *conf) SetUser(user string) error {
 	for _, u := range c.Users {
 		if u.Name == user {
 			c.DefaultUser = user
+			c.UserSpecified = true
 			return nil
 		}
 	}

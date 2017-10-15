@@ -10,7 +10,9 @@ import (
 	"strings"
 
 	"github.com/craigmj/commander"
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	"golang.org/x/crypto/ssh/terminal"
 	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/git"
@@ -18,6 +20,12 @@ import (
 )
 
 var _ = fmt.Println
+
+// IsTerminal returns true if the application is running in a terminal,
+// or false if it is running in another environment (eg streamed)
+func IsTerminal() bool {
+	return terminal.IsTerminal(int(os.Stdout.Fd()))
+}
 
 func BookCommands() *commander.Command {
 	return commander.NewCommand(`book`,
@@ -69,14 +77,17 @@ func BookNewCommand() *commander.Command {
 	org := fs.String(`org`, ``, `Organization to add new book, if not to own user account`)
 	template := fs.String(`template`, `electricbookworks/electric-book`, `Book generation template`)
 
+	username := fs.String(`u`, ``, `Github Username`)
+	password := fs.String(`p`, ``, `Github password`)
+
 	return commander.NewCommand(`new`,
 		`Create a new book with the given name`,
-		nil,
+		fs,
 		func(args []string) error {
 			if 1 != len(args) {
 				return errors.New(`book new requires 1 parameter, the name of the new book repo`)
 			}
-			client, err := git.ClientFromCLIConfig()
+			client, err := git.ClientFromUsernamePassword(*username, *password)
 			if nil != err {
 				return err
 			}
@@ -96,7 +107,10 @@ func BookContribute(client *git.Client, repo string) error {
 		parts[1],
 		&github.RepositoryCreateForkOptions{})
 	if nil != err {
-		return err
+		if !strings.Contains(err.Error(), "try again later") {
+			glog.Errorf("CreateFork failed : %s", err.Error())
+			return err
+		}
 	}
 
 	return git.GitCloneTo(client, "", /* empty working dir will default to current dir */
@@ -104,14 +118,17 @@ func BookContribute(client *git.Client, repo string) error {
 }
 
 func BookContributeCommand() *commander.Command {
+	fs := flag.NewFlagSet("contribute", flag.ExitOnError)
+	username := fs.String(`u`, ``, `Github Username`)
+	password := fs.String(`p`, ``, `Github password`)
 	return commander.NewCommand(`contribute`,
 		`Join an existing book as a contributor`,
-		nil,
+		fs,
 		func(args []string) error {
 			if 1 != len(args) {
 				return errors.New(`book join requires 1 parameter, the username/repo of the book to join`)
 			}
-			client, err := git.ClientFromCLIConfig()
+			client, err := git.ClientFromUsernamePassword(*username, *password)
 			if nil != err {
 				return err
 			}
@@ -120,15 +137,19 @@ func BookContributeCommand() *commander.Command {
 }
 
 func BookCloneCommand() *commander.Command {
+	fs := flag.NewFlagSet("clone", flag.ExitOnError)
+	username := fs.String(`u`, ``, `Github Username`)
+	password := fs.String(`p`, ``, `Github password`)
+
 	return commander.NewCommand(`clone`,
 		`Create a local copy of the given book from your github repo`,
-		nil,
+		fs,
 		func(args []string) error {
 			if 1 != len(args) {
 				return errors.New(`book clone requires 1 parameter, the name of your github hosted book`)
 			}
 
-			client, err := git.ClientFromCLIConfig()
+			client, err := git.ClientFromUsernamePassword(*username, *password)
 			if nil != err {
 				return err
 			}
@@ -137,33 +158,32 @@ func BookCloneCommand() *commander.Command {
 }
 
 func BookCreatePullRequestCommand() *commander.Command {
-	fs := flag.NewFlagSet(`create-pullrequest`, flag.ExitOnError)
+	fs := flag.NewFlagSet(`pr-create`, flag.ExitOnError)
 	title := fs.String(`title`, ``, `Pull request title`)
 	notes := fs.String(`notes`, ``, `Pull request notes`)
-	remote := fs.String(`remote`, `origin`, `Remote to make pr on`)
-	upstreamBranch := fs.String(`branch`, `master`, `Branch of upstream server on which to create PR`)
+	// remote := fs.String(`remote`, `origin`, `Remote to make pr on`)
+	// upstreamBranch := fs.String(`branch`, `master`, `Branch of upstream server on which to create PR`)
 
-	return commander.NewCommand(`create-pullrequest`,
+	return commander.NewCommand(`pr-create`,
 		`Create a pull request of the current book.`,
 		fs,
 		func(args []string) error {
-			workingDir, err := os.Getwd()
-			if nil != err {
-				return util.Error(err)
-			}
-
-			client, err := git.ClientFromCLIConfig()
+			repo, err := cliRepo()
 			if nil != err {
 				return err
 			}
+			defer repo.Close()
 
-			return git.GithubCreatePullRequest(client,
-				workingDir,      // This defines my repo and my current branch, and hence also my upstream
-				*remote,         // git 'remote' on which to make pr
-				*upstreamBranch, // The upstream branch I wish to PR against
-				*title, *notes)
-
-			return errors.New(`Not implemented yet`)
+			pr, err := repo.PullRequestCreate(*title, *notes)
+			if nil != err {
+				return err
+			}
+			if IsTerminal() {
+				fmt.Printf("Created PR %d\n", pr)
+			} else {
+				fmt.Printf("%d", pr)
+			}
+			return nil
 		})
 }
 

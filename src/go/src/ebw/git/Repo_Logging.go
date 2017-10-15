@@ -11,6 +11,9 @@ import (
 // Infof logs the format and args as an sprintf info level log message
 func (r *Repo) Infof(format string, args ...interface{}) {
 	_, file, line, _ := runtime.Caller(1)
+	if nil == r.Log {
+		r.Log = logrus.New().WithFields(logrus.Fields{`username`: r.Client.Username})
+	}
 	r.Log.WithFields(logrus.Fields{
 		`file`: fmt.Sprintf(`%s:%d`, file, line),
 	}).Infof(format, args...)
