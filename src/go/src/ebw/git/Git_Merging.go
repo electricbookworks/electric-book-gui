@@ -445,7 +445,9 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 	if err := g.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
 		&git2go.CheckoutOpts{
-			Strategy: git2go.CheckoutForce | git2go.CheckoutRecreateMissing |
+			Strategy: git2go.CheckoutSafe |
+				git2go.CheckoutForce |
+				git2go.CheckoutRecreateMissing |
 				git2go.CheckoutAllowConflicts,
 		},
 	); nil != err {
