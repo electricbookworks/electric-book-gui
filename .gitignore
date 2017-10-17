@@ -4,7 +4,9 @@ tmp/
 .hg
 .cache
 bin/
+electricbook.gz
 src/go/pkg
+test/
 tools/ansible/*.retry
 tools/ansible/hosts-lateral
 tools/ansible/hosts-ebw
@@ -23,4 +25,5 @@ src/go/src/ebw/vendor/gopkg.in
 !src/go/src/gopkg.in/git2go.v25/repository_*.go
 examples/merge-origin/fork
 examples/merge-origin/origin
-examples/github-tests/*test-book/
+examples/github-tests/*-book/
+

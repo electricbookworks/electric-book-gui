@@ -3,6 +3,7 @@ package git
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -28,6 +29,7 @@ var _ = fmt.Print
 // It also manages the EBWRepoStatus, which is an extended-status form for
 // a Git repo.
 type Git struct {
+	Context    context.Context
 	Repository *git2go.Repository
 	Log        logger.Logger
 }
@@ -42,7 +44,8 @@ func OpenGit(repoDir string, log logger.Logger) (*Git, error) {
 		log = logger.NewGlogLogger()
 	}
 	g := &Git{
-		Log: log,
+		Context: context.Background(),
+		Log:     log,
 	}
 	if err := g.resetRepository(repoDir); nil != err {
 		return nil, err
@@ -144,6 +147,10 @@ func (g *Git) Error(err error) error {
 	}
 	g.Log.ErrorDepth(1, `%v`, err)
 	return err
+}
+
+func (g *Git) Infof(fmt string, args ...interface{}) {
+	g.Log.InfoDepth(1, fmt, args...)
 }
 
 // FetchRefspecs fetches the refspecs for the named remote.
@@ -294,6 +301,22 @@ func (g *Git) PathTheir(path ...string) string {
 	copy(parts, base)
 	copy(parts[len(base):], path)
 	return g.Path(parts...)
+}
+
+// Push pushes the current branch to the named remote and remote branch
+func (g *Git) Push(remoteName, remoteBranch string) error {
+	remote, err := g.Repository.Remotes.Lookup(remoteName)
+	if nil != err {
+		return g.Error(err)
+	}
+	defer remote.Free()
+	ref := fmt.Sprintf(`+refs/heads/%s`, remoteBranch)
+	g.Infof(`going to remote.Push with ref = %s`, ref)
+	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
+		return g.Error(err)
+	}
+	return nil
+
 }
 
 // PrintEBWRepoStatus prints the info from the EBWRepoStatus

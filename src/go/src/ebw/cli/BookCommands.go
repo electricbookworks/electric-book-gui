@@ -55,6 +55,7 @@ func BookCommands() *commander.Command {
 				BookMergeHeadsCommand,
 				BookResetConflictedCommand,
 				BookCleanupCommand,
+				BookPRCloseCommand,
 				BookPRListCommand,
 				BookPRDetailCommand,
 				BookPRFetchCommand,
@@ -154,6 +155,34 @@ func BookCloneCommand() *commander.Command {
 				return err
 			}
 			return BookClone(client, args[0])
+		})
+}
+
+func BookPRCloseCommand() *commander.Command {
+	fs := flag.NewFlagSet(`pr-close`, flag.ExitOnError)
+	merged := fs.Bool(`merged`, true, `true if the pr was merged, false if not`)
+	return commander.NewCommand(`pr-close`,
+		`Close the current PR`,
+		fs,
+		func(args []string) error {
+			repo, err := cliRepo()
+			if nil != err {
+				return err
+			}
+			defer repo.Close()
+
+			prN, err := repo.MergingPRNumber()
+			if nil != err {
+				return err
+			}
+			if 0 == prN {
+				return fmt.Errorf(`No Pull Request merge in progress`)
+			}
+			if err := repo.PullRequestClose(prN, *merged); nil != err {
+				return err
+			}
+
+			return nil
 		})
 }
 

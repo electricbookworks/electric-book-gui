@@ -246,6 +246,11 @@ func (g *Git) mergeCleanup() error {
 	if nil != err {
 		return err
 	}
+	if 0 != rs.MergingPRNumber {
+		if err := g.GithubClosePullRequest(true); nil != err {
+			return err
+		}
+	}
 	rs.ResetMerge()
 	if err = rs.Write(); nil != err {
 		return g.Error(err)
@@ -512,6 +517,17 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 		return g.Error(err)
 	}
 	return nil
+}
+
+// MergingPRNumber returns the number of the PR currently
+// being merged, or 0 if no PR is currently being merged.
+func (g *Git) MergingPRNumber() (int, error) {
+	var err error
+	rs, err := g.readEBWRepoStatus()
+	if nil != err {
+		return 0, err
+	}
+	return rs.MergingPRNumber, nil
 }
 
 // PullAbort aborts a merge that is in progress. This isn't quite

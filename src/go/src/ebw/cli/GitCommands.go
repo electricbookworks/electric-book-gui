@@ -42,6 +42,7 @@ func GitCommands() *commander.Command {
 				GitFileConflictedCommand,
 				GitFileDiffsCommand,
 				GitFileDiffsConflictCommand,
+				GitGithubRemoteCommand,
 				GitHasConflictsCommand,
 				GitListConflictsCommand,
 				GitMergeAutoCommand,
@@ -50,6 +51,7 @@ func GitCommands() *commander.Command {
 				GitPathTheirCommand,
 				GitPrintEBWStatusCommand,
 				GitPullAbortCommand,
+				GitPushCommand,
 				GitRemoteUserCommand,
 				GitRemoveConflictCommand,
 				GitRepoStateCommand,
@@ -212,6 +214,21 @@ func GitFileDiffsConflictCommand() *commander.Command {
 		})
 }
 
+func GitGithubRemoteCommand() *commander.Command {
+	return commander.NewCommand(`github-remote`, `Display details on the github remote`,
+		nil,
+		func([]string) error {
+			g := mustNewGit()
+			defer g.Close()
+			gr, err := g.GithubRemote(`origin`)
+			if nil != err {
+				return err
+			}
+			fmt.Printf("%v\n", gr)
+			return nil
+		})
+}
+
 func GitHasConflictsCommand() *commander.Command {
 	return commander.NewCommand(`has-conflicts`, `Return true if the repo has conflicts`,
 		nil,
@@ -309,6 +326,20 @@ func GitPullAbortCommand() *commander.Command {
 			g := mustNewGit()
 			defer g.Close()
 			return g.PullAbort()
+		})
+}
+
+func GitPushCommand() *commander.Command {
+	fs := flag.NewFlagSet(`push`, flag.ExitOnError)
+	remoteName := fs.String(`remote`, `origin`, `Remote to which to push`)
+	remoteBranch := fs.String(`branch`, `master`, `Remote branch to which to push`)
+	return commander.NewCommand(`push`,
+		`Push the repo`,
+		fs,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			return g.Push(*remoteName, *remoteBranch)
 		})
 }
 

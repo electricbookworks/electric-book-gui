@@ -126,39 +126,18 @@ func (r *Repo) RepoPath(path ...string) string {
 		panic(`r.Git is nil`)
 	}
 	return r.Git.Path(path...)
-	// if 0 == len(path) {
-	// 	return r.Dir
-	// }
-	// parts := make([]string, len(path)+1)
-	// parts[0] = r.Dir
-	// copy(parts[1:], path)
-	// return filepath.Join(parts...)
 }
 
 // TheirPath returns the path to the `their` version of a file
 // used during Merge resolution.
 func (r *Repo) TheirPath(path ...string) string {
 	return r.Git.PathTheir(path...)
-	// begin := []string{r.Dir, `.git`, `ebw-config`, `merge-their`}
-	// parts := make([]string, len(begin)+len(path))
-	// copy(parts, begin)
-	// if 0 < len(path) {
-	// 	copy(parts[len(begin):], path)
-	// }
-	// return filepath.Join(parts...)
 }
 
 // ConfigPath returns the path mapped into the
 // EBW `config` directory
 func (r *Repo) ConfigPath(path ...string) string {
 	return r.Git.PathEBWConfig(path...)
-	// begin := []string{r.Dir, `.git`, `ebw-config`}
-	// parts := make([]string, len(begin)+len(path))
-	// copy(parts, begin)
-	// if 0 < len(path) {
-	// 	copy(parts[len(begin):], path)
-	// }
-	// return filepath.Join(parts...)
 }
 
 // NewRepoForDir returns a new repo configured for the given
@@ -1042,17 +1021,7 @@ func (r *Repo) Cleanup() error {
 // TODO: Check whether my ref string is able to push not just
 // from our master-to-master, but also from master -> x or x -> y
 func (r *Repo) Push(remoteName, branchName string) error {
-	remote, err := r.Repository.Remotes.Lookup(remoteName)
-	if nil != err {
-		return r.Error(err)
-	}
-	defer remote.Free()
-	ref := fmt.Sprintf(`+refs/heads/%s`, branchName)
-	r.Infof(`going to remote.Push with ref = %s`, ref)
-	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.Push(remoteName, branchName)
 }
 
 // WorkingTree returns a FileTree instance into the working
@@ -1433,7 +1402,7 @@ func (r *Repo) AutoProcessState() (bool, error) {
 
 // PushOrigin is a shorthand to push the repo to origin/master.
 func (r *Repo) PushOrigin() error {
-	return r.Push(`origin`, `master`)
+	return r.Git.Push(`origin`, `master`)
 }
 
 // RevertLocalChanges reverts all local changed files that aren't

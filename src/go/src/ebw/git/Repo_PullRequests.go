@@ -129,9 +129,22 @@ func (r *Repo) PullRequestClose(number int, merged bool) error {
 		Merged:   &merged,
 		State:    &state,
 	}); nil != err {
-		return util.Error(err)
+		return r.Error(err)
 	}
 	return nil
+}
+
+// MergingPRNumber returns the number of the current PR being merged,
+// or 0 if no PR is currently being merged.
+func (r *Repo) MergingPRNumber() (int, error) {
+	var err error
+	if nil == r.EBWRepoStatus {
+		r.EBWRepoStatus, err = r.readEBWRepoStatus()
+		if nil != err {
+			return 0, err
+		}
+	}
+	return r.EBWRepoStatus.MergingPRNumber, nil
 }
 
 // GetUpstreamPullRequestsCount returns the number of PR's that the

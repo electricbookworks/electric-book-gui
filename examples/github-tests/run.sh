@@ -15,6 +15,7 @@ check_files_equal () {
 	exit 1;
 }
 
+if [[ 1 ]]; then
 rm -rf $USER1-test-book
 rm -rf $USER2-test-book
 rm -rf test-book
@@ -134,17 +135,60 @@ if ! ebw git has-conflicts; then
 	exit 1
 fi
 
-## TODO : CHECK THE CONFLICTED FILES
-ebw git list-conflicts
+else
+	cd $USER1-test-book
+fi
 
-## TODO: COMPARE VERSIONS
-ebw git file-cat -v our-wd 01.md
-ebw git file-cat -v their-head 01.md
-ebw git file-cat -v their-wd 01.md
-ebw git file-cat -v git 01.md
+## CHECK THE CONFLICTED FILES
+CONFLICTS=$(ebw git list-conflicts)
+if [[ ! "01.md" == $(ebw git list-conflicts) ]]; then
+	echo "Expected single conflict: 01.md, but got $(ebw git list-conflicts)"
+	exit 1
+fi
 
-## TODO: CREATE A PR-CLOSE COMMAND
-## PR-CLOSE SHOULD NOT BE POSSIBLE IF ANY FILES REMAIN IN CONFLICT
+# ebw git file-cat -v our-wd 01.md
+OURWD=$(ebw git file-cat -v our-wd 01.md)
+OURHEAD=$(ebw git file-cat -v our-head 01.md)
+if [[ ! $OURWD == $OURHEAD ]]; then
+	echo "Our HEAD != Our WD"
+	exit 1
+fi
+
+THEIRHEAD=$(ebw git file-cat -v their-head 01.md)
+THEIRWD=$(ebw git file-cat -v their-wd 01.md)
+if [[ ! $THEIRHEAD == $THEIRWD ]]; then
+	echo "Their HEAD != Their WD"
+	exit 1
+fi
+
+THEIRS=$(cat ../$USER2-test-book/01.md)
+if [[ ! $THEIRS == $THEIRHEAD ]]; then
+	echo "Their HEAD != USER2 original";
+	exit 1
+fi
+
+if [[ $OURWD == $THEIRWD ]]; then
+	echo "Our WD == Their WD - expected conflict"
+	exit 1
+fi
+
+echo "PR result" > 01.md
+
+if ! ebw git remove-conflict 01.md; then
+	echo "remove-conflict on 01.md failed"
+	exit 1
+fi
+# NOTE THAT GIT COMMIT WILL ALSO CLOSE THE PULL-REQUEST
+if ! ebw git commit "pr 1 merged"; then
+	echo "git commit failed"
+	exit 1
+fi
+
+if ! ebw git push; then
+	echo 'git push to github failed'
+	exit 1
+fi
+
 
 echo "ALL TESTS PASSED"
 # Finally, remove the repo

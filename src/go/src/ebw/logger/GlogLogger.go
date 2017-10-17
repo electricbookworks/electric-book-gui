@@ -33,6 +33,10 @@ func (g *GlogLogger) line(depth int, f string, args ...interface{}) string {
 	return fmt.Sprintf(f, args...) + "\t" + string(jraw)
 }
 
+func (g *GlogLogger) InfoDepth(d int, f string, args ...interface{}) {
+	glog.InfoDepth(d+1, g.line(2, f, args))
+}
+
 func (g *GlogLogger) Infof(f string, args ...interface{}) {
 	glog.InfoDepth(1, g.line(2, f, args))
 }
