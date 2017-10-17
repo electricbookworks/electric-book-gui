@@ -286,7 +286,7 @@ func pullRequestCreate(c *Context) error {
 		if err := c.Decode(&args); nil != err {
 			return err
 		}
-		if err := repo.PullRequestCreate(args.Title, args.Notes); nil != err {
+		if _, err := repo.PullRequestCreate(args.Title, args.Notes); nil != err {
 			return err
 		}
 		return c.Redirect(pathRepoDetail(repo))
