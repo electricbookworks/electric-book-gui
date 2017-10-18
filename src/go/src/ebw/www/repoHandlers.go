@@ -330,6 +330,8 @@ func repoPushRemote(c *Context) error {
 // branch.
 func repoMergeRemote(c *Context) error {
 	remote := c.Vars[`remote`]
+
+	glog.Infof(`repoHandlers::repoMergeRemote: %s`, remote)
 	repo, err := c.Repo()
 	if nil != err {
 		return err
@@ -358,7 +360,9 @@ func repoMergeRemoteBranch(c *Context) error {
 		return err
 	}
 
-	remote, _ := c.Vars[`remote`], c.Vars[`branch`]
+	remote, branch := c.Vars[`remote`], c.Vars[`branch`]
+	glog.Infof(`repoHandlers::repoMergeRemoteBranch: %s/%s PR=%`, remote, branch, args.PRNumber)
+
 	repo, err := c.Repo()
 	if nil != err {
 		return err
@@ -379,28 +383,15 @@ func repoMergeRemoteBranch(c *Context) error {
 		}
 	} else {
 		return fmt.Errorf(`You can't use repoMergeRemoteBranch to merge with a PR`)
-		// if err := repo.PullPR(args.PRNumber); nil != err {
-		// 	return err
-		// }
 	}
-	// OLD CODE FOLLOWS: Can all be deleted once *Git is fine.
-	// if err := repo.Git.MergePullRequest()
-	//
-	// if `` == args.Description {
-	// 	if 0 < args.PRNumber {
-	// 		args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
-	// 	} else {
-	// 		if `upstream` == remote {
-	// 			args.Description = `You are merging with the original project you are contributing to.`
-	// 		} else {
-	// 			args.Description = `You are merging with your GitHub repo.`
-	// 		}
-	// 	}
-	// }
-	// if err := repo.MergeWith(remote, branch, resolve, args.Conflicted, args.PRNumber, args.Description); nil != err {
-	// 	return err
-	// }
-	return c.Redirect(pathRepoConflict(repo))
+	conflicts, err := repo.Git.HasConflicts()
+	if nil != err {
+		return err
+	}
+	if conflicts {
+		return c.Redirect(pathRepoConflict(repo))
+	}
+	return c.Redirect(pathRepoDetail(repo))
 }
 
 func githubInvitationAcceptOrDecline(c *Context) error {

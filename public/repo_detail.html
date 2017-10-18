@@ -32,7 +32,7 @@
                         <p>You are managing the original project. There is no parent project to contribute to.</p>
                     {{else}}
                         {{if $state.ParentAhead}}
-                        <p>Your copy of this project is behind the project you are contributing to. <div data-instance="RepoMergeButton" data-repo-merge="upstream/master">Update my copy from the original</div>
+                        <p>Your copy of this project is behind the project you are contributing to. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update my copy from the original</a>
                         </p>
                         {{end}}
                         {{/* same as ParentBehind, but prevents sending one after another */}}

@@ -822,16 +822,14 @@ var RepoMergeDirectButton = (function () {
         this.el = el;
         var href = "/repo/" + context.RepoOwner + "/" +
             (context.RepoName + "/merge/") +
-            el.getAttribute('data-repo-merge') +
-            "?resolve=our&conflicted=yes";
-        console.log("onclick for ", el, "  = ", href);
+            el.getAttribute('data-repo-merge');
+        console.log("RepoMergeDirectButton: onclick for ", el, "  = ", href);
         el.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
             document.location.href = "/repo/" + context.RepoOwner + "/" +
                 (context.RepoName + "/merge/") +
-                el.getAttribute('data-repo-merge') +
-                "?resolve=our&conflicted=false";
+                el.getAttribute('data-repo-merge');
         });
         el.classList.add("btn");
     }

@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/golang/glog"
-	// "ebw/git"
 )
+
+var _ = glog.Infof
 
 func repoConflict(c *Context) error {
 	repo, err := c.Repo()
@@ -83,18 +84,10 @@ func repoConflictResolve(c *Context) error {
 	if nil != err {
 		return err
 	}
-	prNumber := repo.EBWRepoStatus.MergingPRNumber
 
 	if err := repo.CloseConflict(r.Message, r.Notes); nil != err {
 		return err
 	}
-	// If we were merging a PR, we need to close the PR and indicate that the
-	// merge has succeeded
-	if 0 < prNumber {
-		if err := repo.PullRequestClose(prNumber, true); nil != err {
-			return fmt.Errorf(`ERROR on PullRequestClose(%d, true, %s): %s`, prNumber, r.Message, err.Error())
-		}
-	}
-	glog.Infof(`Resolved conflict, going back to detail %s`, pathRepoDetail(repo))
+
 	return c.Redirect(pathRepoDetail(repo))
 }

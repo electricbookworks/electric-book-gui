@@ -17,6 +17,7 @@ import (
 	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/logger"
+	"ebw/util"
 )
 
 var _ = fmt.Print
@@ -53,6 +54,20 @@ func OpenGit(repoDir string, log logger.Logger) (*Git, error) {
 	return g, nil
 }
 
+// Adds all staged working dir files to the index.
+func (g *Git) AddAllStagedFilesToIndex() error {
+	files, err := g.StagedFiles()
+	if nil != err {
+		return err
+	}
+	for _, f := range files {
+		if err = g.AddToIndex(f.Path()); nil != err {
+			return err
+		}
+	}
+	return nil
+}
+
 // AddRemote adds the named remote to Git with the given clone URL. If
 // the remote already exists, AddRemote does not change it.
 func (g *Git) AddRemote(remoteName, cloneURL string) error {
@@ -67,7 +82,42 @@ func (g *Git) AddRemote(remoteName, cloneURL string) error {
 	return nil
 }
 
+// AddToIndex adds the file at path to the index, if it exists, or
+// deletes the file in the index if it does not exist.
+func (g *Git) AddToIndex(path string) error {
+	index, err := g.Repository.Index()
+	if nil != err {
+		return g.Error(err)
+	}
+	defer index.Free()
+	exists, err := util.FileExists(g.Path(path))
+	if nil != err {
+		return err
+	}
+	if exists {
+		if err = index.AddByPath(path); nil != err {
+			// Adding a pre-existing file shouldn't be an issue,
+			// since it's the file contents, not the file name,
+			// that is important about the adding.
+			return g.Error(err)
+		}
+	} else {
+		if err = index.RemoveByPath(path); nil != err {
+			// If the file doesn't exist in the repo, I'm ok
+			if !git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				return g.Error(err)
+			}
+		}
+	}
+	if err := index.Write(); nil != err {
+		return g.Error(err)
+	}
+	return nil
+}
+
 // Commit commits the staged changes on the repo with the given message.
+// Commit also cleans up any meta-state that exists as a result of committing
+// a merge- it closes PR's and updates the EBW status.
 func (g *Git) Commit(message string) (*git2go.Oid, error) {
 	author, err := g.DefaultSignature()
 	if nil != err {
@@ -106,7 +156,18 @@ func (g *Git) Commit(message string) (*git2go.Oid, error) {
 	if nil != err {
 		return nil, g.Error(err)
 	}
-	return oid, g.mergeCleanup()
+	if err = g.mergeCleanup(); nil != err {
+		return nil, g.Error(err)
+	}
+	// Now that we've committed, we should try to push to origin
+	// BUT NOTE, we won't panic if we don't succeed, because there is the option that
+	// origin is ahead, and the commit might fail - in which case the user will have to
+	// manually manage the origin pull and merge before a push will succeed - but if
+	// we can do this automatically here, good for us.
+	if err := g.Push(`origin`, `master`); nil != err {
+		g.Infof(`Failed push origin/master after commit: `, err.Error())
+	}
+	return oid, nil
 }
 
 // Close closes the git repo and frees any associated resources.
@@ -419,6 +480,30 @@ func (g *Git) SetUsernameEmail(name, email string) error {
 		}
 	}
 	return nil
+}
+
+// StagedFiles returns a list of the files currently staged in the index.
+func (g *Git) StagedFiles() ([]*IndexFileStatus, error) {
+	sl, err := g.Repository.StatusList(&git2go.StatusOptions{
+		Show: git2go.StatusShowIndexOnly,
+	})
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	defer sl.Free()
+	indexCount, err := sl.EntryCount()
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	files := make([]*IndexFileStatus, indexCount)
+	for i := 0; i < indexCount; i++ {
+		se, err := sl.ByIndex(i)
+		if nil != err {
+			return nil, g.Error(fmt.Errorf(`Error retrieving StatusEntry %d: %s`, i, err.Error()))
+		}
+		files[i] = NewIndexFileStatus(se)
+	}
+	return files, nil
 }
 
 // UpdateRemoteGithubIdentity updates all github remotes for the git repo

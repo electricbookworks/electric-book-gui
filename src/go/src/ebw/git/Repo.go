@@ -283,26 +283,7 @@ func (r *Repo) StagedFilesAbbreviated() ([]*IndexFileStatusAbbreviated, error) {
 // StagedFiles returns the list of files staged but not committed
 // in the repository.
 func (r *Repo) StagedFiles() ([]*IndexFileStatus, error) {
-	sl, err := r.Repository.StatusList(&git2go.StatusOptions{
-		Show: git2go.StatusShowIndexOnly,
-	})
-	if nil != err {
-		return nil, util.Error(err)
-	}
-	defer sl.Free()
-	indexCount, err := sl.EntryCount()
-	if nil != err {
-		return nil, util.Error(err)
-	}
-	files := make([]*IndexFileStatus, indexCount)
-	for i := 0; i < indexCount; i++ {
-		se, err := sl.ByIndex(i)
-		if nil != err {
-			return nil, util.Error(fmt.Errorf(`Error retrieving StatusEntry %d: %s`, i, err.Error()))
-		}
-		files[i] = NewIndexFileStatus(se)
-	}
-	return files, nil
+	return r.Git.StagedFiles()
 }
 
 // PrintStatusList prints the information from the status list for
@@ -908,48 +889,13 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 // AddToIndex adds the file at path to the index, if it exists, or
 // deletes the file in the index if it does not exist.
 func (r *Repo) AddToIndex(path string) error {
-	index, err := r.Index()
-	if nil != err {
-		return r.Error(err)
-	}
-	defer index.Free()
-	exists, err := util.FileExists(r.RepoPath(path))
-	if nil != err {
-		return err
-	}
-	if exists {
-		if err = index.AddByPath(path); nil != err {
-			// Adding a pre-existing file shouldn't be an issue,
-			// since it's the file contents, not the file name,
-			// that is important about the adding.
-			return r.Error(err)
-		}
-	} else {
-		if err = index.RemoveByPath(path); nil != err {
-			// I might need to consider what happens if I
-			// remove a file that isn't in the Index.
-			return r.Error(err)
-		}
-	}
-	if err := index.Write(); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.AddToIndex(path)
 }
 
 // AddAllToIndex adds all staged files to the index, including deleting
 // files from the index if they don't exist in the WD.
 func (r *Repo) AddAllStagedFilesToIndex() error {
-	files, err := r.StagedFiles()
-	if nil != err {
-		return err
-	}
-	for _, f := range files {
-		if err = r.AddToIndex(f.Path()); nil != err {
-			return err
-		}
-	}
-	return nil
+	return r.Git.AddAllStagedFilesToIndex()
 }
 
 // CommitAll works like `git commit -am` first adding all working-dir
@@ -985,25 +931,29 @@ func (r *Repo) CloseConflict(message, notes string) error {
 		return err
 	}
 
-	if 0 < r.EBWRepoStatus.MergingPRNumber {
-		if err := PullRequestClose(r.Client,
-			r.RepoOwner, r.RepoName, r.EBWRepoStatus.MergingPRNumber); nil != err {
-			return err
-		}
-	}
+	// @deprecated: all this now happens in Git.commit and
+	// it's call through to Git.mergeCleanup()
 
-	r.EBWRepoStatus.MergingPRNumber = 0
-	r.EBWRepoStatus.MergingFiles = []string{}
-	r.EBWRepoStatus.MergingDescription = ``
-	if err := r.writeEBWRepoStatus(); nil != err {
-		return err
-	}
+	// if 0 < r.EBWRepoStatus.MergingPRNumber {
+	// 	if err := PullRequestClose(r.Client,
+	// 		r.RepoOwner, r.RepoName, r.EBWRepoStatus.MergingPRNumber); nil != err {
+	// 		return err
+	// 	}
+	// }
 
-	if err := r.CleanupConflictTemporaryFiles(); nil != err {
-		return err
-	}
+	// r.EBWRepoStatus.MergingPRNumber = 0
+	// r.EBWRepoStatus.MergingFiles = []string{}
+	// r.EBWRepoStatus.MergingDescription = ``
+	// if err := r.writeEBWRepoStatus(); nil != err {
+	// 	return err
+	// }
 
-	return r.Cleanup()
+	// if err := r.CleanupConflictTemporaryFiles(); nil != err {
+	// 	return err
+	// }
+
+	// return r.Cleanup()
+	return nil
 }
 
 // Cleanup cleans up the state of the repo, and also removes any temporary
