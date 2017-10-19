@@ -332,9 +332,7 @@ func (r *Repo) PrintStatusList() error {
 
 // GithubRepo returns the github Repository for this repo.
 func (r *Repo) GithubRepo() (*github.Repository, error) {
-	repo, _, err := r.Client.Repositories.Get(r.Client.Context,
-		r.RepoOwner, r.RepoName)
-	return repo, err
+	return r.Git.GithubRepo()
 }
 
 // AddRemote adds the given remoteName with the given CloneURL,
@@ -347,37 +345,13 @@ func (r *Repo) AddRemote(remoteName string, remoteCloneURL string) error {
 // github repo. It discovers the upstream remote by looking for
 // the repo's parent on Github.
 func (r *Repo) SetUpstreamRemote() error {
-	// Sometimes the CLI might not have a Github repo,
-	// so we handle this by simply declaring no github parent, which
-	// is logically correct.
-	if `` == r.RepoOwner {
-		return ErrNoGithubParent
-	}
-	gr, err := r.GithubRepo()
-	if nil != err {
-		return err
-	}
-	if nil == gr.Parent {
-		return ErrNoGithubParent
-	}
-	upstreamUrl, err := r.Client.AddAuth(`https://github.com/` +
-		gr.Parent.Owner.GetLogin() + `/` + gr.Parent.GetName() + `.git`)
-	if nil != err {
-		return r.Error(err)
-	}
-	return r.AddRemote(`upstream`, upstreamUrl)
+	return r.Git.SetUpstreamRemote()
 }
 
 // HasUpstreamRemote returns true if the repo has an upstream
 // remote - ie a parent to the github repo
 func (r *Repo) HasUpstreamRemote() (bool, error) {
-	if err := r.SetUpstreamRemote(); nil != err {
-		if err == ErrNoGithubParent {
-			return false, nil
-		}
-		return false, err
-	}
-	return true, nil
+	return r.Git.HasUpstreamRemote()
 }
 
 func (r *Repo) RepoStateStringNoError() string {
@@ -1138,7 +1112,7 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 
 // MergingFilesList returns a slice of all the files in the
 // repo that are merging, with a status indication for each.
-func (r *Repo) MergingFilesList(conflictedOnly bool) ([]*IndexFileStatusAbbreviated, error) {
+func (r *Repo) MergingFilesList() ([]*IndexFileStatusAbbreviated, error) {
 	return r.Git.MergingFilesList()
 }
 

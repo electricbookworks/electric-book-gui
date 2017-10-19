@@ -35,6 +35,38 @@ type Git struct {
 	Log        logger.Logger
 }
 
+type GitRemoteAction int
+
+const (
+	GitRemoteActionNone     GitRemoteAction = 0
+	GitRemoteActionCreatePR GitRemoteAction = 1
+	GitRemoteActionPull                     = 2
+)
+
+func (ra GitRemoteAction) String() string {
+	s := []string{}
+	if ra.CanCreatePR() {
+		s = append(s, `CreatePR`)
+	}
+	if ra.CanPull() {
+		s = append(s, `Pull`)
+	}
+	if 0 == len(s) {
+		return `No remote actions possible`
+	}
+	return strings.Join(s, ",")
+}
+
+func (ra GitRemoteAction) CanCreatePR() bool {
+	return ra&GitRemoteActionCreatePR == GitRemoteActionCreatePR
+}
+func (ra GitRemoteAction) CanPull() bool {
+	return ra&GitRemoteActionPull == GitRemoteActionPull
+}
+func (ra GitRemoteAction) InSync() bool {
+	return GitRemoteActionNone == ra
+}
+
 // ConflictWalkFunc is the callback function to use with WalkConflicts
 type ConflictWalkFunc func(git2go.IndexConflict) error
 
@@ -113,6 +145,54 @@ func (g *Git) AddToIndex(path string) error {
 		return g.Error(err)
 	}
 	return nil
+}
+
+// AheadBehind returns the commits that HEAD is ahead, and that HEAD is
+// behind remote.
+func (g *Git) AheadBehind(remoteName string) (int, int, error) {
+	if err := g.FetchRemote(remoteName + "/master"); nil != err {
+		return 0, 0, err
+	}
+	head, err := g.GetBranch(`HEAD`)
+	if nil != err {
+		return 0, 0, err
+	}
+	defer head.Free()
+	remote, err := g.GetBranch(remoteName + "/master")
+	if nil != err {
+		return 0, 0, err
+	}
+	defer remote.Free()
+	ahead, behind, err := g.Repository.AheadBehind(head.Id(), remote.Id())
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+
+	remoteTree, err := remote.Peel(git2go.ObjectTree)
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	defer remoteTree.Free()
+	headTree, err := head.Peel(git2go.ObjectTree)
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	defer headTree.Free()
+	fmt.Println("remoteTree =", remoteTree.Id().String())
+	fmt.Println("headTree   =", headTree.Id().String())
+
+	isRemoteDescended, err := g.Repository.DescendantOf(remote.Id(), head.Id())
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	fmt.Println("remote is descendant of head = ", isRemoteDescended)
+	isHeadDescended, err := g.Repository.DescendantOf(head.Id(), remote.Id())
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	fmt.Println("head is descendant of remote = ", isHeadDescended)
+
+	return ahead, behind, nil
 }
 
 // Commit commits the staged changes on the repo with the given message.
@@ -210,6 +290,82 @@ func (g *Git) Error(err error) error {
 	return err
 }
 
+// GetUpstreamRemoteActions indicates the possible actions we could perform
+// on upstream repo.
+func (g *Git) GetUpstreamRemoteActions() (GitRemoteAction, error) {
+	var action GitRemoteAction = GitRemoteActionNone
+	remoteName := `upstream`
+	if err := g.FetchRemote(remoteName + "/master"); nil != err {
+		return GitRemoteActionNone, err
+	}
+	head, err := g.GetBranch(`HEAD`)
+	if nil != err {
+		return GitRemoteActionNone, err
+	}
+	defer head.Free()
+	remote, err := g.GetBranch(remoteName + "/master")
+	if nil != err {
+		return GitRemoteActionNone, err
+	}
+	defer remote.Free()
+
+	// FIRST WE CONSIDER WHETHER THE TWO TREEs ARE IDENTICAL.
+	// THEY ARE IDENTICAL => we've pulled and merged without
+	// file changes. There is absolutely nothing to do: neither
+	// pull nor push.
+	remoteTree, err := remote.Peel(git2go.ObjectTree)
+	if nil != err {
+		return GitRemoteActionNone, g.Error(err)
+	}
+	defer remoteTree.Free()
+	headTree, err := head.Peel(git2go.ObjectTree)
+	if nil != err {
+		return GitRemoteActionNone, g.Error(err)
+	}
+	defer headTree.Free()
+	// both repos have identical trees, so there's nothing to be done.
+	if remoteTree.Id().String() == headTree.Id().String() {
+		return GitRemoteActionNone, nil
+	}
+
+	// NOW WE CHECK WHETHER WE ARE AHEAD and BEHIND the REMOTE.
+	// If we are ahead, we could send a PR, but first we check when
+	// we last sent a PR, since there's no point in duplicating PR's.
+	ahead, behind, err := g.Repository.AheadBehind(head.Id(), remote.Id())
+	if nil != err {
+		return GitRemoteActionNone, g.Error(err)
+	}
+	if 0 < ahead {
+		ebw, err := g.readEBWRepoStatus()
+		if nil != err {
+			return GitRemoteActionNone, err
+		}
+		if ebw.LastPRHash != headTree.Id().String() {
+			action = action | GitRemoteActionCreatePR
+		}
+	}
+
+	// We are behind the remote => we can PULL
+	if 0 < behind {
+		action = action | GitRemoteActionPull
+	}
+
+	// isRemoteDescended, err := g.Repository.DescendantOf(remote.Id(), head.Id())
+	// if nil != err {
+	// 	return 0, 0, g.Error(err)
+	// }
+	// fmt.Println("remote is descendant of head = ", isRemoteDescended)
+	// isHeadDescended, err := g.Repository.DescendantOf(head.Id(), remote.Id())
+	// if nil != err {
+	// 	return 0, 0, g.Error(err)
+	// }
+	// fmt.Println("head is descendant of remote = ", isHeadDescended)
+
+	// return ahead, behind, nil
+
+	return action, nil
+}
+
 func (g *Git) Infof(fmt string, args ...interface{}) {
 	g.Log.InfoDepth(1, fmt, args...)
 }
@@ -244,7 +400,6 @@ func (g *Git) FetchRemote(remoteName string) error {
 					return git2go.ErrorCode(git2go.ErrAuth), nil
 				}
 				p, _ := u.User.Password()
-				fmt.Println(`Using user='%s', pass='%s'`, u, p)
 				errCode, cred := git2go.NewCredUserpassPlaintext(u.User.Username(), p)
 				return git2go.ErrorCode(errCode), &cred
 			},
@@ -377,7 +532,6 @@ func (g *Git) Push(remoteName, remoteBranch string) error {
 		return g.Error(err)
 	}
 	return nil
-
 }
 
 // PrintEBWRepoStatus prints the info from the EBWRepoStatus
@@ -480,6 +634,47 @@ func (g *Git) SetUsernameEmail(name, email string) error {
 		}
 	}
 	return nil
+}
+
+// SHAHead returns the SHA of the TREE of the HEAD of the repo as a string.
+func (g *Git) SHAHead() (string, error) {
+	head, err := g.Repository.Head()
+	if nil != err {
+		return ``, g.Error(err)
+	}
+	defer head.Free()
+	tree, err := head.Peel(git2go.ObjectTree)
+	if nil != err {
+		return ``, g.Error(err)
+	}
+	defer tree.Free()
+	return tree.Id().String(), nil
+}
+
+// SHARemote returns the SHA of the TREE of the HEAD of the remote repo as a string.
+// If fetch is true, it will fetch the remote first.
+func (g *Git) SHARemote(remoteName string, fetch bool) (string, error) {
+	if fetch {
+		if err := g.FetchRemote(remoteName); nil != err {
+			return ``, err
+		}
+	}
+	remoteCommit, err := g.GetBranch(remoteName + "/master")
+	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			fmt.Printf("FAILED TO FIND %s remote\n", remoteName)
+		}
+		return ``, err
+	}
+	defer remoteCommit.Free()
+
+	tree, err := remoteCommit.Peel(git2go.ObjectTree)
+	if nil != err {
+		return ``, g.Error(err)
+	}
+	defer tree.Free()
+
+	return tree.Id().String(), nil
 }
 
 // StagedFiles returns a list of the files currently staged in the index.

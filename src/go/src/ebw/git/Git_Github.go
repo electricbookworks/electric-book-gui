@@ -18,7 +18,9 @@ type GithubRemote struct {
 
 var ErrRemoteIsNotGithub = fmt.Errorf("Remote is not a github remote")
 
-// GithubRemote returns
+// GithubCanSubmitPR returns true if this repo has a github parent - an
+// upstream repo - and the current repo differs from the upstream
+// remote at the last point that the upstream remote was merged.
 func (g *Git) GithubRemote(remoteName string) (*GithubRemote, error) {
 	r, err := g.Repository.Remotes.Lookup(remoteName)
 	if nil != err {
@@ -96,4 +98,69 @@ func (g *Git) GithubClosePullRequest(merged bool) error {
 		return g.Error(err)
 	}
 	return nil
+}
+
+// GithubRepo returns github.Repository for the github repo that this repo
+// was cloned from.
+func (g *Git) GithubRepo() (*github.Repository, error) {
+	client, err := g.GithubClient()
+	if nil != err {
+		return nil, err
+	}
+	remote, err := g.GithubRemote(`origin`)
+	if nil != err {
+		return nil, err
+	}
+	repo, _, err := client.Repositories.Get(g.Context,
+		remote.Owner, remote.Repo)
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	return repo, nil
+}
+
+// HasUpstreamRemote returns true if the repo has an upstream
+// remote - ie a parent to the github repo
+func (g *Git) HasUpstreamRemote() (bool, error) {
+	if err := g.SetUpstreamRemote(); nil != err {
+		if err == ErrNoGithubParent {
+			return false, nil
+		}
+		return false, err
+	}
+	return true, nil
+}
+
+// SetUpstreamRemote sets the remote `upstream` for the repo.
+func (g *Git) SetUpstreamRemote() error {
+	repo, err := g.GithubRepo()
+	if nil != err {
+		return err
+	}
+	if nil == repo.Parent {
+		return ErrNoGithubParent
+	}
+	upstreamUrl, err := g.AddAuth(`https://github.com/` +
+		repo.Parent.Owner.GetLogin() + `/` + repo.Parent.GetName() + `.git`)
+	if nil != err {
+		return g.Error(err)
+	}
+	return g.AddRemote(`upstream`, upstreamUrl)
+}
+
+// AddAuth adds username and password authentication to the original
+// url taken from the repo origin client credentials.
+func (g *Git) AddAuth(origUrl string) (string, error) {
+	u, err := url.Parse(origUrl)
+	if nil != err {
+		return ``, g.Error(err)
+	}
+	if nil == u.User || `` == u.User.Username() {
+		user, pass, err := g.RemoteUser(`origin`)
+		if nil != err {
+			return ``, err
+		}
+		u.User = url.UserPassword(user, pass)
+	}
+	return u.String(), nil
 }

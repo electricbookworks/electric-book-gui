@@ -31,6 +31,10 @@ type EBWRepoStatus struct {
 	// sent from this repo. This is used to determine whether new changes
 	// have been made on the repo that the user could push upstream.
 	LastPRHash string `yaml:"last_pr_hash"`
+	// LastUpstreamMergeHash is the last hash on the upstream remote
+	// with which the local has merged. We need this to determine two
+	// things- whether we have new PR's to push -
+	LastUpstreamMergeHash string `yaml:"last_upstream_merge_hash"`
 }
 
 const ebw_repo_status_filename = `status.yml`

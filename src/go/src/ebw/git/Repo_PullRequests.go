@@ -207,7 +207,7 @@ func (r *Repo) PullRequestCreate(title, notes string) (int, error) {
 	upstreamOwner := *upstream.Parent.Owner.Login
 	upstreamName := *upstream.Parent.Name
 
-	branchName, headOid, err := r.BranchCreate(``, false)
+	branchName, _, err := r.BranchCreate(``, false)
 	if nil != err {
 		return 0, err
 	}
@@ -235,7 +235,10 @@ func (r *Repo) PullRequestCreate(title, notes string) (int, error) {
 			return 0, err
 		}
 	}
-	r.EBWRepoStatus.LastPRHash = headOid.String()
+	r.EBWRepoStatus.LastPRHash, err = r.Git.SHAHead()
+	if nil != err {
+		return 0, err
+	}
 	if err := r.writeEBWRepoStatus(); nil != err {
 		return 0, err
 	}

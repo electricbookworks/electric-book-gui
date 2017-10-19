@@ -54,6 +54,9 @@ cd ../$USER2-test-book
 ebw book pull-upstream
 check_files_equal ../$USER1-test-book/01.md ./01.md
 
+echo "CHECK WE JUST FF'd OK"
+exit 1
+
 ## USER1 makes another change to the book
 cd ../$USER1-test-book
 echo 'Hi there from USER1, change 2' > 01.md
@@ -74,6 +77,10 @@ git commit -am "third change from user1" && git push origin master
 cd ../$USER2-test-book
 echo 'Change 4 from USER2' > 01.md
 git commit -am "change number 4 from user 2" && git push origin master
+if ! ebw git upstream-can-pull; then
+	echo "ERROR: Expected to be able to pull from upstream."
+	exit 1
+fi
 ebw book pull-upstream
 
 ## At this point, our file 01.md should be conflicted
@@ -85,13 +92,18 @@ fi
 ## Check that our files are in a git-conflicted state in the working directory
 ## ie that our file contains GIT resolution issues
 if ! grep '<<< HEAD' 01.md; then
-	echo "Expected 01.md to be in git-conflicted state, but it doesn't show git conflicts"
+	echo "ERROR: Expected 01.md to be in git-conflicted state, but it doesn't show git conflicts"
 	exit 1
 fi
 
 ## Resolving our 01.md should resolve the conflicts
 echo "USER2 resolves the conflicts" > 01.md
 git add 01.md && git commit -m "merged" && git push origin master
+
+if ebw git upstream-can-pull; then
+	echo "ERROR: Should not be able to pull from upstream, since just merged."
+	exit 1
+fi
 
 if ebw git has-conflicts; then
 	echo "ERROR: We resolved the conflict with upstream, but our repo is still conflicted!"
@@ -102,9 +114,13 @@ cd ../$USER1-test-book
 git rm 02.md
 git commit -m 'removed 02' && git push origin master
 cd ../$USER2-test-book
+if ! ebw git upstream-can-pull; then
+	echo "ERROR: Second attempt to pull from upstream, but reporting we can't pull from upstream"
+	exit 1
+fi
 ebw book pull-upstream
 if [[ -f 02.md ]]; then
-	echo "ERROR: failed to propogate deletion of 02.md from upstream"
+	echo "ERROR: failed to propagate deletion of 02.md from upstream"
 	exit 1
 fi
 

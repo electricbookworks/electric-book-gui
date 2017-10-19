@@ -31,15 +31,14 @@
                     {{if $state.ParentNotExist}}
                         <p>You are managing the original project. There is no parent project to contribute to.</p>
                     {{else}}
-                        {{if $state.ParentAhead}}
+                        {{if .UpstreamActions.CanPull}}
                         <p>Your copy of this project is behind the project you are contributing to. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update my copy from the original</a>
                         </p>
                         {{end}}
-                        {{/* same as ParentBehind, but prevents sending one after another */}}
-                        {{if .ERepo.CanCreatePR}}
+                        {{if .UpstreamActions.CanCreatePR}}
                         <p>You've made changes you have not shared with the project you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for review</a></p>
                         {{end}}
-                        {{if $state.ParentInSync}}
+                        {{if .UpstreamActions.InSync}}
                         <p>Your copy and the project you are contributing to are in sync. Good work.</p>
                         {{end}}
                     {{end}}

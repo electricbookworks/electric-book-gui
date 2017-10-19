@@ -6,6 +6,36 @@ import (
 	git2go "gopkg.in/libgit2/git2go.v25"
 )
 
+func GitMergeAnalysisToString(a git2go.MergeAnalysis) string {
+	s := []string{}
+	for b, str := range map[git2go.MergeAnalysis]string{
+		git2go.MergeAnalysisNone:        "MergeAnalysisNone",
+		git2go.MergeAnalysisNormal:      "MergeAnalysisNormal",
+		git2go.MergeAnalysisUpToDate:    "MergeAnalysisUpToDate",
+		git2go.MergeAnalysisFastForward: "MergeAnalysisFastForward",
+		git2go.MergeAnalysisUnborn:      "MergeAnalysisUnborn",
+	} {
+		if a&b == b {
+			s = append(s, str)
+		}
+	}
+	return strings.Join(s, "|")
+}
+
+func GitMergePreferenceToString(a git2go.MergePreference) string {
+	s := []string{}
+	for b, str := range map[git2go.MergePreference]string{
+		git2go.MergePreferenceNone:            "MergePreferenceNone",
+		git2go.MergePreferenceNoFastForward:   "MergePreferenceNoFastFoward",
+		git2go.MergePreferenceFastForwardOnly: "MergePreferenceFastFowardOnly",
+	} {
+		if a&b == b {
+			s = append(s, str)
+		}
+	}
+	return strings.Join(s, "|")
+}
+
 func GitStatusToString(status git2go.Status) string {
 	s := []string{}
 	if status == git2go.StatusCurrent {

@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
+	// "os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -117,11 +117,16 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 		return ``, util.Error(err)
 	}
 
-	cmd := exec.Command(`git`, `clone` /*`--depth`, `1`,*/, repoUrl+`.git`, filepath.Base(repoDir))
-	cmd.Dir = filepath.Dir(repoDir)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	if err := cmd.Run(); nil != err {
-		return ``, util.Error(err)
+	// cmd := exec.Command(`git`, `clone` /*`--depth`, `1`,*/, repoUrl+`.git`, filepath.Base(repoDir))
+	// cmd.Dir = filepath.Dir(repoDir)
+	// cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	// if err := cmd.Run(); nil != err {
+	// 	return ``, util.Error(err)
+	// }
+	// func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string) error {
+
+	if err := GitCloneTo(client, filepath.Dir(repoDir), repoOwner, repoName); nil != err {
+		return ``, err
 	}
 
 	repo, err := NewRepo(client, repoOwner, repoName)

@@ -35,6 +35,7 @@ func GitCommands() *commander.Command {
 		nil,
 		func(args []string) error {
 			return commander.Execute(args,
+				GitAheadBehindCommand,
 				GitCommitCommand,
 				GitFetchRefspecsCommand,
 				GitFetchRemoteCommand,
@@ -44,8 +45,11 @@ func GitCommands() *commander.Command {
 				GitFileDiffsConflictCommand,
 				GitGithubRemoteCommand,
 				GitHasConflictsCommand,
+				GitHeadSHACommand,
 				GitListConflictsCommand,
+				GitMergeAnalysisCommand,
 				GitMergeAutoCommand,
+				GitMergeCanFastForwardCommand,
 				GitMergeConflictCommand,
 				GitPathOurCommand,
 				GitPathTheirCommand,
@@ -58,7 +62,27 @@ func GitCommands() *commander.Command {
 				GitSetRemoteUserPasswordCommand,
 				GitSetUsernameEmailCommand,
 				GitUpdateRemoteGithubIdentityCommand,
+				GitUpstreamActionCommand,
+				GitUpstreamCanPullCommand,
+				GitUpstreamCanCreatePRCommand,
 			)
+		})
+}
+
+func GitAheadBehindCommand() *commander.Command {
+	fs := flag.NewFlagSet(`ahead-behind`, flag.ExitOnError)
+	remote := fs.String(`remote`, `origin`, `Remote to check`)
+	return commander.NewCommand(`ahead-behind`, `Report ahead-behind for the remote repo`,
+		fs,
+		func([]string) error {
+			g := mustNewGit()
+			defer g.Close()
+			ahead, behind, err := g.AheadBehind(*remote)
+			if nil != err {
+				return err
+			}
+			fmt.Printf("HEAD is %d ahead, %d behind %s\n", ahead, behind, *remote)
+			return nil
 		})
 }
 
@@ -249,6 +273,29 @@ func GitHasConflictsCommand() *commander.Command {
 		})
 }
 
+func GitHeadSHACommand() *commander.Command {
+	fs := flag.NewFlagSet(`head-sha`, flag.ExitOnError)
+	remote := fs.String(`remote`, ``, `Remote to check`)
+	return commander.NewCommand(`head-sha`, `Print the SHA of the repo's HEAD tree`,
+		fs,
+		func([]string) error {
+			g := mustNewGit()
+			defer g.Close()
+			var sha string
+			var err error
+			if `` == *remote {
+				sha, err = g.SHAHead()
+			} else {
+				sha, err = g.SHARemote(*remote, true)
+			}
+			if nil != err {
+				return err
+			}
+			fmt.Println(sha)
+			return nil
+		})
+}
+
 func GitListConflictsCommand() *commander.Command {
 	return commander.NewCommand(`list-conflicts`, `List all conflicted files in the repo`,
 		nil,
@@ -264,23 +311,67 @@ func GitListConflictsCommand() *commander.Command {
 		})
 }
 
+func GitMergeAnalysisCommand() *commander.Command {
+	return commander.NewCommand(`merge-analysis`,
+		`Analysis of possible merge with the given remote`,
+		nil,
+		func(remotes []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			for _, r := range remotes {
+				an, pref, err := g.MergeAnalysis(r)
+				if nil != err {
+					return err
+				}
+				fmt.Println(`Analysis:`, git.GitMergeAnalysisToString(an), `, Preference:`,
+					git.GitMergePreferenceToString(pref))
+			}
+			return nil
+		})
+}
+
 func GitMergeAutoCommand() *commander.Command {
 	return commander.NewCommand(`merge-auto`, `Automatically merge the given remote/branch and automatically resolve`,
 		nil,
 		func(args []string) error {
 			g := mustNewGit()
 			defer g.Close()
-			return g.MergeBranch(args[0], git.ResolveAutomatically)
+			_, err := g.MergeBranch(args[0], git.ResolveAutomatically)
+			return err
 		})
 }
 
+func GitMergeCanFastForwardCommand() *commander.Command {
+	return commander.NewCommand(`merge-can-fastforward`,
+		`TRUE if the merge can fastforward`,
+		nil,
+		func(remotes []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			if 1 != len(remotes) {
+				return fmt.Errorf(`REQUIRE a single remote argument`)
+			}
+			ff, err := g.MergeCanFastForward(remotes[0])
+			if nil != err {
+				return err
+			}
+			if ff {
+				fmt.Println("TRUE")
+			} else {
+				fmt.Println("cannot fast-forward")
+				os.Exit(1)
+			}
+			return nil
+		})
+}
 func GitMergeConflictCommand() *commander.Command {
 	return commander.NewCommand(`merge-conflict`, `Merge with the given remote/branch and leave all items in a conflicted state.`,
 		nil,
 		func(args []string) error {
 			g := mustNewGit()
 			defer g.Close()
-			return g.MergeBranch(args[0], git.ResolveConflicted)
+			_, err := g.MergeBranch(args[0], git.ResolveConflicted)
+			return err
 		})
 }
 
@@ -438,5 +529,64 @@ func GitUpdateRemoteGithubIdentityCommand() *commander.Command {
 			}
 
 			return g.UpdateRemoteGithubIdentity(*u, *p)
+		})
+}
+
+func GitUpstreamActionCommand() *commander.Command {
+	fs := flag.NewFlagSet(`upstream-action`, flag.ExitOnError)
+	return commander.NewCommand(`upstream-action`,
+		`Show possible upstream actions`,
+		fs,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			acts, err := g.GetUpstreamRemoteActions()
+			if nil != err {
+				return err
+			}
+			fmt.Printf("%s\n", acts)
+			return nil
+		})
+}
+func GitUpstreamCanPullCommand() *commander.Command {
+	return commander.NewCommand(`upstream-can-pull`,
+		`TRUE if you can pull from upstream`,
+		nil,
+		func([]string) error {
+			g := mustNewGit()
+			defer g.Close()
+			acts, err := g.GetUpstreamRemoteActions()
+			if nil != err {
+				return err
+			}
+			if acts.CanPull() {
+				fmt.Println("TRUE")
+				return nil
+			}
+			fmt.Println("FALSE")
+			os.Exit(1)
+			return nil
+
+		})
+}
+
+func GitUpstreamCanCreatePRCommand() *commander.Command {
+	return commander.NewCommand(`upstream-can-create-pr`,
+		`TRUE if you can create a PR to upstream`,
+		nil,
+		func([]string) error {
+			g := mustNewGit()
+			defer g.Close()
+			acts, err := g.GetUpstreamRemoteActions()
+			if nil != err {
+				return err
+			}
+			if acts.CanCreatePR() {
+				fmt.Println("TRUE")
+				return nil
+			}
+			fmt.Println("FALSE")
+			os.Exit(1)
+			return nil
 		})
 }

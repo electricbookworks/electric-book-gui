@@ -47,6 +47,17 @@ func ParseGitFileVersion(in string) (GitFileVersion, error) {
 	return GitFileVersion(0), fmt.Errorf(`Unable to parse GitFileVersion '%s'`, in)
 }
 
+// defaultCheckoutOpts returns the default checkout opts we're using when
+// merging or fast-forwarding
+func defaultCheckoutOpts() *git2go.CheckoutOpts {
+	return &git2go.CheckoutOpts{
+		Strategy: git2go.CheckoutSafe |
+			git2go.CheckoutForce |
+			git2go.CheckoutRecreateMissing |
+			git2go.CheckoutAllowConflicts,
+	}
+}
+
 // catFileGit returns the git merge of the file between their HEAD and our HEAD
 func (g *Git) catFileGit(path string) (bool, []byte, error) {
 	raw, err := g.CatFileVersion(path, GFV_THEIR_HEAD, nil)
@@ -189,13 +200,31 @@ func (g *Git) getMergeHeadObject() (*git2go.Object, error) {
 	return g.Repository.Lookup(headOid)
 }
 
+// MergeAnalysis returns the git2go analysis of possible merge options with the
+// given remote.
+func (g *Git) MergeAnalysis(remoteName string) (git2go.MergeAnalysis, git2go.MergePreference, error) {
+	if err := g.FetchRemote(remoteName); nil != err {
+		return 0, 0, err
+	}
+	remoteCommit, err := g.GetBranch(remoteName)
+	if nil != err {
+		return 0, 0, err
+	}
+	defer remoteCommit.Free()
+	return g.mergeAnalysis(remoteCommit)
+}
+
 // mergeAutomatic performs and automatic merge with the given remote/branch remote,
 // and attempts to complete a commit if there are no conflicts. The return values
 // are a boolean indicating true if the automatic merge succeeded, false otherwise.
 func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, error) {
 	var err error
-	if err = g.MergeBranch(remoteName, ResolveAutomatically); nil != err {
+	fastforward, err := g.MergeBranch(remoteName, ResolveAutomatically)
+	if nil != err {
 		return false, err
+	}
+	if fastforward {
+		return true, nil
 	}
 
 	conflicted, err := g.HasConflicts()
@@ -221,17 +250,28 @@ func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, 
 	return true, nil
 }
 
-// MergeBranch merges the named branch with the given resolution.
-func (g *Git) MergeBranch(remoteName string, resolve MergeResolution) error {
+// MergeBranch merges the remote branch with the given resolution. The return values
+// are TRUE if a fast-forward was possible, false if no fast-forward was effected.
+func (g *Git) MergeBranch(remoteName string, resolve MergeResolution) (bool, error) {
 	if err := g.FetchRemote(remoteName); nil != err {
-		return err
+		return false, err
 	}
 	remoteCommit, err := g.GetBranch(remoteName)
 	if nil != err {
-		return err
+		return false, err
 	}
 	defer remoteCommit.Free()
-	return g.mergeWithResolution(remoteCommit, resolve)
+	return g.mergeWithResolution(remoteName, remoteCommit, resolve)
+}
+
+// MergeCanFastForward returns true if it is possible for this merge to fast-foward
+// to the given remote.
+func (g *Git) MergeCanFastForward(remoteName string) (bool, error) {
+	analysis, _, err := g.MergeAnalysis(remoteName)
+	if nil != err {
+		return false, err
+	}
+	return analysis&git2go.MergeAnalysisFastForward == git2go.MergeAnalysisFastForward, nil
 }
 
 // mergeCleanup cleans up the state of the repo, and also removes any temporary
@@ -327,8 +367,6 @@ func (g *Git) mergeFileResolutionState(path string) (MergeFileResolutionState, e
 	if !conflicted {
 		return MergeFileResolved, nil
 	}
-	// TODO: Consider whether we should consider each file on its merits when
-	// working out whether a merge file is conflicted
 	return MergeFileConflict, nil
 	// info, err := r.MergeFileInfo(path)
 	// if nil != err {
@@ -407,8 +445,12 @@ func (g *Git) MergePullRequest(pullRequestNumber int, remoteName, pullRequestSHA
 	}
 	defer prCommit.Free()
 
-	if err = g.mergeWithResolution(prCommit, ResolveConflicted); nil != err {
+	fastForward, err := g.mergeWithResolution(remoteName, prCommit, ResolveConflicted)
+	if nil != err {
 		return err
+	}
+	if fastForward {
+		return fmt.Errorf(`MergePullRequest performed FAST-FORWARD: this should NEVER happen`)
 	}
 
 	conflicted, err := g.HasConflicts()
@@ -429,32 +471,101 @@ func (g *Git) MergePullRequest(pullRequestNumber int, remoteName, pullRequestSHA
 	return nil
 }
 
+func (g *Git) mergeAnalysis(newCommitObject *git2go.Object) (git2go.MergeAnalysis, git2go.MergePreference, error) {
+	remoteCommit, err := g.Repository.LookupAnnotatedCommit(newCommitObject.Id())
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	defer remoteCommit.Free()
+	analysis, preference, err := g.Repository.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
+	if nil != err {
+		return 0, 0, g.Error(err)
+	}
+	return analysis, preference, nil
+}
+
+// mergeFastForward will fast-foward the merge if it is possible, and return true.
+// If the merge cannot be fast-fowarded, false will be returned.
+func (g *Git) mergeFastForward(remoteName string, newCommitObject *git2go.Object) (bool, error) {
+	canFastForward, err := g.MergeCanFastForward(remoteName)
+	if nil != err {
+		return false, err
+	}
+	if !canFastForward {
+		return false, nil
+	}
+
+	// TODO: Might need to revert any uncommitted changes in the WD
+
+	// Perform a fast-foward merge. This is based on this discussion:
+	// https://stackoverflow.com/questions/38915026/how-is-fast-forward-implemented-in-git-so-that-two-branches-preserve
+	newCommitTreeO, err := newCommitObject.Peel(git2go.ObjectTree)
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer newCommitTreeO.Free()
+	newCommitTree, err := newCommitTreeO.AsTree()
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer newCommitTree.Free()
+
+	if err := g.Repository.CheckoutTree(newCommitTree, defaultCheckoutOpts()); nil != err {
+		return false, g.Error(err)
+	}
+	idx, err := g.Repository.Index()
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer idx.Free()
+
+	ref, err := g.Repository.References.Create("refs/heads/master", newCommitObject.Id(), true, `fast-forward merge`)
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer ref.Free()
+
+	// if err := g.Repository.SetHead("refs/remotes/" + remoteName); nil != err {
+	// 	return false, g.Error(err)
+	// }
+	// If we've succeeded in a fast-forward merge, we don't need to set anything
+	// we're good to go
+	return true, nil
+
+}
+
 // mergeWithResolution merges the newCommitObject into to current HEAD,
 // and resolves any conflicts per the resolve flag, either
 // attempting resolution, or marking all file differences as CONFLICTED.
 // After running Merge, it should be sufficient to check for any conflicts to
 // determine how the merge resolved. If resolve was ResolveAutomatically,
 // and no conflicts where encountered, it should be possible to commit at once.
-func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeResolution) error {
+func (g *Git) mergeWithResolution(remoteName string, newCommitObject *git2go.Object, resolve MergeResolution) (fastForward bool, err error) {
+	// If we are doing automatic resolution, we attempt fast-foward merge if possible
+	if ResolveAutomatically == resolve {
+		ok, err := g.mergeFastForward(remoteName, newCommitObject)
+		if nil != err {
+			return false, err
+		}
+		if ok {
+			return true, nil
+		}
+	}
+
 	remoteCommit, err := g.Repository.LookupAnnotatedCommit(newCommitObject.Id())
 	if nil != err {
-		return g.Error(err)
+		return false, g.Error(err)
 	}
 	defer remoteCommit.Free()
 
 	defaultMergeOptions, err := git2go.DefaultMergeOptions()
 	if nil != err {
-		return g.Error(err)
+		return false, g.Error(err)
 	}
 	glog.Infof(`About to perform Merge with commit %s`, newCommitObject.Id())
 	if err := g.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
-		&git2go.CheckoutOpts{
-			Strategy: git2go.CheckoutSafe |
-				git2go.CheckoutForce |
-				git2go.CheckoutRecreateMissing |
-				git2go.CheckoutAllowConflicts,
-		},
+		defaultCheckoutOpts(),
 	); nil != err {
 		// We handle Merge Conflict && Conflict ourselves, so we're not actually worried about this error...???
 		if git2go.IsErrorCode(err, git2go.ErrMergeConflict) ||
@@ -463,7 +574,7 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 				git2go.IsErrorCode(err, git2go.ErrConflict))
 			// return nil - we need to skip ahead to the resolving
 		} else {
-			return g.Error(err)
+			return false, g.Error(err)
 		}
 	}
 
@@ -474,16 +585,16 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 		// conflicts.
 		conflicted, err := g.HasConflicts()
 		if nil != err {
-			return g.Error(err)
+			return false, g.Error(err)
 		}
 		if !conflicted {
 			// No conflicts => so I'm done here. Our caller will be responsible for
 			// completing the commit
 			glog.Infof("ResolveAutomatically - no conflicts, merge is done")
-			return nil
+			return false, nil
 		}
 		if err := g.writeTheirsForConflictedFiles(newCommitObject); nil != err {
-			return err
+			return false, err
 		}
 	case ResolveConflicted:
 		// Whatever the outcome from Git, I am going to:
@@ -491,13 +602,13 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 		// 2. Write the their-directories for all conflicted files.
 		// 3. Write the our-directories for all conflicted files.
 		if err := g.ConflictFileDiffs(nil, newCommitObject); nil != err {
-			return err
+			return false, err
 		}
 		if err := g.writeTheirsForConflictedFiles(newCommitObject); nil != err {
-			return err
+			return false, err
 		}
 		if err := g.writeOursForConflictedFiles(); nil != err {
-			return err
+			return false, err
 		}
 	}
 	// At this point, any conflicted files are the files that the user will
@@ -506,17 +617,17 @@ func (g *Git) mergeWithResolution(newCommitObject *git2go.Object, resolve MergeR
 	// we will store them with the EBWRepoStatus
 	conflictedFiles, err := g.ListConflictedFiles()
 	if nil != err {
-		return err
+		return false, err
 	}
 	extendedStatus, err := g.readEBWRepoStatus()
 	if nil != err {
-		return err
+		return false, err
 	}
 	extendedStatus.MergingFiles = conflictedFiles
 	if err = extendedStatus.Write(); nil != err {
-		return g.Error(err)
+		return false, g.Error(err)
 	}
-	return nil
+	return false, nil
 }
 
 // MergingPRNumber returns the number of the PR currently

@@ -178,6 +178,11 @@ var APIWs = (function () {
     return APIWs;
 }());
 
+// Context is a general class passed through to most sub-classes that allows
+// us to track the repo- and user-specific things that are common to pretty
+// much all requests. In some senses, it's a bit like a global namespace,
+// just much better controlled because it's a class we defined and pass around,
+// and can therefore modify for children if that is appropriate at some point.
 var Context = (function () {
     function Context(el, RepoOwner, RepoName) {
         this.el = el;
@@ -649,8 +654,15 @@ function QuerySelectorAllIterate(el, query) {
     }
     return els;
 }
-//# sourceMappingURL=querySelectorAll-extensions.js.map
 
+/**
+ * Eventify adds eventListeners to the given object
+ * for each node in the given element and it's sub-elements
+ * that has an attribute of the form:
+ * data-event="event:method,event:method,..."
+ * When the named event occurs on the element, the named
+ * method will be called on the object.
+ */
 function Eventify(el, methods) {
     for (var _i = 0, _a = QuerySelectorAllIterate(el, "[data-event]"); _i < _a.length; _i++) {
         var e = _a[_i];
@@ -674,8 +686,12 @@ function Eventify(el, methods) {
         }
     }
 }
-//# sourceMappingURL=Eventify.js.map
 
+// AddNewBookDialog steps the user through two pages
+// determining what sort of new book they want to create,
+// and where the original of that book should be found:
+// ie copy the ebw electricbook template, or fork an existing
+// book.
 var AddNewBookDialog$$1 = (function (_super) {
     tslib_1.__extends(AddNewBookDialog$$1, _super);
     function AddNewBookDialog$$1(parent) {
@@ -885,6 +901,7 @@ var ControlTag = (function () {
     return ControlTag;
 }());
 
+/// <reference path="./typescript-foundation.d.ts" />
 var DialogEvents;
 (function (DialogEvents) {
     DialogEvents[DialogEvents["Opened"] = 1] = "Opened";
@@ -1205,7 +1222,6 @@ function AddToParent(parent, el) {
     }
     parent.appendChild(el);
 }
-//# sourceMappingURL=DOM.js.map
 
 var EditorImage$1 = (function (_super) {
     tslib_1.__extends(EditorImage$$1, _super);
@@ -1517,6 +1533,10 @@ var RepoFileEditorCM$1 = (function (_super) {
     return RepoFileEditorCM$$1;
 }(RepoFileEditorCM));
 
+/**
+ * FSFileEdit is a wrapper around a file that is being
+ * edited.
+ */
 var FSFileEdit = (function () {
     function FSFileEdit(fc, FS) {
         this.fc = fc;
@@ -1623,6 +1643,11 @@ var FSFileEdit = (function () {
     return FSFileEdit;
 }());
 
+/**
+ * RepoEditorPage_NewFileDialog displays a new file
+ * dialog on the RepoPageEditor page.
+ *
+ */
 var RepoEditorPage_NewFileDialog$1 = (function (_super) {
     tslib_1.__extends(RepoEditorPage_NewFileDialog$$1, _super);
     function RepoEditorPage_NewFileDialog$$1(openElement, FS, editor) {
@@ -1669,6 +1694,10 @@ var RepoEditorPage_NewFileDialog$1 = (function (_super) {
     return RepoEditorPage_NewFileDialog$$1;
 }(RepoEditorPage_NewFileDialog));
 
+/**
+ * RepoEditorPage_RenameFileDialog displays a Rename file
+ * dialog on the RepoPageEditor page.
+ */
 var RepoEditorPage_RenameFileDialog$1 = (function (_super) {
     tslib_1.__extends(RepoEditorPage_RenameFileDialog$$1, _super);
     function RepoEditorPage_RenameFileDialog$$1(openElement, FS, editor) {
@@ -1997,6 +2026,10 @@ var FSOverlay = (function () {
     return FSOverlay;
 }());
 
+/**
+ * FSRemote is a FileSystem stored on a remote
+ * server.
+ */
 var FSRemote = (function () {
     function FSRemote(repoOwner, repoName) {
         this.repoOwner = repoOwner;
@@ -2089,7 +2122,6 @@ function Store() {
     }
     return singleton;
 }
-//# sourceMappingURL=Store.js.map
 
 var FSSession = (function () {
     function FSSession(name, repoOwner, repoName, defaultRemoveStat) {
@@ -2179,6 +2211,19 @@ var FSSession = (function () {
     return FSSession;
 }());
 
+/**
+ * FSReadCache is PURELY a session storage based
+ * cache over a resource-intensive remote cache. It
+ * caches file existence and file reads, but all
+ * writes, renames and removes are handled by the remote
+ * content system. It doesn't track any sense of
+ * Dirty file state.
+ *
+ * Because FSReadCache is purely a READ Cache, it cannot
+ * do anything like revert, since that requires the underlying
+ * FS to handle revert, so Revert is simply passed to the
+ * underlying FS.
+ */
 var FSReadCache = (function () {
     function FSReadCache(source) {
         this.source = source;
@@ -2280,6 +2325,13 @@ var FSReadCache = (function () {
     return FSReadCache;
 }());
 
+/**
+ * FSFileList_File implements a single file element in the
+ * list of files in the FileSystem.
+ *
+ * It doesn't listen directly to the FS, but rather gets the
+ * FSFileList to trigger it's FSEvent method.
+ */
 var FSFileList_File$1 = (function (_super) {
     tslib_1.__extends(FSFileList_File$$1, _super);
     function FSFileList_File$$1(parent, file, FS, events, ignoreFunction) {
@@ -2334,6 +2386,10 @@ var FSFileList_File$1 = (function (_super) {
 }(FSFileList_File));
 
 // import {Directory} from './Directory';
+/**
+ * FSFileList shows a list of the files in the
+ * given filesystem.
+ */
 var FSFileList = (function () {
     function FSFileList(parent, editor, FS, ignoreFunction) {
         this.parent = parent;
@@ -2416,6 +2472,11 @@ var File = (function () {
     return File;
 }());
 
+/**
+ * Directory models a directory on the server. It needs to know
+ * its own directory name, and the link to its parent so that it
+ * can construct its full name on the parent.
+ */
 var Directory = (function () {
     function Directory(parent, name) {
         this._parent = parent;
@@ -2476,6 +2537,10 @@ var Directory = (function () {
     return Directory;
 }());
 
+// FSPrimeFromJS adds files to the FileSystem from the 
+// Directory and File objects serialized in the given js object.
+// The FileSystem must be able to accomodate empty content
+// Writes.
 function FSPrimeFromJS(fs, js) {
     var d = Directory.FromJS(undefined, js);
     var filter = function (n) {
@@ -2495,8 +2560,12 @@ function FSPrimeFromJS(fs, js) {
         fs.Write(f, FileStat.Exists);
     }
 }
-//# sourceMappingURL=FSPrimeFromJS.js.map
 
+/**
+ * RepoEditorPage is the JS controller for the page that allows
+ * editing of a repo.
+ *
+ */
 var RepoEditorPage = (function () {
     function RepoEditorPage(repoOwner, repoName, filesList, filesJson, proseIgnoreFunction) {
         var _this = this;
@@ -2603,6 +2672,10 @@ var FileEvent;
     FileEvent[FileEvent["TheirChanged"] = 1] = "TheirChanged";
     FileEvent[FileEvent["StatusChanged"] = 2] = "StatusChanged";
 })(FileEvent || (FileEvent = {}));
+// File models a single conflicted file in the repo.
+// All communication with the conflicted file occurs through this single
+// class, which will coordinate any other internal-classes that it might need,
+// like the file status.
 var File$1 = (function () {
     function File(context, path, status) {
         this.context = context;
@@ -2988,6 +3061,7 @@ var MergeEditorControlBar = (function () {
     return MergeEditorControlBar;
 }());
 
+// MergeEditor controls a Mergely class
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
@@ -3540,6 +3614,8 @@ var SingleEditor = (function () {
     return SingleEditor;
 }());
 
+// RepoConflictPage handles conflict-merging for the repo.
+// It's main data is generated in public/repo_conflict.html
 var RepoConflictPage = (function () {
     function RepoConflictPage(context) {
         var _this = this;

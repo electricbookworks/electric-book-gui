@@ -15,9 +15,17 @@ func repoConflict(c *Context) error {
 	}
 
 	// only show conflicted files if we're not merging a PR
-	stagedFiles, err := repo.MergingFilesList(0 == repo.EBWRepoStatus.MergingPRNumber)
+	mergingFiles, err := repo.MergingFilesList()
 	if nil != err {
 		return err
+	}
+	// No files are currently merging... this _can only happen_ if
+	// we're not in a conflict state
+	if 0 == len(mergingFiles) {
+		if !repo.Git.IsMerging() {
+			return c.Redirect(pathRepoDetail(repo))
+		}
+		return fmt.Errorf(`repo is MERGING, but has no marked merging files`)
 	}
 
 	return c.Render(`repo_conflict.html`, map[string]interface{}{
@@ -25,7 +33,7 @@ func repoConflict(c *Context) error {
 		`RepoOwner`:   repo.RepoOwner,
 		`RepoName`:    repo.RepoName,
 		`UserName`:    c.Client.Username,
-		`StagedFiles`: stagedFiles,
+		`StagedFiles`: mergingFiles,
 		`Merging`:     repo.EBWRepoStatus,
 	})
 }

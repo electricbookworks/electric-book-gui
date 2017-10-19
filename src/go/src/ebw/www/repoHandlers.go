@@ -186,6 +186,13 @@ func repoDetails(c *Context) error {
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
 
+	// The repo might not have an upstream repo, so we allow for that possibility
+	// in the error code
+	upstreamActions, err := erepo.Git.GetUpstreamRemoteActions()
+	if nil == err {
+		c.D[`UpstreamActions`] = upstreamActions
+	}
+
 	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
