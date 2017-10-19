@@ -11,6 +11,7 @@
         <div class="header-bar">
             <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
             <div class="action-group">
+                <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" class="bnt" target="github">Collaboration</a>
                 <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/commits/master" class="btn" target="github">View Edit History</a>
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>

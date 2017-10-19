@@ -144,6 +144,16 @@ func repoDetails(c *Context) error {
 		return err
 	}
 
+	erepo, err := git.NewRepo(client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer erepo.Free()
+
+	if err := erepo.RevertLocalChanges(); nil != err {
+		return err
+	}
+
 	prs, err := git.ListPullRequests(client, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -165,12 +175,6 @@ func repoDetails(c *Context) error {
 			return util.Error(err)
 		}
 	}
-
-	erepo, err := git.NewRepo(client, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-	defer erepo.Free()
 
 	stagedFiles, err := erepo.StagedFiles()
 	if nil != err {

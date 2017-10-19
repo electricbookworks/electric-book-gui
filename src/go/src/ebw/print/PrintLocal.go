@@ -127,7 +127,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 		return ``, err
 	}
 
-	output := `repo/_output/` + outputName
+	output := `_output/` + outputName
 
 	return output, nil
 }
