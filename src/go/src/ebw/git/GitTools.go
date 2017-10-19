@@ -117,14 +117,6 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 		return ``, util.Error(err)
 	}
 
-	// cmd := exec.Command(`git`, `clone` /*`--depth`, `1`,*/, repoUrl+`.git`, filepath.Base(repoDir))
-	// cmd.Dir = filepath.Dir(repoDir)
-	// cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	// if err := cmd.Run(); nil != err {
-	// 	return ``, util.Error(err)
-	// }
-	// func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string) error {
-
 	if err := GitCloneTo(client, filepath.Dir(repoDir), repoOwner, repoName); nil != err {
 		return ``, err
 	}
@@ -377,27 +369,29 @@ func DuplicateRepo(client *Client, githubPassword string,
 // ContributeToRepo configures a fork of the repo for the given
 // user, and checks out the newly forked repo.
 func ContributeToRepo(client *Client, repoUserAndName string) error {
+	glog.Infof(`client.Username=%s, ContributeToRepo: %s`, client.Username, repoUserAndName)
 	// See CLI BookContribute for model of how this should function.
 	parts := strings.Split(repoUserAndName, `/`)
 	if 2 != len(parts) {
 		return errors.New(`repo should be user/repo format`)
 	}
+	repoUser, repoName := parts[0], parts[1]
 	_, _, err := client.Repositories.CreateFork(
 		client.Context,
-		parts[0],
-		parts[1],
+		repoUser,
+		repoName,
 		&github.RepositoryCreateForkOptions{})
 	if nil != err && !strings.Contains(err.Error(), "try again later") {
 		glog.Errorf("CreateFork failed : %s", err.Error())
 		return util.Error(err)
 	}
 
-	repoDir, err := RepoDir(client.Username, parts[0], parts[1])
+	repoDir, err := RepoDir(client.Username, client.Username, repoName)
 	if nil != err {
 		return err
 	}
-	return GitCloneTo(client, repoDir, /* empty working dir will default to current dir */
-		parts[0], parts[1])
+	return GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
+		client.Username, repoName)
 }
 
 // GitCloneTo clones a repo to the given working directory.
@@ -418,12 +412,16 @@ func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string
 		`https://` + client.Username + ":" + client.Token +
 			"@github.com/" + repoUsername + "/" + repoName + ".git"
 
+	glog.Infof(`Cloning %s to %s`, cloneUrl, filepath.Join(workingDir, repoName))
+
+	tries := 0
 cloneAgain:
 	repo, err := git2go.Clone(cloneUrl, filepath.Join(workingDir, repoName), &git2go.CloneOptions{})
 	if nil != err {
-		if strings.Contains(err.Error(), "try again later") {
+		if strings.Contains(err.Error(), "try again later") || tries < 10 {
 			glog.Infof("Got 'try again later' - trying again in 2s")
 			time.Sleep(2 * time.Second)
+			tries++
 			goto cloneAgain // Oooh! A goto!
 		}
 		glog.Errorf("CLONE %s failed with error %s", cloneUrl, err.Error())
@@ -431,13 +429,6 @@ cloneAgain:
 	}
 	repo.Free()
 
-	// if err := runGitDir(workingDir, []string{
-	// 	`clone`,
-	// 	`https://` + client.Username + ":" + client.Token +
-	// 		"@github.com/" + repoUsername + "/" + repoName + ".git",
-	// }); nil != err {
-	// 	return util.Error(err)
-	// }
 	return nil
 }
 

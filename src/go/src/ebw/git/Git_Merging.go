@@ -224,6 +224,7 @@ func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, 
 		return false, err
 	}
 	if fastforward {
+		g.Push(`origin`, `master`) // ignore any push errors - we'll handle in UI
 		return true, nil
 	}
 
@@ -247,6 +248,7 @@ func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, 
 	if _, err = g.Commit(`Merged automatically ` + mergeDescription); nil != err {
 		return false, err
 	}
+	g.Push(`origin`, `master`) // ignore any push errors - we'll handle in UI
 	return true, nil
 }
 

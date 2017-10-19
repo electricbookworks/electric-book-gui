@@ -54,9 +54,6 @@ cd ../$USER2-test-book
 ebw book pull-upstream
 check_files_equal ../$USER1-test-book/01.md ./01.md
 
-echo "CHECK WE JUST FF'd OK"
-exit 1
-
 ## USER1 makes another change to the book
 cd ../$USER1-test-book
 echo 'Hi there from USER1, change 2' > 01.md

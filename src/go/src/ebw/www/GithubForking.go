@@ -27,9 +27,9 @@ func githubCreateFork(c *Context) error {
 	if 2 != len(parts) {
 		return fmt.Errorf(`Expected repo format of USERNAME/REPONAME, but got %d parts instead`, len(parts))
 	}
-	repoUser, repoName := parts[0], parts[1]
+	repoName := parts[1]
 
-	redirectUrl, err := pathRepoEdit(c, repoUser, repoName)
+	redirectUrl, err := pathRepoEdit(c, client.Username, repoName)
 	if nil != err {
 		/** @TODO Provide a more useful error explaining that the
 		 * user/repo format is required to make a repo fork.
