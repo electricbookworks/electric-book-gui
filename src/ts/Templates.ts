@@ -414,7 +414,7 @@ export class RepoEditorPage_NewFileDialog {
 			let d = document.createElement('div');
 			d.innerHTML = `<div><fieldset><label>
 			Enter the full path to your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label></fieldset><button class="btn" data-event="click">Create File</button></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			RepoEditorPage_NewFileDialog._template = t;
