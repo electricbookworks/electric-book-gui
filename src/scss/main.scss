@@ -29,6 +29,8 @@ $bp-xl: 80em;
 @import 'widgets/header-bar';
 @import 'widgets/printlistener_filelistdialog';
 @import 'widgets/invitations';
+@import 'widgets/login_token_list';
+@import 'widgets/bound-filename';
 
 // @import 'repositories';
 // @import 'html-checker';
@@ -41,6 +43,7 @@ $bp-xl: 80em;
 @import 'pages/repo_conflict';
 @import 'pages/repo_detail';
 @import 'pages/repo_list';
+@import 'pages/repo_file_viewer';
 
 //@import 'typography';
 @import 'forms';

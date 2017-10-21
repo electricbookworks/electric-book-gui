@@ -11,12 +11,25 @@ import (
 
 	"github.com/golang/glog"
 	// "github.com/google/go-github/github"
+	"gopkg.in/gomail.v2"
 
 	"ebw/book"
 	"ebw/config"
 	"ebw/git"
 	"ebw/util"
 )
+
+func repoFileViewer(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil == client {
+		return nil
+	}
+	repoOwner := c.Vars[`repoOwner`]
+	repoName := c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+	return c.Render(`repo_file_viewer.html`, nil)
+}
 
 func repoCommit(c *Context) error {
 	client := Client(c.W, c.R)
@@ -119,7 +132,6 @@ func repoView(c *Context) error {
 }
 
 func repoDetails(c *Context) error {
-	glog.Infof("repoDetails p1")
 	client := Client(c.W, c.R)
 	if nil == client {
 		return nil
@@ -127,13 +139,21 @@ func repoDetails(c *Context) error {
 	repoOwner := c.Vars[`repoOwner`]
 	repoName := c.Vars[`repoName`]
 
-	glog.Infof("repoDetails p2")
 	repo, _, err := client.Repositories.Get(c.Context(), repoOwner, repoName)
 	if nil != err {
 		return err
 	}
 
-	glog.Infof("repoDetails p3 - pull requests fetch")
+	erepo, err := git.NewRepo(client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer erepo.Free()
+
+	if err := erepo.RevertLocalChanges(); nil != err {
+		return err
+	}
+
 	prs, err := git.ListPullRequests(client, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -142,8 +162,6 @@ func repoDetails(c *Context) error {
 	c.D[`PrCount`] = len(prs)
 
 	var aheadBehind *git.RepoDiffStats
-
-	glog.Infof("repoDetails p4 - ahead behind")
 
 	if nil != repo.Parent {
 		aheadBehind, err = git.CompareCommits(client,
@@ -157,15 +175,6 @@ func repoDetails(c *Context) error {
 			return util.Error(err)
 		}
 	}
-
-	glog.Infof("repoDetails p5 - erepo")
-	erepo, err := git.NewRepo(client, repoOwner, repoName)
-	if nil != err {
-		return err
-	}
-	defer erepo.Free()
-
-	glog.Infof("repoDetails p6 - staged files")
 
 	stagedFiles, err := erepo.StagedFiles()
 	if nil != err {
@@ -181,14 +190,17 @@ func repoDetails(c *Context) error {
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
 
-	glog.Infof("repoDetails p7 - ListAllRepoFiles")
+	// The repo might not have an upstream repo, so we allow for that possibility
+	// in the error code
+	upstreamActions, err := erepo.Git.GetUpstreamRemoteActions()
+	if nil == err {
+		c.D[`UpstreamActions`] = upstreamActions
+	}
 
 	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
-
-	glog.Infof("repoDetails p8 - render")
 
 	return c.Render(`repo_detail.html`, map[string]interface{}{
 		"Repo": repo,
@@ -267,53 +279,6 @@ func pullRequestMerge(c *Context) error {
 	return c.Redirect(pathRepoConflict(repo))
 }
 
-// pullRequestView is deprecated. I'm leaving it here just for a few
-// revisions, then it can be cut.
-func pullRequestView(c *Context) error {
-	client := Client(c.W, c.R)
-	if nil == client {
-		return nil
-	}
-	repoOwner := c.Vars[`repoOwner`]
-	repoName := c.Vars[`repoName`]
-
-	c.D[`UserName`] = client.Username
-	c.D[`RepoOwner`] = repoOwner
-	c.D[`RepoName`] = repoName
-
-	pullRequestNumber := int(c.PI(`number`))
-
-	pr, err := git.GetPullRequest(client, client.Username, repoOwner, repoName, pullRequestNumber)
-	if nil != err {
-		return err
-	}
-	c.D[`PullRequest`] = pr
-	if nil != err {
-		return err
-	}
-
-	// Need to checkout both the repo and the PR
-	if _, err = git.Checkout(client, repoOwner, repoName, ``); nil != err {
-		return err
-	}
-	js := json.NewEncoder(os.Stdout)
-	js.SetIndent(``, `  `)
-	js.Encode(pr)
-	if _, err = git.PullRequestCheckout(client, *pr.Head.Repo.CloneURL, *pr.Head.SHA); nil != err {
-		return err
-	}
-
-	diffs, err := git.PullRequestDiffList(client, repoOwner, repoName, pr)
-	if nil != err {
-		return err
-	}
-	c.D[`Diffs`] = diffs
-	c.D[`SHA`] = *pr.Head.SHA
-	c.D[`PullURL`] = *pr.Head.Repo.CloneURL
-
-	return c.Render(`pull_request_view.html`, nil)
-}
-
 func pullRequestCreate(c *Context) error {
 	repo, err := c.Repo()
 	if nil != err {
@@ -332,7 +297,7 @@ func pullRequestCreate(c *Context) error {
 		if err := c.Decode(&args); nil != err {
 			return err
 		}
-		if err := repo.PullRequestCreate(args.Title, args.Notes); nil != err {
+		if _, err := repo.PullRequestCreate(args.Title, args.Notes); nil != err {
 			return err
 		}
 		return c.Redirect(pathRepoDetail(repo))
@@ -352,7 +317,7 @@ func repoFileServer(c *Context) error {
 	if nil != err {
 		return util.Error(err)
 	}
-	root = filepath.Join(root, config.Config.GitCache, `repos`, client.Username)
+	root = filepath.Join(root, config.Config.GitCache, client.Username)
 	glog.Infof(`Serving %s from %s`, c.R.RequestURI, root)
 	fs := http.StripPrefix(`/www/`, http.FileServer(http.Dir(root)))
 	fs.ServeHTTP(c.W, c.R)
@@ -376,6 +341,8 @@ func repoPushRemote(c *Context) error {
 // branch.
 func repoMergeRemote(c *Context) error {
 	remote := c.Vars[`remote`]
+
+	glog.Infof(`repoHandlers::repoMergeRemote: %s`, remote)
 	repo, err := c.Repo()
 	if nil != err {
 		return err
@@ -397,8 +364,6 @@ func repoMergeRemote(c *Context) error {
 
 func repoMergeRemoteBranch(c *Context) error {
 	var args struct {
-		Resolve     string `schema:"resolve"`
-		Conflicted  bool   `schema:"conflicted"`
 		PRNumber    int    `schema:"pr_number"`
 		Description string `schema:"description"`
 	}
@@ -406,39 +371,38 @@ func repoMergeRemoteBranch(c *Context) error {
 		return err
 	}
 
-	var resolve git.ResolveMergeOption
-	switch args.Resolve {
-	case `our`:
-		resolve = git.ResolveMergeOur
-	case `their`:
-		resolve = git.ResolveMergeTheir
-	case `git`:
-		fallthrough
-	default:
-		return fmt.Errorf(`Only supported resolve param values are 'their' and 'our'`)
-	}
-
 	remote, branch := c.Vars[`remote`], c.Vars[`branch`]
+	glog.Infof(`repoHandlers::repoMergeRemoteBranch: %s/%s PR=%`, remote, branch, args.PRNumber)
+
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
 
-	if `` == args.Description {
-		if 0 < args.PRNumber {
-			args.Description = fmt.Sprintf(`You are merging Pull Request number %d.`, args.PRNumber)
-		} else {
-			if `upstream` == remote {
-				args.Description = `You are merging with the original project you are contributing to.`
-			} else {
-				args.Description = `You are merging with your GitHub repo.`
+	if 0 == args.PRNumber {
+		switch remote {
+		case `upstream`:
+			if err := repo.Git.PullUpstream(); nil != err {
+				return err
 			}
+		case `origin`:
+			if err := repo.Git.PullOrigin(); nil != err {
+				return err
+			}
+		default:
+			return fmt.Errorf(`You can't use repoMergeRemoteBranch to merge with remote %s`, remote)
 		}
+	} else {
+		return fmt.Errorf(`You can't use repoMergeRemoteBranch to merge with a PR`)
 	}
-	if err := repo.MergeWith(remote, branch, resolve, args.Conflicted, args.PRNumber, args.Description); nil != err {
+	conflicts, err := repo.Git.HasConflicts()
+	if nil != err {
 		return err
 	}
-	return c.Redirect(pathRepoConflict(repo))
+	if conflicts {
+		return c.Redirect(pathRepoConflict(repo))
+	}
+	return c.Redirect(pathRepoDetail(repo))
 }
 
 func githubInvitationAcceptOrDecline(c *Context) error {
@@ -459,4 +423,43 @@ func githubInvitationAcceptOrDecline(c *Context) error {
 	}
 
 	return c.Redirect(`/`)
+}
+
+func errorReporter(c *Context) error {
+	var args struct {
+		When        string `schema:"when"`
+		User        string `schema:"user"`
+		Error       string `schema:"error"`
+		Description string `schema:"description"`
+	}
+	if err := c.Decode(&args); nil != err {
+		return err
+	}
+	// LOG the error to an email address
+	raw, _ := json.Marshal(&args)
+	to, from := config.Config.ErrorMail.FromTo()
+	host, port := config.Config.ErrorMail.HostPort()
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", from)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", `Error report: `, args.Error)
+	m.SetBody("text/plain", string(raw))
+
+	d := gomail.Dialer{Host: host, Port: port}
+	if err := d.DialAndSend(m); err != nil {
+		glog.Error(err)
+		return err
+	}
+
+	return c.Render(`error_report_sent.html`, nil)
+}
+
+func repoStatus(c *Context) error {
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	c.D[`RepoStatus`] = repo.EBWRepoStatus
+	return c.Render(`repo_status.html`, nil)
 }

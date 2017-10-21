@@ -1,0 +1,12 @@
+.bound-filename {
+	margin-left: 0.6em;
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-content: flex-start;
+
+	& > a > img {
+		width: 1.4em;
+		margin-left: 0.6em;
+	}
+}

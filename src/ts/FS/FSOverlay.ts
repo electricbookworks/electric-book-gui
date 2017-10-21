@@ -106,7 +106,7 @@ export class FSOverlay {
 		return this.above.Write(path, stat, content)
 		.then(
 			(fc:FileContent)=>{
-				console.log(`FSOverlay.Write(${path}): stat = ${stat}`);
+				// console.log(`FSOverlay.Write(${path}): stat = ${stat}`);
 				if (!(fc.Stat==FileStat.Exists || fc.Stat==FileStat.NotExist)) {
 					this.changes.add(path);
 				}

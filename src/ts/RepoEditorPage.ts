@@ -68,7 +68,7 @@ export class RepoEditorPage {
 
 				let f = document.getElementById(`page-footer`);
 				f.style.display = showing ? 'flex' : 'none';
-				console.log(`set footer = `, f);
+				// console.log(`set footer = `, f);
 			});
 
 		
@@ -76,7 +76,6 @@ export class RepoEditorPage {
 
 		document.getElementById(`repo-print-printer`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
-			console.log(`Starting printing...`);
 			EBW.Toast(`Creating your PDF. We'll open it in a new tab when it's ready.`);
 			new PrintListener(this.repoOwner, this.repoName, `book`, `print`);
 		});

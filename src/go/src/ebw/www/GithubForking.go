@@ -1,6 +1,8 @@
 package www
 
 import (
+	"fmt"
+	"strings"
 	// "strings"
 
 	"github.com/golang/glog"
@@ -21,7 +23,13 @@ func githubCreateFork(c *Context) error {
 
 	/* These fields are defined in public/es6/AddNewBookDialog.html */
 	repoUserAndName := c.P(`collaborate_repo`)
-	redirectUrl, err := pathRepoEdit(c, repoUserAndName)
+	parts := strings.Split(repoUserAndName, `/`)
+	if 2 != len(parts) {
+		return fmt.Errorf(`Expected repo format of USERNAME/REPONAME, but got %d parts instead`, len(parts))
+	}
+	repoName := parts[1]
+
+	redirectUrl, err := pathRepoEdit(c, client.Username, repoName)
 	if nil != err {
 		/** @TODO Provide a more useful error explaining that the
 		 * user/repo format is required to make a repo fork.
@@ -39,7 +47,7 @@ func githubCreateFork(c *Context) error {
 // githubCreateNew creates a New book - ie a duplication of the
 // base electric-book template.
 func githubCreateNew(c *Context) error {
-	panic(`githubCreateNew`)
+	// panic(`githubCreateNew`)
 	client := Client(c.W, c.R)
 	if nil == client {
 		// GithubClient will have redirected us
@@ -48,8 +56,12 @@ func githubCreateNew(c *Context) error {
 
 	/* These fields are defined in public/es6/AddNewBookDialog.html */
 	repoNewName := c.P(`repo_new`)
+	repoOwner := c.P(`org_name`)
+	if `` == repoOwner {
+		repoOwner = c.Client.Username
+	}
 
-	redirectUrl, err := pathRepoEdit(c, c.Client.Username+"/"+repoNewName)
+	redirectUrl, err := pathRepoEdit(c, repoOwner, repoNewName)
 	if nil != err {
 		/** @TODO Provide a more useful error explaining that the
 		 * user/repo format is required to make a repo fork.
@@ -57,8 +69,13 @@ func githubCreateNew(c *Context) error {
 		return err
 	}
 
+	template := c.P(`template`)
+	if `` == template {
+		template = `electricbookworks/electric-book`
+	}
+
 	if err := git.DuplicateRepo(client, client.Token,
-		`electricbookworks/electric-book`, repoNewName); nil != err {
+		template, c.P(`org_name`), repoNewName); nil != err {
 		return err
 	}
 

@@ -2,6 +2,7 @@ package git
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"os/exec"
 
@@ -27,7 +28,12 @@ func runGitDir(dir string, args []string) error {
 	cmd.Dir = dir
 
 	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	return cmd.Run()
+	if err := cmd.Run(); nil != err {
+		err = fmt.Errorf("ERROR running %s$ %v: %s", dir, args, err.Error())
+		glog.Error(err)
+		return err
+	}
+	return nil
 }
 
 // getGitOutput runs the git command in the given directory

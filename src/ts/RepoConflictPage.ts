@@ -1,3 +1,5 @@
+
+import {ConflictEditor} from './conflict/ConflictEditor';
 import {Context} from './Context';
 import {ControlTag} from './ControlTag';
 import {EBW} from './EBW';
@@ -9,11 +11,12 @@ import {MergeInstructions} from './conflict/MergeInstructions';
 import {CommitMessageDialogResult, CommitMessageDialog} from './CommitMessageDialog';
 import {ClosePRDialog, ClosePRDialogResult} from './conflict/ClosePRDialog';
 import {MergingInfo} from './conflict/MergingInfo';
+import {SingleEditor} from './conflict/SingleEditor';
 
 // RepoConflictPage handles conflict-merging for the repo.
 // It's main data is generated in public/repo_conflict.html
 export class RepoConflictPage {
-	protected editor: MergeEditor;
+	protected editor: ConflictEditor;
 	protected commitDialog: CommitMessageDialog;
 	protected closePRDialog: ClosePRDialog;
 	protected mergingInfo: MergingInfo;
@@ -29,10 +32,20 @@ export class RepoConflictPage {
 			this.fileListEvent(undefined, evt.detail.file);
 		});
 
-		this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
+		console.log(`mergingInfo = `, this.mergingInfo);
+		if (this.mergingInfo.IsPRMerge()) {
+			console.log(`THIS MERGE IS A PR MERGE`);
+			this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
+			new MergeInstructions(document.getElementById('merge-instructions'), this.editor as MergeEditor);
+		} else {
+			let work = document.getElementById(`editor-work`);
+			this.editor = new SingleEditor(context, work);
+		}
+		// items to be hidden in a PR merge or a not-pr-merge are controlled
+		// by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
+		// class
+		
 		this.commitDialog = new CommitMessageDialog(false);
-		new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
-
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
@@ -52,10 +65,13 @@ export class RepoConflictPage {
 			return;
 		}
 		let listjs = filesEl.innerText;
-		fileList.load(JSON.parse(listjs));
+		let fileListData = JSON.parse(listjs);
+		console.log(`Loaded fileList: `, fileListData);
+		fileList.load(fileListData);
 
 		document.getElementById(`action-commit`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
+			// TODO: Should check whether editor should save before committing.
 			this.commitDialog.Open(`Resolve Conflict`, `The merge will be resolved.`)
 			.then(
 				(r:CommitMessageDialogResult) => {

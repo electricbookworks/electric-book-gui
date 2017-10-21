@@ -21,7 +21,8 @@ func GithubCommand() *commander.Command {
 				DeleteRepoCommand,
 				RemoteCommand,
 				BranchNameCommand,
-				RootDirCommand)
+				RootDirCommand,
+			)
 		})
 }
 

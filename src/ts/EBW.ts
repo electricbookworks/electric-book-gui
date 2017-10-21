@@ -3,11 +3,13 @@ import {APIWs} from './APIWs';
 import {Context} from './Context';
 import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
+import {LoginTokenList} from './LoginTokenList';
 import {RepoDetailPage} from './RepoDetailPage';
 import {RepoEditorPage} from './RepoEditorPage';
 import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
+import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
 	static instance : EBW;
@@ -16,8 +18,8 @@ export class EBW {
 		if (null==EBW.instance) {
 			EBW.instance = this;
 			this.api = new APIWs();
-			console.log(`Activating foundation on the document`);
 			jQuery(document).foundation();
+			LoginTokenList.init();
 
 			let el = document.getElementById(`ebw-context`);
 			let context : Context;
@@ -29,7 +31,11 @@ export class EBW {
 						new RepoDetailPage(context);
 						break;
 					case 'RepoConflictPage':
-						new RepoConflictPage(context, el);
+						new RepoConflictPage(context);
+						break;
+					case 'RepoFileViewerPage':
+						console.log(`Creating RepoFileViewerPage`); 
+						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);
 						break;
 				}
 			}
@@ -75,5 +81,6 @@ export class EBW {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	console.log(`DOMContentLoaded - EBW`);
 	new EBW();
 });

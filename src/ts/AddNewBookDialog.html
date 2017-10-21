@@ -20,6 +20,10 @@ eventify:
 				data-set="collaborateRadio" name="new-project-type"/>
 				Collaborate on an existing project.
 			</label>
+			<label>
+				<input type="radio" value="adaptation" data-set="adaptationRadio" name="new-project-type" />
+				Create an adaptation of an existing project.
+			</label>
 		</fieldset>
 		<button data-event="click:choseType" class="btn">Next</button>
 	</div>
@@ -27,10 +31,31 @@ eventify:
 		<h1>New project</h1>
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new" />
-		<label>Enter the name for your new project.
+		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick" data-set="repo_name"/>
 		</label>
+		<label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks" data-set="org_name" />
+		</label>
 		<input type="submit" class="btn" value="New project"/>
+		</form>
+	</div>
+	<div data-set="adaptation">
+		<h1>Adaptation</h1>
+		<form method="post" action="/github/create/new">
+		<input type="hidden" name="action" value="new" />
+		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick" data-set="adaptation_repo_name"/>
+		</label>
+		<label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks" data-set="adaptation_org_name" />
+		</label>
+		<label>Enter the series that you will be adapting.
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book" data-set="template" />
+		</label>
+		<input type="submit" class="btn" value="New adaptation"/>
 		</form>
 	</div>
 	<div data-set="collaborate">

@@ -29,6 +29,7 @@ func GitNotExistError(err error) bool {
 
 // GetFile returns the contents of the file at path in users given repo
 func GetFile(client *Client, user, repoOwner, repoName, path string) ([]byte, error) {
+	path = stripSeparatorPrefix(path)
 	if false {
 		fileContent, _, _, err := client.Repositories.GetContents(client.Context, repoOwner, repoName, path,
 			&github.RepositoryContentGetOptions{})
@@ -54,6 +55,7 @@ func GetFile(client *Client, user, repoOwner, repoName, path string) ([]byte, er
 }
 
 func GetFileSHA(client *Client, user, repoOwner, repoName, path string) (*string, error) {
+	path = stripSeparatorPrefix(path)
 	if false {
 		fileContent, _, _, err := client.Repositories.GetContents(client.Context, repoOwner, repoName, path,
 			&github.RepositoryContentGetOptions{})
@@ -75,6 +77,7 @@ func GetFileSHA(client *Client, user, repoOwner, repoName, path string) (*string
 }
 
 func CreateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
+	path = stripSeparatorPrefix(path)
 	if false {
 		message := `automatic message`
 		_, _, err := client.Repositories.CreateFile(client.Context,
@@ -103,6 +106,7 @@ func CreateFile(client *Client, user, repoOwner, repoName, path string, content 
 }
 
 func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
+	path = stripSeparatorPrefix(path)
 	if false {
 		sha, err := GetFileSHA(client, user, repoOwner, repoName, path)
 		if GitNotExistError(err) {
@@ -142,11 +146,20 @@ func DeleteFile(client *Client, user, repoOwner, repoName, path string) error {
 	}
 }
 
+// stripSeparatorPrefix strips leading path separator from the provided path.
+func stripSeparatorPrefix(path string) string {
+	if path[0] == '/' || path[0] == filepath.Separator {
+		path = path[1:]
+	}
+	return path
+}
+
 // UpdateFile updates the given file with the given
 // content,
 // and adds it to the
 // git staging area, ready for the next commit.
 func UpdateFile(client *Client, user, repoOwner, repoName, path string, content []byte) error {
+	path = stripSeparatorPrefix(path)
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -157,29 +170,13 @@ func UpdateFile(client *Client, user, repoOwner, repoName, path string, content 
 	if err := ioutil.WriteFile(fullfile, content, 0644); nil != err {
 		return util.Error(err)
 	}
-	repo, err := git2go.OpenRepository(repoDir)
-	if nil != err {
-		return util.Error(err)
-	}
-	defer repo.Free()
-
-	index, err := repo.Index()
-	if nil != err {
-		return util.Error(err)
-	}
-	defer index.Free()
-	if err := index.AddByPath(path); nil != err {
-		return util.Error(err)
-	}
-	if err := index.Write(); nil != err {
-		return util.Error(err)
-	}
-	return nil
+	return StageFile(client, repoOwner, repoName, path)
 }
 
 // SaveWorkingFile saves the named file on the repo in the working directory.
 // It does not commit the file's change.
 func SaveWorkingFile(client *Client, repoOwner, repoName, path string, content []byte) error {
+	path = stripSeparatorPrefix(path)
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -194,6 +191,7 @@ func SaveWorkingFile(client *Client, repoOwner, repoName, path string, content [
 // from the index if it does not exist in the working dir. This is
 // intended as a functional equivalent of `git add [path]`
 func StageFile(client *Client, repoOwner, repoName, path string) error {
+	path = stripSeparatorPrefix(path)
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
@@ -277,6 +275,7 @@ func ListFiles(client *Client, user, repoOwner, repoName, pathRegexp string) ([]
 }
 
 func FileExistsInWorkingDir(client *Client, repoOwner, repoName, path string) (bool, error) {
+	path = stripSeparatorPrefix(path)
 	repoDir, err := RepoDir(client.Username, repoOwner, repoName)
 	if nil != err {
 		return false, err
@@ -292,6 +291,7 @@ func FileExistsInWorkingDir(client *Client, repoOwner, repoName, path string) (b
 }
 
 func FileRenameInWorkingDir(client *Client, repoOwner, repoName, fromPath, toPath string) error {
+	fromPath, toPath = stripSeparatorPrefix(fromPath), stripSeparatorPrefix(toPath)
 	if fromPath == toPath {
 		return nil
 	}

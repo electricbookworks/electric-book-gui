@@ -3785,12 +3785,14 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: space-between;
     align-items: baseline;
     padding-top: 1em;
     background-color: #009E7F;
     color: white;
     border-top: 1px solid #006b56; }
+    body footer div {
+      padding: 0 1em 1em 1em; }
     body footer a {
       color: white; }
       body footer a:hover {
@@ -4042,6 +4044,33 @@ body {
     flex-direction: column;
     align-items: flex-end;
     justify-content: flex-end; }
+
+.login-token-list .token-input {
+  display: grid;
+  grid-template-columns: 30fr 70fr 6em;
+  grid-column-gap: 1em;
+  align-items: baseline; }
+  .login-token-list .token-input input {
+    padding-right: 1em; }
+
+.login-token-list .token-list .token-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.3em; }
+  .login-token-list .token-list .token-display:hover {
+    background-color: #eee; }
+
+.bound-filename {
+  margin-left: 0.6em;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: flex-start; }
+  .bound-filename > a > img {
+    width: 1.4em;
+    margin-left: 0.6em; }
 
 .landing-page {
   max-width: 40em; }
@@ -4300,6 +4329,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: stretch; }
+    #repo-conflict #work.pr-merge .not-pr-merge {
+      display: none !important; }
+    #repo-conflict #work.not-pr-merge .pr-merge {
+      display: none !important; }
     #repo-conflict #work #files {
       flex-grow: 0;
       width: 30em;
@@ -4350,22 +4383,31 @@ body {
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
         position: relative; }
+        #repo-conflict #work #editor #editor-work.pr-merge > div {
+          display: flex;
+          flex-direction: row;
+          align-items: stretch;
+          justify-content: space-between; }
         #repo-conflict #work #editor #editor-work > div {
           position: absolute;
           top: 0;
           bottom: 0;
           left: 0;
-          right: 0;
-          display: flex;
-          flex-direction: row;
-          align-items: stretch;
-          justify-content: space-between; }
+          right: 0; }
           #repo-conflict #work #editor #editor-work > div > div {
             float: none;
             flex-grow: 0; }
           #repo-conflict #work #editor #editor-work > div > .mergely-column {
             flex-grow: 1; }
-          #repo-conflict #work #editor #editor-work > div .CodeMirror {
+          #repo-conflict #work #editor #editor-work > div.CodeMirror {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0; }
+          #repo-conflict #work #editor #editor-work > div .CodeMirror, #repo-conflict #work #editor #editor-work > div.CodeMirror {
+            font-size: 1em;
+            font-family: 'Inconsolata',monospace;
             height: 100%; }
 
 #staged-files-list {
@@ -4396,6 +4438,10 @@ body {
         background-color: #ddd; }
       #staged-files-list > ul > li.status-resolved > .status {
         background-color: #009e7f; }
+      #staged-files-list > ul > li.status-error > .status {
+        background-color: #f05a50; }
+      #staged-files-list > ul > li.status-conflict > .status {
+        background-color: #f8e080; }
       #staged-files-list > ul > li.rpc {
         background-color: yellow; }
 
@@ -4519,6 +4565,43 @@ body {
         margin-top: 1em; }
         .repo-list .repo .repo-manage a:first-child {
           margin-top: 0em; }
+
+.repo-file-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between; }
+  .repo-file-viewer .search {
+    flex-grow: 0; }
+  .repo-file-viewer .data {
+    display: grid;
+    grid-template-columns: repeat(6, 15fr);
+    grid-column-gap: 2em;
+    align-items: stretch;
+    position: relative; }
+
+.repo-file-viewer-file {
+  width: 100%;
+  border: 2px solid lightgray;
+  padding: 1em;
+  margin: 0.5em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch; }
+  .repo-file-viewer-file .image {
+    flex-grow: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; }
+    .repo-file-viewer-file .image img {
+      width: 100%; }
+  .repo-file-viewer-file .filename {
+    flex-grow: 0;
+    font-size: 0.5em;
+    font-weight: bold; }
 
 input,
 textarea,

@@ -46,7 +46,10 @@ func Main() {
 		BookCommands,
 		CliCommand,
 		GithubCommand,
-		PullCommand); nil != err {
+		PullCommand,
+		WhichUserCommand,
+		GitCommands,
+	); nil != err {
 		glog.Error(err)
 		os.Exit(1)
 	}

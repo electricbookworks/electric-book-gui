@@ -19,7 +19,7 @@ import (
 
 	"ebw/api/jsonrpc"
 	"ebw/print"
-	"ebw/util"
+	// "ebw/util"
 )
 
 func webdavRoutes(r *mux.Router, prefix string) {
@@ -63,12 +63,19 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
+	r.Handle(`/repo/{repoOwner}/{repoName}/files`, WebHandler(repoFileViewer))
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
 	r.Handle(`/repo/{repoOwner}/{repoName}/push/{remote}/{branch}`, WebHandler(repoPushRemote))
+	r.Handle(`/repo/{repoOwner}/{repoName}/status`, WebHandler(repoStatus))
+
+	r.Handle(`/error/generate`, WebHandler(func(c *Context) error {
+		return fmt.Errorf(`This is an error that I'm auto-generating`)
+	}))
+	r.Handle(`/error/report`, WebHandler(errorReporter))
 
 	r.Handle(`/repo/{repoOwner}/{repoName}/conflict`, WebHandler(repoConflict))
 	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/abort`, WebHandler(repoConflictAbort))
@@ -94,17 +101,8 @@ func RunWebServer(bind string) error {
 }
 
 // pathRepoEdit returns the URL path to edit the given repo
-func pathRepoEdit(c *Context, repoUserAndName string) (string, error) {
-	parts := strings.Split(repoUserAndName, `/`)
-	// @TODO If we move to storing the repoUser in the path as well,
-	// we'll need to make this 1==len(parts) and error condition
-	if 1 == len(parts) {
-		return fmt.Sprintf(`/repo/%s/update`, parts[0]), nil
-	}
-	if 2 != len(parts) {
-		return ``, util.Error(fmt.Errorf(`Expected user/name format for repoUserAndName(%s)`, repoUserAndName))
-	}
-	return fmt.Sprintf(`/repo/%s/update`, parts[1]), nil
+func pathRepoEdit(c *Context, repoUser, repoName string) (string, error) {
+	return fmt.Sprintf(`/repo/%s/%s/update`, repoUser, repoName), nil
 }
 
 func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{}) error {
@@ -167,11 +165,9 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		}
 		return nil
 	}); nil != err {
-		WebError(w, r, err)
 		return err
 	}
 	if err := t.ExecuteTemplate(w, tmpl, data); nil != err {
-		WebError(w, r, err)
 		return err
 	}
 	return nil

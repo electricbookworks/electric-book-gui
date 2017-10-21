@@ -11,7 +11,10 @@
         <div class="header-bar">
             <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
             <div class="action-group">
+                <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" class="btn" target="github">Collaboration</a>
+                <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/commits/master" class="btn" target="github">View Edit History</a>
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
+                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>
             </div>
         </div>
 
@@ -30,21 +33,20 @@
                     {{if $state.ParentNotExist}}
                         <p>You are managing the original project. There is no parent project to contribute to.</p>
                     {{else}}
-                        {{if $state.ParentAhead}}
-                        <p>Your copy of this project is behind the project you are contributing to. <div data-instance="RepoMergeButton" data-repo-merge="upstream/master">Update my copy from the original</div>
+                        {{if .UpstreamActions.CanPull}}
+                        <p>Your copy of this project is behind the project you are contributing to. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update my copy from the original</a>
                         </p>
                         {{end}}
-                        {{/* same as ParentBehind, but prevents sending one after another */}}
-                        {{if .ERepo.CanCreatePR}}
+                        {{if .UpstreamActions.CanCreatePR}}
                         <p>You've made changes you have not shared with the project you are contributing to. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new" class="btn">Submit these changes for review</a></p>
                         {{end}}
-                        {{if $state.ParentInSync}}
+                        {{if .UpstreamActions.InSync}}
                         <p>Your copy and the project you are contributing to are in sync. Good work.</p>
                         {{end}}
                     {{end}}
 
                     {{if .PullRequests}}
-                        <p>There are {{.PullRequests | len}} submissions to review. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull" class="btn">Review submissions</a></p>
+                        <p>There are {{.PullRequests | len}} submissions to review. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/detail#review" class="btn">Review submissions below</a></p>
                     {{end}}
 
 
@@ -83,11 +85,13 @@
     <section class="repo-detail-section">
         <div class="title-links">
             <div><h3 id="review">Submissions to review</h3></div>
-            <div class="edit-links action-group" >
+<!-- THIS LINK HAS BEEN DEPRECATED - ALL SUBMISSIONS APPEAR BELOW
+             <div class="edit-links action-group" >
                 <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull"{{end}} class="btn">Review submissions</a>
             </div>
-        </div>
-        {{if not $state.LocalChanges}}
+ -->
+         </div>
+        {{if $state.LocalChanges}}
             <div><p>You cannot review submissions until you have committed your changes.</p></div>
         {{end}}
         <div class="edits">

@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
+	// "os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -56,14 +56,14 @@ func RepoDir(user, repoOwner, repoName string) (string, error) {
 	if nil != err {
 		return ``, util.Error(err)
 	}
-	root = filepath.Join(root, config.Config.GitCache, `repos`, user)
+	root = filepath.Join(root, config.Config.GitCache, user)
 	if `` == repoOwner {
 		return root, nil
 	}
 	if `` == repoName {
 		return filepath.Join(root, repoOwner), nil
 	}
-	return filepath.Join(root, repoOwner, repoName, `/repo`), nil
+	return filepath.Join(root, repoOwner, repoName), nil
 }
 
 // Checkout checks out the github repo into the cached directory system,
@@ -98,9 +98,15 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 	os.MkdirAll(filepath.Dir(repoDir), 0755)
 	_, err = os.Stat(repoDir)
 	if nil == err {
+		repo, err := NewRepo(client, repoOwner, repoName)
+		if nil != err {
+			return ``, err
+		}
+		defer repo.Free()
+
 		// TODO : When merging is working correctly, we should not be
 		// running a merge-update here at all.
-		if _, err := gitUpdate(client, repoDir); nil != err {
+		if err := repo.gitUpdate(); nil != err {
 			// We ignore update errors, which are most likely merge
 			// conflicts. We will address these in the editor
 			return ``, nil
@@ -111,34 +117,20 @@ func Checkout(client *Client, repoOwner, repoName, repoUrl string) (string, erro
 		return ``, util.Error(err)
 	}
 
-	cmd := exec.Command(`git`, `clone`, repoUrl+`.git`, filepath.Base(repoDir))
-	cmd.Dir = filepath.Dir(repoDir)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	if err := cmd.Run(); nil != err {
-		return ``, util.Error(err)
+	if err := GitCloneTo(client, filepath.Dir(repoDir), repoOwner, repoName); nil != err {
+		return ``, err
 	}
 
-	return repoDir, gitConfig(client, repoDir)
-}
+	repo, err := NewRepo(client, repoOwner, repoName)
+	if nil != err {
+		return ``, err
+	}
+	defer repo.Free()
+	if err := repo.gitConfigure(); nil != err {
+		return ``, err
+	}
 
-// gitConfig configures the git username and email for the given
-// client-repo combination.
-func gitConfig(client *Client, repoDir string) error {
-	// repoDir, err := RepoDir(client.Username, repoOwner, repoName)
-	// if nil != err {
-	// 	return util.Error(err)
-	// }
-	if err := runGitDir(repoDir, []string{`config`, `user.name`, client.Username}); nil != err {
-		return util.Error(err)
-	}
-	if nil != client.User {
-		if err := runGitDir(repoDir, []string{`config`, `user.email`, client.User.GetEmail()}); nil != err {
-			return util.Error(err)
-		}
-	} else {
-		glog.Errorf(`Unable to set user.email for user %s in %s: no Email set`, client.Username, repoDir)
-	}
-	return nil
+	return repoDir, nil
 }
 
 func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, error) {
@@ -207,21 +199,8 @@ func Commit(client *Client, repoOwner, repoName, message string) (*git2go.Oid, e
 		glog.Infof(`ERROR on push origin master in %s: %s`, repoDir, err.Error())
 		// We don't crash on this error, since we're actually ok if our repo
 		// is out-of-sync with the remote: we'll resolve that via a pull
-		// return nil, err
 	}
 	return oid, nil
-}
-
-// gitUpdate updates the files in the given repo root directory.
-func gitUpdate(client *Client, root string) (string, error) {
-	cmd := exec.Command(`git`, `pull`, `origin`, `master`)
-	cmd.Dir = root
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	glog.Infof("dir = %s: git pull origin master", root)
-	if err := cmd.Run(); nil != err {
-		return ``, util.Error(err)
-	}
-	return root, gitConfig(client, root)
 }
 
 // RemoteName returns a name for the remote based on the remoteUrl
@@ -284,20 +263,44 @@ func PullRequestVersions(client *Client, user, repoOwner, repoName, remoteUrl, r
 	return string(localFileRaw), string(remoteFileRaw), nil
 }
 
+func copyFile(src, dest string) error {
+	in, err := os.Open(src)
+	if nil != err {
+		return err
+	}
+	defer in.Close()
+	out, err := os.Create(dest)
+	if nil != err {
+		return err
+	}
+	defer out.Close()
+	_, err = io.Copy(out, in)
+	return err
+}
+
 // DuplicateRepo duplicates the template repo into the user's github repos,
-//  and gives it the name newRepo.
+// and gives it the name newRepo.
 // This is used to start a new book, without being a fork of
 // the EBW electric-book repo.
 // See https://help.github.com/articles/duplicating-a-repository/
 // for more information.
-func DuplicateRepo(client *Client, githubPassword string, templateRepo string, newRepo string) error {
+func DuplicateRepo(client *Client, githubPassword string,
+	templateRepo string, orgName string, newRepo string) error {
 	repoName := filepath.Base(newRepo)
+
+	repoOwner := orgName
+	if `` == repoOwner {
+		repoOwner = client.Username
+	}
 	// 1. Check the user doesn't already have a newRepo,
 	//  and if not, create a newRepo for the user
-	workingDir := filepath.Join(os.TempDir(), client.Username, newRepo)
+	workingDir := filepath.Join(os.TempDir(), repoOwner, newRepo)
 	os.MkdirAll(workingDir, 0755)
 
-	_, _, err := client.Repositories.Create(client.Context, "", &github.Repository{
+	defer os.RemoveAll(filepath.Join(workingDir, newRepo))
+
+	// if orgName==``, then github will use client.Username
+	_, _, err := client.Repositories.Create(client.Context, orgName, &github.Repository{
 		Name:  &newRepo,
 		Owner: client.User,
 	})
@@ -305,27 +308,59 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, n
 		return util.Error(err)
 	}
 
-	glog.Infof(`Going to fork repo %s into %s/%s`, templateRepo, client.Username, newRepo)
+	githubUrl := `https://` + client.Username + `:` + githubPassword + `@github.com/`
+	// Now we've got a destRepo
+	destRepo := repoOwner + "/" + repoName
+	destDir := filepath.Join(workingDir, repoName)
 
-	// 2. Checkout the templateRepo with --bare into a new directory called [repoName]
+	glog.Infof(`Going to fork repo %s into %s/%s`, templateRepo, repoOwner, newRepo)
+
+	// 2. Checkout the templateRepo
 	if err := runGitDir(workingDir, []string{
 		`clone`,
-		`--bare`,
-		// `--depth`, `1`,
-		`https://` + client.Username + `:` + githubPassword + `@github.com/` + templateRepo + `.git`,
+		`--depth`, `1`,
+		githubUrl + templateRepo + `.git`,
 		repoName,
 	}); nil != err {
 		return util.Error(err)
 	}
 
-	// 3. Mirror-push to the newRepo
-	if err := runGitDir(filepath.Join(workingDir, repoName), []string{
-		`push`, `--mirror`, `https://` + client.Username + `:` + githubPassword + `@github.com/` + client.Username + `/` + repoName + `.git`,
-	}); nil != err {
+	if err := os.RemoveAll(filepath.Join(destDir, `.git`)); nil != err {
 		return util.Error(err)
 	}
+
+	for _, cmds := range [][]string{
+		[]string{`init`},
+	} {
+		if err := runGitDir(destDir, cmds); nil != err {
+			return util.Error(err)
+		}
+	}
+
+	clientEmail := ``
+	if nil != client.User {
+		clientEmail = client.User.GetEmail()
+	}
+	if `` == clientEmail {
+		clientEmail = client.Username + `@github.com`
+	}
+
+	for _, cmds := range [][]string{
+		[]string{`init`},
+		[]string{`config`, `user.name`, client.Username},
+		[]string{`config`, `user.email`, clientEmail},
+		[]string{`add`, `.`},
+		[]string{`commit`, `-m`, `initial commit`},
+		[]string{`remote`, `add`, `origin`, githubUrl + destRepo + `.git`},
+		[]string{`push`, `-u`, `origin`, `master`},
+	} {
+		if err := runGitDir(destDir, cmds); nil != err {
+			return util.Error(err)
+		}
+	}
+
 	// 4. Delete the temporary working directory
-	if err := os.RemoveAll(filepath.Join(workingDir, repoName)); nil != err {
+	if err := os.RemoveAll(workingDir); nil != err {
 		return util.Error(err)
 	}
 	return nil
@@ -334,26 +369,29 @@ func DuplicateRepo(client *Client, githubPassword string, templateRepo string, n
 // ContributeToRepo configures a fork of the repo for the given
 // user, and checks out the newly forked repo.
 func ContributeToRepo(client *Client, repoUserAndName string) error {
+	glog.Infof(`client.Username=%s, ContributeToRepo: %s`, client.Username, repoUserAndName)
 	// See CLI BookContribute for model of how this should function.
 	parts := strings.Split(repoUserAndName, `/`)
 	if 2 != len(parts) {
 		return errors.New(`repo should be user/repo format`)
 	}
+	repoUser, repoName := parts[0], parts[1]
 	_, _, err := client.Repositories.CreateFork(
 		client.Context,
-		parts[0],
-		parts[1],
+		repoUser,
+		repoName,
 		&github.RepositoryCreateForkOptions{})
-	if nil != err {
-		return err
+	if nil != err && !strings.Contains(err.Error(), "try again later") {
+		glog.Errorf("CreateFork failed : %s", err.Error())
+		return util.Error(err)
 	}
 
-	repoDir, err := RepoDir(client.Username, parts[0], parts[1])
+	repoDir, err := RepoDir(client.Username, client.Username, repoName)
 	if nil != err {
 		return err
 	}
-	return GitCloneTo(client, repoDir, /* empty working dir will default to current dir */
-		parts[0], parts[1])
+	return GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
+		client.Username, repoName)
 }
 
 // GitCloneTo clones a repo to the given working directory.
@@ -370,13 +408,27 @@ func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string
 		repoUsername = client.Username
 	}
 
-	if err := runGitDir(workingDir, []string{
-		`clone`,
+	cloneUrl :=
 		`https://` + client.Username + ":" + client.Token +
-			"@github.com/" + repoUsername + "/" + repoName + ".git",
-	}); nil != err {
+			"@github.com/" + repoUsername + "/" + repoName + ".git"
+
+	glog.Infof(`Cloning %s to %s`, cloneUrl, filepath.Join(workingDir, repoName))
+
+	tries := 0
+cloneAgain:
+	repo, err := git2go.Clone(cloneUrl, filepath.Join(workingDir, repoName), &git2go.CloneOptions{})
+	if nil != err {
+		if strings.Contains(err.Error(), "try again later") || tries < 10 {
+			glog.Infof("Got 'try again later' - trying again in 2s")
+			time.Sleep(2 * time.Second)
+			tries++
+			goto cloneAgain // Oooh! A goto!
+		}
+		glog.Errorf("CLONE %s failed with error %s", cloneUrl, err.Error())
 		return util.Error(err)
 	}
+	repo.Free()
+
 	return nil
 }
 

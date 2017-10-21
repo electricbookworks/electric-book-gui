@@ -1,0 +1,60 @@
+.repo-file-viewer {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+
+	.search {
+		flex-grow: 0;
+	}
+	.data{
+		display: grid;
+		grid-template-columns: repeat(6, 15fr);	
+
+		grid-column-gap: 2em;
+		
+		// flex-grow: 1;
+		// display: flex;
+		// flex-direction: row;
+		// flex-wrap: wrap;
+		// align-items: flex-start;
+		// justify-content: space-between;
+
+		align-items: stretch;
+
+
+		position: relative;
+	}
+}
+.repo-file-viewer-file {
+	width: 100%;
+	border: 2px solid lightgray;
+
+	padding: 1em;
+	margin: 0.5em;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
+
+	.image {
+		flex-grow: 1;
+		width: 100%;
+
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+
+		img {
+			width: 100%;
+		}
+	}
+
+	.filename {
+		flex-grow: 0;
+		font-size: 0.5em;
+		font-weight: bold;
+	}
+}

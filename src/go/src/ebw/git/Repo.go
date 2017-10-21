@@ -8,8 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
-	"time"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -51,6 +49,17 @@ type Repo struct {
 	state RepoState
 
 	Log *logrus.Entry
+	Git *Git
+}
+
+// Close closes the repo and any resources it is using
+func (r *Repo) Close() {
+	if nil != r.Repository {
+		r.Repository.Free()
+	}
+	if nil != r.Git {
+		r.Git.Close()
+	}
 }
 
 // Checkout checks out the repository into the repo directory.
@@ -79,7 +88,6 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 			return nil, err
 		}
 	}
-
 	repo, err := git2go.OpenRepository(repoDir)
 	if nil != err {
 		return nil, err
@@ -91,6 +99,10 @@ func NewRepo(client *Client, repoOwner, repoName string) (*Repo, error) {
 		RepoOwner:  repoOwner,
 		RepoName:   repoName,
 		state:      StateNotSet,
+	}
+	r.Git, err = OpenGit(repoDir, nil)
+	if nil != err {
+		return nil, err
 	}
 	if r.EBWRepoStatus, err = r.readEBWRepoStatus(); nil != err {
 		return nil, err
@@ -110,39 +122,22 @@ func (r *Repo) CLI() bool {
 // If you don't provide any elements,
 // the repo dir is returned.
 func (r *Repo) RepoPath(path ...string) string {
-	if 0 == len(path) {
-		return r.Dir
+	if nil == r.Git {
+		panic(`r.Git is nil`)
 	}
-	parts := make([]string, len(path)+1)
-	parts[0] = r.Dir
-	copy(parts[1:], path)
-	return filepath.Join(parts...)
+	return r.Git.Path(path...)
 }
 
 // TheirPath returns the path to the `their` version of a file
 // used during Merge resolution.
 func (r *Repo) TheirPath(path ...string) string {
-	if 0 == len(path) {
-		return filepath.Join(filepath.Dir(r.Dir), `merge-their`)
-	}
-	parts := make([]string, len(path)+2)
-	parts[0] = filepath.Dir(r.Dir)
-	parts[1] = `merge-their`
-	copy(parts[2:], path)
-	return filepath.Join(parts...)
+	return r.Git.PathTheir(path...)
 }
 
 // ConfigPath returns the path mapped into the
 // EBW `config` directory
 func (r *Repo) ConfigPath(path ...string) string {
-	if 0 == len(path) {
-		return filepath.Join(filepath.Dir(r.Dir), `ebw-config`)
-	}
-	parts := make([]string, len(path)+2)
-	parts[0] = filepath.Dir(r.Dir)
-	parts[1] = `ebw-config`
-	copy(parts[2:], path)
-	return filepath.Join(parts...)
+	return r.Git.PathEBWConfig(path...)
 }
 
 // NewRepoForDir returns a new repo configured for the given
@@ -165,7 +160,10 @@ func NewRepoForDir(client *Client, repoDir string, isCLI bool) (*Repo, error) {
 	if nil != err {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
-
+	r.Git, err = OpenGit(repoDir, nil)
+	if nil != err {
+		return nil, err
+	}
 	return r, nil
 }
 
@@ -285,26 +283,7 @@ func (r *Repo) StagedFilesAbbreviated() ([]*IndexFileStatusAbbreviated, error) {
 // StagedFiles returns the list of files staged but not committed
 // in the repository.
 func (r *Repo) StagedFiles() ([]*IndexFileStatus, error) {
-	sl, err := r.Repository.StatusList(&git2go.StatusOptions{
-		Show: git2go.StatusShowIndexOnly,
-	})
-	if nil != err {
-		return nil, util.Error(err)
-	}
-	defer sl.Free()
-	indexCount, err := sl.EntryCount()
-	if nil != err {
-		return nil, util.Error(err)
-	}
-	files := make([]*IndexFileStatus, indexCount)
-	for i := 0; i < indexCount; i++ {
-		se, err := sl.ByIndex(i)
-		if nil != err {
-			return nil, util.Error(fmt.Errorf(`Error retrieving StatusEntry %d: %s`, i, err.Error()))
-		}
-		files[i] = NewIndexFileStatus(se)
-	}
-	return files, nil
+	return r.Git.StagedFiles()
 }
 
 // PrintStatusList prints the information from the status list for
@@ -351,122 +330,28 @@ func (r *Repo) PrintStatusList() error {
 	return nil
 }
 
-func GitStatusToString(status git2go.Status) string {
-	s := []string{}
-	if status == git2go.StatusCurrent {
-		return "StatusCurrent"
-	}
-	for b, str := range map[git2go.Status]string{
-		git2go.StatusIndexNew:        "StatusIndexNew",
-		git2go.StatusIndexModified:   "StatusIndexModified",
-		git2go.StatusIndexDeleted:    "StatusIndexDeleted",
-		git2go.StatusIndexRenamed:    "StatusIndexRenamed",
-		git2go.StatusIndexTypeChange: "StatusIndexTypeChange",
-		git2go.StatusWtNew:           "StatusWtNew",
-		git2go.StatusWtModified:      "StatusWtModified",
-		git2go.StatusWtDeleted:       "StatusWtDeleted",
-		git2go.StatusWtTypeChange:    "StatusWtTypeChange",
-		git2go.StatusWtRenamed:       "StatusWtRenamed",
-		git2go.StatusIgnored:         "StatusIgnored",
-		git2go.StatusConflicted:      "StatusConflicted",
-	} {
-		if status&b == b {
-			s = append(s, str)
-		}
-	}
-	return strings.Join(s, "|")
-}
-
-func GitRepositoryStateToString(state git2go.RepositoryState) string {
-	switch state {
-	case git2go.RepositoryStateNone:
-		return "RepositoryStateNone"
-	case git2go.RepositoryStateMerge:
-		return "RepositoryStateMerge"
-	case git2go.RepositoryStateRevert:
-		return "RepositoryStateRevert"
-	case git2go.RepositoryStateCherrypick:
-		return "RepositoryStateCherrypick"
-	case git2go.RepositoryStateBisect:
-		return "RepositoryStateBisect"
-	case git2go.RepositoryStateRebase:
-		return "RepositoryStateRebase"
-	case git2go.RepositoryStateRebaseInteractive:
-		return "RepositoryStateRebaseInteractive"
-	case git2go.RepositoryStateRebaseMerge:
-		return "RepositoryStateRebaseMerge"
-	case git2go.RepositoryStateApplyMailbox:
-		return "RepositoryStateApplyMailbox"
-	case git2go.RepositoryStateApplyMailboxOrRebase:
-		return "RepositoryStateApplyMailboxOrRebase"
-	}
-	return "State-UNKNOWN-"
-}
-
 // GithubRepo returns the github Repository for this repo.
 func (r *Repo) GithubRepo() (*github.Repository, error) {
-	repo, _, err := r.Client.Repositories.Get(r.Client.Context,
-		r.RepoOwner, r.RepoName)
-	return repo, err
+	return r.Git.GithubRepo()
 }
 
 // AddRemote adds the given remoteName with the given CloneURL,
 // but does not change any existing remote with the given remoteName
 func (r *Repo) AddRemote(remoteName string, remoteCloneURL string) error {
-	remote, err := r.Remotes.Lookup(remoteName)
-	if nil != err {
-		remote, err = r.Remotes.Create(remoteName, remoteCloneURL)
-		if nil != err {
-			return util.Error(err)
-		}
-	}
-	defer remote.Free()
-	return nil
+	return r.Git.AddRemote(remoteName, remoteCloneURL)
 }
 
 // SetUpstreamRemote configures the `upstream` remote in the
 // github repo. It discovers the upstream remote by looking for
 // the repo's parent on Github.
 func (r *Repo) SetUpstreamRemote() error {
-	// Sometimes the CLI might not have a Github repo,
-	// so we handle this by simply declaring no github parent, which
-	// is logically correct.
-	if `` == r.RepoOwner {
-		return ErrNoGithubParent
-	}
-	gr, err := r.GithubRepo()
-	if nil != err {
-		return err
-	}
-	if nil == gr.Parent {
-		return ErrNoGithubParent
-	}
-	upstreamUrl, err := r.Client.AddAuth(`https://github.com/` +
-		gr.Parent.Owner.GetLogin() + `/` + gr.Parent.GetName() + `.git`)
-	if nil != err {
-		return util.Error(err)
-	}
-	remote, err := r.Remotes.Lookup(`upstream`)
-	if nil != err {
-		remote, err = r.Remotes.Create(`upstream`, upstreamUrl)
-		if nil != err {
-			return util.Error(err)
-		}
-	}
-	defer remote.Free()
-	return nil
+	return r.Git.SetUpstreamRemote()
 }
 
 // HasUpstreamRemote returns true if the repo has an upstream
 // remote - ie a parent to the github repo
 func (r *Repo) HasUpstreamRemote() (bool, error) {
-	if err := r.SetUpstreamRemote(); nil != err {
-		if err == ErrNoGithubParent {
-			return false, nil
-		}
-		return false, err
-	}
-	return true, nil
+	return r.Git.HasUpstreamRemote()
 }
 
 func (r *Repo) RepoStateStringNoError() string {
@@ -540,6 +425,14 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 		state |= EBMConflicted
 	default:
 		state |= EBMUnimplemented
+	}
+
+	hasConflictedFiles, err := r.HasConflictedFiles()
+	if nil != err {
+		return 0, err
+	}
+	if hasConflictedFiles {
+		state |= EBMConflicted
 	}
 
 	// glog.Infof("state = %d, fetching StatusCount", state)
@@ -647,27 +540,7 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 // FetchRemote fetches the named remote for the repo.
 func (r *Repo) FetchRemote(remoteName string) error {
-	// We're assuming that our configured repo has the right permissions,
-	// which we should probably check
-	remote, err := r.Remotes.Lookup(remoteName)
-	if nil != err {
-		return r.Error(err)
-	}
-	defer remote.Free()
-	// if err := runGitDir(r.Dir, []string{`fetch`, remoteName}); nil != err {
-	// 	return err
-	// }
-	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
-		RemoteCallbacks: git2go.RemoteCallbacks{
-			CredentialsCallback: func(url string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
-				errCode, cred := git2go.NewCredUserpassPlaintext(r.Client.Username, r.Client.Token)
-				return git2go.ErrorCode(errCode), &cred
-			},
-		},
-	}, ``); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.FetchRemote(remoteName)
 }
 
 // Stash stashes all current working directory files with the given message.
@@ -721,6 +594,8 @@ func (r *Repo) Pull(remoteName, branchName string) error {
 
 // mergeAnnotatedCommit does an actual merge of the given AnnotatedCommit
 // with the HEAD of the repo.
+// If we receive a ErrConflict error from libgit2's Merge command, we ignore it-
+// since we will resolve Conflicts ourselves.
 func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error {
 	analysis, _, err := r.MergeAnalysis([]*git2go.AnnotatedCommit{remoteCommit})
 	if nil != err {
@@ -742,47 +617,32 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 		glog.Infof(`MergeAnalysisUnborn - HEAD is unborn and merge not possible`)
 	}
 
-	// master, err := repo.LookupBranch(`origin/master`, git2go.BranchRemote)
-	// if nil != err {
-	// 	return err
-	// }
 	defaultMergeOptions, err := git2go.DefaultMergeOptions()
 	if nil != err {
 		return r.Error(err)
 	}
 	if err := r.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
-		// &git2go.MergeOptions{},
-		nil,
-		//&git2go.CheckoutOpts{},
+		&git2go.CheckoutOpts{},
 	); nil != err {
+		// We handle Merge Conflict && Conflict ourselves, so we're not actually worried about this error...???
+		if git2go.IsErrorCode(err, git2go.ErrMergeConflict) || git2go.IsErrorCode(err, git2go.ErrConflict) {
+			glog.Infof(`Merge returned MergeConflict %v, ErrConflict %v`, git2go.IsErrorCode(err, git2go.ErrMergeConflict),
+				git2go.IsErrorCode(err, git2go.ErrConflict))
+			return nil
+		}
 		return r.Error(err)
 	}
 	return nil
 }
 
 // PullAbort aborts a merge that is in progress. This isn't quite
-// live `git merge --abort`, because this is in fact simply a RESET
+// like `git merge --abort`, because this is in fact simply a RESET
 // to HEAD, which occurs in spite of, or while ignoring, any changed
 // files in WD. `git merge --abort`, though, will fail if there are modified
 // files in WD (or something like that).
 func (r *Repo) PullAbort() error {
-	if err := r.Cleanup(); nil != err {
-		return err
-	}
-	head, err := r.Repository.Head()
-	if nil != err {
-		return r.Error(err)
-	}
-	commit, err := r.LookupCommit(head.Target())
-	if nil != err {
-		return r.Error(err)
-	}
-	defer commit.Free()
-	if err := r.Repository.ResetToCommit(commit, git2go.ResetHard, nil); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.PullAbort()
 }
 
 // treeForCommit converts a *Oid into a *Tree. It's just here as a utility
@@ -813,39 +673,7 @@ func FreeCommitSlice(commits []*git2go.Commit) {
 // The caller needs to free the Commit structures. Use the handy FreeCommitSlice([]*Commit)
 // to do so.
 func (r *Repo) MergeCommits(includeHead bool) ([]*git2go.Commit, error) {
-	commits := []*git2go.Commit{}
-
-	//Getting repo HEAD
-	if includeHead {
-		head, err := r.Repository.Head()
-		if err != nil {
-			return nil, r.Error(err)
-		}
-		defer head.Free()
-
-		headCommit, err := r.LookupCommit(head.Target())
-		if err != nil {
-			return nil, r.Error(err)
-		}
-		commits = append(commits, headCommit)
-	}
-
-	mergeHeads, err := r.Repository.MergeHeads()
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	for _, h := range mergeHeads {
-		obj, err := r.Repository.Lookup(h)
-		if nil != err {
-			return nil, r.Error(err)
-		}
-		c, err := obj.AsCommit()
-		if nil != err {
-			return nil, r.Error(err)
-		}
-		commits = append(commits, c)
-	}
-	return commits, nil
+	return r.Git.mergeCommits(includeHead)
 }
 
 // FileBlob returns the file contents as a Blob
@@ -866,109 +694,28 @@ func (r *Repo) FileBlob(fileId *git2go.Oid) ([]byte, error) {
 // FileCat returns the contents of a conflicted or merged file.
 // The first bool parameter indicates whether the files exists.
 func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
-	var fileId *git2go.Oid
-	var err error
-	if FileWorking == version {
-		exists, err := util.FileExists(r.RepoPath(path))
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		if !exists {
-			return false, []byte{}, nil
-		}
-		raw, err := ioutil.ReadFile(r.RepoPath(path))
-		if nil != err {
-			return false, []byte{}, util.Error(err)
-		}
-		return true, raw, r.Error(err)
-	}
-
+	var auto bool
+	var v GitFileVersion
 	switch version {
-	case FileTheir:
-		fileId, err = r.fileTheir(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
 	case FileOur:
-		fileId, err = r.fileOur(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
+		v = GFV_OUR_HEAD
+	case FileTheir:
+		v = GFV_THEIR_WD
+	case FileAncestor:
+		v = GFV_ANCESTOR
+	case FileWorking:
+		v = GFV_OUR_WD
 	case FileMerge:
-		index, err := r.Repository.Index()
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		conflict, err := index.GetConflict(path)
-		if nil != err {
-			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(err)
-		}
-
-		theirFileId, err := r.fileTheir(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		ourFileId, err := r.fileOur(path)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		their, err := r.FileBlob(theirFileId)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		our, err := r.FileBlob(ourFileId)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		ancestor, err := r.FileBlob(conflict.Ancestor.Id)
-		if nil != err {
-			return false, []byte{}, err
-		}
-		res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
-			git2go.MergeFileInput{Contents: our},
-			git2go.MergeFileInput{Contents: their},
-			&git2go.MergeFileOptions{
-				Favor: git2go.MergeFileFavorNormal,
-				Flags: git2go.MergeFileDefault,
-			})
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		fmt.Println(`Automergeable = `, res.Automergeable)
-		return true, res.Contents, nil
-	default:
-		index, err := r.Repository.Index()
-		if nil != err {
-			return false, []byte{}, r.Error(err)
-		}
-		conflict, err := index.GetConflict(path)
-		if nil != err {
-			// An error can occur if the file is not conflicted
-			return false, []byte{}, r.Error(err)
-		}
-		switch version {
-		case FileAncestor:
-			fileId = conflict.Ancestor.Id
-		case FileOur:
-			fileId = conflict.Our.Id
-		case FileTheir:
-			fileId = conflict.Their.Id
-		default:
-			return false, []byte{}, r.Error(fmt.Errorf(`FileVersion version=%d not implemented`, version))
-		}
+		v = GFV_GIT_MERGED
 	}
-
-	if fileId.IsZero() {
-		// I'm guessing this could occur if the file does not exist
-		glog.Infof(`Got fileId IsZero() for %s (v=%d)`, path, version)
-		return false, []byte{}, nil
-	}
-	raw, err := r.FileBlob(fileId)
+	raw, err := r.Git.CatFileVersion(path, v, &auto)
 	if nil != err {
-		return false, []byte{}, r.Error(err)
+		if os.IsNotExist(err) {
+			return false, nil, nil
+		}
+		return false, nil, err
 	}
-	return true, raw, nil
+	return true, raw, err
 }
 
 // fileTheir returns the 'their' version of the file at the given path. This is the
@@ -992,7 +739,7 @@ func (r *Repo) fileTheir(path string) (*git2go.Oid, error) {
 	te, err := tree.EntryByPath(path)
 	if nil != err {
 		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-			return nil, err
+			return nil, nil
 		}
 		return nil, r.Error(err)
 	}
@@ -1024,48 +771,8 @@ func (r *Repo) fileOur(path string) (*git2go.Oid, error) {
 // FileGit returns the GIT version of a conflicted file. The first bool return
 // indicates whether the file can be automerged.
 func (r *Repo) FileGit(path string) (automergeable bool, raw []byte, err error) {
-
-	index, err := r.Repository.Index()
-	if nil != err {
-		return false, []byte{}, r.Error(err)
-	}
-	conflict, err := index.GetConflict(path)
-	if nil != err {
-		// An error can occur if the file is not conflicted
-		return false, []byte{}, r.Error(err)
-	}
-
-	theirFileId, err := r.fileTheir(path)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	ourFileId, err := r.fileOur(path)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	their, err := r.FileBlob(theirFileId)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	our, err := r.FileBlob(ourFileId)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	ancestor, err := r.FileBlob(conflict.Ancestor.Id)
-	if nil != err {
-		return false, []byte{}, err
-	}
-	res, err := git2go.MergeFile(git2go.MergeFileInput{Contents: ancestor},
-		git2go.MergeFileInput{Contents: our},
-		git2go.MergeFileInput{Contents: their},
-		&git2go.MergeFileOptions{
-			Favor: git2go.MergeFileFavorNormal,
-			Flags: git2go.MergeFileDefault,
-		})
-	if nil != err {
-		return false, []byte{}, r.Error(err)
-	}
-	return res.Automergeable, res.Contents, nil
+	raw, err = r.Git.CatFileVersion(path, GFV_GIT_MERGED, &automergeable)
+	return
 }
 
 // ResetConflictedFilesInWorkingDir goes through conflicted files in the
@@ -1156,48 +863,13 @@ func (r *Repo) ResetConflictedFilesInWorkingDir(chooseOurs, conflictedOnly bool,
 // AddToIndex adds the file at path to the index, if it exists, or
 // deletes the file in the index if it does not exist.
 func (r *Repo) AddToIndex(path string) error {
-	index, err := r.Index()
-	if nil != err {
-		return r.Error(err)
-	}
-	defer index.Free()
-	exists, err := util.FileExists(r.RepoPath(path))
-	if nil != err {
-		return err
-	}
-	if exists {
-		if err = index.AddByPath(path); nil != err {
-			// Adding a pre-existing file shouldn't be an issue,
-			// since it's the file contents, not the file name,
-			// that is important about the adding.
-			return r.Error(err)
-		}
-	} else {
-		if err = index.RemoveByPath(path); nil != err {
-			// I might need to consider what happens if I
-			// remove a file that isn't in the Index.
-			return r.Error(err)
-		}
-	}
-	if err := index.Write(); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.AddToIndex(path)
 }
 
 // AddAllToIndex adds all staged files to the index, including deleting
 // files from the index if they don't exist in the WD.
 func (r *Repo) AddAllStagedFilesToIndex() error {
-	files, err := r.StagedFiles()
-	if nil != err {
-		return err
-	}
-	for _, f := range files {
-		if err = r.AddToIndex(f.Path()); nil != err {
-			return err
-		}
-	}
-	return nil
+	return r.Git.AddAllStagedFilesToIndex()
 }
 
 // CommitAll works like `git commit -am` first adding all working-dir
@@ -1211,51 +883,7 @@ func (r *Repo) CommitAll(message, notes string) (*git2go.Oid, error) {
 
 // Commit commits the changes on the repo with the given message.
 func (r *Repo) Commit(message string, notes string) (*git2go.Oid, error) {
-	author := &git2go.Signature{
-		Name:  r.Client.Username,
-		Email: r.Client.User.GetEmail(),
-		When:  time.Now(),
-	}
-	// TODO: If we don't have a User Email address,
-	// where can we get one?
-	if `` == author.Email {
-		author.Email = author.Name
-	}
-	glog.Infof(`Committing with signatures Name:%s, Email:%s`, r.Client.Username, r.Client.User.GetEmail())
-	index, err := r.Index()
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	defer index.Free()
-	treeId, err := index.WriteTree()
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	tree, err := r.LookupTree(treeId)
-	if nil != err {
-		return nil, r.Error(err)
-	}
-	defer tree.Free()
-
-	//Getting repo HEAD
-	head, err := r.Head()
-	if err != nil {
-		return nil, r.Error(err)
-	}
-	defer head.Free()
-
-	commits, err := r.MergeCommits(true)
-	if nil != err {
-		return nil, err
-	}
-	defer FreeCommitSlice(commits)
-
-	oid, err := r.CreateCommit(`HEAD`, author, author, message, tree, commits...)
-	if nil != err {
-		return nil, r.Error(err)
-	}
-
-	return oid, nil
+	return r.Git.Commit(message)
 }
 
 // CleanupConflictTemporaryFiles cleans up any temporary files used in a
@@ -1277,25 +905,29 @@ func (r *Repo) CloseConflict(message, notes string) error {
 		return err
 	}
 
-	if 0 < r.EBWRepoStatus.MergingPRNumber {
-		if err := PullRequestClose(r.Client,
-			r.RepoOwner, r.RepoName, r.EBWRepoStatus.MergingPRNumber); nil != err {
-			return err
-		}
-	}
+	// @deprecated: all this now happens in Git.commit and
+	// it's call through to Git.mergeCleanup()
 
-	r.EBWRepoStatus.MergingPRNumber = 0
-	r.EBWRepoStatus.MergingFiles = []string{}
-	r.EBWRepoStatus.MergingDescription = ``
-	if err := r.writeEBWRepoStatus(); nil != err {
-		return err
-	}
+	// if 0 < r.EBWRepoStatus.MergingPRNumber {
+	// 	if err := PullRequestClose(r.Client,
+	// 		r.RepoOwner, r.RepoName, r.EBWRepoStatus.MergingPRNumber); nil != err {
+	// 		return err
+	// 	}
+	// }
 
-	if err := r.CleanupConflictTemporaryFiles(); nil != err {
-		return err
-	}
+	// r.EBWRepoStatus.MergingPRNumber = 0
+	// r.EBWRepoStatus.MergingFiles = []string{}
+	// r.EBWRepoStatus.MergingDescription = ``
+	// if err := r.writeEBWRepoStatus(); nil != err {
+	// 	return err
+	// }
 
-	return r.Cleanup()
+	// if err := r.CleanupConflictTemporaryFiles(); nil != err {
+	// 	return err
+	// }
+
+	// return r.Cleanup()
+	return nil
 }
 
 // Cleanup cleans up the state of the repo, and also removes any temporary
@@ -1313,16 +945,7 @@ func (r *Repo) Cleanup() error {
 // TODO: Check whether my ref string is able to push not just
 // from our master-to-master, but also from master -> x or x -> y
 func (r *Repo) Push(remoteName, branchName string) error {
-	remote, err := r.Repository.Remotes.Lookup(remoteName)
-	if nil != err {
-		return r.Error(err)
-	}
-	defer remote.Free()
-	ref := fmt.Sprintf(`+refs/heads/%s`, branchName)
-	if err = remote.Push([]string{ref}, &git2go.PushOptions{}); nil != err {
-		return r.Error(err)
-	}
-	return nil
+	return r.Git.Push(remoteName, branchName)
 }
 
 // WorkingTree returns a FileTree instance into the working
@@ -1430,29 +1053,35 @@ func (r *Repo) MergeFileInfo(path string) (*MergeFileInfo, error) {
 // within a EBW Server structured git repo.
 func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conflicted bool, prNumber int, description string) error {
 	if 0 == prNumber {
+		glog.Infof(`Pull`)
 		if err := r.Pull(remote, branch); nil != err {
 			return err
 		}
 	} else {
-		if err := r.PullRequestFetch(prNumber); nil != err {
+		glog.Infof(`PullRequestFetch`)
+		if err := r.PullRequestFetch(prNumber, nil); nil != err {
 			return err
 		}
+		glog.Infof(`PullRequestMerge`)
 		if err := r.PullRequestMerge(prNumber); nil != err {
 			return err
 		}
 	}
 	switch resolve {
 	case ResolveMergeOur:
+		glog.Infof(`ResetConflictedFilesInWorkingDir`)
 		if err := r.ResetConflictedFilesInWorkingDir(true, conflicted, nil); nil != err {
 			return err
 		}
 	case ResolveMergeTheir:
+		glog.Infof(`ResetConflictedFilesInWorkingDir`)
 		if err := r.ResetConflictedFilesInWorkingDir(false, conflicted, nil); nil != err {
 			return err
 		}
 	}
 
 	// Synchronize the TheirTree with the FileTheir items
+	glog.Infof(`TheirTree.Sync`)
 	if err := r.TheirTree().Sync(r, FileTheir); nil != err {
 		return err
 	}
@@ -1461,6 +1090,7 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 	// full meta-data information on this merge, even after we've
 	// messed with the filesystem / index.
 	r.EBWRepoStatus.MergingDescription = description
+	glog.Infof(`StatusListFilenames`)
 	files, err := r.StatusListFilenames()
 	if nil != err {
 		return err
@@ -1472,6 +1102,7 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 		r.EBWRepoStatus.MergingPRNumber = 0
 	}
 
+	glog.Infof(`writeEBWRepoStatus`)
 	if err = r.writeEBWRepoStatus(); nil != err {
 		return err
 	}
@@ -1482,63 +1113,42 @@ func (r *Repo) MergeWith(remote, branch string, resolve ResolveMergeOption, conf
 // MergingFilesList returns a slice of all the files in the
 // repo that are merging, with a status indication for each.
 func (r *Repo) MergingFilesList() ([]*IndexFileStatusAbbreviated, error) {
-	files := make([]*IndexFileStatusAbbreviated, len(r.EBWRepoStatus.MergingFiles))
-	for i, path := range r.EBWRepoStatus.MergingFiles {
-		rs, err := r.MergeFileResolutionState(path)
-		if nil != err {
-			return nil, err
-		}
-		f := &IndexFileStatusAbbreviated{
-			Path:   path,
-			Status: rs.String(),
-		}
-		files[i] = f
-	}
-	return files, nil
+	return r.Git.MergingFilesList()
 }
 
 // MergeFileResolutionState returns the state of the merging file at the
 // given path.
 func (r *Repo) MergeFileResolutionState(path string) (MergeFileResolutionState, error) {
-	info, err := r.MergeFileInfo(path)
-	if nil != err {
-		return MergeFileResolutionState(0), err
-	}
-	if info.Index.Hash.Equal(info.Working.Hash) {
-		if info.Index.Hash.Equal(info.Their.Hash) {
-			// our-their & repo are the same => RESOLVED
-			return MergeFileResolved, nil
-		}
-		// theirs differs from ours - but for now I'm going to
-		// differentiate this state
-		return MergeFileModified, nil
-	}
-	// since working differs from index =>
-	// implies modified, and hashes aren't the same,
-	// so we are new or deleted or modified
-	if info.Working.Hash.IsZero() {
-		return MergeFileNew, nil
-	}
-	if info.Their.Hash.IsZero() {
-		return MergeFileDeleted, nil
-	}
-	return MergeFileModified, nil
+	return r.Git.mergeFileResolutionState(path)
 }
 
 // BranchCreate creates the named branch on the repo. The force param is
 // set to true if you wish to overwrite an existing branch with the same
 // name. If no name is provided, this function will assign a name based on
-// the template PR_{{prN}} for the current head, where prN is the Nth PR we've
-// sent. Because, down-the-line, we might delete branches, this number isn't
-// to be considered definitive.
+// the template PR_{{username}}_{{prN}} for the current head, where prN is the N+1 for N
+// the total number of pull requests on the repo.
 func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error) {
 	head, err := r.Repository.Head()
 	if nil != err {
 		return ``, nil, util.Error(err)
 	}
+	defer head.Free()
+
+	commit, err := r.LookupCommit(head.Target())
+	if nil != err {
+		return ``, nil, r.Error(err)
+	}
+	defer commit.Free()
+
+	prCount, err := r.GetUpstreamPullRequestsCount()
+	if nil != err {
+		return ``, nil, err
+	}
+
 	if `` == name {
-		for i := 1; true; i++ {
-			name = fmt.Sprintf(`PR_%d`, i)
+		r.HasUpstreamRemote()
+		for i := prCount + 1; true; i++ {
+			name = fmt.Sprintf(`PR_%s_%d_%s`, r.Client.Username, i, commit.Object.Id().String()[0:6])
 			br, err := r.Repository.LookupBranch(name, git2go.BranchLocal)
 			if nil != err {
 				if git2go.IsErrorCode(err, git2go.ErrNotFound) {
@@ -1549,12 +1159,6 @@ func (r *Repo) BranchCreate(name string, force bool) (string, *git2go.Oid, error
 			br.Free()
 		}
 	}
-
-	commit, err := r.LookupCommit(head.Target())
-	if nil != err {
-		return ``, nil, r.Error(err)
-	}
-	defer commit.Free()
 
 	br, err := r.Repository.CreateBranch(name, commit, force)
 	if nil != err {
@@ -1578,14 +1182,14 @@ func (r *Repo) PullPR(prNumber int) error {
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
-	// TODO: Extract the description from the actual PR. - use
-	// OUR-THEIR on conflicted files only.
-	if err := r.MergeWith(``, ``, ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
-		return err
-	}
-	if err := r.PullRequestFetch(prNumber); nil != err {
-		return err
-	}
+	// // TODO: Extract the description from the actual PR. - use
+	// // OUR-THEIR on conflicted files only.
+	// if err := r.MergeWith(``, ``, ResolveMergeOur, true, prNumber, fmt.Sprintf(`You are merging with PR number %d`, prNumber)); nil != err {
+	// 	return err
+	// }
+	// if err := r.PullRequestFetch(prNumber, nil); nil != err {
+	// 	return err
+	// }
 	if err := r.PullRequestMerge(prNumber); nil != err {
 		return err
 	}
@@ -1605,23 +1209,29 @@ func (r *Repo) CanPush() (bool, error) {
 // git merge rules.
 func (r *Repo) PullUpstream() error {
 	// We revert local changes before pulling - we should never
-	// have local changes from using EBM
+	// have local changes from using EBM, since everything that is
+	// saved is automatically added to the index. And we shouldn't be pulling
+	// upstream if we haven't committed our index.
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
-
-	if err := r.MergeWith(`upstream`, `master`,
-		ResolveMergeGit, // resolve all files by git merge resolution
-		false,           // Use resolveMergeGit for conflicted and non-conflicted files
-		0,               // PR Number
-		`Merging with original series.`); nil != err {
+	// We ensure we've got an upstream remote
+	if err := r.SetUpstreamRemote(); nil != err {
 		return err
 	}
-	_, err := r.CommitIfNoConflicts()
-	if nil != err {
-		return err
-	}
-	return nil
+	return r.Git.PullUpstream()
+	// if err := r.MergeWith(`upstream`, `master`,
+	// 	ResolveMergeGit, // resolve all files by git merge resolution
+	// 	false,           // Use resolveMergeGit for conflicted and non-conflicted files
+	// 	0,               // PR Number
+	// 	`Merging with original series.`); nil != err {
+	// 	return err
+	// }
+	// _, err := r.CommitIfNoConflicts()
+	// if nil != err {
+	// 	return err
+	// }
+	// return nil
 }
 
 // PullOrigin pulls the repos origin into the repo, merging per git merge
@@ -1632,28 +1242,29 @@ func (r *Repo) PullOrigin() error {
 	if err := r.RevertLocalChanges(); nil != err {
 		return err
 	}
+	return r.Git.PullOrigin()
 
-	if err := r.MergeWith(`origin`, `master`,
-		ResolveMergeGit, // resolve all files by git merge resolution
-		false,           // Use resolveMergeGit for conflicted and non-conflicted files
-		0,               // PR Number
-		`Merging with github.`); nil != err {
-		return err
-	}
+	// if err := r.MergeWith(`origin`, `master`,
+	// 	ResolveMergeGit, // resolve all files by git merge resolution
+	// 	false,           // Use resolveMergeGit for conflicted and non-conflicted files
+	// 	0,               // PR Number
+	// 	`Merging with github.`); nil != err {
+	// 	return err
+	// }
 
-	_, err := r.CommitIfNoConflicts()
-	if nil != err {
-		return err
-	}
+	// _, err := r.CommitIfNoConflicts()
+	// if nil != err {
+	// 	return err
+	// }
 
-	return nil
+	// return nil
 }
 
 // CommitIfNoConflicts will commit the changes to the repo if there
 // are no conflicted files in the repo.
 // Returns true if the commit succeeded, false otherwise.
 func (r *Repo) CommitIfNoConflicts() (bool, error) {
-	hasConflicts, err := r.HasConflictedFiles()
+	hasConflicts, err := r.Git.HasConflicts()
 	if nil != err {
 		return false, err
 	}
@@ -1663,33 +1274,6 @@ func (r *Repo) CommitIfNoConflicts() (bool, error) {
 			return false, err
 		}
 		return true, nil
-	}
-	return false, nil
-}
-
-// HasConflictedFiles returns true if the repo has any conflicted files
-func (r *Repo) HasConflictedFiles() (bool, error) {
-	if r.Repository.State()&git2go.RepositoryStateMerge != git2go.RepositoryStateMerge {
-		// Cannot have conflicted files if not in merge state
-		return false, nil
-	}
-	sl, err := r.StatusList()
-	if nil != err {
-		return false, err
-	}
-	defer sl.Free()
-	entryCount, err := sl.EntryCount()
-	if nil != err {
-		return false, err
-	}
-	for i := 0; i < entryCount; i++ {
-		se, err := sl.ByIndex(i)
-		if nil != err {
-			return false, err
-		}
-		if se.Status&git2go.StatusConflicted == git2go.StatusConflicted {
-			return true, nil
-		}
 	}
 	return false, nil
 }
@@ -1742,7 +1326,7 @@ func (r *Repo) AutoProcessState() (bool, error) {
 
 // PushOrigin is a shorthand to push the repo to origin/master.
 func (r *Repo) PushOrigin() error {
-	return r.Push(`origin`, `master`)
+	return r.Git.Push(`origin`, `master`)
 }
 
 // RevertLocalChanges reverts all local changed files that aren't
@@ -1763,7 +1347,7 @@ func (r *Repo) RevertLocalChanges() error {
 	return nil
 }
 
-// PrintLocalChanges prints all locally chnaged files that aren't changed.
+// PrintLocalChanges prints all locally chnaged files that aren't staged.
 func (r *Repo) PrintLocalChanges() error {
 	deltas, err := r.DiffsIndexToWt()
 	if nil != err {
@@ -1778,4 +1362,100 @@ func (r *Repo) PrintLocalChanges() error {
 // RunGit runs git in the repo directory with the given arguments.
 func (r *Repo) RunGit(args ...string) error {
 	return runGitDir(r.RepoPath(), args)
+}
+
+// SearchForFiles returns a list of all files that match the given regexp.
+// It ignores all files that are ignored in Git, and skips all ignored directories.
+func (r *Repo) SearchForFiles(fn string, filter func(in string) bool) ([]string, error) {
+	glog.Infof(`SearchForFiles(%s)`, fn)
+	if nil == r.Git {
+		glog.Errorf(`r.Git is nil!`)
+	}
+	reg, err := regexp.Compile(fn)
+	if nil != err {
+		return nil, err
+	}
+	paths := []string{}
+	repoPath := r.RepoPath()
+	glog.Infof(`repoPath = %s`, repoPath)
+	if err := filepath.Walk(r.RepoPath(), func(path string, fi os.FileInfo, err error) error {
+		p, err := filepath.Rel(repoPath, path)
+		if nil != err {
+			return r.Error(err)
+		}
+		if `.` == p {
+			return nil
+		}
+		ignore, err := r.Git.Repository.IsPathIgnored(p)
+		if nil != err {
+			return r.Error(err)
+		}
+		if fi.IsDir() {
+			if ignore {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		if !ignore && reg.MatchString(p) && (nil == filter || filter(p)) {
+			paths = append(paths, p)
+		}
+		return nil
+	}); nil != err {
+		return nil, err
+	}
+	glog.Infof(`SearchForFiles returning: %v`, paths)
+	return paths, nil
+}
+
+// UpdateFileBinary writes the given file and updates it in git.
+func (r *Repo) UpdateFileBinary(path string, raw []byte) error {
+	err := ioutil.WriteFile(r.RepoPath(path), raw, 0755)
+	if nil != err {
+		return r.Error(err)
+	}
+	if err := r.AddToIndex(path); nil != err {
+		return r.Error(err)
+	}
+	return nil
+}
+
+// DumpIndex dumps the current contents of the git index to stdout
+func (r *Repo) DumpIndex() error {
+	idx, err := r.Repository.Index()
+	if nil != err {
+		return r.Error(err)
+	}
+	defer idx.Free()
+	N := idx.EntryCount()
+	for i := uint(0); i < N; i++ {
+		e, err := idx.EntryByIndex(i)
+		if nil != err {
+			return r.Error(err)
+		}
+		fmt.Println(e.Path, e.Id.String())
+	}
+	return nil
+}
+
+// gitConfigure configures the user name and email for the repo.
+func (r *Repo) gitConfigure() error {
+	if err := r.Git.SetUsernameEmail(r.Client.Username, r.Client.User.GetEmail()); nil != err {
+		return err
+	}
+	if err := r.Git.UpdateRemoteGithubIdentity(r.Client.Username, r.Client.Token); nil != err {
+		return err
+	}
+	return nil
+}
+
+// gitUpdate updates the git repo from origin/master
+func (r *Repo) gitUpdate() error {
+	if err := r.gitConfigure(); nil != err {
+		return err
+	}
+	if err := r.RunGit(`pull`, `origin`, `master`); nil != err {
+		return err
+	}
+	return nil
 }

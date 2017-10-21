@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	// "github.com/google/go-github/github"
 	// "github.com/golang/glog"
@@ -63,11 +64,11 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Log:     logrus.New().WithFields(flds),
 	}
 	defer c.runDefers()
-	c.Log.Infof(`Starting processing web request %s`, r.URL.String())
+	// c.Log.Infof(`Starting processing web request %s`, r.URL.String())
 	if err := f(c); nil != err {
-		WebError(w, r, err)
+		c.WebError(err)
 	}
-	c.Log.Infof(`Finished processing web request %s`, r.URL.String())
+	// c.Log.Infof(`Finished processing web request %s`, r.URL.String())
 }
 
 func (c *Context) AddDefer(f func()) {
@@ -98,6 +99,11 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 		c.D[`User`] = c.Client.User
 	}
 
+	if nil != c.Client {
+		c.D[`Token`] = c.Client.Token
+		c.D[`UserLogin`] = c.Client.Username
+	}
+
 	_, ok = c.D[`Flashes`]
 	if !ok {
 		flashes, err := c.Flashes()
@@ -106,6 +112,12 @@ func (c *Context) Render(templ string, data map[string]interface{}) error {
 		}
 		c.D[`Flashes`] = flashes
 	}
+
+	freeSpace, err := git.DiskSpaceFree()
+	if nil != err {
+		return err
+	}
+	c.D[`DiskSpaceFree`] = freeSpace / uint64(1024*1024)
 
 	return Render(c.W, c.R, templ, c.D)
 }
@@ -154,7 +166,7 @@ func (c *Context) Repo() (*git.Repo, error) {
 		return nil, err
 	}
 	repo.Log = c.Log
-	c.AddDefer(repo.Free)
+	c.AddDefer(repo.Close)
 	return repo, nil
 }
 
@@ -164,6 +176,7 @@ func (c *Context) Decode(i interface{}) error {
 	if err := c.R.ParseForm(); nil != err {
 		return util.Error(err)
 	}
+	schemaDecoder.IgnoreUnknownKeys(true)
 	if err := schemaDecoder.Decode(i, c.R.URL.Query()); nil != err {
 		return util.Error(err)
 	}
@@ -171,4 +184,12 @@ func (c *Context) Decode(i interface{}) error {
 		return util.Error(err)
 	}
 	return nil
+}
+
+func (c *Context) WebError(err error) {
+	c.W.WriteHeader(http.StatusInternalServerError)
+	c.Render(`error.html`, map[string]interface{}{
+		`Err`:  err,
+		`When`: time.Now().Format(time.RFC3339),
+	})
 }

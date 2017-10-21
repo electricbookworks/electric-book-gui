@@ -1,17 +1,22 @@
 // dtemplate generated - do not edit
 export namespace EL {
 	export type AddNewBookDialog =	HTMLDivElement;
+	export type BoundFilename =	HTMLDivElement;
 	export type CommitMessageDialog =	HTMLDivElement;
 	export type EditorImage =	HTMLDivElement;
 	export type FSFileList_File =	HTMLUListElement;
 	export type FileListDialog =	HTMLDivElement;
 	export type FileListDialog_Item =	HTMLUListElement;
 	export type FoundationRevealDialog =	HTMLDivElement;
+	export type LoginTokenDisplay =	HTMLUListElement;
+	export type LoginTokenList =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLDivElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
 	export type RepoFileEditorCM =	HTMLDivElement;
+	export type RepoFileViewerFile =	HTMLDivElement;
+	export type RepoFileViewerPage =	HTMLDivElement;
 	export type RepoMergeDialog =	HTMLDivElement;
 	export type conflict_ClosePRDialog =	HTMLDivElement;
 	export type conflict_FileDisplay =	HTMLLIElement;
@@ -24,10 +29,20 @@ export namespace R {
 		chooseType: HTMLDivElement,
 		newBookRadio: HTMLInputElement,
 		collaborateRadio: HTMLInputElement,
+		adaptationRadio: HTMLInputElement,
 		newBook: HTMLDivElement,
 		repo_name: HTMLInputElement,
+		org_name: HTMLInputElement,
+		adaptation: HTMLDivElement,
+		adaptation_repo_name: HTMLInputElement,
+		adaptation_org_name: HTMLInputElement,
+		template: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
+		};
+	export interface BoundFilename {
+		filename: HTMLSpanElement,
+		a: HTMLAnchorElement,
 		};
 	export interface CommitMessageDialog {
 		title: HTMLHeadingElement,
@@ -50,6 +65,16 @@ export namespace R {
 	export interface FoundationRevealDialog {
 		content: HTMLDivElement,
 		};
+	export interface LoginTokenDisplay {
+		link: HTMLAnchorElement,
+		delete: HTMLAnchorElement,
+		};
+	export interface LoginTokenList {
+		name: HTMLInputElement,
+		token: HTMLInputElement,
+		add: HTMLButtonElement,
+		list: HTMLUListElement,
+		};
 	export interface MergeEditor {
 		mergely: HTMLDivElement,
 		};
@@ -66,6 +91,14 @@ export namespace R {
 	export interface RepoFileEditorCM {
 		textEditor: HTMLDivElement,
 		imageEditor: HTMLDivElement,
+		};
+	export interface RepoFileViewerFile {
+		img: HTMLImageElement,
+		filename: HTMLDivElement,
+		};
+	export interface RepoFileViewerPage {
+		search: HTMLInputElement,
+		data: HTMLDivElement,
 		};
 	export interface RepoMergeDialog {
 		title: HTMLHeadingElement,
@@ -108,9 +141,21 @@ export class AddNewBookDialog {
 				Start a new project.
 			</label><label><input type="radio" value="collaborate" name="new-project-type"/>
 				Collaborate on an existing project.
-			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project.
+			</label><label><input type="radio" value="adaptation" name="new-project-type"/>
+				Create an adaptation of an existing project.
+			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
-		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
+		</label><label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Adaptation</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		</label><label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		</label><label>Enter the series that you will be adapting.
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
+		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
@@ -121,10 +166,36 @@ export class AddNewBookDialog {
 			chooseType: n.childNodes[0] as HTMLDivElement,
 			newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0] as HTMLInputElement,
 			collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0] as HTMLInputElement,
+			adaptationRadio: n.childNodes[0].childNodes[1].childNodes[2].childNodes[0] as HTMLInputElement,
 			newBook: n.childNodes[1] as HTMLDivElement,
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
-			collaborate: n.childNodes[2] as HTMLDivElement,
-			collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
+			adaptation: n.childNodes[2] as HTMLDivElement,
+			adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
+			template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1] as HTMLInputElement,
+			collaborate: n.childNodes[3] as HTMLDivElement,
+			collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+		};
+		this.el = n;
+	}
+}
+export class BoundFilename {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.BoundFilename;
+	constructor() {
+		let t = BoundFilename._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="bound-filename"><span>Select a file to edit</span><a href="#" target="_github"><img src="/img/github-dark.svg"/></a></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			BoundFilename._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			filename: n.childNodes[0] as HTMLSpanElement,
+			a: n.childNodes[1] as HTMLAnchorElement,
 		};
 		this.el = n;
 	}
@@ -251,6 +322,49 @@ export class FoundationRevealDialog {
 		this.el = n;
 	}
 }
+export class LoginTokenDisplay {
+	public static _template : HTMLUListElement;
+	public el : HTMLUListElement;
+	public $ : R.LoginTokenDisplay;
+	constructor() {
+		let t = LoginTokenDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul><li data-set="this" class="token-display"><a href="">LINK</a><a href="">X</a></li></ul>`;
+			t = d.firstElementChild.childNodes[0] as HTMLUListElement;
+			LoginTokenDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUListElement;
+		this.$ = {
+			link: n.childNodes[0] as HTMLAnchorElement,
+			delete: n.childNodes[1] as HTMLAnchorElement,
+		};
+		this.el = n;
+	}
+}
+export class LoginTokenList {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.LoginTokenList;
+	constructor() {
+		let t = LoginTokenList._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="login-token-list"><div class="token-input"><input type="text" placeholder="name"/><input type="text" placeholder="token"/><button class="btn">Add</button></div><ul class="token-list">
+	</ul></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			LoginTokenList._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			name: n.childNodes[0].childNodes[0] as HTMLInputElement,
+			token: n.childNodes[0].childNodes[1] as HTMLInputElement,
+			add: n.childNodes[0].childNodes[2] as HTMLButtonElement,
+			list: n.childNodes[1] as HTMLUListElement,
+		};
+		this.el = n;
+	}
+}
 export class MergeEditor {
 	public static _template : HTMLDivElement;
 	public el : HTMLDivElement;
@@ -300,7 +414,7 @@ export class RepoEditorPage_NewFileDialog {
 			let d = document.createElement('div');
 			d.innerHTML = `<div><fieldset><label>
 			Enter the full path to your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label></fieldset><button class="btn" data-event="click">Create File</button></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			RepoEditorPage_NewFileDialog._template = t;
@@ -355,6 +469,47 @@ export class RepoFileEditorCM {
 		this.$ = {
 			textEditor: n.childNodes[0] as HTMLDivElement,
 			imageEditor: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoFileViewerFile {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoFileViewerFile;
+	constructor() {
+		let t = RepoFileViewerFile._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="repo-file-viewer-file"><div class="image"><img/></div><div class="filename"/></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoFileViewerFile._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			img: n.childNodes[0].childNodes[0] as HTMLImageElement,
+			filename: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class RepoFileViewerPage {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.RepoFileViewerPage;
+	constructor() {
+		let t = RepoFileViewerPage._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="repo-file-viewer"><div class="searchbar"><input type="text" placeholder="Enter search text to find images."/></div><div class="data">
+	</div></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			RepoFileViewerPage._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			search: n.childNodes[0].childNodes[0] as HTMLInputElement,
+			data: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}

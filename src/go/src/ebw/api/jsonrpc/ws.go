@@ -27,8 +27,8 @@ func WsHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	// won't panic us out of existence	
 	defer recover()
 
-	glog.Infof("Got a connection")
-	defer glog.Infof("Connection closed")
+	// glog.Infof("Got a connection")
+	// defer glog.Infof("Connection closed")
 
 	if err := _root.NewConnection(nil, r, func(conn *_root.Connection)error {
 		wsConn, err := upgrader.Upgrade(w,r, nil)
@@ -109,7 +109,7 @@ func WsHandlerFunc(w http.ResponseWriter, r *http.Request) {
 		}
 		return nil
 	});nil!=err {
-		glog.Error("Error occurred: %s", err.Error())
+		glog.Errorf("Error occurred on WS: %s", err.Error())
 		return
 	}
 }

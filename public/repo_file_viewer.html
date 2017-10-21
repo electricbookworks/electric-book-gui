@@ -1,0 +1,15 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+
+<main id="repo-file-viewer">
+</main>
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoFileViewerPage">
+</script>
+<script type="text/hidden" id="staged-files-data">
+{{/*- .StagedFiles | json | raw -*/}}
+</script>
+<script type="text/hidden" id="merging-info">
+{{/*- .Merging | json | raw -*/}}
+</script>
+
+{{template "_footer.html" .}}

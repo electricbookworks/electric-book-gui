@@ -143,11 +143,60 @@ func ClientFromCLIConfigAlias(name string) (*Client, error) {
 	return client, nil
 }
 
+type basicAuthRoundtripper struct {
+	client   http.Client
+	username string
+	password string
+	parent   http.RoundTripper
+}
+
+func (b *basicAuthRoundtripper) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.SetBasicAuth(b.username, b.password)
+	if nil != b.parent {
+		return b.parent.RoundTrip(req)
+	}
+	return b.client.Do(req)
+}
+
+// ClientFromUsernamePassword returns a new GitHub client from the
+// given username-password combination, or from CLI config if both
+// are empty strings.
+func ClientFromUsernamePassword(username, password string) (*Client, error) {
+	if `` == username && `` == password {
+		return ClientFromCLIConfig()
+	}
+	authClient := http.Client{}
+	authClient.Transport = &basicAuthRoundtripper{
+		username: username,
+		password: password,
+		parent:   authClient.Transport}
+	githubClient := github.NewClient(&authClient)
+	ctxt := context.Background()
+	githubUser, _, err := githubClient.Users.Get(ctxt, "")
+	if nil != err {
+		return nil, err
+	}
+
+	client := &Client{
+		Client:   githubClient,
+		Username: ``,
+		Token:    password,
+		Context:  ctxt,
+		User:     githubUser,
+	}
+	client.Username, err = Username(client)
+	if nil != err {
+		return nil, err
+	}
+	return client, nil
+}
+
 // ClientFromConfig returns the client based on the configuration
 func ClientFromCLIConfig() (*Client, error) {
 	c := config.Config
 	user, err := c.GetUser()
 	if nil != err {
+		glog.Infof("ERROR on c.GetUser: %s", err.Error())
 		return nil, err
 	}
 	ts := oauth2.StaticTokenSource(
@@ -159,6 +208,7 @@ func ClientFromCLIConfig() (*Client, error) {
 	ctxt := context.Background()
 	githubUser, _, err := githubClient.Users.Get(ctxt, "")
 	if nil != err {
+		glog.Errorf("Error with token %s for user %s: %s", user.Token, user.Name, err.Error())
 		return nil, err
 	}
 

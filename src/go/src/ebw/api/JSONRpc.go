@@ -7,7 +7,10 @@ package api
 //go:generate golait2 -logtostderr gen -out ../../../../ts/APIWs.ts -type API -in ebw/api/JSONRpc.go -tem typescriptWs
 
 import (
+	"encoding/base64"
 	"fmt"
+
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 
 	"ebw/git"
@@ -17,7 +20,7 @@ import (
 /*====================== API METHODS FOLLOW ========================*/
 // Version returns the version of the API running on the server.
 func (rpc *API) Version() string {
-	return "API v 0.1"
+	return "API v0.2"
 }
 
 func (rpc *API) RenameFile(repoOwner, repoName, fromPath, toPath string) error {
@@ -55,6 +58,7 @@ func (rpc *API) GetFileString(repoOwner, repoName, path string) (string, error) 
 func (rpc *API) UpdateFile(repoOwner, repoName, path, content string) error {
 	return git.UpdateFile(rpc.Client, rpc.User, repoOwner, repoName, path, []byte(content))
 }
+
 func (rpc *API) StageFile(repoOwner, repoName, path string) error {
 	err := git.StageFile(rpc.Client, repoOwner, repoName, path)
 	if nil != err {
@@ -68,7 +72,7 @@ func (rpc *API) StageFileAndReturnMergingState(repoOwner, repoName, path string)
 	if nil != err {
 		return ``, err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	err = git.StageFile(rpc.Client, repoOwner, repoName, path)
 	if nil != err {
 		return ``, err
@@ -109,7 +113,7 @@ func (rpc *API) CommitAll(repoOwner, repoName, message, notes string) error {
 	if nil != err {
 		return err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	_, err = repo.CommitAll(message, notes)
 	return err
 }
@@ -118,7 +122,7 @@ func (rpc *API) CommitOnly(repoOwner, repoName, message, notes string) error {
 	if nil != err {
 		return err
 	}
-	defer repo.Free()
+	defer repo.Close()
 	_, err = repo.Commit(message, notes)
 	return err
 }
@@ -150,7 +154,7 @@ func (rpc *API) MergedFileCat(repoOwner, repoName, path string) (bool, string, b
 	if nil != err {
 		return retErr(err)
 	}
-	defer repo.Free()
+	defer repo.Close()
 
 	working, their := []byte{}, []byte{}
 	workingTree, theirTree := repo.WorkingTree(), repo.TheirTree()
@@ -184,7 +188,7 @@ func (rpc *API) MergedFileGit(repoOwner, repoName, path string) (bool, string, e
 	if nil != err {
 		return false, ``, err
 	}
-	defer repo.Free()
+	defer repo.Close()
 
 	//func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error)
 	mergeable, raw, err := repo.FileGit(path)
@@ -236,6 +240,8 @@ func (rpc *API) MergeFileOriginal(repoOwner, repoName, path string, version stri
 		v = git.FileOur
 	case "their":
 		v = git.FileTheir
+	case "git":
+		v = git.FileMerge
 	default:
 		return false, ``, fmt.Errorf(`Unrecognized version request: %s`, version)
 	}
@@ -263,4 +269,32 @@ func (rpc *API) FindFileLists(repoOwner, repoName string) ([]string, error) {
 		return nil, err
 	}
 	return files, err
+}
+
+func (rpc *API) SearchForFiles(repoOwner, repoName, fileRegex string) (string, []string, error) {
+	glog.Infof(`SearchForFiles(%s,%s,%s)`, repoOwner, repoName, fileRegex)
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		glog.Error(err)
+		return fileRegex, nil, err
+	}
+	defer r.Free()
+	files, err := r.SearchForFiles(fileRegex, nil)
+	if nil != err {
+		return fileRegex, nil, err
+	}
+	return fileRegex, files, nil
+}
+
+func (rpc *API) UpdateFileBinary(repoOwner, repoName, path string, contentB64 string) error {
+	r, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	defer r.Free()
+	raw, err := base64.StdEncoding.DecodeString(contentB64)
+	if nil != err {
+		return err
+	}
+	return r.UpdateFileBinary(path, raw)
 }

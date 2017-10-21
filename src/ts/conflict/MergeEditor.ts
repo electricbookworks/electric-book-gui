@@ -1,4 +1,5 @@
 import {AddToParent} from '../DOM';
+import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {FileContent, FileEvent, File} from './File';
@@ -9,7 +10,7 @@ import signals = require('signals');
 import CodeMirror = require('codemirror');
 
 // MergeEditor controls a Mergely class
-export class MergeEditor {
+export class MergeEditor implements ConflictEditor {
 	protected mergelyDiv: HTMLDivElement;
 	public Listen : signals.Signal;
 	protected file:File;
@@ -73,14 +74,14 @@ export class MergeEditor {
 			case MergeEditorAction.RevertGit:
 		}
 	}
-	setWorkingText(t:string) {
+	setWorkingText(t:string) :void {
 		if (this.editLeft) {
 			this.setLHS(t);
 		} else {
 			this.setRHS(t);
 		}
 	}
-	setTheirText(t:string) {
+	setTheirText(t:string):void {
 		if (this.editLeft) {
 			this.setRHS(t);
 		} else {

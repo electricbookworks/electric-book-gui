@@ -169,6 +169,12 @@ var APIWs = (function () {
     APIWs.prototype.FindFileLists = function (repoOwner, repoName) {
         return this.rpc("FindFileLists", [repoOwner, repoName]);
     };
+    APIWs.prototype.SearchForFiles = function (repoOwner, repoName, fileRegex) {
+        return this.rpc("SearchForFiles", [repoOwner, repoName, fileRegex]);
+    };
+    APIWs.prototype.UpdateFileBinary = function (repoOwner, repoName, path, contentB64) {
+        return this.rpc("UpdateFileBinary", [repoOwner, repoName, path, contentB64]);
+    };
     return APIWs;
 }());
 
@@ -244,7 +250,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -253,14 +259,38 @@ var AddNewBookDialog$1 = (function () {
             chooseType: n.childNodes[0],
             newBookRadio: n.childNodes[0].childNodes[1].childNodes[0].childNodes[0],
             collaborateRadio: n.childNodes[0].childNodes[1].childNodes[1].childNodes[0],
+            adaptationRadio: n.childNodes[0].childNodes[1].childNodes[2].childNodes[0],
             newBook: n.childNodes[1],
             repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1],
-            collaborate: n.childNodes[2],
-            collaborate_repo: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
+            org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1],
+            adaptation: n.childNodes[2],
+            adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
+            adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1],
+            template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1],
+            collaborate: n.childNodes[3],
+            collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1],
         };
         this.el = n;
     }
     return AddNewBookDialog;
+}());
+var BoundFilename = (function () {
+    function BoundFilename() {
+        var t = BoundFilename._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"bound-filename\"><span>Select a file to edit</span><a href=\"#\" target=\"_github\"><img src=\"/img/github-dark.svg\"/></a></div>";
+            t = d.firstElementChild;
+            BoundFilename._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            filename: n.childNodes[0],
+            a: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return BoundFilename;
 }());
 var CommitMessageDialog = (function () {
     function CommitMessageDialog() {
@@ -366,6 +396,44 @@ var FoundationRevealDialog = (function () {
     }
     return FoundationRevealDialog;
 }());
+var LoginTokenDisplay = (function () {
+    function LoginTokenDisplay() {
+        var t = LoginTokenDisplay._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<ul><li data-set=\"this\" class=\"token-display\"><a href=\"\">LINK</a><a href=\"\">X</a></li></ul>";
+            t = d.firstElementChild.childNodes[0];
+            LoginTokenDisplay._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            link: n.childNodes[0],
+            delete: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return LoginTokenDisplay;
+}());
+var LoginTokenList = (function () {
+    function LoginTokenList() {
+        var t = LoginTokenList._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"login-token-list\"><div class=\"token-input\"><input type=\"text\" placeholder=\"name\"/><input type=\"text\" placeholder=\"token\"/><button class=\"btn\">Add</button></div><ul class=\"token-list\">\n\t</ul></div>";
+            t = d.firstElementChild;
+            LoginTokenList._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            name: n.childNodes[0].childNodes[0],
+            token: n.childNodes[0].childNodes[1],
+            add: n.childNodes[0].childNodes[2],
+            list: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return LoginTokenList;
+}());
 var MergeEditor = (function () {
     function MergeEditor() {
         var t = MergeEditor._template;
@@ -403,7 +471,7 @@ var RepoEditorPage_NewFileDialog = (function () {
         var t = RepoEditorPage_NewFileDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><fieldset><label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label></fieldset><button class=\"btn\" data-event=\"click\">Create File</button></div>";
+            d.innerHTML = "<div><fieldset><label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label></fieldset><button class=\"btn\" data-event=\"click\">Create File</button></div>";
             t = d.firstElementChild;
             RepoEditorPage_NewFileDialog._template = t;
         }
@@ -451,6 +519,42 @@ var RepoFileEditorCM = (function () {
         this.el = n;
     }
     return RepoFileEditorCM;
+}());
+var RepoFileViewerFile = (function () {
+    function RepoFileViewerFile() {
+        var t = RepoFileViewerFile._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"repo-file-viewer-file\"><div class=\"image\"><img/></div><div class=\"filename\"/></div>";
+            t = d.firstElementChild;
+            RepoFileViewerFile._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            img: n.childNodes[0].childNodes[0],
+            filename: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return RepoFileViewerFile;
+}());
+var RepoFileViewerPage = (function () {
+    function RepoFileViewerPage() {
+        var t = RepoFileViewerPage._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div class=\"repo-file-viewer\"><div class=\"searchbar\"><input type=\"text\" placeholder=\"Enter search text to find images.\"/></div><div class=\"data\">\n\t</div></div>";
+            t = d.firstElementChild;
+            RepoFileViewerPage._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            search: n.childNodes[0].childNodes[0],
+            data: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return RepoFileViewerPage;
 }());
 var conflict_ClosePRDialog = (function () {
     function conflict_ClosePRDialog() {
@@ -580,7 +684,8 @@ var AddNewBookDialog$$1 = (function (_super) {
             'choseType': function () {
                 var newBook = _this.$.newBookRadio.checked;
                 var collaborate = _this.$.collaborateRadio.checked;
-                if (!newBook && !collaborate) {
+                var adaptation = _this.$.adaptationRadio.checked;
+                if (!newBook && !collaborate && !adaptation) {
                     alert("You need to choose one or the other");
                     return;
                 }
@@ -588,9 +693,13 @@ var AddNewBookDialog$$1 = (function (_super) {
                     _this.$.newBook.style.display = 'block';
                     _this.$.repo_name.focus();
                 }
-                else {
+                else if (collaborate) {
                     _this.$.collaborate.style.display = 'block';
                     _this.$.collaborate_repo.focus();
+                }
+                else {
+                    _this.$.adaptation.style.display = 'block';
+                    _this.$.adaptation_repo_name.focus();
                 }
                 _this.$.chooseType.style.display = 'none';
             }
@@ -599,10 +708,13 @@ var AddNewBookDialog$$1 = (function (_super) {
             _this.$.chooseType.style.display = 'block';
             _this.$.newBookRadio.checked = false;
             _this.$.collaborateRadio.checked = false;
+            _this.$.adaptationRadio.checked = false;
             _this.$.newBook.style.display = 'none';
             _this.$.repo_name.value = '';
             _this.$.collaborate.style.display = 'none';
             _this.$.collaborate_repo.value = '';
+            _this.$.adaptation.style.display = 'none';
+            _this.$.adaptation_repo_name.value = '';
         });
         parent.appendChild(_this.el);
         return _this;
@@ -611,12 +723,98 @@ var AddNewBookDialog$$1 = (function (_super) {
         var list = document.querySelectorAll("[data-instance='AddNewBookDialog']");
         for (var i = 0; i < list.length; i++) {
             var el = list.item(i);
-            console.log("qsa.forEach(", el, ")");
+            // console.log(`qsa.forEach(`, el, `)`);
             new AddNewBookDialog$$1(el);
         }
     };
     return AddNewBookDialog$$1;
 }(AddNewBookDialog$1));
+
+var TokenDisplay = (function (_super) {
+    tslib_1.__extends(TokenDisplay, _super);
+    function TokenDisplay(parent, t, list) {
+        var _this = _super.call(this) || this;
+        _this.t = t;
+        _this.list = list;
+        _this.$.link.href = "/github/token/" + _this.t.token;
+        _this.$.link.innerText = _this.t.name;
+        _this.$.delete.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            _this.el.remove();
+            _this.list.RemoveToken(_this.t);
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    TokenDisplay.removeToken = function (name) {
+        var d = document.getElementById("token-list-item-" + t.name);
+        if (d) {
+            d.remove();
+        }
+    };
+    return TokenDisplay;
+}(LoginTokenDisplay));
+var LoginTokenList$1 = (function (_super) {
+    tslib_1.__extends(LoginTokenList$$1, _super);
+    function LoginTokenList$$1(parent) {
+        var _this = _super.call(this) || this;
+        _this.GetTokens().map(function (t) {
+            new TokenDisplay(_this.$.list, t, _this);
+        });
+        _this.$.add.addEventListener("click", function (evt) {
+            evt.preventDefault();
+            var name = _this.$.name.value;
+            var token = _this.$.token.value;
+            if ("" == name) {
+                alert("You need to provide a name for the new token");
+                return;
+            }
+            if ("" == token) {
+                alert("You need to provide a token value");
+                return;
+            }
+            _this.AddToken({ name: name, token: token });
+            _this.$.name.value = "";
+            _this.$.token.value = "";
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    LoginTokenList$$1.prototype.GetTokens = function () {
+        var js = localStorage.getItem("ebw-token-list");
+        if (!js) {
+            return [];
+        }
+        var t = JSON.parse(js);
+        return t;
+    };
+    LoginTokenList$$1.prototype.AddToken = function (t) {
+        var tokens = this.GetTokens();
+        tokens.push(t);
+        localStorage.setItem("ebw-token-list", JSON.stringify(tokens));
+        new TokenDisplay(this.$.list, t, this);
+    };
+    LoginTokenList$$1.prototype.RemoveToken = function (t) {
+        var tokens = this.GetTokens();
+        var newt = [];
+        for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+            var ot = tokens_1[_i];
+            if ((ot.name != t.name) || (ot.token != t.token)) {
+                newt.push(ot);
+            }
+        }
+        localStorage.setItem("ebw-token-list", JSON.stringify(newt));
+    };
+    LoginTokenList$$1.init = function () {
+        console.log("seeking LoginTokenList");
+        var nodes = document.querySelectorAll("[data-instance=\"LoginTokenList\"]");
+        for (var i = 0; i < nodes.length; i++) {
+            var l = nodes.item(i);
+            new LoginTokenList$$1(l);
+        }
+    };
+    return LoginTokenList$$1;
+}(LoginTokenList));
 
 var RepoMergeDirectButton = (function () {
     function RepoMergeDirectButton(context, el) {
@@ -624,16 +822,14 @@ var RepoMergeDirectButton = (function () {
         this.el = el;
         var href = "/repo/" + context.RepoOwner + "/" +
             (context.RepoName + "/merge/") +
-            el.getAttribute('data-repo-merge') +
-            "?resolve=our&conflicted=yes";
-        console.log("onclick for ", el, "  = ", href);
+            el.getAttribute('data-repo-merge');
+        console.log("RepoMergeDirectButton: onclick for ", el, "  = ", href);
         el.addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
             document.location.href = "/repo/" + context.RepoOwner + "/" +
                 (context.RepoName + "/merge/") +
-                el.getAttribute('data-repo-merge') +
-                "?resolve=our&conflicted=false";
+                el.getAttribute('data-repo-merge');
         });
         el.classList.add("btn");
     }
@@ -650,17 +846,21 @@ var RepoDetailPage = (function () {
     function RepoDetailPage(context) {
         this.context = context;
         RepoMergeDirectButton.init(this.context);
-        document.getElementById("cancelAllChanges").addEventListener("click", function (evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
-                .then(function (b) {
-                if (b) {
-                    document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
-                    return;
-                }
+        var el = document.getElementById("cancelAllChanges");
+        if (el) {
+            el.addEventListener("click", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
+                    .then(function (b) {
+                    if (b) {
+                        document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
+                        return;
+                    }
+                });
             });
-        });
+        }
+        
         // let dialog = new RepoMergeDialog(context, undefined);
         // RepoMergeButton.init(this.context, dialog);
         // dialog.MergeEvent.add(this.mergeEvent, this);
@@ -902,6 +1102,37 @@ var PrintListener = (function () {
     return PrintListener;
 }());
 
+var BoundFilename$1 = (function (_super) {
+    tslib_1.__extends(BoundFilename$$1, _super);
+    function BoundFilename$$1(repoOwner, repoName, parent, editorElement) {
+        var _this = _super.call(this) || this;
+        _this.repoOwner = repoOwner;
+        _this.repoName = repoName;
+        _this.parent = parent;
+        if (!editorElement) {
+            editorElement = document.body;
+        }
+        editorElement.addEventListener('BoundFileChanged', function (evt) {
+            _this.$.filename.innerText = evt.detail;
+            _this.$.a.href = "https://github.com/" + _this.repoOwner + "/" + _this.repoName + "/commits/master/" + evt.detail;
+        });
+        _this.parent.appendChild(_this.el);
+        console.log("BoundFilename: ", _this, _this.el);
+        return _this;
+    }
+    BoundFilename$$1.SetFilename = function (name) {
+        var evt = new CustomEvent("BoundFileChanged", { "detail": name });
+        document.body.dispatchEvent(evt);
+    };
+    BoundFilename$$1.BindAll = function (repoOwner, repoName) {
+        var els = document.querySelectorAll("[ebw-bind=\"current-filename\"]");
+        for (var i = 0; i < els.length; i++) {
+            new BoundFilename$$1(repoOwner, repoName, els.item(i), null);
+        }
+    };
+    return BoundFilename$$1;
+}(BoundFilename));
+
 var EditorCodeMirror = (function () {
     function EditorCodeMirror(parent) {
         this.cm = CodeMirror(parent, {
@@ -1017,22 +1248,7 @@ var EditorImage$1 = (function (_super) {
     FileStat[FileStat["NotExist"] = 5] = "NotExist";
 })(FileStat || (FileStat = {}));
 
-function FileStatString(fs) {
-    switch (fs) {
-        case FileStat.Exists:
-            return "Exists";
-        case FileStat.Changed:
-            return "Changed";
-        case FileStat.New:
-            return "New";
-        case FileStat.Deleted:
-            return "Deleted";
-        case FileStat.NotExist:
-            return "NotExist";
-    }
-    debugger;
-    return "-- ERROR : undefined FileStat ---";
-}
+
 var FileContent = (function () {
     function FileContent(Name, Stat, Content, Original) {
         this.Name = Name;
@@ -1100,7 +1316,7 @@ var repoEditorActionBar = (function () {
         this.saveButton.disabled = false;
         this.undoButton.disabled = false;
         this.renameButton.disabled = false;
-        console.log("repoEditorActionBar: file = ", file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file);
+        //console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
         this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete" : "Delete";
     };
     return repoEditorActionBar;
@@ -1123,6 +1339,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         _this.textEditor = new EditorCodeMirror(_this.$.textEditor);
         _this.imageEditor = new EditorImage$1(_this.$.imageEditor, repoOwner, repoName);
         _this.parent.appendChild(_this.el);
+        BoundFilename$1.BindAll(repoOwner, repoName);
         return _this;
     }
     RepoFileEditorCM$$1.prototype.undoEditorFile = function () {
@@ -1278,11 +1495,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         return this.file.Rename(name)
             .then(function () {
             console.log("Rename is concluded: this.file = ", _this.file);
-            var list = document.querySelectorAll("[ebw-bind=\"current-filename\"]");
-            for (var i = 0; i < list.length; i++) {
-                var e = list.item(i);
-                e.textContent = name;
-            }
+            BoundFilename$1.SetFilename(name);
             return Promise.resolve();
         });
     };
@@ -1291,11 +1504,7 @@ var RepoFileEditorCM$1 = (function (_super) {
         if (this.file) {
             filename = this.file.Name();
         }
-        var list = document.querySelectorAll('[ebw-bind="current-filename"]');
-        for (var i = 0; i < list.length; i++) {
-            var e = list.item(i);
-            e.textContent = filename;
-        }
+        BoundFilename$1.SetFilename(filename);
     };
     RepoFileEditorCM$$1.prototype.showImageEditor = function () {
         this.$.textEditor.style.display = 'none';
@@ -1660,7 +1869,7 @@ var FSOverlay = (function () {
         var _this = this;
         return this.above.Write(path, stat, content)
             .then(function (fc) {
-            console.log("FSOverlay.Write(" + path + "): stat = " + stat);
+            // console.log(`FSOverlay.Write(${path}): stat = ${stat}`);
             if (!(fc.Stat == FileStat.Exists || fc.Stat == FileStat.NotExist)) {
                 _this.changes.add(path);
             }
@@ -2317,13 +2526,12 @@ var RepoEditorPage = (function () {
                 .style.visibility = showing ? "visible" : "hidden";
             var f = document.getElementById("page-footer");
             f.style.display = showing ? 'flex' : 'none';
-            console.log("set footer = ", f);
+            // console.log(`set footer = `, f);
         });
         FSPrimeFromJS(this.FS, filesJson);
         document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            console.log("Starting printing...");
             EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
             new PrintListener(_this.repoOwner, _this.repoName, "book", "print");
         });
@@ -2430,14 +2638,35 @@ var File$1 = (function () {
         return this.context.API()
             .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
             .then(function (_a) {
-            var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3];
+            var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3], gitMerge = _a[4];
             var workingFile = new FileContent$1(workingExists, working);
             var theirFile = new FileContent$1(theirExists, their);
+            var gitFile = new FileContent$1(true, gitMerge);
             _this.cache.set("working", workingFile);
             _this.cache.set("their", theirFile);
+            _this.cache.set("git", gitFile);
             _this.ListenRPC.dispatch(source, false, "FetchContent");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, workingFile);
             _this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
+            return Promise.resolve();
+        });
+    };
+    // FetchGit fetches the git merged content for the file
+    File.prototype.FetchGit = function (source) {
+        var _this = this;
+        if (this.cache.has("git")) {
+            return Promise.resolve();
+        }
+        this.ListenRPC.dispatch(source, true, "FetchGit");
+        return this.context.API()
+            .MergedFileGit(this.context.RepoOwner, this.context.RepoName, this.path)
+            .then(function (_a) {
+            var automerged = _a[0], text = _a[1];
+            var gitFile = new FileContent$1(true, text);
+            _this.cache.set("git", gitFile);
+            _this.ListenRPC.dispatch(source, false, "FetchGit");
+            // TODO: Should it be WorkingChanged that we're sending?
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, gitFile);
             return Promise.resolve();
         });
     };
@@ -2448,6 +2677,28 @@ var File$1 = (function () {
             .then(function (fc) {
             _this.cache.set("working", fc);
             _this.ListenRPC.dispatch(source, false, "RevertOur");
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+            return Promise.resolve(fc);
+        });
+    };
+    File.prototype.RevertOurToTheir = function (source) {
+        var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertOurToTheir");
+        return this.mergeFileOriginal("their")
+            .then(function (fc) {
+            _this.cache.set("working", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertOur");
+            _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
+            return Promise.resolve(fc);
+        });
+    };
+    File.prototype.RevertOurToGit = function (source) {
+        var _this = this;
+        this.ListenRPC.dispatch(source, true, "RevertOurToGit");
+        return this.mergeFileOriginal("git")
+            .then(function (fc) {
+            _this.cache.set("working", fc);
+            _this.ListenRPC.dispatch(source, false, "RevertOurToGit");
             _this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
             return Promise.resolve(fc);
         });
@@ -2590,7 +2841,7 @@ var FileDisplay = (function (_super) {
         switch (event) {
             case FileEvent.StatusChanged:
                 this.$.status.innerText = this.file.Status();
-                this.el.classList.remove("status-new", "status-modified", "status-resolved", "status-deleted");
+                this.el.classList.remove("status-new", "status-modified", "status-resolved", "status-deleted", "status-conflict", "status-error");
                 this.el.classList.add("status-" + this.file.Status());
                 break;
         }
@@ -2621,12 +2872,6 @@ var FileListDisplay = (function (_super) {
         _this.mergingInfo = mergingInfo;
         _this.Listen = new signals.Signal();
         fileList.Listen.add(_this.fileListEvent, _this);
-        if (_this.mergingInfo.IsPRMerge()) {
-            _this.el.classList.add("pr-merge");
-        }
-        else {
-            _this.el.classList.add("not-pr-merge");
-        }
         _this.parent.appendChild(_this.el);
         return _this;
     }
@@ -2671,6 +2916,9 @@ var MergeEditorControlBar = (function () {
         this.RevertTheirButton = this.get("revert-their");
         this.CopyWorkingButton = this.get("copy-working");
         this.CopyTheirButton = this.get("copy-their");
+        this.RevertSingleOurButton = this.get("single-revert-our");
+        this.RevertSingleTheirButton = this.get("single-revert-their");
+        this.RevertSingleGitButton = this.get("single-revert-git");
         this.buttons = new Array();
         var ln = function (key, act) {
             var el = _this.get(key);
@@ -2694,6 +2942,9 @@ var MergeEditorControlBar = (function () {
         ln("save", MergeEditorAction.Save);
         ln("delete", MergeEditorAction.Delete);
         ln("resolve", MergeEditorAction.Resolve);
+        ln("single-revert-our", MergeEditorAction.RevertOur);
+        ln("single-revert-their", MergeEditorAction.RevertTheir);
+        ln("single-revert-git", MergeEditorAction.RevertGit);
     }
     MergeEditorControlBar.prototype.get = function (key) {
         return document.getElementById("merge-editor-control-" + key);
@@ -3150,15 +3401,143 @@ var MergingInfo = (function () {
     function MergingInfo(dataEl) {
         if (!dataEl) {
             dataEl = document.getElementById("merging-info");
-            var js = JSON.parse(dataEl.innerText);
-            this.PRNumber = js.MergingPRNumber;
-            this.Description = js.MergingDescription;
         }
+        var js = JSON.parse(dataEl.innerText);
+        this.PRNumber = js.MergingPRNumber;
+        this.Description = js.MergingDescription;
     }
     MergingInfo.prototype.IsPRMerge = function () {
         return (0 < this.PRNumber);
     };
     return MergingInfo;
+}());
+
+var SingleEditor = (function () {
+    function SingleEditor(context, parent) {
+        this.context = context;
+        this.parent = parent;
+        this.Listen = new signals.Signal();
+        this.editor = new EditorCodeMirror(parent);
+        this.controls = new MergeEditorControlBar();
+        this.controls.Listen.add(this.controlAction, this);
+    }
+    SingleEditor.prototype.controlAction = function (act) {
+        var _this = this;
+        switch (act) {
+            case MergeEditorAction.Save:
+                this.SaveFile()
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.Delete:
+                break;
+            case MergeEditorAction.Resolve:
+                this.SaveFile()
+                    .then(function () {
+                    // undefined so we receive notifications
+                    return _this.file.Stage(undefined);
+                })
+                    .then(function () {
+                    EBW.Toast("Resolved changes on " + _this.file.Path());
+                })
+                    .catch(EBW.Error);
+                break;
+            case MergeEditorAction.RevertOur:
+                this.file.RevertOur(undefined);
+                break;
+            case MergeEditorAction.RevertTheir:
+                this.file.RevertOurToTheir(undefined);
+                break;
+            case MergeEditorAction.RevertGit:
+                this.file.RevertOurToGit(undefined);
+                break;
+        }
+    };
+    SingleEditor.prototype.WorkingSide = function () {
+        return "-";
+    };
+    SingleEditor.prototype.TheirSide = function () {
+        return '-';
+    };
+    SingleEditor.prototype.getWorkingText = function () {
+        return this.editor.getValue();
+    };
+    SingleEditor.prototype.setWorkingText = function (s) {
+        this.editor.setValue(s);
+    };
+    SingleEditor.prototype.isWorkingDeleted = function () {
+        return this.isDeleted;
+    };
+    SingleEditor.prototype.SaveFile = function () {
+        if (this.file) {
+            var f_1 = this.file;
+            var w = this.getWorkingText();
+            // We pass ourselves as the source, so that we don't update
+            // our editor when the change event arrives
+            this.file.SetWorkingContent(this, this.isWorkingDeleted() ? undefined :
+                this.getWorkingText());
+            return this.file.Save()
+                .then(function () {
+                EBW.Toast("Saved " + f_1.Path());
+                return Promise.resolve("");
+            });
+        }
+        return Promise.reject("No file to save");
+    };
+    SingleEditor.prototype.FileEventListener = function (source, e, fc) {
+        // If we were ourselves the source of the event, we ignore it.
+        if (source == this) {
+            return;
+        }
+        switch (e) {
+            case FileEvent.WorkingChanged:
+                this.setWorkingText(fc.Raw);
+                break;
+            case FileEvent.StatusChanged:
+                break;
+        }
+    };
+    // Merge starts merging a file.
+    SingleEditor.prototype.Merge = function (file) {
+        var _this = this;
+        console.log("Merge: " + file.Path());
+        if (this.file && this.file.Path() == file.Path()) {
+            return; // Nothing to do if we're selecting the same file
+        }
+        // Save any file we're currently editing
+        if (this.file) {
+            this.SaveFile();
+            this.file.Listen.remove(this.FileEventListener, this);
+            this.file = undefined;
+        }
+        // Controls must receive update before we do.
+        // TODO : Actually, the controls should listen to US, not to the
+        // file, and we should have an 'EditorStateModel'...
+        //this.controls.SetFile(file);
+        // VERY importantly, we don't listen to the file 
+        // until after we've concluded the FetchContent, because
+        // we won't have an editor to populate when FetchContent
+        // sends its signals that the content has changed.
+        // However, because we configure ourselves as the source,
+        // if we were listening, it shouldn't be a problem...
+        var p = file.FetchContent(this)
+            .then(function () {
+            return Promise.all([file.WorkingFile(), file.TheirFile()]);
+        })
+            .then(function (args) {
+            var _a = [args[0], args[1]], working = _a[0], their = _a[1];
+            _this.file = file;
+            _this.file.Listen.add(_this.FileEventListener, _this);
+            console.log("About to set file contents to ", working.Raw);
+            if (working.Exists) {
+                _this.editor.setValue(working.Raw);
+            }
+            else {
+                _this.editor.setValue("");
+            }
+            _this.editor.setModeOnFilename(file.Path());
+        });
+    };
+    return SingleEditor;
 }());
 
 var RepoConflictPage = (function () {
@@ -3172,9 +3551,20 @@ var RepoConflictPage = (function () {
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
-        this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
+        console.log("mergingInfo = ", this.mergingInfo);
+        if (this.mergingInfo.IsPRMerge()) {
+            console.log("THIS MERGE IS A PR MERGE");
+            this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
+            new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
+        }
+        else {
+            var work = document.getElementById("editor-work");
+            this.editor = new SingleEditor(context, work);
+        }
+        // items to be hidden in a PR merge or a not-pr-merge are controlled
+        // by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
+        // class
         this.commitDialog = new CommitMessageDialog$1(false);
-        new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         new ControlTag(document.getElementById("files-show-tag"), function (showing) {
             var el = document.getElementById("files");
             if (showing)
@@ -3190,10 +3580,13 @@ var RepoConflictPage = (function () {
             return;
         }
         var listjs = filesEl.innerText;
-        fileList.load(JSON.parse(listjs));
+        var fileListData = JSON.parse(listjs);
+        console.log("Loaded fileList: ", fileListData);
+        fileList.load(fileListData);
         document.getElementById("action-commit").addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
+            // TODO: Should check whether editor should save before committing.
             _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
                 .then(function (r) {
                 if (r.Cancelled) {
@@ -3376,13 +3769,227 @@ var PullRequestMergePage = (function () {
     return PullRequestMergePage;
 }());
 
+var DOMInsert = (function () {
+    function DOMInsert(parent) {
+        this.parent = parent;
+    }
+    DOMInsert.prototype.Insert = function (el) {
+        if ('function' == typeof this.parent) {
+            this.parent(el);
+        }
+        else {
+            this.parent.appendChild(el);
+        }
+    };
+    return DOMInsert;
+}());
+
+var RepoFileViewerFile$1 = (function (_super) {
+    tslib_1.__extends(RepoFileViewerFile$$1, _super);
+    function RepoFileViewerFile$$1(context, filename, parent, page) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.filename = filename;
+        _this.page = page;
+        _this.version = 1;
+        _this.Refresh();
+        _this.$.filename.textContent = _this.filename ? _this.filename : "Drop a file to upload.";
+        parent.Insert(_this.el);
+        _this.el.addEventListener('drop', function (evt) {
+            evt.preventDefault();
+            // Necessary so the browser doesn't just display the dropped item
+            console.log("Going to run this.page.FileDrop");
+            _this.page.FileDrop(_this, evt);
+        });
+        _this.el.addEventListener('drag', function (evt) {
+        });
+        _this.el.addEventListener('dragover', function (evt) {
+            evt.preventDefault();
+        });
+        _this.el.addEventListener("dragend", function (evt) {
+            evt.preventDefault();
+            var dt = evt.dataTransfer;
+            console.log("dragend: dt = ", dt);
+            if (dt.items) {
+                for (var i = 0; i < dt.items.length; i++) {
+                    dt.items.remove(i);
+                }
+            }
+            else {
+                dt.clearData();
+            }
+        });
+        return _this;
+    }
+    RepoFileViewerFile$$1.prototype.Refresh = function () {
+        var src = "/img/plus.svg";
+        if ("" != this.filename) {
+            src = "/www/" + this.context.RepoOwner + "/" + this.context.RepoName + "/" + this.filename + "?v=" + (this.version++);
+        }
+        this.$.img.setAttribute('src', src);
+    };
+    RepoFileViewerFile$$1.prototype.Filename = function () {
+        return this.filename;
+    };
+    // IsAddButton returns true if this RepoFileViewerFile is in fact just the generic
+    // 'add a new file' button
+    RepoFileViewerFile$$1.prototype.IsAddButton = function () {
+        return "" == this.filename;
+    };
+    return RepoFileViewerFile$$1;
+}(RepoFileViewerFile));
+
+var EditField = (function () {
+    function EditField(el, page) {
+        var _this = this;
+        this.el = el;
+        this.page = page;
+        this.value = el.value;
+        this.el.addEventListener("keyup", function (evt) {
+            var v = el.value;
+            if (v != _this.value) {
+                _this.value = v;
+                page.ValueChanged(v);
+            }
+        });
+    }
+    return EditField;
+}());
+var LoadFiles = (function () {
+    function LoadFiles(context, listener) {
+        this.context = context;
+        this.listener = listener;
+    }
+    LoadFiles.prototype.Search = function (s) {
+        var _this = this;
+        console.log("LoadFiles.Search(" + s + ")");
+        this.searchingFor = s;
+        EBW.API()
+            .SearchForFiles(this.context.RepoOwner, this.context.RepoName, s)
+            .then(function (_a) {
+            var search = _a[0], files = _a[1];
+            if (search != _this.searchingFor) {
+                return;
+            }
+            _this.listener.FilesFound(files);
+        });
+    };
+    return LoadFiles;
+}());
+var RepoFileViewerPage$1 = (function (_super) {
+    tslib_1.__extends(RepoFileViewerPage$$1, _super);
+    function RepoFileViewerPage$$1(context, parent) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        _this.add = new RepoFileViewerFile$1(_this.context, "", new DOMInsert(_this.$.data), _this);
+        _this.inserter = new DOMInsert(function (el) {
+            _this.$.data.insertBefore(el, _this.add.el);
+        });
+        parent.appendChild(_this.el);
+        _this.$.search.focus();
+        _this.loadFiles = new LoadFiles(context, _this);
+        new EditField(_this.$.search, _this);
+        return _this;
+    }
+    RepoFileViewerPage$$1.prototype.ValueChanged = function (s) {
+        s = s + ".*\\.(png|jpg|jpeg|svg|gif|tiff)$";
+        this.loadFiles.Search(s);
+    };
+    RepoFileViewerPage$$1.prototype.FilesFound = function (files) {
+        console.log("FilesFound: ", files);
+        var e = this.$.data.firstChild;
+        while (e) {
+            var next = e.nextSibling;
+            if (e != this.add.el) {
+                this.$.data.removeChild(e);
+            }
+            e = next;
+        }
+        for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
+            var f = files_1[_i];
+            new RepoFileViewerFile$1(this.context, f, this.inserter, this);
+        }
+    };
+    RepoFileViewerPage$$1.prototype._uploadFile = function (src, file) {
+        var _this = this;
+        // READ THE FILE
+        var reader = new FileReader();
+        reader.addEventListener("loadend", function (evt) {
+            //console.log(`READ file. result=`, reader.result);
+            //console.log(`Replacing file ${this.filename} with result`);
+            var u8 = new Uint8Array(reader.result); //Uint8Array.from(reader.result);
+            //console.log(`u8 = `, u8);
+            var blen = u8.byteLength;
+            //console.log(`blen = `, blen);
+            var binary = "";
+            for (var i = 0; i < blen; i++) {
+                binary += String.fromCharCode(u8[i]);
+            }
+            var p;
+            if ("" != src.Filename()) {
+                p = Promise.resolve(src.Filename());
+            }
+            else {
+                p = EBW.Prompt("Enter full path and filename for uploaded file.");
+            }
+            p.then(function (s) {
+                if ("" == s)
+                    return Promise.resolve("");
+                return EBW.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
+                    .then(function () {
+                    return Promise.resolve(s);
+                });
+            })
+                .then(function (s) {
+                if ("" != s) {
+                    if (!src.IsAddButton()) {
+                        src.Refresh();
+                    }
+                    else {
+                        new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
+                    }
+                    EBW.Toast("Image uploaded");
+                }
+            })
+                .catch(EBW.Error);
+        });
+        reader.readAsArrayBuffer(file);
+    };
+    RepoFileViewerPage$$1.prototype.FileDrop = function (src, evt) {
+        var dt = evt.dataTransfer;
+        console.log("dt = ", dt);
+        if (dt.items) {
+            for (var i = 0; i < dt.items.length; i++) {
+                var item = dt.items[i];
+                if (item.kind == "file") {
+                    //console.log(`filename = `, item.name);
+                }
+                this._uploadFile(src, item.getAsFile());
+            }
+        }
+        else {
+            console.log("dt.files = ", dt.files);
+            for (var i = 0; i < dt.files.length; i++) {
+                var file = dt.files[i];
+                var imageType = /^image\//;
+                if (!imageType.test(file.type)) {
+                    alert("You can only upload image files with this form.");
+                    continue;
+                }
+                this._uploadFile(src, file);
+            }
+        }
+    };
+    return RepoFileViewerPage$$1;
+}(RepoFileViewerPage));
+
 var EBW = (function () {
     function EBW() {
         if (null == EBW.instance) {
             EBW.instance = this;
             this.api = new APIWs();
-            console.log("Activating foundation on the document");
             jQuery(document).foundation();
+            LoginTokenList$1.init();
             var el = document.getElementById("ebw-context");
             var context = void 0;
             if (el) {
@@ -3392,7 +3999,11 @@ var EBW = (function () {
                         new RepoDetailPage(context);
                         break;
                     case 'RepoConflictPage':
-                        new RepoConflictPage(context, el);
+                        new RepoConflictPage(context);
+                        break;
+                    case 'RepoFileViewerPage':
+                        console.log("Creating RepoFileViewerPage");
+                        new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
                         break;
                 }
             }
@@ -3442,6 +4053,7 @@ var EBW = (function () {
     return EBW;
 }());
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("DOMContentLoaded - EBW");
     new EBW();
 });
 

@@ -7,16 +7,19 @@ export class RepoDetailPage {
 	constructor(protected context:Context) {
 		RepoMergeDirectButton.init(this.context);
 
-		document.getElementById(`cancelAllChanges`).addEventListener(`click`, (evt)=>{
-			evt.preventDefault(); evt.stopPropagation();
-			EBW.Confirm(`All your changes will be lost. This is non-recoverable. Continue?`)
-			.then( (b:boolean)=>{
-				if (b) {
-					document.location.href = `/repo/${context.RepoOwner}/${context.RepoName}/conflict/abort`;
-					return;
-				}
+		let el = document.getElementById(`cancelAllChanges`);
+		if (el) {
+			el.addEventListener(`click`, (evt)=>{
+				evt.preventDefault(); evt.stopPropagation();
+				EBW.Confirm(`All your changes will be lost. This is non-recoverable. Continue?`)
+				.then( (b:boolean)=>{
+					if (b) {
+						document.location.href = `/repo/${context.RepoOwner}/${context.RepoName}/conflict/abort`;
+						return;
+					}
+				});
 			});
-		});
+		};
 		// let dialog = new RepoMergeDialog(context, undefined);
 		// RepoMergeButton.init(this.context, dialog);
 		// dialog.MergeEvent.add(this.mergeEvent, this);

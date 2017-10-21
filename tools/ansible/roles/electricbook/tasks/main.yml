@@ -2,7 +2,7 @@
   apt: >
     name={{item}}
     state=present
-  with_items: [ git, vim, libgit2-dev, lxc-dev ]
+  with_items: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
   become: yes
 
 - name: Create electricbook user
