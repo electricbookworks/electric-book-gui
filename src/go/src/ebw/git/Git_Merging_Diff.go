@@ -31,7 +31,21 @@ type FileDiff struct {
 	Delta *git2go.DiffDelta
 }
 
+func (t *FileDiff) OldFileOidString() string {
+	if nil == t.Delta.OldFile.Oid {
+		return "-"
+	}
+	return t.Delta.OldFile.Oid.String()
+}
+func (t *FileDiff) NewFileOidString() string {
+	if nil == t.Delta.NewFile.Oid {
+		return "-"
+	}
+	return t.Delta.NewFile.Oid.String()
+}
+
 func (t *FileDiff) Close() {
+	// Don't need to do anything here
 }
 
 // Path returns the path of the file in the FileDiff deltas,
@@ -75,9 +89,17 @@ func (t *FileDiff) String() string {
 // writeConflict creates a conflict in the Index between the versions of
 // the file supplied.
 func (g *Git) writeConflict(index *git2go.Index, baseTree *git2go.Tree, t *FileDiff) error {
+	if nil == index {
+		return g.Error(fmt.Errorf("index is nil"))
+	}
+	if nil == baseTree {
+		return g.Error(fmt.Errorf("baseTree is nil"))
+	}
+	if nil == t {
+		return g.Error(fmt.Errorf("FileDiff is nil"))
+	}
 	var err error
 	var baseOid *git2go.Oid
-
 	path := t.Path()
 
 	baseTreeEntry, err := baseTree.EntryByPath(t.Path())
@@ -86,6 +108,9 @@ func (g *Git) writeConflict(index *git2go.Index, baseTree *git2go.Tree, t *FileD
 			return g.Error(err)
 		}
 	} else {
+		if nil == baseTreeEntry {
+			return g.Error(fmt.Errorf("baseTreeEntry is nil"))
+		}
 		baseOid = baseTreeEntry.Id
 	}
 
@@ -100,10 +125,6 @@ func (g *Git) writeConflict(index *git2go.Index, baseTree *git2go.Tree, t *FileD
 	if t.NewFileExists() {
 		their = &git2go.IndexEntry{Path: path, Id: t.Delta.NewFile.Oid, Mode: git2go.FilemodeBlob}
 	}
-
-	fmt.Printf("%s: %s ->>  %s -- %s\n", t.Path(), baseOid.String(), t.Delta.OldFile.Oid.String(),
-		t.Delta.NewFile.Oid.String())
-
 	if err := index.AddConflict(ancestor, our, their); nil != err {
 		return g.Error(err)
 	}
@@ -167,14 +188,23 @@ func (g *Git) ConflictFileDiffs(oldCommitObject, newCommitObject *git2go.Object)
 			return err
 		}
 	}
+	if nil == oldCommitObject {
+		return g.Error(fmt.Errorf("oldCommitObject is nil"))
+	}
 	oldCommit, err := g.objectToCommit(oldCommitObject)
 	if nil != err {
 		return err
+	}
+	if nil == oldCommit {
+		return g.Error(fmt.Errorf("oldCommit is nil"))
 	}
 	defer oldCommit.Free()
 	newCommit, err := g.objectToCommit(newCommitObject)
 	if nil != err {
 		return err
+	}
+	if nil == newCommit {
+		return g.Error(fmt.Errorf("newCommit is nil"))
 	}
 	defer newCommit.Free()
 	baseOid, err := g.Repository.MergeBase(oldCommit.Id(), newCommit.Id())
@@ -191,7 +221,6 @@ func (g *Git) ConflictFileDiffs(oldCommitObject, newCommitObject *git2go.Object)
 		return g.Error(err)
 	}
 	defer baseTree.Free()
-
 	diffs, err := g.CommitFileDiffs(oldCommitObject, newCommitObject)
 	if nil != err {
 		return err

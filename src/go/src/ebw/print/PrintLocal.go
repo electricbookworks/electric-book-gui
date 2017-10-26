@@ -2,6 +2,7 @@ package print
 
 import (
 	// "fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -69,11 +70,18 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 
 	outputName := bookName + `-` + printOrScreen + `.pdf`
 
-	if err := Rvm(repoPath, `gem`, `install`, `bundler`).Run(); nil != err {
+	logOut, logErr := PrintLogWriter(C, `info`), PrintLogWriter(C, `error`)
+	defer func() {
+		logOut.Close()
+		logErr.Close()
+	}()
+	cout, cerr := io.MultiWriter(os.Stdout, logOut), io.MultiWriter(os.Stderr, logErr)
+
+	if err := Rvm(cout, cerr, repoPath, `gem`, `install`, `bundler`).Run(); nil != err {
 		glog.Errorf(`Error %s: gem install bundler : %s`, repoPath, err.Error())
 		return ``, err
 	}
-	if err := Rvm(repoPath, `bundle`, `install`).Run(); nil != err {
+	if err := Rvm(cout, cerr, repoPath, `bundle`, `install`).Run(); nil != err {
 		glog.Errorf(`Error %s: bundle install: %s`, repoPath, err.Error())
 		return ``, err
 	}
@@ -95,7 +103,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	}
 	jekyllConfigArg := strings.Join(jekyllConfig, `,`)
 
-	if err := Rvm(repoPath, `bundle`, `exec`, `jekyll`, `build`, `--config`,
+	if err := Rvm(cout, cerr, repoPath, `bundle`, `exec`, `jekyll`, `build`, `--config`,
 		jekyllConfigArg).Run(); nil != err {
 		glog.Errorf(`Error %s: bundle exec jekyll build --config %s : %s`,
 			repoPath, jekyllConfigArg, err.Error())
@@ -104,7 +112,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	if bookConfig.MathjaxEnabled {
 		cmd := exec.Command(`phantomjs`, `render-mathjax.js`)
 		cmd.Dir = filepath.Join(repoPath, configDestination /*`_site`*/, `assets`, `js`)
-		cmd.Stderr, cmd.Stdout = os.Stderr, os.Stdout
+		cmd.Stderr, cmd.Stdout = cerr, cout
 		if err := cmd.Run(); nil != err {
 			glog.Errorf(`Error %s: phantomjs render-mathjax.js : %s`, cmd.Dir, err.Error())
 			return ``, err
@@ -115,7 +123,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 
 	cmd := exec.Command(`prince`, `-v`, `-l`, `file-list`, `-o`,
 		filepath.Join(outputDir, outputName), `--javascript`)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	cmd.Stdout, cmd.Stderr = cout, cerr
 	cmd.Dir = filepath.Join(repoPath, configDestination /*`_html`*/, fileListDir)
 
 	// THIS ONE WORKS

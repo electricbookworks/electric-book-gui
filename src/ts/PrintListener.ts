@@ -64,6 +64,10 @@ export class PrintListener {
 			let data = JSON.parse(e.data);
 			EBW.Toast(`Printing: `, e.data);
 		});
+		sse.addEventListener(`log`, function(e:any) {
+			let data = JSON.parse(e.data);
+			console.log(`PRINTING: `, e.data);
+		})
 		sse.addEventListener(`error`, function(e:any) {
 			let err = JSON.parse(e.data);
 			EBW.Error(err);

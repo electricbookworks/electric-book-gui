@@ -1074,6 +1074,10 @@ var PrintListener = (function () {
             var data = JSON.parse(e.data);
             EBW.Toast("Printing: ", e.data);
         });
+        sse.addEventListener("log", function (e) {
+            var data = JSON.parse(e.data);
+            console.log("PRINTING: ", e.data);
+        });
         sse.addEventListener("error", function (e) {
             var err = JSON.parse(e.data);
             EBW.Error(err);

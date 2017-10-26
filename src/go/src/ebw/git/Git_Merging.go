@@ -564,7 +564,6 @@ func (g *Git) mergeWithResolution(remoteName string, newCommitObject *git2go.Obj
 	if nil != err {
 		return false, g.Error(err)
 	}
-	glog.Infof(`About to perform Merge with commit %s`, newCommitObject.Id())
 	if err := g.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
 		defaultCheckoutOpts(),
@@ -613,6 +612,7 @@ func (g *Git) mergeWithResolution(remoteName string, newCommitObject *git2go.Obj
 			return false, err
 		}
 	}
+
 	// At this point, any conflicted files are the files that the user will
 	// need to resolve. Since we require RESOLUTION on these, but also want to
 	// track which they are _even after the user might have resolved them_,

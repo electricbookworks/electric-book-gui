@@ -2,6 +2,7 @@ package print
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -50,38 +51,38 @@ func (j *Jekyll) getBaseUrl() string {
 
 // Runs RVM in the given directory with the given commands.
 // Pipes stdout and stderr to os.Stdout and os.Stderr.
-func Rvm(dir string, args ...string) *exec.Cmd {
+func Rvm(cout, cerr io.Writer, dir string, args ...string) *exec.Cmd {
 	cargs := []string{config.Config.RubyVersion, `do`}
 	cargs = append(cargs, args...)
 	c := exec.Command(config.Config.Rvm, cargs...)
-	c.Stdout, c.Stderr = os.Stdout, os.Stderr
+	c.Stdout, c.Stderr = cout, cerr
 	c.Dir = dir
 	glog.Infof(`Rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
 	return c
 }
 
-func (j *Jekyll) start() error {
-	if err := Rvm(j.RepoDir, `gem`,`install`,`bundler`).Run(); nil!=err {
+func (j *Jekyll) start(cout, cerr io.Writer) error {
+	if err := Rvm(cout, cerr, j.RepoDir, `gem`, `install`, `bundler`).Run(); nil != err {
 		j.err = err
 		return err
 	}
-	if err := Rvm(j.RepoDir, `bundle`,`install`).Run(); nil!=err {
+	if err := Rvm(cout, cerr, j.RepoDir, `bundle`, `install`).Run(); nil != err {
 		j.err = err
 		return err
 	}
-	j.cmd = Rvm(
+	j.cmd = Rvm(cout, cerr,
 		j.RepoDir,
 		`bundle`,
 		`exec`,
 		`jekyll`,
 		`serve`,
 		`--config`,
-		`_config.yml,_configs/_config.web.yml,` + j.ConfigFiles,
+		`_config.yml,_configs/_config.web.yml,`+j.ConfigFiles,
 		`--baseurl`,
 		j.getBaseUrl(),
 		`-P`,
 		strconv.FormatInt(j.Port, 10),
-		`--watch`,)
+		`--watch`)
 	inR, _, err := os.Pipe()
 	if nil != err {
 		j.err = err
@@ -109,7 +110,7 @@ func (j *Jekyll) start() error {
 			break
 		}
 		tryCount++
-		if 0==tryCount % 10 {
+		if 0 == tryCount%10 {
 			glog.Infof(`Error trying to reach %s: %s`, targetUrl.String(), err.Error())
 		}
 		time.Sleep(time.Second)
