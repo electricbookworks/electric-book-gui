@@ -67,6 +67,15 @@ func (rpc *API) StageFile(repoOwner, repoName, path string) error {
 	return nil
 }
 
+func (rpc *API) IsRepoConflicted(repoOwner, repoName string) (bool, error) {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil != err {
+		return false, err
+	}
+	defer repo.Close()
+	return repo.Git.HasConflicts()
+}
+
 func (rpc *API) StageFileAndReturnMergingState(repoOwner, repoName, path string) (string, error) {
 	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
 	if nil != err {

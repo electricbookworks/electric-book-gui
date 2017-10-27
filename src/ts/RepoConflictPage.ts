@@ -32,9 +32,7 @@ export class RepoConflictPage {
 			this.fileListEvent(undefined, evt.detail.file);
 		});
 
-		console.log(`mergingInfo = `, this.mergingInfo);
 		if (this.mergingInfo.IsPRMerge()) {
-			console.log(`THIS MERGE IS A PR MERGE`);
 			this.editor = new MergeEditor(context, document.getElementById(`editor-work`));
 			new MergeInstructions(document.getElementById('merge-instructions'), this.editor as MergeEditor);
 		} else {
@@ -66,24 +64,32 @@ export class RepoConflictPage {
 		}
 		let listjs = filesEl.innerText;
 		let fileListData = JSON.parse(listjs);
-		console.log(`Loaded fileList: `, fileListData);
 		fileList.load(fileListData);
 
 		document.getElementById(`action-commit`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
-			// TODO: Should check whether editor should save before committing.
-			this.commitDialog.Open(`Resolve Conflict`, `The merge will be resolved.`)
+			console.log(`IN action-commit CLICK LISTENER`);
+			EBW.API().IsRepoConflicted(this.context.RepoOwner, this.context.RepoName)
 			.then(
-				(r:CommitMessageDialogResult) => {
-					if (r.Cancelled) {
-						return;
+				([conflicted]:[boolean])=>{
+					if (conflicted) {
+						EBW.Alert(`You need to resolve all file conflicts before you can resolve the merge.`);
+						return Promise.resolve();
 					}
-					console.log(`Result= `, r);
-					this.context.RepoRedirect(`conflict/resolve`, 
-						new Map([[`message`,r.Message],[`notes`,r.Notes]])
-					);
-					return;
-				})
+					return this.commitDialog.Open(`Resolve Conflict`, `The merge will be resolved.`)
+						.then(
+							(r:CommitMessageDialogResult) => {
+								if (r.Cancelled) {
+									return;
+								}
+								console.log(`Result= `, r);
+								this.context.RepoRedirect(`conflict/resolve`, 
+									new Map([[`message`,r.Message],[`notes`,r.Notes]])
+								);
+								return;
+							})
+
+			})
 			.catch (EBW.Error);
 		});
 		document.getElementById(`action-abort`).addEventListener(`click`, (evt)=>{

@@ -111,6 +111,7 @@ export class MergeEditor implements ConflictEditor {
 		// when the change arrives		
 		console.log(`isTheirDeleted = ${this.isTheirDeleted()}, text = ${this.getTheirText()}`);
 		this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
+		console.log(`this.file = `, this.file);
 	}
 	CopyWorking() : void {
 		// We leave source undefined, so that our editor will update
@@ -265,7 +266,21 @@ export class MergeEditor implements ConflictEditor {
 					rhs: function(setValue:(v:string)=>void) {
 						setValue(rhsText);
 					},
-				});	
+				});
+				this.getLeftCM().on(`change`, (cm:CodeMirror.Editor, obj:any)=>{
+					if (this.editLeft) {
+						this.file.SetWorkingExists(true);
+					} else {
+						this.file.SetTheirExists(true);
+					}
+				});
+				this.getRightCM().on(`change`, (cm:CodeMirror.Editor, obj:any)=>{
+					if (this.editLeft) {
+						this.file.SetTheirExists(true);
+					} else {
+						this.file.SetWorkingExists(true);
+					}
+				});
 			}
 		);
 	}

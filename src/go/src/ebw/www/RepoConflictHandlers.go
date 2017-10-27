@@ -56,7 +56,7 @@ func repoConflictAbort(c *Context) error {
 	// that will clear the PRNumber from the EBWStatus
 	prNumber := repo.EBWRepoStatus.MergingPRNumber
 
-	if err := repo.PullAbort(); nil != err {
+	if err := repo.PullAbort(args.ClosePR); nil != err {
 		return err
 	}
 

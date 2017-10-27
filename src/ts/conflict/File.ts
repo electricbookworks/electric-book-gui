@@ -80,6 +80,12 @@ export class File {
 				return Promise.resolve();
 			});
 	}
+	SetWorkingExists(b:boolean):void{
+		this.WorkingFile().Exists = true;
+	}
+	SetTheirExists(b:boolean):void {
+		this.TheirFile().Exists = true;
+	}
 	// FetchGit fetches the git merged content for the file
 	FetchGit(source:any):Promise<void>{
 		if (this.cache.has(`git`)) {

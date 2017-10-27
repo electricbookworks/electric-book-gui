@@ -136,6 +136,10 @@ export class APIWs {
 		return this.rpc("StageFile",  [repoOwner,repoName,path] );
 	}
 	
+	IsRepoConflicted (repoOwner:string,repoName:string) {
+		return this.rpc("IsRepoConflicted",  [repoOwner,repoName] );
+	}
+	
 	StageFileAndReturnMergingState (repoOwner:string,repoName:string,path:string) {
 		return this.rpc("StageFileAndReturnMergingState",  [repoOwner,repoName,path] );
 	}

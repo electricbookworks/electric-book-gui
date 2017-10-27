@@ -124,6 +124,9 @@ var APIWs = (function () {
     APIWs.prototype.StageFile = function (repoOwner, repoName, path) {
         return this.rpc("StageFile", [repoOwner, repoName, path]);
     };
+    APIWs.prototype.IsRepoConflicted = function (repoOwner, repoName) {
+        return this.rpc("IsRepoConflicted", [repoOwner, repoName]);
+    };
     APIWs.prototype.StageFileAndReturnMergingState = function (repoOwner, repoName, path) {
         return this.rpc("StageFileAndReturnMergingState", [repoOwner, repoName, path]);
     };
@@ -2607,6 +2610,10 @@ var FileEvent;
     FileEvent[FileEvent["TheirChanged"] = 1] = "TheirChanged";
     FileEvent[FileEvent["StatusChanged"] = 2] = "StatusChanged";
 })(FileEvent || (FileEvent = {}));
+// File models a single conflicted file in the repo.
+// All communication with the conflicted file occurs through this single
+// class, which will coordinate any other internal-classes that it might need,
+// like the file status.
 var File$1 = (function () {
     function File(context, path, status) {
         this.context = context;
@@ -2654,6 +2661,12 @@ var File$1 = (function () {
             _this.Listen.dispatch(source, FileEvent.TheirChanged, theirFile);
             return Promise.resolve();
         });
+    };
+    File.prototype.SetWorkingExists = function (b) {
+        this.WorkingFile().Exists = true;
+    };
+    File.prototype.SetTheirExists = function (b) {
+        this.TheirFile().Exists = true;
     };
     // FetchGit fetches the git merged content for the file
     File.prototype.FetchGit = function (source) {
@@ -2992,6 +3005,7 @@ var MergeEditorControlBar = (function () {
     return MergeEditorControlBar;
 }());
 
+// MergeEditor controls a Mergely class
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
@@ -3086,6 +3100,7 @@ var MergeEditor$1 = (function () {
         // when the change arrives		
         console.log("isTheirDeleted = " + this.isTheirDeleted() + ", text = " + this.getTheirText());
         this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
+        console.log("this.file = ", this.file);
     };
     MergeEditor.prototype.CopyWorking = function () {
         // We leave source undefined, so that our editor will update
@@ -3237,6 +3252,22 @@ var MergeEditor$1 = (function () {
                 rhs: function (setValue) {
                     setValue(rhsText);
                 },
+            });
+            _this.getLeftCM().on("change", function (cm, obj) {
+                if (_this.editLeft) {
+                    _this.file.SetWorkingExists(true);
+                }
+                else {
+                    _this.file.SetTheirExists(true);
+                }
+            });
+            _this.getRightCM().on("change", function (cm, obj) {
+                if (_this.editLeft) {
+                    _this.file.SetTheirExists(true);
+                }
+                else {
+                    _this.file.SetWorkingExists(true);
+                }
             });
         });
     };
@@ -3555,9 +3586,7 @@ var RepoConflictPage = (function () {
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
-        console.log("mergingInfo = ", this.mergingInfo);
         if (this.mergingInfo.IsPRMerge()) {
-            console.log("THIS MERGE IS A PR MERGE");
             this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
             new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         }
@@ -3585,20 +3614,27 @@ var RepoConflictPage = (function () {
         }
         var listjs = filesEl.innerText;
         var fileListData = JSON.parse(listjs);
-        console.log("Loaded fileList: ", fileListData);
         fileList.load(fileListData);
         document.getElementById("action-commit").addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            // TODO: Should check whether editor should save before committing.
-            _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
-                .then(function (r) {
-                if (r.Cancelled) {
-                    return;
+            console.log("IN action-commit CLICK LISTENER");
+            EBW.API().IsRepoConflicted(_this.context.RepoOwner, _this.context.RepoName)
+                .then(function (_a) {
+                var conflicted = _a[0];
+                if (conflicted) {
+                    EBW.Alert("You need to resolve all file conflicts before you can resolve the merge.");
+                    return Promise.resolve();
                 }
-                console.log("Result= ", r);
-                _this.context.RepoRedirect("conflict/resolve", new Map([["message", r.Message], ["notes", r.Notes]]));
-                return;
+                return _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
+                    .then(function (r) {
+                    if (r.Cancelled) {
+                        return;
+                    }
+                    console.log("Result= ", r);
+                    _this.context.RepoRedirect("conflict/resolve", new Map([["message", r.Message], ["notes", r.Notes]]));
+                    return;
+                });
             })
                 .catch(EBW.Error);
         });
