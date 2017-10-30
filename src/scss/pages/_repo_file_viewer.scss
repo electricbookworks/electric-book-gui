@@ -14,12 +14,20 @@
 		flex-wrap: wrap;
 		align-items: flex-start;
 		justify-content: space-between;
+		.repo-file-viewer-file {
+			max-width: 10em;
+			width: 10em;
+		}
 
 		@supports (display:grid) {
 			display: grid;
 			grid-template-columns: repeat(6, 15fr);	
 			grid-column-gap: 2em;
 			align-items: stretch;
+			.repo-file-viewer-file {
+				max-width: inherit;
+				width: inherit;
+			}
 		}
 		position: relative;
 	}

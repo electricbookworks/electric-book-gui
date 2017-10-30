@@ -4581,12 +4581,18 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     position: relative; }
+    .repo-file-viewer .data .repo-file-viewer-file {
+      max-width: 10em;
+      width: 10em; }
     @supports (display: grid) {
       .repo-file-viewer .data {
         display: grid;
         grid-template-columns: repeat(6, 15fr);
         grid-column-gap: 2em;
-        align-items: stretch; } }
+        align-items: stretch; }
+        .repo-file-viewer .data .repo-file-viewer-file {
+          max-width: inherit;
+          width: inherit; } }
 
 .repo-file-viewer-file {
   width: 100%;
