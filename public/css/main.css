@@ -4574,11 +4574,19 @@ body {
   .repo-file-viewer .search {
     flex-grow: 0; }
   .repo-file-viewer .data {
-    display: grid;
-    grid-template-columns: repeat(6, 15fr);
-    grid-column-gap: 2em;
-    align-items: stretch;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
     position: relative; }
+    @supports (display: grid) {
+      .repo-file-viewer .data {
+        display: grid;
+        grid-template-columns: repeat(6, 15fr);
+        grid-column-gap: 2em;
+        align-items: stretch; } }
 
 .repo-file-viewer-file {
   width: 100%;

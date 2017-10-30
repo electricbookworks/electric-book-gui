@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"stri",
+				"stripSeparatorPrefix\tstring ƒ"
+			],
+			[
+				"err",
+				"ErrUnknownUser\terror ν"
+			],
+			[
+				"GitAc",
+				"GitRemoteActionPull\t Ɩ"
+			],
+			[
 				"pathRe",
 				"pathRepoDetail\tstring ƒ"
 			],
@@ -255,6 +267,122 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "examples/github-tests/run.sh",
+			"settings":
+			{
+				"buffer_size": 6256,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/cli/BookCommands.go",
+			"settings":
+			{
+				"buffer_size": 19924,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "build.sh",
+			"settings":
+			{
+				"buffer_size": 482,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/ts/RepoConflictPage.ts",
+			"settings":
+			{
+				"buffer_size": 4304,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/ts/conflict/MergeEditor.ts",
+			"settings":
+			{
+				"buffer_size": 7960,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/ts/conflict/File.ts",
+			"settings":
+			{
+				"buffer_size": 7213,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/cli/GitCommands.go",
+			"settings":
+			{
+				"buffer_size": 14803,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/git/Git_Merging.go",
+			"settings":
+			{
+				"buffer_size": 26836,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/git/Repo.go",
+			"settings":
+			{
+				"buffer_size": 40670,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/git/Git.go",
+			"settings":
+			{
+				"buffer_size": 20492,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/api/JSONRpc.go",
+			"settings":
+			{
+				"buffer_size": 9491,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/www/RepoConflictHandlers.go",
+			"settings":
+			{
+				"buffer_size": 2536,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/go/src/ebw/git/gitCommands.go",
+			"settings":
+			{
+				"buffer_size": 1390,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -301,40 +429,52 @@
 	"expanded_folders":
 	[
 		"/home/craig/proj/ebw/electric-book-gui",
-		"/home/craig/proj/ebw/electric-book-gui/public",
+		"/home/craig/proj/ebw/electric-book-gui/examples",
+		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests",
 		"/home/craig/proj/ebw/electric-book-gui/src",
-		"/home/craig/proj/ebw/electric-book-gui/src/go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/api",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/config",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/logger",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts"
+		"/home/craig/proj/ebw/electric-book-gui/src/ts",
+		"/home/craig/proj/ebw/electric-book-gui/src/ts/conflict"
 	],
 	"file_history":
 	[
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/GitTools.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Merging.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/RepoConflictHandlers.go",
-		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests/run.sh",
-		"/home/craig/proj/ebw/electric-book-gui/public/repo_detail.html",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoMergeDirectButton.ts",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo_PullRequests.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/Webserver.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/repoHandlers.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo_Logging.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/ts/conflict/ResolveConflictButton.ts",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/util/FileUtils.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/BookCommands.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Util.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Merging_Diff.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Merging.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/EBWRepoStatus.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Github.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/RepoState.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/GitCommands.go",
+		"/home/craig/proj/ebw/electric-book-gui/build.sh",
+		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests/clean.sh",
+		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests/run.sh",
+		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoEditorPage_NewFileDialog.html",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/ListFiles.go",
+		"/home/craig/proj/ebw/electric-book-gui/public/repo_detail.html",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/GithubForking.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/PrintMessage.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/ts/PrintListener.ts",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/Endpoint.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/Jekyll.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/JekyllRepoServer.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/JekyllManager.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/PrintLocal.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/GitTools.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/repoHandlers.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/gopkg.in/libgit2/git2go.v25/index.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/FileTree.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo_PullRequests.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/RepoConflictHandlers.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/vendor/github.com/google/go-github/github/github-accessors.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoMergeDirectButton.ts",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/Webserver.go",
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo_Logging.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/logger/Logger.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/logger/GlogLogger.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Github.go",
-		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests/clean.sh",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/PullRequests.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/GitClient.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/Main.go",
@@ -343,7 +483,6 @@
 		"/home/craig/proj/ebw/electric-book-gui/tools/check-files-equal/check-files-equal.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/api/JSONRpc.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/api/JSONRpc_Framework.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/GithubForking.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/GithubCommands.go",
 		"/home/craig/proj/ebw/electric-book-gui/examples/github-tests/github-tests.sh",
 		"/home/craig/proj/ebw/electric-book-gui/src/scss/main.scss",
@@ -356,7 +495,6 @@
 		"/home/craig/proj/ebw/electric-book-gui/src/scss/widgets/_bound-filename.scss",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoFileViewerFile.ts",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Repo_Diffs.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/PrintLocal.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/MergeFileResolutionState.go",
 		"/home/craig/proj/ebw/electric-book-gui/public/repo_conflict.html",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoConflictPage.ts",
@@ -367,16 +505,12 @@
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/RepoEditorPage.ts",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/AddNewBookDialog.html",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/AddNewBookDialog.ts",
-		"/home/craig/proj/ebw/electric-book-gui/build.sh",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/gopkg.in/libgit2/git2go.v25/repository.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/conflict/File.ts",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/conflict/FileDisplay.ts",
 		"/home/craig/proj/ebw/electric-book-gui/src/scss/_colors.scss",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/RepoConflict.go",
 		"/home/craig/proj/ebw/electric-book-gui/repository_mergeheads.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Util.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Git_Merging_Diff.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/ListFiles.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/IndexFileStatus.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/Remotes.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/gopkg.in/libgit2/git2go.v25/signature.go",
@@ -394,12 +528,10 @@
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/www/WwwCommand.go",
 		"/home/craig/proj/ebw/electric-book-gui/public/landing.html",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/logger/doc.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/RepoState.go",
 		"/home/craig/proj/ebw/electric-book-gui/public/_footer.html",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/GitRepo.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/gitCommands.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/cli/CliUsersCommand.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/FileTree.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/LoginTokenList.ts",
 		"/home/craig/proj/ebw/electric-book-gui/src/scss/widgets/_login_token_list.scss",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/LoginTokenDisplay.html",
@@ -432,22 +564,11 @@
 		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/git/pr_files_changes_test.go",
 		"/home/craig/proj/ebw/electric-book-gui/src/ts/EditorCodeMirror.ts",
 		"/home/craig/.ebw.yml",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/book/Config.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/FileListDialog.html",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/FileListDialog.ts",
-		"/home/craig/proj/ebw/electric-book-gui/src/scss/widgets/_printlistener_filelistdialog.scss",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/PrintListener.ts",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/PrintInContainerCommand.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/Endpoint.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/print/PrintRequest.go",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/FileListDialog_Item.html",
-		"/home/craig/proj/ebw/electric-book-gui/src/ts/FileListDialog_Item.ts",
-		"/home/craig/proj/ebw/electric-book-gui/src/scss/widgets/_buttons.scss",
-		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/electricbook.go"
+		"/home/craig/proj/ebw/electric-book-gui/src/go/src/ebw/book/Config.go"
 	],
 	"find":
 	{
-		"height": 46.0
+		"height": 33.0
 	},
 	"find_in_files":
 	{
@@ -461,6 +582,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"RunGit",
+			"existsPathIn",
+			"GitFileCatComm",
+			"GitCloneTo",
+			"CheckoutSafe",
 			"&Git{",
 			"NewRepo",
 			"BookPRClose",
@@ -594,8 +720,394 @@
 	"groups":
 	[
 		{
+			"selected": 4,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "examples/github-tests/run.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6256,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5449,
+								5449
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5038.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/go/src/ebw/cli/BookCommands.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 19924,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12127,
+								12127
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 11401.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "build.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 482,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								332,
+								332
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/ts/RepoConflictPage.ts",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4304,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2963,
+								2963
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/TypeScript/TypeScript.tmLanguage",
+							"translate_tabs_to_spaces": false,
+							"use_tab_stops": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2153.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/ts/conflict/MergeEditor.ts",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7960,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7944,
+								7944
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/TypeScript/TypeScript.tmLanguage",
+							"translate_tabs_to_spaces": false,
+							"typescript_plugin_format_options":
+							{
+								"convertTabsToSpaces": false,
+								"indentSize": 4,
+								"tabSize": 4
+							},
+							"use_tab_stops": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3876.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/ts/conflict/File.ts",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2462,
+								2462
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/TypeScript/TypeScript.tmLanguage",
+							"translate_tabs_to_spaces": false,
+							"use_tab_stops": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1475.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/go/src/ebw/cli/GitCommands.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14803,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10448,
+								10448
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 10723.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "src/go/src/ebw/git/Git_Merging.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 26836,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8812,
+								8812
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 7476.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/go/src/ebw/git/Repo.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 40670,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								40577,
+								40577
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 35751.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/go/src/ebw/git/Git.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 20492,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								17000,
+								17007
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 15676.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "src/go/src/ebw/api/JSONRpc.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9491,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6949,
+								6949
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4726.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "src/go/src/ebw/www/RepoConflictHandlers.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2536,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1428,
+								1428
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 987.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "src/go/src/ebw/git/gitCommands.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1390,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								553,
+								553
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 150.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -636,7 +1148,7 @@
 	},
 	"output.exec":
 	{
-		"height": 352.0
+		"height": 245.0
 	},
 	"output.find_results":
 	{
@@ -677,10 +1189,58 @@
 	},
 	"select_symbol":
 	{
-		"height": 64.0,
-		"last_filter": "PushOrigin",
+		"height": 392.0,
+		"last_filter": "HasConfl",
 		"selected_items":
 		[
+			[
+				"HasConfl",
+				"HasConflicts"
+			],
+			[
+				"FetchRemote",
+				"FetchRemote"
+			],
+			[
+				"mergeAutomatic",
+				"mergeAutomatic"
+			],
+			[
+				"PullOri",
+				"PullOrigin"
+			],
+			[
+				"PullOrigin",
+				"PullOrigin"
+			],
+			[
+				"PathForTree",
+				"readPathForTreeReference"
+			],
+			[
+				"PathForTreeFre",
+				"readPathForTreeReference"
+			],
+			[
+				"start",
+				"start"
+			],
+			[
+				"AddByPath",
+				"AddByPath"
+			],
+			[
+				"HasUnstaged",
+				"LocalChangesUnstaged"
+			],
+			[
+				"Cleanup",
+				"Cleanup"
+			],
+			[
+				"PullUpstre",
+				"PullUpstream"
+			],
 			[
 				"PushOrigin",
 				"PushOrigin"
@@ -700,10 +1260,6 @@
 			[
 				"DuplicateRepo",
 				"DuplicateRepo"
-			],
-			[
-				"FetchRemote",
-				"FetchRemote"
 			],
 			[
 				"FetchRemoteForRepoDir",

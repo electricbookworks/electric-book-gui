@@ -8,21 +8,19 @@
 		flex-grow: 0;
 	}
 	.data{
-		display: grid;
-		grid-template-columns: repeat(6, 15fr);	
+		flex-grow: 1;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-between;
 
-		grid-column-gap: 2em;
-		
-		// flex-grow: 1;
-		// display: flex;
-		// flex-direction: row;
-		// flex-wrap: wrap;
-		// align-items: flex-start;
-		// justify-content: space-between;
-
-		align-items: stretch;
-
-
+		@supports (display:grid) {
+			display: grid;
+			grid-template-columns: repeat(6, 15fr);	
+			grid-column-gap: 2em;
+			align-items: stretch;
+		}
 		position: relative;
 	}
 }
