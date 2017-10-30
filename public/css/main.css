@@ -4040,7 +4040,7 @@ body {
   justify-content: space-between;
   align-items: stretch;
   font-size: 0.8em;
-  font-family: 'Monospace';
+  font-family: monospace;
   border: 1px solid #333; }
   #print-listener .header {
     flex-grow: 0;

@@ -58,6 +58,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 			Port:    jm.ports.Assign(),
 			manager: jm,
 			path:    [3]string{user, repoOwner, repoName},
+			output:  NewOutErrMerge(),
 		}
 		ru[repoName] = j
 		if err := j.start(os.Stdout, os.Stderr); nil != err {

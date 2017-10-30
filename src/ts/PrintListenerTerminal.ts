@@ -35,7 +35,7 @@ export class PrintListenerTerminal extends Template {
 		this.$.header.classList.add(`done`);
 		this.$.title.innerText =  `Printing complete`;
 		let line = document.createElement(`div`);
-		line.innerHTML = `Your pdf is ready at <a href="${url}">${url}</a>`;
+		line.innerHTML = `Your pdf is ready at <a href="${url}" target="blank">${url}</a>`;
 		line.classList.add(`done`);
 		this.$.terminal.appendChild(line);
 		this.scrollBottom();

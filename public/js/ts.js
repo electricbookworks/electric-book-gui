@@ -1072,7 +1072,7 @@ var PrintListenerTerminal$1 = (function (_super) {
         this.$.header.classList.add("done");
         this.$.title.innerText = "Printing complete";
         var line = document.createElement("div");
-        line.innerHTML = "Your pdf is ready at <a href=\"" + url + "\">" + url + "</a>";
+        line.innerHTML = "Your pdf is ready at <a href=\"" + url + "\" target=\"blank\">" + url + "</a>";
         line.classList.add("done");
         this.$.terminal.appendChild(line);
         this.scrollBottom();
