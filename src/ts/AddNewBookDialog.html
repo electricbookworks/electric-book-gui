@@ -18,7 +18,7 @@ eventify:
 			<label>
 				<input type="radio" value="collaborate"
 				data-set="collaborateRadio" name="new-project-type"/>
-				Collaborate on an existing project.
+				Contribute to an existing project.
 			</label>
 			<label>
 				<input type="radio" value="adaptation" data-set="adaptationRadio" name="new-project-type" />
@@ -59,13 +59,13 @@ eventify:
 		</form>
 	</div>
 	<div data-set="collaborate">
-		<h1>Collaborate</h1>
+		<h1>Contributing</h1>
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork" />
-		<label>Enter the GitHub owner and repo for the project you will collaborate on.
+		<label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core" data-set="collaborate_repo" />
 		</label>
-		<input type="submit" class="btn" value="Collaborate" />
+		<input type="submit" class="btn" value="Copy project" />
 		</form>
 	</div>
 </div>

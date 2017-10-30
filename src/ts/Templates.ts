@@ -140,7 +140,7 @@ export class AddNewBookDialog {
 			d.innerHTML = `<div><div><h1>Add a project</h1><fieldset><label><input type="radio" value="new" name="new-project-type"/>
 				Start a new project.
 			</label><label><input type="radio" value="collaborate" name="new-project-type"/>
-				Collaborate on an existing project.
+				Contribute to an existing project.
 			</label><label><input type="radio" value="adaptation" name="new-project-type"/>
 				Create an adaptation of an existing project.
 			</label></fieldset><button data-event="click:choseType" class="btn">Next</button></div><div><h1>New project</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
@@ -155,9 +155,9 @@ export class AddNewBookDialog {
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label><label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
-		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Collaborate</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will collaborate on.
+		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Contributing</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
-		</label><input type="submit" class="btn" value="Collaborate"/></form></div></div>`;
+		</label><input type="submit" class="btn" value="Copy project"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			AddNewBookDialog._template = t;
 		}
