@@ -1,6 +1,7 @@
 import {EBW} from './EBW';
 import {FileListDialog, FileListDialogResult} from './FileListDialog';
 import EventSource = require('./sse');
+import {PrintListenerTerminal} from './PrintListenerTerminal';
 
 export class PrintListener {
 	protected listDialog: FileListDialog;
@@ -50,6 +51,8 @@ export class PrintListener {
 			}).catch( EBW.Error );
 	}
 	startListener(key:string) {
+		let terminal = new PrintListenerTerminal();
+
 		let url = document.location.protocol +
 				 "//" +
 				 document.location.host + "/print/sse/" + key;
@@ -57,21 +60,22 @@ export class PrintListener {
 		sse.addEventListener(`open`, function() {
 		});
 		sse.addEventListener('tick', function(e:any) {
-			console.log(`tick received: `, e);
+			terminal.ticktock();
 		});
 		sse.addEventListener(`info`, function(e:any) {
 			// console.log(`INFO on printListener: `, e.data);
 			let data = JSON.parse(e.data);
-			EBW.Toast(`Printing: `, e.data);
+			terminal.addLine(data.log);
 		});
 		sse.addEventListener(`log`, function(e:any) {
 			let data = JSON.parse(e.data);
-			console.log(`PRINTING: `, e.data);
+			terminal.addLine(data.log);
 		})
 		sse.addEventListener(`error`, function(e:any) {
 			let err = JSON.parse(e.data);
 			EBW.Error(err);
 			sse.close();
+			terminal.addError(err.log);
 		});
 		sse.addEventListener(`output`, (e:any)=> {
 			let data = JSON.parse(e.data);
@@ -80,6 +84,7 @@ export class PrintListener {
 				 document.location.host + 
 				 `/www/${this.repoOwner}/${this.repoName}/${data}`;
 			EBW.Toast(`Your PDF is ready: opening in a new window.`);
+			terminal.done(url);
 			window.open(url, `${this.repoOwner}-${this.repoName}-pdf`);
 		});
 		sse.addEventListener(`done`, function(e:any) {

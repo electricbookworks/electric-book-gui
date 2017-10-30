@@ -11,6 +11,7 @@ export namespace EL {
 	export type LoginTokenDisplay =	HTMLUListElement;
 	export type LoginTokenList =	HTMLDivElement;
 	export type MergeEditor =	HTMLDivElement;
+	export type PrintListenerTerminal =	HTMLDivElement;
 	export type PullRequestDiffList_File =	HTMLDivElement;
 	export type RepoEditorPage_NewFileDialog =	HTMLDivElement;
 	export type RepoEditorPage_RenameFileDialog =	HTMLDivElement;
@@ -77,6 +78,12 @@ export namespace R {
 		};
 	export interface MergeEditor {
 		mergely: HTMLDivElement,
+		};
+	export interface PrintListenerTerminal {
+		header: HTMLDivElement,
+		title: HTMLDivElement,
+		close: HTMLDivElement,
+		terminal: HTMLDivElement,
 		};
 	export interface PullRequestDiffList_File {
 		};
@@ -381,6 +388,30 @@ export class MergeEditor {
 		let n = t.cloneNode(true) as HTMLDivElement;
 		this.$ = {
 			mergely: n.childNodes[1] as HTMLDivElement,
+		};
+		this.el = n;
+	}
+}
+export class PrintListenerTerminal {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.PrintListenerTerminal;
+	constructor() {
+		let t = PrintListenerTerminal._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div id="print-listener"><div class="header"><div class="title">Printing in progress...
+		</div><div class="close">X</div></div><div class="terminal">
+	</div></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			PrintListenerTerminal._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			header: n.childNodes[0] as HTMLDivElement,
+			title: n.childNodes[0].childNodes[0] as HTMLDivElement,
+			close: n.childNodes[0].childNodes[1] as HTMLDivElement,
+			terminal: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}

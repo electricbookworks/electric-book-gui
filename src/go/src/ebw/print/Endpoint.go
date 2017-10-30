@@ -75,7 +75,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 		}()
 		go func() {
 			for {
-				time.Sleep(time.Second)
+				time.Sleep(2 * time.Second)
 				select {
 				case <-tickC:
 					glog.Infof(`Quitting timer ticker`)

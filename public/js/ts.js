@@ -454,6 +454,26 @@ var MergeEditor = (function () {
     }
     return MergeEditor;
 }());
+var PrintListenerTerminal = (function () {
+    function PrintListenerTerminal() {
+        var t = PrintListenerTerminal._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div id=\"print-listener\"><div class=\"header\"><div class=\"title\">Printing in progress...\n\t\t</div><div class=\"close\">X</div></div><div class=\"terminal\">\n\t</div></div>";
+            t = d.firstElementChild;
+            PrintListenerTerminal._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            header: n.childNodes[0],
+            title: n.childNodes[0].childNodes[0],
+            close: n.childNodes[0].childNodes[1],
+            terminal: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return PrintListenerTerminal;
+}());
 var PullRequestDiffList_File = (function () {
     function PullRequestDiffList_File() {
         var t = PullRequestDiffList_File._template;
@@ -1014,6 +1034,52 @@ var FileListDialog$1 = (function (_super) {
     return FileListDialog$$1;
 }(FileListDialog));
 
+var PrintListenerTerminal$1 = (function (_super) {
+    tslib_1.__extends(PrintListenerTerminal$$1, _super);
+    function PrintListenerTerminal$$1() {
+        var _this = _super.call(this) || this;
+        var el = document.getElementById('print-listener');
+        if (el) {
+            el.remove();
+        }
+        _this.$.close.addEventListener("click", function (evt) {
+            _this.el.remove();
+        });
+        document.body.appendChild(_this.el);
+        return _this;
+    }
+    PrintListenerTerminal$$1.prototype.addLine = function (msg, err) {
+        if (err === void 0) { err = false; }
+        var line = document.createElement("div");
+        line.innerText = msg;
+        if (err) {
+            line.classList.add('error-line');
+        }
+        this.$.terminal.appendChild(line);
+        this.scrollBottom();
+    };
+    PrintListenerTerminal$$1.prototype.scrollBottom = function () {
+        this.$.terminal.scrollTop = this.$.terminal.scrollHeight - this.$.terminal.clientHeight;
+    };
+    PrintListenerTerminal$$1.prototype.addError = function (msg) {
+        this.addLine(msg, true);
+    };
+    PrintListenerTerminal$$1.prototype.ticktock = function () {
+        this.$.header.classList.toggle("tick");
+    };
+    PrintListenerTerminal$$1.prototype.done = function (url) {
+        this.$.header.classList.remove("tick");
+        this.$.header.classList.add("done");
+        this.$.title.innerText = "Printing complete";
+        var line = document.createElement("div");
+        line.innerHTML = "Your pdf is ready at <a href=\"" + url + "\">" + url + "</a>";
+        line.classList.add("done");
+        this.$.terminal.appendChild(line);
+        this.scrollBottom();
+    };
+    return PrintListenerTerminal$$1;
+}(PrintListenerTerminal));
+
 var PrintListener = (function () {
     function PrintListener(repoOwner, repoName, book, format) {
         if (book === void 0) { book = "book"; }
@@ -1063,6 +1129,7 @@ var PrintListener = (function () {
     }
     PrintListener.prototype.startListener = function (key) {
         var _this = this;
+        var terminal = new PrintListenerTerminal$1();
         var url = document.location.protocol +
             "//" +
             document.location.host + "/print/sse/" + key;
@@ -1070,21 +1137,22 @@ var PrintListener = (function () {
         sse.addEventListener("open", function () {
         });
         sse.addEventListener('tick', function (e) {
-            console.log("tick received: ", e);
+            terminal.ticktock();
         });
         sse.addEventListener("info", function (e) {
             // console.log(`INFO on printListener: `, e.data);
             var data = JSON.parse(e.data);
-            EBW.Toast("Printing: ", e.data);
+            terminal.addLine(data.log);
         });
         sse.addEventListener("log", function (e) {
             var data = JSON.parse(e.data);
-            console.log("PRINTING: ", e.data);
+            terminal.addLine(data.log);
         });
         sse.addEventListener("error", function (e) {
             var err = JSON.parse(e.data);
             EBW.Error(err);
             sse.close();
+            terminal.addError(err.log);
         });
         sse.addEventListener("output", function (e) {
             var data = JSON.parse(e.data);
@@ -1093,6 +1161,7 @@ var PrintListener = (function () {
                 document.location.host +
                 ("/www/" + _this.repoOwner + "/" + _this.repoName + "/" + data);
             EBW.Toast("Your PDF is ready: opening in a new window.");
+            terminal.done(url);
             window.open(url, _this.repoOwner + "-" + _this.repoName + "-pdf");
         });
         sse.addEventListener("done", function (e) {
