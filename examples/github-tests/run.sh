@@ -191,6 +191,7 @@ if ! ebw git remove-conflict 01.md; then
 	echo "remove-conflict on 01.md failed"
 	exit 1
 fi
+
 # NOTE THAT GIT COMMIT WILL ALSO CLOSE THE PULL-REQUEST
 if ! ebw git commit "pr 1 merged"; then
 	echo "git commit failed"
@@ -200,6 +201,33 @@ fi
 if ! ebw git push; then
 	echo 'git push to github failed'
 	exit 1
+fi
+
+echo 'CHECK CREATING A NEW FILE IN A PR'
+## Test pull requests
+cd ../$USER2-test-book
+echo 'new file 03.md' > 03.md
+git add 03.md && git commit -m 'new file 03' && git push origin master
+echo "Creating pull request"
+PRN=$(ebw book pr-create -title 'Pull request test')
+echo "Created pull request $PRN"
+cd ../$USER1-test-book
+ebw book pr-merge -n $PRN
+if ! ebw git has-conflicts; then
+	echo 'ERROR : Expected conflicts post PR merge, but did not find any'
+	exit 1
+fi
+## CHECK THE CONFLICTED FILES
+CONFLICTS=$(ebw git list-conflicts)
+if [[ ! "03.md" == $(ebw git list-conflicts) ]]; then
+	echo "Expected single conflict: 03.md, but got $(ebw git list-conflicts)"
+	exit 1
+fi
+
+
+
+else
+	cd $USER1-test-book
 fi
 
 

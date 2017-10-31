@@ -87,6 +87,7 @@ func (g *Git) catFileGit(path string) (bool, []byte, error) {
 		return false, []byte{}, g.Error(err)
 	}
 	defer res.Free()
+	fmt.Printf("catFileGit %s: mode=%0x\n", path, res.Mode)
 	return res.Automergeable, res.Contents, nil
 }
 
@@ -183,6 +184,67 @@ func (g *Git) CatFileVersion(path string, v GitFileVersion, auto *bool) ([]byte,
 	return nil, fmt.Errorf(`Not implemented`)
 }
 
+// ExistsFileVersion returns whether the path exists for the given
+// GitFileVersion
+func (g *Git) ExistsFileVersion(path string, v GitFileVersion, auto *bool) (bool, error) {
+	if nil != auto {
+		*auto = true
+	}
+	switch v {
+	case GFV_ANCESTOR:
+		return g.existsPathInIndexStage(path, 1)
+	case GFV_OUR_HEAD:
+		head, err := g.Repository.Head()
+		if nil != err {
+			return false, g.Error(err)
+		}
+		defer head.Free()
+
+		return g.existsPathForTreeReference(head, path)
+	case GFV_THEIR_HEAD:
+		// I COULD ALSO USE THE GFV_INDEX APPROACH
+		if !g.IsMerging() {
+			return false, g.Error(fmt.Errorf(`Repo is not merging`))
+		}
+		mergeHead, err := g.getMergeHeadObject()
+		if nil != err {
+			return false, err
+		}
+		defer mergeHead.Free()
+		return g.existsPathForTreeObject(mergeHead, path)
+	case GFV_OUR_WD:
+		return util.FileExists(g.Path(path))
+	case GFV_THEIR_WD:
+		if !g.IsMerging() {
+			return false, g.Error(fmt.Errorf(`Repo is not merging`))
+		}
+		return util.FileExists(g.PathTheir(path))
+	case GFV_GIT_MERGED:
+		// TODO CHECK THAT catFileGit will return ErrNotFound if the file doesn't exist
+		automergeable, _, err := g.catFileGit(path)
+		if nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				return false, nil
+			}
+			return false, err
+		}
+		if nil != auto {
+			*auto = automergeable
+		}
+		return true, nil
+	case GFV_INDEX:
+		conflicted, err := g.IsFileConflicted(path)
+		if nil != err {
+			return false, err
+		}
+		if conflicted {
+			return g.existsPathInIndexStage(path, 2)
+		}
+		return g.existsPathInIndexStage(path, 0)
+	}
+	return false, fmt.Errorf(`Not implemented`)
+}
+
 // getMergeHeadObject gets the git2go Object for the current MERGE HEAD.
 // TODO We find the merge HEAD by reading the MERGE_HEAD file from .git.
 // It would be preferable if we found the MERGE_HEAD some other way, perhaps,
@@ -214,7 +276,7 @@ func (g *Git) MergeAnalysis(remoteName string) (git2go.MergeAnalysis, git2go.Mer
 	return g.mergeAnalysis(remoteCommit)
 }
 
-// mergeAutomatic performs and automatic merge with the given remote/branch remote,
+// mergeAutomatic performs an automatic merge with the given remote/branch remote,
 // and attempts to complete a commit if there are no conflicts. The return values
 // are a boolean indicating true if the automatic merge succeeded, false otherwise.
 func (g *Git) mergeAutomatic(remoteName string, mergeDescription string) (bool, error) {
@@ -280,7 +342,7 @@ func (g *Git) MergeCanFastForward(remoteName string) (bool, error) {
 // files that a merge or conflict state might have created.
 // Although we should only really need to call this after closing a conflict,
 // we will use it after every Commit, since it won't cause any issues.
-func (g *Git) mergeCleanup() error {
+func (g *Git) mergeCleanup(closePullRequest bool) error {
 	if err := g.Repository.StateCleanup(); nil != err {
 		return g.Error(err)
 	}
@@ -288,7 +350,7 @@ func (g *Git) mergeCleanup() error {
 	if nil != err {
 		return err
 	}
-	if 0 != rs.MergingPRNumber {
+	if closePullRequest && 0 != rs.MergingPRNumber {
 		if err := g.GithubClosePullRequest(true); nil != err {
 			return err
 		}
@@ -564,7 +626,6 @@ func (g *Git) mergeWithResolution(remoteName string, newCommitObject *git2go.Obj
 	if nil != err {
 		return false, g.Error(err)
 	}
-	glog.Infof(`About to perform Merge with commit %s`, newCommitObject.Id())
 	if err := g.Repository.Merge([]*git2go.AnnotatedCommit{remoteCommit},
 		&defaultMergeOptions,
 		defaultCheckoutOpts(),
@@ -613,6 +674,7 @@ func (g *Git) mergeWithResolution(remoteName string, newCommitObject *git2go.Obj
 			return false, err
 		}
 	}
+
 	// At this point, any conflicted files are the files that the user will
 	// need to resolve. Since we require RESOLUTION on these, but also want to
 	// track which they are _even after the user might have resolved them_,
@@ -648,8 +710,8 @@ func (g *Git) MergingPRNumber() (int, error) {
 // to HEAD, which occurs in spite of, or while ignoring, any changed
 // files in WD. `git merge --abort`, though, will fail if there are modified
 // files in WD (or something like that).
-func (g *Git) PullAbort() error {
-	if err := g.mergeCleanup(); nil != err {
+func (g *Git) PullAbort(closePullRequest bool) error {
+	if err := g.mergeCleanup(closePullRequest); nil != err {
 		return err
 	}
 	head, err := g.Repository.Head()
@@ -679,6 +741,19 @@ func (g *Git) readDiskFile(path string) ([]byte, error) {
 		return nil, g.Error(err)
 	}
 	return raw, nil
+}
+
+// existsPathForTreeObject returns whether the given path exists in the tree
+// object
+func (g *Git) existsPathForTreeObject(object *git2go.Object, path string) (bool, error) {
+	_, err := g.readPathForTreeObject(object, path)
+	if nil == err {
+		return true, nil
+	}
+	if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+		return false, nil
+	}
+	return false, err
 }
 
 // readPathForTreeObject reads the given path from the provided git tree object.
@@ -721,6 +796,16 @@ func (g *Git) readPathForTreeReference(head *git2go.Reference, path string) ([]b
 	}
 	defer tree.Free()
 	return g.readPathForTreeObject(tree, path)
+}
+
+// existsPathForTreeRference returns whether the given path exists in the given tree
+func (g *Git) existsPathForTreeReference(head *git2go.Reference, path string) (bool, error) {
+	tree, err := head.Peel(git2go.ObjectTree)
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer tree.Free()
+	return g.existsPathForTreeObject(tree, path)
 }
 
 // readPathFromIndex reads the path for the given file from the index.
@@ -775,6 +860,24 @@ func (g *Git) readPathFromIndexStage(path string, stage int) ([]byte, error) {
 	}
 	defer blob.Free()
 	return blob.Contents(), nil
+}
+
+// existsPathInIndexStage returns whether the given path exists in the given
+// stage in the index.
+func (g *Git) existsPathInIndexStage(path string, stage int) (bool, error) {
+	idx, err := g.Repository.Index()
+	if nil != err {
+		return false, g.Error(err)
+	}
+	defer idx.Free()
+	_, err = idx.EntryByPath(path, stage)
+	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			return false, nil
+		}
+		return false, g.Error(fmt.Errorf(`existsPathInIndexState('%s',%d) error: %s`, path, stage, err.Error()))
+	}
+	return true, nil
 }
 
 // RemoveConflict resolves the conflict on the file at the given path

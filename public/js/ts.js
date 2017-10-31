@@ -124,6 +124,9 @@ var APIWs = (function () {
     APIWs.prototype.StageFile = function (repoOwner, repoName, path) {
         return this.rpc("StageFile", [repoOwner, repoName, path]);
     };
+    APIWs.prototype.IsRepoConflicted = function (repoOwner, repoName) {
+        return this.rpc("IsRepoConflicted", [repoOwner, repoName]);
+    };
     APIWs.prototype.StageFileAndReturnMergingState = function (repoOwner, repoName, path) {
         return this.rpc("StageFileAndReturnMergingState", [repoOwner, repoName, path]);
     };
@@ -250,7 +253,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tCollaborate on an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Collaborate</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will collaborate on.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Collaborate\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Contributing</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Copy project\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -450,6 +453,26 @@ var MergeEditor = (function () {
         this.el = n;
     }
     return MergeEditor;
+}());
+var PrintListenerTerminal = (function () {
+    function PrintListenerTerminal() {
+        var t = PrintListenerTerminal._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div id=\"print-listener\"><div class=\"header\"><div class=\"title\">Printing in progress...\n\t\t</div><div class=\"close\">X</div></div><div class=\"terminal\">\n\t</div></div>";
+            t = d.firstElementChild;
+            PrintListenerTerminal._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            header: n.childNodes[0],
+            title: n.childNodes[0].childNodes[0],
+            close: n.childNodes[0].childNodes[1],
+            terminal: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return PrintListenerTerminal;
 }());
 var PullRequestDiffList_File = (function () {
     function PullRequestDiffList_File() {
@@ -1011,6 +1034,52 @@ var FileListDialog$1 = (function (_super) {
     return FileListDialog$$1;
 }(FileListDialog));
 
+var PrintListenerTerminal$1 = (function (_super) {
+    tslib_1.__extends(PrintListenerTerminal$$1, _super);
+    function PrintListenerTerminal$$1() {
+        var _this = _super.call(this) || this;
+        var el = document.getElementById('print-listener');
+        if (el) {
+            el.remove();
+        }
+        _this.$.close.addEventListener("click", function (evt) {
+            _this.el.remove();
+        });
+        document.body.appendChild(_this.el);
+        return _this;
+    }
+    PrintListenerTerminal$$1.prototype.addLine = function (msg, err) {
+        if (err === void 0) { err = false; }
+        var line = document.createElement("div");
+        line.innerText = msg;
+        if (err) {
+            line.classList.add('error-line');
+        }
+        this.$.terminal.appendChild(line);
+        this.scrollBottom();
+    };
+    PrintListenerTerminal$$1.prototype.scrollBottom = function () {
+        this.$.terminal.scrollTop = this.$.terminal.scrollHeight - this.$.terminal.clientHeight;
+    };
+    PrintListenerTerminal$$1.prototype.addError = function (msg) {
+        this.addLine(msg, true);
+    };
+    PrintListenerTerminal$$1.prototype.ticktock = function () {
+        this.$.header.classList.toggle("tick");
+    };
+    PrintListenerTerminal$$1.prototype.done = function (url) {
+        this.$.header.classList.remove("tick");
+        this.$.header.classList.add("done");
+        this.$.title.innerText = "Printing complete";
+        var line = document.createElement("div");
+        line.innerHTML = "Your pdf is ready at <a href=\"" + url + "\" target=\"blank\">" + url + "</a>";
+        line.classList.add("done");
+        this.$.terminal.appendChild(line);
+        this.scrollBottom();
+    };
+    return PrintListenerTerminal$$1;
+}(PrintListenerTerminal));
+
 var PrintListener = (function () {
     function PrintListener(repoOwner, repoName, book, format) {
         if (book === void 0) { book = "book"; }
@@ -1060,6 +1129,7 @@ var PrintListener = (function () {
     }
     PrintListener.prototype.startListener = function (key) {
         var _this = this;
+        var terminal = new PrintListenerTerminal$1();
         var url = document.location.protocol +
             "//" +
             document.location.host + "/print/sse/" + key;
@@ -1067,17 +1137,22 @@ var PrintListener = (function () {
         sse.addEventListener("open", function () {
         });
         sse.addEventListener('tick', function (e) {
-            console.log("tick received: ", e);
+            terminal.ticktock();
         });
         sse.addEventListener("info", function (e) {
             // console.log(`INFO on printListener: `, e.data);
             var data = JSON.parse(e.data);
-            EBW.Toast("Printing: ", e.data);
+            terminal.addLine(data.log);
+        });
+        sse.addEventListener("log", function (e) {
+            var data = JSON.parse(e.data);
+            terminal.addLine(data.log);
         });
         sse.addEventListener("error", function (e) {
             var err = JSON.parse(e.data);
             EBW.Error(err);
             sse.close();
+            terminal.addError(err.log);
         });
         sse.addEventListener("output", function (e) {
             var data = JSON.parse(e.data);
@@ -1086,6 +1161,7 @@ var PrintListener = (function () {
                 document.location.host +
                 ("/www/" + _this.repoOwner + "/" + _this.repoName + "/" + data);
             EBW.Toast("Your PDF is ready: opening in a new window.");
+            terminal.done(url);
             window.open(url, _this.repoOwner + "-" + _this.repoName + "-pdf");
         });
         sse.addEventListener("done", function (e) {
@@ -2651,6 +2727,12 @@ var File$1 = (function () {
             return Promise.resolve();
         });
     };
+    File.prototype.SetWorkingExists = function (b) {
+        this.WorkingFile().Exists = true;
+    };
+    File.prototype.SetTheirExists = function (b) {
+        this.TheirFile().Exists = true;
+    };
     // FetchGit fetches the git merged content for the file
     File.prototype.FetchGit = function (source) {
         var _this = this;
@@ -3082,6 +3164,7 @@ var MergeEditor$1 = (function () {
         // when the change arrives		
         console.log("isTheirDeleted = " + this.isTheirDeleted() + ", text = " + this.getTheirText());
         this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
+        console.log("this.file = ", this.file);
     };
     MergeEditor.prototype.CopyWorking = function () {
         // We leave source undefined, so that our editor will update
@@ -3233,6 +3316,22 @@ var MergeEditor$1 = (function () {
                 rhs: function (setValue) {
                     setValue(rhsText);
                 },
+            });
+            _this.getLeftCM().on("change", function (cm, obj) {
+                if (_this.editLeft) {
+                    _this.file.SetWorkingExists(true);
+                }
+                else {
+                    _this.file.SetTheirExists(true);
+                }
+            });
+            _this.getRightCM().on("change", function (cm, obj) {
+                if (_this.editLeft) {
+                    _this.file.SetTheirExists(true);
+                }
+                else {
+                    _this.file.SetWorkingExists(true);
+                }
             });
         });
     };
@@ -3551,9 +3650,7 @@ var RepoConflictPage = (function () {
         fileListDisplay.el.addEventListener("file-click", function (evt) {
             _this.fileListEvent(undefined, evt.detail.file);
         });
-        console.log("mergingInfo = ", this.mergingInfo);
         if (this.mergingInfo.IsPRMerge()) {
-            console.log("THIS MERGE IS A PR MERGE");
             this.editor = new MergeEditor$1(context, document.getElementById("editor-work"));
             new MergeInstructions(document.getElementById('merge-instructions'), this.editor);
         }
@@ -3581,20 +3678,27 @@ var RepoConflictPage = (function () {
         }
         var listjs = filesEl.innerText;
         var fileListData = JSON.parse(listjs);
-        console.log("Loaded fileList: ", fileListData);
         fileList.load(fileListData);
         document.getElementById("action-commit").addEventListener("click", function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-            // TODO: Should check whether editor should save before committing.
-            _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
-                .then(function (r) {
-                if (r.Cancelled) {
-                    return;
+            console.log("IN action-commit CLICK LISTENER");
+            EBW.API().IsRepoConflicted(_this.context.RepoOwner, _this.context.RepoName)
+                .then(function (_a) {
+                var conflicted = _a[0];
+                if (conflicted) {
+                    EBW.Alert("You need to resolve all file conflicts before you can resolve the merge.");
+                    return Promise.resolve();
                 }
-                console.log("Result= ", r);
-                _this.context.RepoRedirect("conflict/resolve", new Map([["message", r.Message], ["notes", r.Notes]]));
-                return;
+                return _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
+                    .then(function (r) {
+                    if (r.Cancelled) {
+                        return;
+                    }
+                    console.log("Result= ", r);
+                    _this.context.RepoRedirect("conflict/resolve", new Map([["message", r.Message], ["notes", r.Notes]]));
+                    return;
+                });
             })
                 .catch(EBW.Error);
         });

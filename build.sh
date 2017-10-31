@@ -12,7 +12,7 @@ if [[ ! -d bin ]]; then
 fi
 go build -o bin/electricbook src/go/src/ebw/electricbook.go
 #if [[ "ebw" == $1 ]]; then
-	go build -o bin/ebw src/go/src/ebw/ebw.go
+#	go build -o bin/ebw src/go/src/ebw/ebw.go
 #fi
 #go build -o bin/jekyllrun src/go/src/ebw/jekyllrun.go
 cp bin/ebw ~/go/bin

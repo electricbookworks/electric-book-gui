@@ -4029,6 +4029,57 @@ body {
 .file-list-dialog-list {
   list-style: none; }
 
+#print-listener {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  max-width: 50em;
+  max-height: 12em;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  font-size: 0.8em;
+  font-family: monospace;
+  border: 1px solid #333; }
+  #print-listener .header {
+    flex-grow: 0;
+    background-color: #eee;
+    color: black;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 0.3em 1em;
+    transition: background-color 1s, color 1s;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline; }
+    #print-listener .header.tick {
+      background-color: #999;
+      color: #eee; }
+    #print-listener .header.done {
+      background-color: #009e7f;
+      color: white;
+      transition: background-color color 0.3s; }
+    #print-listener .header .title {
+      font-weight: bold; }
+    #print-listener .header .close {
+      text-align: right;
+      cursor: pointer; }
+  #print-listener .terminal {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0.4em 1em;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white; }
+    #print-listener .terminal .error-line {
+      color: red;
+      font-weight: bold; }
+    #print-listener .terminal .done {
+      color: white;
+      font-weight: bold;
+      background-color: darkgreen; }
+
 .invitations .invite {
   display: flex;
   flex-direction: row;
@@ -4574,11 +4625,25 @@ body {
   .repo-file-viewer .search {
     flex-grow: 0; }
   .repo-file-viewer .data {
-    display: grid;
-    grid-template-columns: repeat(6, 15fr);
-    grid-column-gap: 2em;
-    align-items: stretch;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
     position: relative; }
+    .repo-file-viewer .data .repo-file-viewer-file {
+      max-width: 10em;
+      width: 10em; }
+    @supports (display: grid) {
+      .repo-file-viewer .data {
+        display: grid;
+        grid-template-columns: repeat(6, 15fr);
+        grid-column-gap: 2em;
+        align-items: stretch; }
+        .repo-file-viewer .data .repo-file-viewer-file {
+          max-width: inherit;
+          width: inherit; } }
 
 .repo-file-viewer-file {
   width: 100%;

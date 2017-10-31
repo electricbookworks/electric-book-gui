@@ -474,7 +474,7 @@ func BookPullAbortCommand() *commander.Command {
 				return err
 			}
 			defer repo.Close()
-			return repo.PullAbort()
+			return repo.PullAbort(false)
 		})
 }
 

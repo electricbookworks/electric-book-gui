@@ -641,8 +641,8 @@ func (r *Repo) mergeAnnotatedCommit(remoteCommit *git2go.AnnotatedCommit) error 
 // to HEAD, which occurs in spite of, or while ignoring, any changed
 // files in WD. `git merge --abort`, though, will fail if there are modified
 // files in WD (or something like that).
-func (r *Repo) PullAbort() error {
-	return r.Git.PullAbort()
+func (r *Repo) PullAbort(closePullRequest bool) error {
+	return r.Git.PullAbort(closePullRequest)
 }
 
 // treeForCommit converts a *Oid into a *Tree. It's just here as a utility

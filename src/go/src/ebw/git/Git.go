@@ -33,6 +33,11 @@ type Git struct {
 	Context    context.Context
 	Repository *git2go.Repository
 	Log        logger.Logger
+
+	// _fetchedCached caches remotes that have been fetched during this
+	// session, so we can 'cheaply' call .FetchRemote without worrying
+	// about the associated network costs.
+	_fetchedCache map[string]bool
 }
 
 type GitRemoteAction int
@@ -178,19 +183,15 @@ func (g *Git) AheadBehind(remoteName string) (int, int, error) {
 		return 0, 0, g.Error(err)
 	}
 	defer headTree.Free()
-	fmt.Println("remoteTree =", remoteTree.Id().String())
-	fmt.Println("headTree   =", headTree.Id().String())
 
-	isRemoteDescended, err := g.Repository.DescendantOf(remote.Id(), head.Id())
-	if nil != err {
-		return 0, 0, g.Error(err)
-	}
-	fmt.Println("remote is descendant of head = ", isRemoteDescended)
-	isHeadDescended, err := g.Repository.DescendantOf(head.Id(), remote.Id())
-	if nil != err {
-		return 0, 0, g.Error(err)
-	}
-	fmt.Println("head is descendant of remote = ", isHeadDescended)
+	// isRemoteDescended, err := g.Repository.DescendantOf(remote.Id(), head.Id())
+	// if nil != err {
+	// 	return 0, 0, g.Error(err)
+	// }
+	// isHeadDescended, err := g.Repository.DescendantOf(head.Id(), remote.Id())
+	// if nil != err {
+	// 	return 0, 0, g.Error(err)
+	// }
 
 	return ahead, behind, nil
 }
@@ -236,7 +237,7 @@ func (g *Git) Commit(message string) (*git2go.Oid, error) {
 	if nil != err {
 		return nil, g.Error(err)
 	}
-	if err = g.mergeCleanup(); nil != err {
+	if err = g.mergeCleanup(true); nil != err {
 		return nil, g.Error(err)
 	}
 	// Now that we've committed, we should try to push to origin
@@ -382,6 +383,12 @@ func (g *Git) FetchRefspecs(remoteName string) ([]string, error) {
 
 // FetchRemote fetches the named remote into our repo.
 func (g *Git) FetchRemote(remoteName string) error {
+	if nil == g._fetchedCache {
+		g._fetchedCache = map[string]bool{}
+	}
+	if _, ok := g._fetchedCache[remoteName]; ok {
+		return nil
+	}
 	if strings.Contains(remoteName, `/`) {
 		parts := strings.Split(remoteName, `/`)
 		remoteName = parts[0]
@@ -407,6 +414,7 @@ func (g *Git) FetchRemote(remoteName string) error {
 	}, ``); nil != err {
 		return g.Error(err)
 	}
+	g._fetchedCache[remoteName] = true
 	return nil
 }
 

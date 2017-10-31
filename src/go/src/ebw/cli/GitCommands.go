@@ -43,6 +43,7 @@ func GitCommands() *commander.Command {
 				GitFileConflictedCommand,
 				GitFileDiffsCommand,
 				GitFileDiffsConflictCommand,
+				GitFileExistsCommand,
 				GitGithubRemoteCommand,
 				GitHasConflictsCommand,
 				GitHeadSHACommand,
@@ -138,6 +139,29 @@ func GitFileCatCommand() *commander.Command {
 	fs := flag.NewFlagSet(`file-cat`, flag.ExitOnError)
 	v := fs.String(`v`, `our-wd`, `Version of the file to display`)
 	return commander.NewCommand(`file-cat`, `Cat file contents for a given version`,
+		fs,
+		func(args []string) error {
+			g := mustNewGit()
+			defer g.Close()
+			ver, err := git.ParseGitFileVersion(*v)
+			if nil != err {
+				return err
+			}
+			for _, fn := range args {
+				raw, err := g.CatFileVersion(fn, ver, nil)
+				if nil != err {
+					return err
+				}
+				io.Copy(os.Stdout, bytes.NewReader(raw))
+			}
+			return nil
+		})
+}
+
+func GitFileExistsCommand() *commander.Command {
+	fs := flag.NewFlagSet(`file-exists`, flag.ExitOnError)
+	v := fs.String(`v`, `our-wd`, `Version of the file to display`)
+	return commander.NewCommand(`file-exists`, `Cat file contents for a given version`,
 		fs,
 		func(args []string) error {
 			g := mustNewGit()
@@ -416,7 +440,7 @@ func GitPullAbortCommand() *commander.Command {
 		func(args []string) error {
 			g := mustNewGit()
 			defer g.Close()
-			return g.PullAbort()
+			return g.PullAbort(false)
 		})
 }
 
