@@ -451,7 +451,7 @@ func errorReporter(c *Context) error {
 	m.SetHeader("Subject", `Error report: `, args.Error)
 	m.SetBody("text/plain", string(raw))
 
-	d := gomail.Dialer{Host: host, Port: port}
+	d := gomail.NewDialer(host, port, config.Config.ErrorMail.Username, config.Config.ErrorMail.Password)
 	if err := d.DialAndSend(m); err != nil {
 		glog.Error(err)
 		return err

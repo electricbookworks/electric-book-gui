@@ -22,10 +22,12 @@ type printserver struct {
 }
 
 type errorMailer struct {
-	To   string `yaml:"to"`
-	From string `yaml:"from"`
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
+	To       string `yaml:"to"`
+	From     string `yaml:"from"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
 }
 
 func (e errorMailer) FromTo() (string, string) {
