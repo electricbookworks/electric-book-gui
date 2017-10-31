@@ -5,14 +5,17 @@
 
 <h1>Submit changes for review</h1>
 
+<div>
+	<a href="https://github.com/{{.UpstreamOwner}}/{{.UpstreamName}}/compare/master...{{.UserName}}:master#diff" target="github">See the changes you are submitting</a>
+</div>
 <form method="post" action="./new">
 <div>
 <label for="title">Title
 <input type="text" name="title" />
 </label>
-<textarea name="notes" placeholder="About the changes made.">
+<!-- <textarea name="notes" placeholder="About the changes made.">
 </textarea>
-</div>
+ --></div>
 
 <div>
 <input type="submit" value="Submit Changes" />

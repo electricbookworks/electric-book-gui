@@ -212,7 +212,7 @@ var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>
 <html>
 	<head>
   		<meta http-equiv="refresh" content="3">
-		<title>Jekyll printing in process...</title>
+		<title>Jekyll building in progress...</title>
 <style type="text/css">
 .terminal {
 	font-family: monospace;
@@ -226,11 +226,15 @@ var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>
 	background-color: #833;
 	font-weight: bold;
 }
+main {
+	max-width: 60em;
+	margin: 1em auto;
+}
 </style>
 	</head>
 	<body>
 		<main>
-			<h1>Printing in process... autoreloading...</h1>
+			<h1>Building in progress... autoreloading...</h1>
 			<p>process output:</p>
 			<div class="terminal">
 {{range .Lines}}

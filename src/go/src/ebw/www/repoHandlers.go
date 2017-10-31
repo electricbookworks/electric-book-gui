@@ -303,6 +303,11 @@ func pullRequestCreate(c *Context) error {
 		return c.Redirect(pathRepoDetail(repo))
 	}
 
+	// We should not have an error here since to create a PR we
+	// MUST have an upstream remote...
+	upstreamOwner, upstreamName, _ := repo.Git.GetUpstreamRemote()
+	c.D[`UpstreamOwner`], c.D[`UpstreamName`] = upstreamOwner, upstreamName
+
 	return c.Render(`pull_new.html`, nil)
 }
 

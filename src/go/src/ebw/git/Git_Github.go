@@ -131,6 +131,19 @@ func (g *Git) HasUpstreamRemote() (bool, error) {
 	return true, nil
 }
 
+// GetUpstreamRemote returns the owner and repo-name for the repo's
+// upstream remote.
+func (g *Git) GetUpstreamRemote() (user string, name string, err error) {
+	repo, err := g.GithubRepo()
+	if nil != err {
+		return ``, ``, err
+	}
+	if nil == repo.Parent {
+		return ``, ``, ErrNoGithubParent
+	}
+	return repo.Parent.Owner.GetLogin(), repo.Parent.GetName(), nil
+}
+
 // SetUpstreamRemote sets the remote `upstream` for the repo.
 func (g *Git) SetUpstreamRemote() error {
 	repo, err := g.GithubRepo()
