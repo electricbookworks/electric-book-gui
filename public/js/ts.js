@@ -22,6 +22,7 @@ var APIWs = (function () {
         this.live = new Map();
         this.queue = new Array();
         this.setRPCErrorHandler(null);
+        this.wsState = WSState.Null;
         this.startWs();
     }
     APIWs.prototype.setRPCErrorHandler = function (handler) {
@@ -36,6 +37,7 @@ var APIWs = (function () {
     };
     APIWs.prototype.startWs = function () {
         var _this = this;
+        console.log("APIWs::startWs() wsState = " + this.wsState);
         if (this.wsState != WSState.Null) {
             return;
         }
@@ -96,11 +98,15 @@ var APIWs = (function () {
         // // for (let i=0; i<p.length; i++) {
         // // 	p[i] = params[i]
         // // }
+        var self = this;
         var data = JSON.stringify({ id: id, method: method, params: params });
         this.live.set(id, [undefined, undefined]);
         return new Promise(function (resolve, reject) {
+            if (_this.wsState == WSState.Null) {
+                _this.startWs();
+            }
             _this.live.set(id, [resolve, reject]);
-            if (1 == _this.ws.readyState) {
+            if ((_this.wsState == WSState.Connected) && (1 == _this.ws.readyState)) {
                 _this.ws.send(data);
             }
             else {

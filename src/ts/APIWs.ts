@@ -25,6 +25,7 @@ export class APIWs {
 		this.live = new Map<number,[(...a:any[])=>void,(a:any)=>void]>();
 		this.queue = new Array<string>();
 		this.setRPCErrorHandler(null);
+		this.wsState = WSState.Null;
 		this.startWs();
 	}	
 	setRPCErrorHandler(handler?:(a:any)=>void) :void {
@@ -38,6 +39,7 @@ export class APIWs {
 		return;
 	}
 	startWs():void {
+		console.log(`APIWs::startWs() wsState = ${this.wsState}`);
 		if (this.wsState!=WSState.Null) {
 			return;
 		}
@@ -97,12 +99,15 @@ export class APIWs {
 		// // for (let i=0; i<p.length; i++) {
 		// // 	p[i] = params[i]
 		// // }
-
+		let self = this;
 		let data = JSON.stringify({ id:id, method:method, params:params });
 		this.live.set(id, [undefined,undefined]);
 		return new Promise( (resolve:(...a:any[])=>void,reject:(a:any)=>void)=> {
+			if (this.wsState==WSState.Null) {
+				this.startWs();
+			}
 			this.live.set(id,[resolve,reject]);
-			if (1==this.ws.readyState) {
+			if ((this.wsState == WSState.Connected) && (1==this.ws.readyState)) {
 				this.ws.send(data);
 			} else {
 				this.queue.push(data);
