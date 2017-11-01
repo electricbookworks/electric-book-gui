@@ -220,6 +220,7 @@ func repoUpdate(c *Context) error {
 	if _, err := git.Checkout(client, repoOwner, repoName, repoUrl); nil != err {
 		return err
 	}
+	glog.Infof("Checkout succeeded")
 
 	next := c.P(`next`)
 

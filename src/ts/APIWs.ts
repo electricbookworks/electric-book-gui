@@ -1,3 +1,9 @@
+enum WSState {
+	Null = 0,
+	Connecting = 1,
+	Connected = 2
+}
+
 export class APIWs {
 	protected id: number;
 	protected url: string;
@@ -5,6 +11,7 @@ export class APIWs {
 	protected queue: string[];
 	protected errorHandler: (a:any)=>void;
 	protected ws: WebSocket;
+	protected wsState: WSState;
 
 	constructor(path:string="/rpc/API/json/ws", server:string="") {
 		if (""== server) {
@@ -31,11 +38,15 @@ export class APIWs {
 		return;
 	}
 	startWs():void {
+		if (this.wsState!=WSState.Null) {
+			return;
+		}
+		this.wsState = WSState.Connecting;
 		this.ws = new WebSocket(this.url);
 		this.ws.onmessage = (evt)=> {
 			let res:any = JSON.parse(evt.data);
 			if (undefined == res || undefined==res.id) {
-				console.error(`Failed to parse response: ${evt.data}`);
+				console.error(`Failed to parse response: ${evt.data}`);				
 				return;
 			}
 			let id = res.id as number;
@@ -59,9 +70,11 @@ export class APIWs {
 		};
 		this.ws.onerror = (err)=> {
 			console.error("ERROR on websocket:", err);
+			this.wsState = WSState.Null;
 		};
 		this.ws.onopen = (evt)=> {
 			console.log("Connected websocket");
+			this.wsState = WSState.Connected;
 			for (let q of this.queue) {
 				this.ws.send(q);
 			}
@@ -70,8 +83,10 @@ export class APIWs {
 		};
 		this.ws.onclose = (evt)=> {
 			console.log("Websocket closed - attempting reconnect in 1s");
+			this.wsState = WSState.Null;
 			setTimeout( ()=> this.startWs(), 1000 );
 		}
+		console.log(`WebSocket connection commencing`);
 	}
 	rpc(method:string, params:any[]) {
 		let id = this.id++;

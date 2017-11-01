@@ -1,6 +1,12 @@
 (function (exports,tslib_1,TSFoundation) {
 'use strict';
 
+var WSState;
+(function (WSState) {
+    WSState[WSState["Null"] = 0] = "Null";
+    WSState[WSState["Connecting"] = 1] = "Connecting";
+    WSState[WSState["Connected"] = 2] = "Connected";
+})(WSState || (WSState = {}));
 var APIWs = (function () {
     function APIWs(path, server) {
         if (path === void 0) { path = "/rpc/API/json/ws"; }
@@ -30,6 +36,10 @@ var APIWs = (function () {
     };
     APIWs.prototype.startWs = function () {
         var _this = this;
+        if (this.wsState != WSState.Null) {
+            return;
+        }
+        this.wsState = WSState.Connecting;
         this.ws = new WebSocket(this.url);
         this.ws.onmessage = function (evt) {
             var res = JSON.parse(evt.data);
@@ -57,9 +67,11 @@ var APIWs = (function () {
         };
         this.ws.onerror = function (err) {
             console.error("ERROR on websocket:", err);
+            _this.wsState = WSState.Null;
         };
         this.ws.onopen = function (evt) {
             console.log("Connected websocket");
+            _this.wsState = WSState.Connected;
             for (var _i = 0, _a = _this.queue; _i < _a.length; _i++) {
                 var q = _a[_i];
                 _this.ws.send(q);
@@ -69,8 +81,10 @@ var APIWs = (function () {
         };
         this.ws.onclose = function (evt) {
             console.log("Websocket closed - attempting reconnect in 1s");
+            _this.wsState = WSState.Null;
             setTimeout(function () { return _this.startWs(); }, 1000);
         };
+        console.log("WebSocket connection commencing");
     };
     APIWs.prototype.rpc = function (method, params) {
         var _this = this;
@@ -702,11 +716,6 @@ function Eventify(el, methods) {
 }
 //# sourceMappingURL=Eventify.js.map
 
-// AddNewBookDialog steps the user through two pages
-// determining what sort of new book they want to create,
-// and where the original of that book should be found:
-// ie copy the ebw electricbook template, or fork an existing
-// book.
 var AddNewBookDialog$$1 = (function (_super) {
     tslib_1.__extends(AddNewBookDialog$$1, _super);
     function AddNewBookDialog$$1(parent) {

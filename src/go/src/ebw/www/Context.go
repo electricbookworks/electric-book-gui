@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
 
+	"ebw/config"
 	"ebw/git"
 	"ebw/util"
 )
@@ -35,12 +36,14 @@ type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
-		if e := recover(); nil != e {
-			if err, ok := e.(error); ok {
-				WebError(w, r, err)
-				return
+		if config.Config.RecoverPanics {
+			if e := recover(); nil != e {
+				if err, ok := e.(error); ok {
+					WebError(w, r, err)
+					return
+				}
+				WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
 			}
-			WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
 		}
 	}()
 	client, _ := git.ClientFromWebRequest(w, r)

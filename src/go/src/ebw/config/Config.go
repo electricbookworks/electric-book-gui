@@ -69,6 +69,7 @@ type config struct {
 	SessionEncrypt string      `yaml:"session_encrypt"`
 	ErrorMail      errorMailer `yaml:"error_mail"`
 	AllowAutoLogin bool        `yaml:"allow_auto_login"`
+	RecoverPanics  bool        `yaml:"recover_panics"`
 }
 
 func (c config) String() string {

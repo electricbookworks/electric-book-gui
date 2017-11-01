@@ -25,3 +25,4 @@ error_mail:
   port: 587
   username: ""
   password: ""
+recover_panics: true
