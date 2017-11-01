@@ -55,6 +55,9 @@ func (g *Git) GithubRemote(remoteName string) (*GithubRemote, error) {
 // password, hence it requires the password to be a github TOKEN. If the
 // password is not a token, the github client it returns will not work.
 func (g *Git) GithubClient() (*github.Client, error) {
+	if nil == g.github {
+		return g.github, nil
+	}
 	_, token, err := g.RemoteUser(`origin`)
 	if nil != err {
 		return nil, err
@@ -63,7 +66,21 @@ func (g *Git) GithubClient() (*github.Client, error) {
 		&oauth2.Token{AccessToken: token},
 	))
 
-	return github.NewClient(tc), nil
+	g.github = github.NewClient(tc)
+	return g.github, nil
+}
+
+// GithubUser returns the github user for this repo
+func (g *Git) GithubUser() (*github.User, error) {
+	gc, err := g.GithubClient()
+	if nil != err {
+		return nil, err
+	}
+	u, _, err := gc.Users.Get(g.Context, ``)
+	if nil != err {
+		return nil, g.Error(err)
+	}
+	return u, nil
 }
 
 // GithubClosePullRequest closes the currently open pull-request

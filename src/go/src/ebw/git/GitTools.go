@@ -285,7 +285,7 @@ func copyFile(src, dest string) error {
 // See https://help.github.com/articles/duplicating-a-repository/
 // for more information.
 func DuplicateRepo(client *Client, githubPassword string,
-	templateRepo string, orgName string, newRepo string) error {
+	templateRepo string, orgName string, newRepo string, private bool) error {
 	repoName := filepath.Base(newRepo)
 
 	repoOwner := orgName
@@ -301,8 +301,9 @@ func DuplicateRepo(client *Client, githubPassword string,
 
 	// if orgName==``, then github will use client.Username
 	_, _, err := client.Repositories.Create(client.Context, orgName, &github.Repository{
-		Name:  &newRepo,
-		Owner: client.User,
+		Name:    &newRepo,
+		Owner:   client.User,
+		Private: &private,
 	})
 	if nil != err {
 		return util.Error(err)
@@ -368,7 +369,7 @@ func DuplicateRepo(client *Client, githubPassword string,
 
 // ContributeToRepo configures a fork of the repo for the given
 // user, and checks out the newly forked repo.
-func ContributeToRepo(client *Client, repoUserAndName string) error {
+func ContributeToRepo(client *Client, repoUserAndName string, private bool) error {
 	glog.Infof(`client.Username=%s, ContributeToRepo: %s`, client.Username, repoUserAndName)
 	// See CLI BookContribute for model of how this should function.
 	parts := strings.Split(repoUserAndName, `/`)
@@ -376,7 +377,7 @@ func ContributeToRepo(client *Client, repoUserAndName string) error {
 		return errors.New(`repo should be user/repo format`)
 	}
 	repoUser, repoName := parts[0], parts[1]
-	_, _, err := client.Repositories.CreateFork(
+	repo, _, err := client.Repositories.CreateFork(
 		client.Context,
 		repoUser,
 		repoName,
@@ -384,6 +385,17 @@ func ContributeToRepo(client *Client, repoUserAndName string) error {
 	if nil != err && !strings.Contains(err.Error(), "try again later") {
 		glog.Errorf("CreateFork failed : %s", err.Error())
 		return util.Error(err)
+	}
+	if private {
+		repo.Private = &private
+		repo, _, err = client.Repositories.Edit(
+			client.Context,
+			client.Username,
+			repoName,
+			repo)
+		if nil != err {
+			return util.Error(err)
+		}
 	}
 
 	repoDir, err := RepoDir(client.Username, client.Username, repoName)

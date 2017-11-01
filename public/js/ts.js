@@ -253,7 +253,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Contributing</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Copy project\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Contributing</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Copy project\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -266,12 +266,15 @@ var AddNewBookDialog$1 = (function () {
             newBook: n.childNodes[1],
             repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1],
             org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1],
+            private_new: n.childNodes[1].childNodes[1].childNodes[3].childNodes[0],
             adaptation: n.childNodes[2],
             adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1],
             adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1],
             template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1],
+            private_adapt: n.childNodes[2].childNodes[1].childNodes[4].childNodes[0],
             collaborate: n.childNodes[3],
             collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1],
+            private_collaborate: n.childNodes[3].childNodes[1].childNodes[2].childNodes[0],
         };
         this.el = n;
     }
@@ -699,6 +702,11 @@ function Eventify(el, methods) {
 }
 //# sourceMappingURL=Eventify.js.map
 
+// AddNewBookDialog steps the user through two pages
+// determining what sort of new book they want to create,
+// and where the original of that book should be found:
+// ie copy the ebw electricbook template, or fork an existing
+// book.
 var AddNewBookDialog$$1 = (function (_super) {
     tslib_1.__extends(AddNewBookDialog$$1, _super);
     function AddNewBookDialog$$1(parent) {
@@ -738,6 +746,9 @@ var AddNewBookDialog$$1 = (function (_super) {
             _this.$.collaborate_repo.value = '';
             _this.$.adaptation.style.display = 'none';
             _this.$.adaptation_repo_name.value = '';
+            _this.$.private_new.checked = false;
+            _this.$.private_adapt.checked = false;
+            _this.$.private_collaborate.checked = false;
         });
         parent.appendChild(_this.el);
         return _this;

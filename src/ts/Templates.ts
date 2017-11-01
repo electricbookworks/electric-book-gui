@@ -34,12 +34,15 @@ export namespace R {
 		newBook: HTMLDivElement,
 		repo_name: HTMLInputElement,
 		org_name: HTMLInputElement,
+		private_new: HTMLInputElement,
 		adaptation: HTMLDivElement,
 		adaptation_repo_name: HTMLInputElement,
 		adaptation_org_name: HTMLInputElement,
 		template: HTMLInputElement,
+		private_adapt: HTMLInputElement,
 		collaborate: HTMLDivElement,
 		collaborate_repo: HTMLInputElement,
+		private_collaborate: HTMLInputElement,
 		};
 	export interface BoundFilename {
 		filename: HTMLSpanElement,
@@ -155,6 +158,8 @@ export class AddNewBookDialog {
 		</label><label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		</label><label><input type="checkbox" name="private" value="private"/>
+			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="New project"/></form></div><div><h1>Adaptation</h1><form method="post" action="/github/create/new"><input type="hidden" name="action" value="new"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label><label>Enter the organization this project should belong to, or leave this field
@@ -162,8 +167,12 @@ export class AddNewBookDialog {
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label><label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
+		</label><label><input type="checkbox" name="private" value="private"/>
+			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Contributing</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
+		</label><label><input type="checkbox" name="private" value="private"/>
+			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="Copy project"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
 			AddNewBookDialog._template = t;
@@ -177,12 +186,15 @@ export class AddNewBookDialog {
 			newBook: n.childNodes[1] as HTMLDivElement,
 			repo_name: n.childNodes[1].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			org_name: n.childNodes[1].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
+			private_new: n.childNodes[1].childNodes[1].childNodes[3].childNodes[0] as HTMLInputElement,
 			adaptation: n.childNodes[2] as HTMLDivElement,
 			adaptation_repo_name: n.childNodes[2].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
 			adaptation_org_name: n.childNodes[2].childNodes[1].childNodes[2].childNodes[1] as HTMLInputElement,
 			template: n.childNodes[2].childNodes[1].childNodes[3].childNodes[1] as HTMLInputElement,
+			private_adapt: n.childNodes[2].childNodes[1].childNodes[4].childNodes[0] as HTMLInputElement,
 			collaborate: n.childNodes[3] as HTMLDivElement,
 			collaborate_repo: n.childNodes[3].childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+			private_collaborate: n.childNodes[3].childNodes[1].childNodes[2].childNodes[0] as HTMLInputElement,
 		};
 		this.el = n;
 	}

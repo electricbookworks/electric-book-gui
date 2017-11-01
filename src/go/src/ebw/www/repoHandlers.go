@@ -1,6 +1,7 @@
 package www
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -452,6 +453,10 @@ func errorReporter(c *Context) error {
 	m.SetBody("text/plain", string(raw))
 
 	d := gomail.NewDialer(host, port, config.Config.ErrorMail.Username, config.Config.ErrorMail.Password)
+	if nil == d.TLSConfig {
+		d.TLSConfig = &tls.Config{}
+	}
+	d.TLSConfig.InsecureSkipVerify = config.Config.ErrorMail.SkipVerify
 	if err := d.DialAndSend(m); err != nil {
 		glog.Error(err)
 		return err
