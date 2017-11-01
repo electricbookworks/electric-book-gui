@@ -4,9 +4,9 @@
 
 Source code is directly in `src` subdirectory. The breakdown is:
 
-### src/es6
+### src/ts
 
-es6 source code and html template files use by javascript classes.
+Typescript source code and html template files converted to javascript for front-end.
 
 ### src/go
 
@@ -79,8 +79,4 @@ Because Eventify and DTemplate are simple, and not coupled, I changed the code i
 3. The third piece is basically to have JS classes that construct their required DOM elements and manage them themselves. Ideally these should transition to being web-components, but I'm waiting for that whole mess to actually start working, and to be honest I'm unsure it ever will, but JS-components are really easy to work with, and the way I'm structuring them is really lightweight, so all works fine :) Right now the whole JS backend of ebm is likely needing a bit of a restructure to be more MVC / MVVM - so I want to create a couple of models of the 'document' and the 'chapters', etc, and control saving / printing / changes etc from the js. But for now it all functions, I hope.
 
 I think that's all there is to the tricky JS backend stuff. It's all very, very lightweight!
-
-Have a lovely evening,
-C
-
 
