@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/go-github/github"
 	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/logger"
@@ -38,6 +39,8 @@ type Git struct {
 	// session, so we can 'cheaply' call .FetchRemote without worrying
 	// about the associated network costs.
 	_fetchedCache map[string]bool
+
+	github *github.Client
 }
 
 type GitRemoteAction int

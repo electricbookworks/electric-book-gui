@@ -15,6 +15,7 @@ export class AddNewBookDialog extends Template {
 				let newBook = this.$.newBookRadio.checked;
 				let collaborate = this.$.collaborateRadio.checked;
 				let adaptation = this.$.adaptationRadio.checked;
+
 				if (!newBook && !collaborate && !adaptation) {
 					alert(`You need to choose one or the other`);
 					return;
@@ -48,6 +49,11 @@ export class AddNewBookDialog extends Template {
 
 			this.$.adaptation.style.display = 'none';
 			this.$.adaptation_repo_name.value = '';
+
+			this.$.private_new.checked = false;
+			this.$.private_adapt.checked = false;
+			this.$.private_collaborate.checked = false;
+				
 		});
 
 		parent.appendChild(this.el);

@@ -5,3 +5,11 @@ server: "http://{{fqdn}}"
 bind: ":{{bind}}"
 session_auth: "{{session_auth}}"
 session_encrypt: "{{session_encrypt}}"
+error_mail:
+  host: "{{email_host}}"
+  port: {{email_port}}
+  username: "{{email_auth_username}}"
+  password: "{{email_auth_password}}"
+  to: "{{email_to}}"
+  from: "{{email_from}}"
+  insecure_skip_verify: {{email_insecure_skip_verify}}

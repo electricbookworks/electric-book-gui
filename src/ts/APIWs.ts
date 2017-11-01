@@ -1,3 +1,9 @@
+enum WSState {
+	Null = 0,
+	Connecting = 1,
+	Connected = 2
+}
+
 export class APIWs {
 	protected id: number;
 	protected url: string;
@@ -5,6 +11,7 @@ export class APIWs {
 	protected queue: string[];
 	protected errorHandler: (a:any)=>void;
 	protected ws: WebSocket;
+	protected wsState: WSState;
 
 	constructor(path:string="/rpc/API/json/ws", server:string="") {
 		if (""== server) {
@@ -18,6 +25,7 @@ export class APIWs {
 		this.live = new Map<number,[(...a:any[])=>void,(a:any)=>void]>();
 		this.queue = new Array<string>();
 		this.setRPCErrorHandler(null);
+		this.wsState = WSState.Null;
 		this.startWs();
 	}	
 	setRPCErrorHandler(handler?:(a:any)=>void) :void {
@@ -31,11 +39,16 @@ export class APIWs {
 		return;
 	}
 	startWs():void {
+		console.log(`APIWs::startWs() wsState = ${this.wsState}`);
+		if (this.wsState!=WSState.Null) {
+			return;
+		}
+		this.wsState = WSState.Connecting;
 		this.ws = new WebSocket(this.url);
 		this.ws.onmessage = (evt)=> {
 			let res:any = JSON.parse(evt.data);
 			if (undefined == res || undefined==res.id) {
-				console.error(`Failed to parse response: ${evt.data}`);
+				console.error(`Failed to parse response: ${evt.data}`);				
 				return;
 			}
 			let id = res.id as number;
@@ -59,9 +72,11 @@ export class APIWs {
 		};
 		this.ws.onerror = (err)=> {
 			console.error("ERROR on websocket:", err);
+			this.wsState = WSState.Null;
 		};
 		this.ws.onopen = (evt)=> {
 			console.log("Connected websocket");
+			this.wsState = WSState.Connected;
 			for (let q of this.queue) {
 				this.ws.send(q);
 			}
@@ -70,8 +85,10 @@ export class APIWs {
 		};
 		this.ws.onclose = (evt)=> {
 			console.log("Websocket closed - attempting reconnect in 1s");
+			this.wsState = WSState.Null;
 			setTimeout( ()=> this.startWs(), 1000 );
 		}
+		console.log(`WebSocket connection commencing`);
 	}
 	rpc(method:string, params:any[]) {
 		let id = this.id++;
@@ -82,12 +99,15 @@ export class APIWs {
 		// // for (let i=0; i<p.length; i++) {
 		// // 	p[i] = params[i]
 		// // }
-
+		let self = this;
 		let data = JSON.stringify({ id:id, method:method, params:params });
 		this.live.set(id, [undefined,undefined]);
 		return new Promise( (resolve:(...a:any[])=>void,reject:(a:any)=>void)=> {
+			if (this.wsState==WSState.Null) {
+				this.startWs();
+			}
 			this.live.set(id,[resolve,reject]);
-			if (1==this.ws.readyState) {
+			if ((this.wsState == WSState.Connected) && (1==this.ws.readyState)) {
 				this.ws.send(data);
 			} else {
 				this.queue.push(data);

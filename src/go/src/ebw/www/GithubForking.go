@@ -27,6 +27,7 @@ func githubCreateFork(c *Context) error {
 	if 2 != len(parts) {
 		return fmt.Errorf(`Expected repo format of USERNAME/REPONAME, but got %d parts instead`, len(parts))
 	}
+	repoPrivate := c.P(`private`) == `private`
 	repoName := parts[1]
 
 	redirectUrl, err := pathRepoEdit(c, client.Username, repoName)
@@ -37,7 +38,7 @@ func githubCreateFork(c *Context) error {
 		return err
 	}
 
-	if err := git.ContributeToRepo(client, repoUserAndName); nil != err {
+	if err := git.ContributeToRepo(client, repoUserAndName, repoPrivate); nil != err {
 		return err
 	}
 
@@ -75,7 +76,7 @@ func githubCreateNew(c *Context) error {
 	}
 
 	if err := git.DuplicateRepo(client, client.Token,
-		template, c.P(`org_name`), repoNewName); nil != err {
+		template, c.P(`org_name`), repoNewName, c.P(`private`) == `private`); nil != err {
 		return err
 	}
 

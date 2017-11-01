@@ -17,3 +17,22 @@ github_secret=
 session_auth=
 # session_encrypt should be a 32 character ascii random string
 session_encrypt=
+
+# EMAIL Error Report configuration
+# The host server for sending emailed error reports
+email_host=
+# The port for the email error report host server
+email_port=587
+# Username for authenticaton on error report server
+email_auth_username=
+# Password for authentication
+email_auth_password=
+# Email address to received error reports
+email_to=
+# Email address from which error reports originate
+email_from=
+# If your email server cert isn't properly configured for your email host domain,
+# you might want to skip certificate verification. It is best to have this configured as 
+# false, but you might need to set it to true depending on your email configuration.
+email_insecure_skip_verify=false
+

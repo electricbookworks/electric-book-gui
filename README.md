@@ -109,3 +109,7 @@ In the UI, we want to avoid using technical terms like commit and repo. Here's a
 | Review a Pull Request       | Review Submission                |
 | Upstream master             | The original                     |
 | Update from upstream master | Get latest updates from original |
+
+# Deployment
+
+See `README-deploy.md`
