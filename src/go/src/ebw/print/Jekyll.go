@@ -42,6 +42,14 @@ type Jekyll struct {
 	ServerStarting bool
 
 	output *OutErrMerge
+
+	RestartPath string
+}
+
+func (j *Jekyll) SetError(err error) {
+	j.lock.Lock()
+	j.err = err
+	j.lock.Unlock()
 }
 
 func (j *Jekyll) getBaseUrl() string {
@@ -80,14 +88,13 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			j.output.Err.Close()
 		}()
 		if err := Rvm(jout, jerr, j.RepoDir, `gem`, `install`, `bundler`).Run(); nil != err {
-			j.err = err
+			j.SetError(err)
 			util.Error(err)
-
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
 		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `install`).Run(); nil != err {
-			j.err = err
+			j.SetError(err)
 			util.Error(err)
 
 			fmt.Fprintln(jerr, err.Error())
@@ -108,26 +115,37 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			`--watch`)
 		inR, _, err := os.Pipe()
 		if nil != err {
-			j.err = err
+			j.SetError(err)
 			util.Error(err)
-
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
 		j.cmd.Stdin = inR
 		if err := j.cmd.Start(); nil != err {
-			j.err = err
+			j.SetError(err)
 			util.Error(fmt.Errorf(`ERROR starting jeckyl: %s`, err.Error()))
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
+		go func() {
+			ps, err := j.cmd.Process.Wait()
+			if nil != err {
+				j.SetError(err)
+				util.Error(fmt.Errorf(`ERROR on jeckyll process Wait: %s`, err.Error()))
+				return
+			}
+			if ps.Success() {
+				j.SetError(fmt.Errorf(`Jekyll completed without error`))
+			} else {
+				j.SetError(fmt.Errorf(`Jekyll completed in an error state`))
+			}
+		}()
 
 		targetUrl, err := url.Parse(fmt.Sprintf(`http://localhost:%d/`, j.Port))
 		if nil != err {
-			j.err = err
+			j.SetError(err)
 			util.Error(err)
 			fmt.Fprintln(jerr, err.Error())
-
 			return
 		}
 		j.server = httputil.NewSingleHostReverseProxy(targetUrl)
@@ -143,6 +161,11 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			tryCount++
 			if 0 == tryCount%10 {
 				glog.Infof(`Error trying to reach %s: %s`, targetUrl.String(), err.Error())
+				if nil != j.err {
+					// Error occurred on the server, we exit
+					glog.Infof(`Jeckyll error - %s - so server ain't coming`, j.err.Error())
+					return
+				}
 			}
 			time.Sleep(time.Second)
 		}
@@ -173,15 +196,24 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 func (j *Jekyll) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	j.lock.Lock()
 	defer j.lock.Unlock()
-	if j.ServerStarting {
+	inProcess := func() {
 		_jekyllInProcess.Execute(w, map[string]interface{}{
-			`Lines`: j.output.Lines(),
+			`Lines`:       j.output.Lines(),
+			`Error`:       j.err,
+			`Refresh`:     nil == j.err,
+			`RestartPath`: j.RestartPath,
 		})
-
+	}
+	if j.ServerStarting {
+		inProcess()
 		return
 	}
 	if nil == j.server {
 		http.Error(w, `ERROR creating that server`, http.StatusInternalServerError)
+		return
+	}
+	if nil != j.err {
+		inProcess()
 		return
 	}
 	j.server.ServeHTTP(w, r)
@@ -211,7 +243,9 @@ func (j *Jekyll) shutdown() {
 var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>
 <html>
 	<head>
+	{{if .Error}}{{else -}}
   		<meta http-equiv="refresh" content="3">
+  	{{end -}}
 		<title>Jekyll building in progress...</title>
 <style type="text/css">
 .terminal {
@@ -230,11 +264,42 @@ main {
 	max-width: 60em;
 	margin: 1em auto;
 }
+.error {
+	background-color: #933;
+	color: white;
+	font-weight: bold;
+	font-family: monospace;
+	padding: 1em;
+}
+.restart {
+	margin: 1em 0;
+	text-align: right;
+}
+.button {
+	font-family: monospace;
+	font-weight: bold;
+	background-color: #999;
+	color: white;
+	padding: 0.6em 1em;
+	box-sizing: border-box;
+	display: inline-block;
+	transition: background-color 0.3s;
+	text-decoration: none;
+}
+.button:hover {
+	background-color: #6b6;
+}
 </style>
 	</head>
 	<body>
 		<main>
+		{{if .Error}}
+			<h1>Error starting Jekyll</h1>
+			<div class="error">{{.Error}}</div>
+			<div class="restart"><a class="button" href="{{.RestartPath}}">Try again</a></div>
+		{{else}}
 			<h1>Building in progress... autoreloading...</h1>
+		{{end}}
 			<p>process output:</p>
 			<div class="terminal">
 {{range .Lines}}

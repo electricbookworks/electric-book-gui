@@ -30,6 +30,28 @@ func NewJekyllManager() *JekyllManager {
 	}
 }
 
+func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
+	jm.lock.Lock()
+	defer jm.lock.Unlock()
+
+	um, ok := jm.servers[user]
+	if !ok {
+		um = map[string]map[string]*Jekyll{}
+		jm.servers[user] = um
+	}
+	ru, ok := um[repoOwner]
+	if !ok {
+		ru = map[string]*Jekyll{}
+		um[repoOwner] = ru
+	}
+	_, ok = ru[repoName]
+	if !ok {
+		return nil
+	}
+	delete(ru, repoName)
+	return nil
+}
+
 // GetJekyll returns the Jekyll server for the specific user, repoOwner and repoName
 // combination, starting a new Jekyll server if necessary.
 func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, error) {
@@ -47,6 +69,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 		um[repoOwner] = ru
 	}
 	j, ok := ru[repoName]
+
 	if !ok {
 		repoDir, err := git.RepoDir(user, repoOwner, repoName)
 		if nil != err {

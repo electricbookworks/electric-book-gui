@@ -82,7 +82,8 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/conflict/resolve`, WebHandler(repoConflictResolve))
 
 	r.Handle(`/www/{path:.*}`, WebHandler(repoFileServer))
-	r.Handle(`/jekyll/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jeckylRepoServer))
+	r.Handle(`/jekyll/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jekyllRepoServer))
+	r.Handle(`/jekyll-restart/{repoOwner}/{repoName}/{path:.*}`, WebHandler(jekyllRepoServerRestart))
 
 	r.Handle(`/logoff`, WebHandler(LogoffHandler))
 	r.Handle(`/to-github`, WebHandler(ToGithubHandler))

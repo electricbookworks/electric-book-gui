@@ -37,7 +37,6 @@ var APIWs = (function () {
     };
     APIWs.prototype.startWs = function () {
         var _this = this;
-        console.log("APIWs::startWs() wsState = " + this.wsState);
         if (this.wsState != WSState.Null) {
             return;
         }
@@ -72,8 +71,8 @@ var APIWs = (function () {
             _this.wsState = WSState.Null;
         };
         this.ws.onopen = function (evt) {
-            console.log("Connected websocket");
             _this.wsState = WSState.Connected;
+            console.log("Connected websocket");
             for (var _i = 0, _a = _this.queue; _i < _a.length; _i++) {
                 var q = _a[_i];
                 _this.ws.send(q);
@@ -86,7 +85,6 @@ var APIWs = (function () {
             _this.wsState = WSState.Null;
             setTimeout(function () { return _this.startWs(); }, 1000);
         };
-        console.log("WebSocket connection commencing");
     };
     APIWs.prototype.rpc = function (method, params) {
         var _this = this;
@@ -98,7 +96,6 @@ var APIWs = (function () {
         // // for (let i=0; i<p.length; i++) {
         // // 	p[i] = params[i]
         // // }
-        var self = this;
         var data = JSON.stringify({ id: id, method: method, params: params });
         this.live.set(id, [undefined, undefined]);
         return new Promise(function (resolve, reject) {
