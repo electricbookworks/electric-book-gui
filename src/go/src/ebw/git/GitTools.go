@@ -396,6 +396,17 @@ func ContributeToRepo(client *Client, repoUserAndName string, private bool) erro
 		if nil != err {
 			return util.Error(err)
 		}
+		// If the fork is PRIVATE, we need to grant access AT LEAST READ ACCESS to the
+		// upstream repo owner - repoUser - so that upstream can see PR's.
+		if _, err := client.Repositories.AddCollaborator(
+			client.Context,
+			client.Username, repoName,
+			repoUser,
+			&github.RepositoryAddCollaboratorOptions{
+				Permission: "push",
+			}); nil != err {
+			return util.Error(err)
+		}
 	}
 
 	repoDir, err := RepoDir(client.Username, client.Username, repoName)
