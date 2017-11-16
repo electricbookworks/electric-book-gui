@@ -12,7 +12,7 @@
     groups='rvm,'
   become: yes
 
-- name: Install electric-book-gui from GIT
+- name: install
   git: >
     repo={{git_repo}}
     dest=/opt/electricbook
