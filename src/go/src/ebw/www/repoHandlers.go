@@ -166,8 +166,8 @@ func repoDetails(c *Context) error {
 
 	if nil != repo.Parent {
 		aheadBehind, err = git.CompareCommits(client,
-			repo.GetName(),
-			repo.Owner.GetLogin(),
+			repoName,
+			repoOwner,
 			`master`,
 			repo.Parent.Owner.GetLogin(),
 			`master`,

@@ -386,7 +386,22 @@ func ContributeToRepo(client *Client, repoUserAndName string, private bool, msgC
 		glog.Errorf("CreateFork failed : %s", err.Error())
 		return util.Error(err)
 	}
+
+	repoDir, err := RepoDir(client.Username, client.Username, repoName)
+	if nil != err {
+		return err
+	}
+
+	if err := GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
+		client.Username, repoName); nil != err {
+		return err
+	}
+
 	if private {
+		repo, _, err = client.Repositories.Get(client.Context, client.Username, repoName)
+		if nil != err {
+			return util.Error(err)
+		}
 		repo.Private = &private
 		repo, _, err = client.Repositories.Edit(
 			client.Context,
@@ -406,17 +421,17 @@ func ContributeToRepo(client *Client, repoUserAndName string, private bool, msgC
 			&github.RepositoryAddCollaboratorOptions{
 				Permission: "push",
 			}); nil != err {
-			return util.Error(err)
+			// We send an invite, but if we were invited by an organization, this will fail.
+			// we just ignore this failure. The USER will have to send an invitation to the
+			// appropraite editor of the contributing repo.
+			//return util.Error(err)
 		}
-		msgCallback(fmt.Sprintf("%s has been invited to contribute to your repo %s/%s", repoUser, client.Username, repoName))
+		if nil == err {
+			msgCallback(fmt.Sprintf("%s has been invited to contribute to your repo %s/%s", repoUser, client.Username, repoName))
+		}
 	}
 
-	repoDir, err := RepoDir(client.Username, client.Username, repoName)
-	if nil != err {
-		return err
-	}
-	return GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
-		client.Username, repoName)
+	return nil
 }
 
 // GitCloneTo clones a repo to the given working directory.
