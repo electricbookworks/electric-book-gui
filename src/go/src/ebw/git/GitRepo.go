@@ -74,11 +74,10 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	opts := &github.RepositoryListOptions{
 		Affiliation: `owner,collaborator,organization_member`,
 		Direction:   `asc`,
-		// is `name` valid here?
 		// https://godoc.org/github.com/google/go-github/github#RepositoryListOptions
 		// suggests valid values are created, updated, pushed,
 		// full_name. Default: full_name
-		Sort:       `name`,
+		Sort:       `full_name`,
 		Visibility: `all`,
 	}
 	if err := GithubPaginate(&opts.ListOptions, func() (*github.Response, error) {
@@ -91,6 +90,34 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 		return res, err
 	}); nil != err {
 		return nil, err
+	}
+
+	var reloadRepo sync.WaitGroup
+	var resultLock sync.Mutex
+	// Loading each repo in serial could take a while, so we launch multiple goroutines to do it in
+	// parallel
+	var err error = nil
+	for i := 0; i < len(repos); i++ {
+		repo := repos[i]
+		if repo.GetFork() && nil == repo.Parent {
+			reloadRepo.Add(1)
+			go func(ID, i int) {
+				defer reloadRepo.Done()
+				repo, _, ierr := client.Repositories.GetByID(client.Context, ID)
+				if nil != ierr {
+					resultLock.Lock()
+					err = ierr
+					resultLock.Unlock()
+				}
+				resultLock.Lock()
+				repos[i] = repo
+				resultLock.Unlock()
+			}(repo.GetID(), i)
+		}
+	}
+	reloadRepo.Wait()
+	if nil != err {
+		return nil, util.Error(err)
 	}
 
 	C := make(chan *GitRepo)

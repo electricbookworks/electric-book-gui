@@ -44,6 +44,8 @@ type Jekyll struct {
 	output *OutErrMerge
 
 	RestartPath string
+
+	KILL chan (bool)
 }
 
 func (j *Jekyll) SetError(err error) {
@@ -60,6 +62,10 @@ func (j *Jekyll) getBaseUrl() string {
 		return ``
 	}
 	return `/` + j.BaseUrl
+}
+
+func (j *Jekyll) Kill() {
+	j.KILL <- true
 }
 
 // Runs RVM in the given directory with the given commands.
@@ -112,6 +118,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			j.getBaseUrl(),
 			`-P`,
 			strconv.FormatInt(j.Port, 10),
+			`--incremental`,
 			`--watch`)
 		inR, _, err := os.Pipe()
 		if nil != err {
@@ -171,23 +178,32 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 		}
 		glog.Infof(`Server is up on %s`, targetUrl.String())
 
-		// Func to stop the server if it's inactive for 15 minutes
+		// Func to stop the server if it's inactive for 15 minutes, or if j.KILL
+		// receives a post
 		go func() {
 			t := time.NewTicker(time.Minute)
-			for range t.C {
-				// glog.Infof(`Checking time for jeckyl %s`, j.RepoDir)
-				j.lock.Lock()
-				maxDuration := 15
-				if time.Now().Add(-1 * time.Duration(maxDuration) * time.Minute).After(j.lastRequest) {
-					// glog.Infof(`Jekyll for %s has been inactive for %dm - shutting down`, j.RepoDir, maxDuration)
-					j.shutdown()
+			for {
+				exit := false
+				select {
+				case <-t.C:
+					j.lock.Lock()
+					maxDuration := 15
+					if time.Now().Add(-1 * time.Duration(maxDuration) * time.Minute).After(j.lastRequest) {
+						exit = true
+						break
+					}
 					j.lock.Unlock()
-					t.Stop()
-					// glog.Infof(`Jekyll on %s has shut down`, j.RepoDir)
-					return
+				case <-j.KILL:
+					j.lock.Lock()
+					exit = true
 				}
-				j.lock.Unlock()
+				if exit {
+					break
+				}
 			}
+			j.shutdown()
+			j.lock.Unlock()
+			t.Stop()
 		}()
 	}()
 	return nil

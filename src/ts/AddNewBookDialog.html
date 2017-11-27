@@ -59,7 +59,6 @@ eventify:
 		<label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book" data-set="template" />
 		</label>
-
 		<label>
 			<input type="checkbox" name="private" value="private" data-set="private_adapt" />
 			Make this project private (must be supported by user's Github plan).
@@ -69,17 +68,19 @@ eventify:
 	</div>
 	<div data-set="collaborate">
 		<h1>Contributing</h1>
+
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork" />
 		<label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core" data-set="collaborate_repo" />
 		</label>
 
-		<label>
+		<label style="display:none;">
 			<input type="checkbox" name="private" value="private" data-set="private_collaborate" />
 			Make this project private (must be supported by user's Github plan).
 		</label>
 		<input type="submit" class="btn" value="Copy project" />
 		</form>
+		
 	</div>
 </div>

@@ -31,6 +31,7 @@ func NewJekyllManager() *JekyllManager {
 }
 
 func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
+	// glog.Infof(`ClearJekyll(%s,%s,%s)`, user, repoOwner, repoName)
 	jm.lock.Lock()
 	defer jm.lock.Unlock()
 
@@ -44,9 +45,12 @@ func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
 		ru = map[string]*Jekyll{}
 		um[repoOwner] = ru
 	}
-	_, ok = ru[repoName]
+	j, ok := ru[repoName]
 	if !ok {
 		return nil
+	}
+	if nil != j {
+		j.Kill()
 	}
 	delete(ru, repoName)
 	return nil
@@ -82,6 +86,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 			manager: jm,
 			path:    [3]string{user, repoOwner, repoName},
 			output:  NewOutErrMerge(),
+			KILL:    make(chan bool),
 		}
 		ru[repoName] = j
 		if err := j.start(os.Stdout, os.Stderr); nil != err {

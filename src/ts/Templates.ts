@@ -171,7 +171,7 @@ export class AddNewBookDialog {
 			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Contributing</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
-		</label><label><input type="checkbox" name="private" value="private"/>
+		</label><label style="display:none;"><input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="Copy project"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
