@@ -6,6 +6,7 @@ import {EditorImage} from './EditorImage';
 import {EBW} from './EBW';
 import {FileContent, FileStat, FileStatString} from './FS/FS';
 import {FSFileEdit} from './FS/FSFileEdit';
+import {ImageIdentify} from './ImageIdentify';
 
 import signals = require('signals');
 
@@ -60,7 +61,6 @@ class repoEditorActionBar {
 		//console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
 		this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete": "Delete";
 	}
-
 }
 
 /**
@@ -216,8 +216,7 @@ export class RepoFileEditorCM extends Template {
 			this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
 			return;
 		}
-		let imgRegexp = new RegExp(`.*\.(jpg|png|tiff|svg|gif)$`);
-		if (imgRegexp.test(file.Name())) {
+		if (ImageIdentify.isImage(file.Name())) {
 			this.imageEditor.setFile(file);
 			this.showImageEditor();
 			this.file = undefined;

@@ -14,7 +14,7 @@
 		},
         "GoSublime": {
             "env": {
-            	"GOPATH": "$HOME/proj/electric-book-gui/src/go"
+            	"GOPATH": "$HOME/proj/ebw/electric-book-gui/src/go"
             }
         }
 	}

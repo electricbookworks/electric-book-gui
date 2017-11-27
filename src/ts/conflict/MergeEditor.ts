@@ -109,15 +109,11 @@ export class MergeEditor implements ConflictEditor {
 	CopyTheir() : void {
 		// We leave source undefined, so that our editor will update
 		// when the change arrives		
-		console.log(`isTheirDeleted = ${this.isTheirDeleted()}, text = ${this.getTheirText()}`);
 		this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
-		console.log(`this.file = `, this.file);
 	}
 	CopyWorking() : void {
 		// We leave source undefined, so that our editor will update
 		// when the change arrives
-		console.log(`isWorkingDeleted = ${this.isWorkingDeleted()}`);
-		console.log(`working text = ${this.getTheirText()}`);
 		this.file.SetTheirContent(undefined, this.isWorkingDeleted() ? undefined : this.getWorkingText());
 	}
 	RevertOur() : void {
@@ -200,7 +196,7 @@ export class MergeEditor implements ConflictEditor {
 	}
 	// Merge starts merging a file.
 	Merge(file:File) : void {
-		console.log(`Merge: ${file.Path()}`);
+		// console.log(`Merge: ${file.Path()}`);
 		if (this.file && this.file.Path()==file.Path()) {
 			return;	// Nothing to do if we're selecting the same file
 		}
@@ -211,7 +207,7 @@ export class MergeEditor implements ConflictEditor {
 		}
 		// Controls must receive update before we do.
 		// TODO : Actually, the controls should listen to US, not to the
-		// file, and we should have an 'EditorStateModel'...
+		// file, and we should have an 'EditorStateModel'... next version.
 		this.controls.SetFile(file);
 		// VERY importantly, we don't listen to the file 
 		// until after we've concluded the FetchContent, because

@@ -1374,6 +1374,16 @@ var FileContent = (function () {
     return FileContent;
 }());
 
+var ImageIdentify = (function () {
+    function ImageIdentify() {
+    }
+    ImageIdentify.isImage = function (name) {
+        var imgRegexp = new RegExp(".*.(jpg|png|tiff|svg|gif)$");
+        return imgRegexp.test(name);
+    };
+    return ImageIdentify;
+}());
+
 var EditorEvents;
 (function (EditorEvents) {
     EditorEvents[EditorEvents["SAVED"] = 1] = "SAVED";
@@ -1562,8 +1572,7 @@ var RepoFileEditorCM$1 = (function (_super) {
             this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
             return;
         }
-        var imgRegexp = new RegExp(".*.(jpg|png|tiff|svg|gif)$");
-        if (imgRegexp.test(file.Name())) {
+        if (ImageIdentify.isImage(file.Name())) {
             this.imageEditor.setFile(file);
             this.showImageEditor();
             this.file = undefined;
@@ -2596,11 +2605,6 @@ function FSPrimeFromJS(fs, js) {
 }
 //# sourceMappingURL=FSPrimeFromJS.js.map
 
-/**
- * RepoEditorPage is the JS controller for the page that allows
- * editing of a repo.
- *
- */
 var RepoEditorPage = (function () {
     function RepoEditorPage(repoOwner, repoName, filesList, filesJson, proseIgnoreFunction) {
         var _this = this;
@@ -3098,6 +3102,7 @@ var MergeEditorControlBar = (function () {
     return MergeEditorControlBar;
 }());
 
+// MergeEditor controls a Mergely class
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
@@ -3190,15 +3195,11 @@ var MergeEditor$1 = (function () {
     MergeEditor.prototype.CopyTheir = function () {
         // We leave source undefined, so that our editor will update
         // when the change arrives		
-        console.log("isTheirDeleted = " + this.isTheirDeleted() + ", text = " + this.getTheirText());
         this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
-        console.log("this.file = ", this.file);
     };
     MergeEditor.prototype.CopyWorking = function () {
         // We leave source undefined, so that our editor will update
         // when the change arrives
-        console.log("isWorkingDeleted = " + this.isWorkingDeleted());
-        console.log("working text = " + this.getTheirText());
         this.file.SetTheirContent(undefined, this.isWorkingDeleted() ? undefined : this.getWorkingText());
     };
     MergeEditor.prototype.RevertOur = function () {
@@ -3284,7 +3285,7 @@ var MergeEditor$1 = (function () {
     // Merge starts merging a file.
     MergeEditor.prototype.Merge = function (file) {
         var _this = this;
-        console.log("Merge: " + file.Path());
+        // console.log(`Merge: ${file.Path()}`);
         if (this.file && this.file.Path() == file.Path()) {
             return; // Nothing to do if we're selecting the same file
         }
@@ -3295,7 +3296,7 @@ var MergeEditor$1 = (function () {
         }
         // Controls must receive update before we do.
         // TODO : Actually, the controls should listen to US, not to the
-        // file, and we should have an 'EditorStateModel'...
+        // file, and we should have an 'EditorStateModel'... next version.
         this.controls.SetFile(file);
         // VERY importantly, we don't listen to the file 
         // until after we've concluded the FetchContent, because
