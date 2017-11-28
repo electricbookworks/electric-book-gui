@@ -30,6 +30,8 @@ export class MergeEditorControlBar {
 
 	protected buttons: HTMLElement[];
 
+	protected imageEditing : boolean;
+
 	protected file: File;
 
 	get(key:string) : HTMLElement {
@@ -44,6 +46,20 @@ export class MergeEditorControlBar {
 		} else {
 			el.setAttribute(`disabled`,`disabled`);
 		}
+	}
+
+	setImageEditing(b: boolean) {
+		let sel = document.querySelectorAll(`.hide-for-image`) as NodeList;
+		for (let i=0; i<sel.length; i++) {
+			let el = sel.item(i) as HTMLElement
+			if (b) {
+				el.setAttribute('hold-display', el.style.display);
+				el.style.display = 'none';
+			} else {
+				el.style.display = el.getAttribute('hold-display');
+			}
+		}
+		this.imageEditing = b;
 	}
 
 	constructor() {
@@ -87,6 +103,8 @@ export class MergeEditorControlBar {
 		ln(`single-revert-our`, MergeEditorAction.RevertOur);
 		ln(`single-revert-their`, MergeEditorAction.RevertTheir);
 		ln(`single-revert-git`, MergeEditorAction.RevertGit);
+
+		this.imageEditing = false;
 	}
 	SetFile(f:File) {
 		if (this.file) {
@@ -103,11 +121,13 @@ export class MergeEditorControlBar {
 			return;
 		}
 		let f = this.file;
-		if (f.WorkingFile().Exists || f.TheirFile().Exists) {
-			// One or the other exists
-			this.DeleteButton.removeAttribute(`disabled`);
-		} else {
-			this.DeleteButton.setAttribute(`disabled`,`disabled`);
+		if (!this.imageEditing) {
+			if (f.WorkingFile().Exists || f.TheirFile().Exists) {
+				// One or the other exists
+				this.DeleteButton.removeAttribute(`disabled`);
+			} else {
+				this.DeleteButton.setAttribute(`disabled`,`disabled`);
+			}
 		}
 	}
 

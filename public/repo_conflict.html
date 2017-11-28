@@ -28,7 +28,7 @@
 		<div id="editor">
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
-					<div class="drop-down pr-merge">
+					<div class="drop-down pr-merge hide-for-image">
 						<button class="btn">Copy</button>
 						<div class="hover">
 							<a class="btn" id="merge-editor-control-copy-working">My version to incoming</a>
@@ -36,7 +36,7 @@
 						</div>
 					</div>
 
-					<div class="drop-down">
+					<div class="drop-down  hide-for-image">
 						<div class="btn">Revert</div>
 						<div class="hover">
 							<a class="btn pr-merge" id="merge-editor-control-revert-our">My version to my original</a>
@@ -50,10 +50,10 @@
 						</div>
 					</div>
 
-					<a class="btn" id="merge-editor-control-save">Save</a>
+					<a class="btn hide-for-image" id="merge-editor-control-save">Save</a>
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
 					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
-					<a class="btn" id="merge-editor-control-delete" disabled style="display: none;">Delete this file</a>
+					<a class="btn" id="merge-editor-control-delete" class="hide-for-image" disabled style="display: none;">Delete this file</a>
 					
 				</div>
 				<div class="pr-merge" id="merge-instructions">

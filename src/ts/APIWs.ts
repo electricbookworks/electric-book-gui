@@ -208,6 +208,22 @@ export class APIWs {
 		return this.rpc("MergedFileGit",  [repoOwner,repoName,path] );
 	}
 	
+	FileExistsOurHeadTheirHead (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("FileExistsOurHeadTheirHead",  [repoOwner,repoName,path] );
+	}
+	
+	IsOurHeadInWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("IsOurHeadInWd",  [repoOwner,repoName,path] );
+	}
+	
+	SaveOurHeadToWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("SaveOurHeadToWd",  [repoOwner,repoName,path] );
+	}
+	
+	SaveTheirHeadToWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("SaveTheirHeadToWd",  [repoOwner,repoName,path] );
+	}
+	
 	SaveMergingFile (repoOwner:string,repoName:string,path:string,workingExists:boolean,workingContent:string,theirExists:boolean,theirContent:string) {
 		return this.rpc("SaveMergingFile",  [repoOwner,repoName,path,workingExists,workingContent,theirExists,theirContent] );
 	}

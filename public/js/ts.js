@@ -180,6 +180,18 @@ var APIWs = (function () {
     APIWs.prototype.MergedFileGit = function (repoOwner, repoName, path) {
         return this.rpc("MergedFileGit", [repoOwner, repoName, path]);
     };
+    APIWs.prototype.FileExistsOurHeadTheirHead = function (repoOwner, repoName, path) {
+        return this.rpc("FileExistsOurHeadTheirHead", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.IsOurHeadInWd = function (repoOwner, repoName, path) {
+        return this.rpc("IsOurHeadInWd", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.SaveOurHeadToWd = function (repoOwner, repoName, path) {
+        return this.rpc("SaveOurHeadToWd", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.SaveTheirHeadToWd = function (repoOwner, repoName, path) {
+        return this.rpc("SaveTheirHeadToWd", [repoOwner, repoName, path]);
+    };
     APIWs.prototype.SaveMergingFile = function (repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent) {
         return this.rpc("SaveMergingFile", [repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent]);
     };
@@ -652,6 +664,24 @@ var conflict_FileListDisplay = (function () {
         this.el = n;
     }
     return conflict_FileListDisplay;
+}());
+var conflict_MergeImageEditor = (function () {
+    function conflict_MergeImageEditor() {
+        var t = conflict_MergeImageEditor._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\"><div>\n\t</div><div>\n\t</div></div>";
+            t = d.firstElementChild;
+            conflict_MergeImageEditor._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            ours: n.childNodes[0],
+            theirs: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return conflict_MergeImageEditor;
 }());
 var conflict_MergeInstructions = (function () {
     function conflict_MergeInstructions() {
@@ -3059,6 +3089,7 @@ var MergeEditorControlBar = (function () {
         ln("single-revert-our", MergeEditorAction.RevertOur);
         ln("single-revert-their", MergeEditorAction.RevertTheir);
         ln("single-revert-git", MergeEditorAction.RevertGit);
+        this.imageEditing = false;
     }
     MergeEditorControlBar.prototype.get = function (key) {
         return document.getElementById("merge-editor-control-" + key);
@@ -3074,6 +3105,20 @@ var MergeEditorControlBar = (function () {
         else {
             el.setAttribute("disabled", "disabled");
         }
+    };
+    MergeEditorControlBar.prototype.setImageEditing = function (b) {
+        var sel = document.querySelectorAll(".hide-for-image");
+        for (var i = 0; i < sel.length; i++) {
+            var el = sel.item(i);
+            if (b) {
+                el.setAttribute('hold-display', el.style.display);
+                el.style.display = 'none';
+            }
+            else {
+                el.style.display = el.getAttribute('hold-display');
+            }
+        }
+        this.imageEditing = b;
     };
     MergeEditorControlBar.prototype.SetFile = function (f) {
         if (this.file) {
@@ -3091,18 +3136,114 @@ var MergeEditorControlBar = (function () {
             return;
         }
         var f = this.file;
-        if (f.WorkingFile().Exists || f.TheirFile().Exists) {
-            // One or the other exists
-            this.DeleteButton.removeAttribute("disabled");
-        }
-        else {
-            this.DeleteButton.setAttribute("disabled", "disabled");
+        if (!this.imageEditing) {
+            if (f.WorkingFile().Exists || f.TheirFile().Exists) {
+                // One or the other exists
+                this.DeleteButton.removeAttribute("disabled");
+            }
+            else {
+                this.DeleteButton.setAttribute("disabled", "disabled");
+            }
         }
     };
     return MergeEditorControlBar;
 }());
 
-// MergeEditor controls a Mergely class
+var VERSION_OUR = "our-head";
+var VERSION_THEIR = "their-head";
+var MergeImageEditorView = (function () {
+    function MergeImageEditorView(context, parent, path, version, selected) {
+        var _this = this;
+        this.context = context;
+        this.path = path;
+        this.version = version;
+        this.selected = selected;
+        this.img = document.createElement('img');
+        this.img.classList.add("merge-image");
+        this.img.classList.add(version);
+        if (this.selected) {
+            this.img.classList.add('selected');
+        }
+        this.img.src = "/www-version/" + version + "/" + this.context.RepoOwner + "/" + this.context.RepoName + "/" + path;
+        this.img.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            if (_this.selected) {
+                return;
+            }
+            _this.img.dispatchEvent(new CustomEvent("ImageSelected", { bubbles: true, cancelable: true, detail: {
+                    Path: _this.path,
+                    Version: _this.version
+                }
+            }));
+        });
+        parent.appendChild(this.img);
+    }
+    MergeImageEditorView.prototype.select = function (s) {
+        if (s == this.selected) {
+            return;
+        }
+        if (s) {
+            this.img.classList.add('selected');
+        }
+        else {
+            this.img.classList.remove('selected');
+        }
+        this.selected = s;
+    };
+    return MergeImageEditorView;
+}());
+/**
+ * MergeImageEditor displays two images - ours and theirs - to the user, allowing them to select
+ * the one they wish to keep as the merge result.
+ */
+var MergeImageEditor = (function (_super) {
+    tslib_1.__extends(MergeImageEditor, _super);
+    function MergeImageEditor(context, parent, path) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        EBW.API().IsOurHeadInWd(context.RepoOwner, context.RepoName, path)
+            .then(function (args) {
+            var oursInWd = args[0];
+            _this.ours = new MergeImageEditorView(context, _this.$.ours, path, VERSION_OUR, oursInWd);
+            _this.theirs = new MergeImageEditorView(context, _this.$.theirs, path, VERSION_THEIR, !oursInWd);
+            _this.apiInFlight = false;
+            _this.el.addEventListener("ImageSelected", function (evt) {
+                if (_this.apiInFlight)
+                    return; // can't have two api calls in flight at the same time
+                var api = EBW.API();
+                var p;
+                var ourVersion = evt.detail.Version == VERSION_OUR;
+                _this.apiInFlight = true;
+                if (ourVersion) {
+                    p = api.SaveOurHeadToWd(context.RepoOwner, context.RepoName, path);
+                }
+                else {
+                    p = api.SaveTheirHeadToWd(context.RepoOwner, context.RepoName, path);
+                }
+                p.then(function () {
+                    var ours = evt.detail.V;
+                    _this.ours.select(ourVersion);
+                    _this.theirs.select(!ourVersion);
+                    _this.apiInFlight = false;
+                })
+                    .catch(function (err) {
+                    EBW.Error(err);
+                    console.error(err);
+                    _this.apiInFlight = false;
+                });
+            });
+        })
+            .catch(function (err) {
+            EBW.Error(err);
+            console.error(err);
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    return MergeImageEditor;
+}(conflict_MergeImageEditor));
+
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
         this.context = context;
@@ -3251,6 +3392,10 @@ var MergeEditor$1 = (function () {
         this.getRightCM().getDoc().setValue(s);
     };
     MergeEditor.prototype.SaveFile = function () {
+        if (this.mergeImageEditor != null) {
+            // SaveFile returns automatically if we're resolving images
+            return Promise.resolve("");
+        }
         if (this.file) {
             var f_1 = this.file;
             var w = this.getWorkingText();
@@ -3291,13 +3436,26 @@ var MergeEditor$1 = (function () {
         }
         // Save any file we're currently editing
         if (this.file) {
-            this.SaveFile();
+            if (null == this.mergeImageEditor) {
+                this.SaveFile();
+            }
             this.file.Listen.remove(this.FileEventListener, this);
         }
         // Controls must receive update before we do.
         // TODO : Actually, the controls should listen to US, not to the
-        // file, and we should have an 'EditorStateModel'... next version.
+        // file, and we should have an 'EditorStateModel'... something for next version ;)
         this.controls.SetFile(file);
+        if (ImageIdentify.isImage(file.Path())) {
+            this.parent.textContent = "";
+            this.mergeImageEditor = new MergeImageEditor(this.context, this.parent, file.Path());
+            this.file = file;
+            this.file.Listen.add(this.FileEventListener, this);
+            console.log("created new MergeImageEditor with parent ", this.parent);
+            this.controls.setImageEditing(true);
+            return;
+        }
+        this.controls.setImageEditing(false);
+        this.mergeImageEditor = null;
         // VERY importantly, we don't listen to the file 
         // until after we've concluded the FetchContent, because
         // we won't have an editor to populate when FetchContent

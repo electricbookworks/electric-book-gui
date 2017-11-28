@@ -4434,7 +4434,7 @@ body {
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
         position: relative; }
-        #repo-conflict #work #editor #editor-work.pr-merge > div {
+        #repo-conflict #work #editor #editor-work.pr-merge > div:not(.merge-image-editor) {
           display: flex;
           flex-direction: row;
           align-items: stretch;
@@ -4445,21 +4445,21 @@ body {
           bottom: 0;
           left: 0;
           right: 0; }
-          #repo-conflict #work #editor #editor-work > div > div {
-            float: none;
-            flex-grow: 0; }
-          #repo-conflict #work #editor #editor-work > div > .mergely-column {
-            flex-grow: 1; }
-          #repo-conflict #work #editor #editor-work > div.CodeMirror {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0; }
-          #repo-conflict #work #editor #editor-work > div .CodeMirror, #repo-conflict #work #editor #editor-work > div.CodeMirror {
-            font-size: 1em;
-            font-family: 'Inconsolata',monospace;
-            height: 100%; }
+        #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor) > div {
+          float: none;
+          flex-grow: 0; }
+        #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor) > .mergely-column {
+          flex-grow: 1; }
+        #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor).CodeMirror {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0; }
+        #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor) .CodeMirror, #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor).CodeMirror {
+          font-size: 1em;
+          font-family: 'Inconsolata',monospace;
+          height: 100%; }
 
 #staged-files-list {
   overflow-y: scroll;
@@ -4667,6 +4667,24 @@ body {
     flex-grow: 0;
     font-size: 0.5em;
     font-weight: bold; }
+
+#merge-image-editor {
+  display: block;
+  width: 100%;
+  position: relative; }
+  #merge-image-editor > div {
+    margin: 0;
+    width: 50%;
+    height: 100%;
+    display: inline-block; }
+  #merge-image-editor .merge-image {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    border: 2px solid transparent;
+    cursor: pointer; }
+    #merge-image-editor .merge-image.selected {
+      border: 2px solid green; }
 
 input,
 textarea,

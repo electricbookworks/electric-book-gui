@@ -128,6 +128,54 @@ func (g *Git) ListConflictedFiles() ([]string, error) {
 	return files, nil
 }
 
+func (g *Git) IsOurHeadInWd(path string) (bool, error) {
+	our, err := g.CatFileVersion(path, GFV_OUR_HEAD, nil)
+	oursNotExist := false
+	if nil != err {
+		if !os.IsNotExist(err) {
+			return false, err
+		}
+		oursNotExist = true
+	}
+	wd, err := g.CatFileVersion(path, GFV_OUR_WD, nil)
+	if nil != err {
+		if !os.IsNotExist(err) {
+			return false, err
+		}
+		// If the file does not exist in ours, and is not in WD, then
+		// we've got our HEAD in wd, otherwise we don't have this -
+		// our HEAD has the file, but the file does exist in WD
+		return oursNotExist, nil
+	}
+	if len(our) != len(wd) {
+		return false, nil
+	}
+	// check that the files are identical
+	for i, b := range our {
+		if b != wd[i] {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+// WriteVersionToWd writes the given version of the file to the wd.
+func (g *Git) WriteVersionToWd(path string, v GitFileVersion) error {
+	raw, err := g.CatFileVersion(path, v, nil)
+	if nil != err {
+		if !os.IsNotExist(err) {
+			return err
+		}
+		// We ignore errors here, since the file might not exist, which is fine by us...
+		os.Remove(g.Path(path))
+	} else {
+		if err := ioutil.WriteFile(g.Path(path), raw, 0755); nil != err {
+			return g.Error(err)
+		}
+	}
+	return nil
+}
+
 // CatFileVersion returns the contents of the path for the given
 // GitFileVersion
 func (g *Git) CatFileVersion(path string, v GitFileVersion, auto *bool) ([]byte, error) {

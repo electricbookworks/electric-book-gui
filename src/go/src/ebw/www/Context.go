@@ -169,7 +169,7 @@ func (c *Context) Repo() (*git.Repo, error) {
 		return nil, err
 	}
 	repo.Log = c.Log
-	c.AddDefer(repo.Close)
+	c.AddDefer(func() { repo.Close() })
 	return repo, nil
 }
 

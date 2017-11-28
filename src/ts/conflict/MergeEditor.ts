@@ -3,7 +3,9 @@ import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {FileContent, FileEvent, File} from './File';
+import {ImageIdentify} from '../ImageIdentify';
 import {MergeEditorAction, MergeEditorControlBar} from './MergeEditorControlBar';
+import {MergeImageEditor} from './MergeImageEditor';
 import jQuery = require('jquery');
 
 import signals = require('signals');
@@ -17,6 +19,7 @@ export class MergeEditor implements ConflictEditor {
 	protected editLeft = true;
 	protected editBoth = true;
 	protected controls : MergeEditorControlBar;
+	protected mergeImageEditor : MergeImageEditor;
 
 	constructor(
 		protected context:Context,
@@ -162,6 +165,10 @@ export class MergeEditor implements ConflictEditor {
 		this.getRightCM().getDoc().setValue(s);
 	}
 	SaveFile() : Promise<string> {
+		if (this.mergeImageEditor!=null) {
+			// SaveFile returns automatically if we're resolving images
+			return Promise.resolve(``);
+		}
 		if (this.file) {
 			let f = this.file;
 			let w = this.getWorkingText();
@@ -202,13 +209,27 @@ export class MergeEditor implements ConflictEditor {
 		}
 		// Save any file we're currently editing
 		if (this.file) {
-			this.SaveFile();
+			if (null==this.mergeImageEditor) {
+				this.SaveFile();
+			}
 			this.file.Listen.remove(this.FileEventListener, this);
 		}
 		// Controls must receive update before we do.
 		// TODO : Actually, the controls should listen to US, not to the
-		// file, and we should have an 'EditorStateModel'... next version.
+		// file, and we should have an 'EditorStateModel'... something for next version ;)
 		this.controls.SetFile(file);
+
+		if (ImageIdentify.isImage(file.Path())) {
+			this.parent.textContent = ``;
+			this.mergeImageEditor = new MergeImageEditor(this.context, this.parent, file.Path());
+			this.file = file;
+			this.file.Listen.add(this.FileEventListener, this);
+			console.log(`created new MergeImageEditor with parent `, this.parent);
+			this.controls.setImageEditing(true);
+			return;
+		}
+		this.controls.setImageEditing(false);
+		this.mergeImageEditor= null;
 		// VERY importantly, we don't listen to the file 
 		// until after we've concluded the FetchContent, because
 		// we won't have an editor to populate when FetchContent
