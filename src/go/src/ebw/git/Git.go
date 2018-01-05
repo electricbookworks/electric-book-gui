@@ -415,7 +415,10 @@ func (g *Git) FetchRemote(remoteName string) error {
 			},
 		},
 	}, ``); nil != err {
-		return g.Error(err)
+		if strings.Contains(err.Error(), "404") {
+			return g.Error(fmt.Errorf("We couldn't fetch that submission. Has the contributor given you access to their project?"))
+		}
+		return g.Error(fmt.Errorf("Failed on Git.FetchRemote(%s) of %s with %s.", remoteName, g.Path(``), err.Error()))
 	}
 	g._fetchedCache[remoteName] = true
 	return nil

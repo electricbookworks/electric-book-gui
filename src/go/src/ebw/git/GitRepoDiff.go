@@ -20,10 +20,11 @@ func CompareCommits(client *Client, repoName string, repoOwnerA string,
 	base := fmt.Sprintf("%s:%v", repoOwnerA, repoBranchA)
 	head := fmt.Sprintf("%s:%v", repoOwnerB, repoBranchB)
 
-	c, _, err := client.Repositories.CompareCommits(client.Context, client.Username,
+	c, _, err := client.Repositories.CompareCommits(client.Context, repoOwnerA,
 		repoName, base, head)
 	if nil != err {
-		glog.Errorf(`Error on repo diffs(%s): %s`, repoName, err.Error())
+		glog.Errorf(`Error on repo diffs(%s, %s, %s, %s, %s): %s`, repoName, repoOwnerA, repoBranchA, repoOwnerB, repoBranchB, err.Error())
+		// panic(err)
 		return nil, util.Error(err)
 	}
 	cs.Ahead = c.GetAheadBy()

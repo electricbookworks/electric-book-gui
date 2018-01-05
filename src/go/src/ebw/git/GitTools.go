@@ -369,7 +369,7 @@ func DuplicateRepo(client *Client, githubPassword string,
 
 // ContributeToRepo configures a fork of the repo for the given
 // user, and checks out the newly forked repo.
-func ContributeToRepo(client *Client, repoUserAndName string, private bool) error {
+func ContributeToRepo(client *Client, repoUserAndName string, private bool, msgCallback func(msg string)) error {
 	glog.Infof(`client.Username=%s, ContributeToRepo: %s`, client.Username, repoUserAndName)
 	// See CLI BookContribute for model of how this should function.
 	parts := strings.Split(repoUserAndName, `/`)
@@ -386,7 +386,22 @@ func ContributeToRepo(client *Client, repoUserAndName string, private bool) erro
 		glog.Errorf("CreateFork failed : %s", err.Error())
 		return util.Error(err)
 	}
+
+	repoDir, err := RepoDir(client.Username, client.Username, repoName)
+	if nil != err {
+		return err
+	}
+
+	if err := GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
+		client.Username, repoName); nil != err {
+		return err
+	}
+
 	if private {
+		repo, _, err = client.Repositories.Get(client.Context, client.Username, repoName)
+		if nil != err {
+			return util.Error(err)
+		}
 		repo.Private = &private
 		repo, _, err = client.Repositories.Edit(
 			client.Context,
@@ -396,14 +411,27 @@ func ContributeToRepo(client *Client, repoUserAndName string, private bool) erro
 		if nil != err {
 			return util.Error(err)
 		}
+		// If the fork is PRIVATE, we need to grant access AT LEAST READ ACCESS to the
+		// upstream repo owner - repoUser - so that upstream can see PR's.
+		glog.Infof("Inviting %s to contribute to %s/%s", repoUser, client.Username, repoName)
+		if _, err := client.Repositories.AddCollaborator(
+			client.Context,
+			client.Username, repoName,
+			repoUser,
+			&github.RepositoryAddCollaboratorOptions{
+				Permission: "push",
+			}); nil != err {
+			// We send an invite, but if we were invited by an organization, this will fail.
+			// we just ignore this failure. The USER will have to send an invitation to the
+			// appropraite editor of the contributing repo.
+			//return util.Error(err)
+		}
+		if nil == err {
+			msgCallback(fmt.Sprintf("%s has been invited to contribute to your repo %s/%s", repoUser, client.Username, repoName))
+		}
 	}
 
-	repoDir, err := RepoDir(client.Username, client.Username, repoName)
-	if nil != err {
-		return err
-	}
-	return GitCloneTo(client, filepath.Dir(repoDir), /* empty working dir will default to current dir */
-		client.Username, repoName)
+	return nil
 }
 
 // GitCloneTo clones a repo to the given working directory.

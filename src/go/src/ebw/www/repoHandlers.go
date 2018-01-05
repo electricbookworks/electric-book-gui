@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
@@ -166,8 +167,8 @@ func repoDetails(c *Context) error {
 
 	if nil != repo.Parent {
 		aheadBehind, err = git.CompareCommits(client,
-			repo.GetName(),
-			repo.Owner.GetLogin(),
+			repoName,
+			repoOwner,
 			`master`,
 			repo.Parent.Owner.GetLogin(),
 			`master`,
@@ -328,6 +329,30 @@ func repoFileServer(c *Context) error {
 	glog.Infof(`Serving %s from %s`, c.R.RequestURI, root)
 	fs := http.StripPrefix(`/www/`, http.FileServer(http.Dir(root)))
 	fs.ServeHTTP(c.W, c.R)
+	return nil
+}
+
+func repoVersionedFileServer(c *Context) error {
+	repo, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	path := c.P(`path`)
+	gitVersion, err := git.ParseGitFileVersion(c.P(`version`))
+	if nil != err {
+		return err
+	}
+	raw, err := repo.Git.CatFileVersion(path, gitVersion, nil)
+	if nil != err {
+		if !os.IsNotExist(err) {
+			return err
+		}
+		http.Error(c.W, err.Error(), http.StatusNotFound)
+		return nil
+	}
+	mimeType := mime.TypeByExtension(filepath.Ext(path))
+	c.W.Header().Add("Content-Type", mimeType)
+	c.W.Write(raw)
 	return nil
 }
 

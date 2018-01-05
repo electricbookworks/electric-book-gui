@@ -30,6 +30,32 @@ func NewJekyllManager() *JekyllManager {
 	}
 }
 
+func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
+	// glog.Infof(`ClearJekyll(%s,%s,%s)`, user, repoOwner, repoName)
+	jm.lock.Lock()
+	defer jm.lock.Unlock()
+
+	um, ok := jm.servers[user]
+	if !ok {
+		um = map[string]map[string]*Jekyll{}
+		jm.servers[user] = um
+	}
+	ru, ok := um[repoOwner]
+	if !ok {
+		ru = map[string]*Jekyll{}
+		um[repoOwner] = ru
+	}
+	j, ok := ru[repoName]
+	if !ok {
+		return nil
+	}
+	if nil != j {
+		j.Kill()
+	}
+	delete(ru, repoName)
+	return nil
+}
+
 // GetJekyll returns the Jekyll server for the specific user, repoOwner and repoName
 // combination, starting a new Jekyll server if necessary.
 func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, error) {
@@ -47,6 +73,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 		um[repoOwner] = ru
 	}
 	j, ok := ru[repoName]
+
 	if !ok {
 		repoDir, err := git.RepoDir(user, repoOwner, repoName)
 		if nil != err {
@@ -59,6 +86,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 			manager: jm,
 			path:    [3]string{user, repoOwner, repoName},
 			output:  NewOutErrMerge(),
+			KILL:    make(chan bool),
 		}
 		ru[repoName] = j
 		if err := j.start(os.Stdout, os.Stderr); nil != err {

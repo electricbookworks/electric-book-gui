@@ -37,7 +37,6 @@ var APIWs = (function () {
     };
     APIWs.prototype.startWs = function () {
         var _this = this;
-        console.log("APIWs::startWs() wsState = " + this.wsState);
         if (this.wsState != WSState.Null) {
             return;
         }
@@ -72,8 +71,8 @@ var APIWs = (function () {
             _this.wsState = WSState.Null;
         };
         this.ws.onopen = function (evt) {
-            console.log("Connected websocket");
             _this.wsState = WSState.Connected;
+            console.log("Connected websocket");
             for (var _i = 0, _a = _this.queue; _i < _a.length; _i++) {
                 var q = _a[_i];
                 _this.ws.send(q);
@@ -86,7 +85,6 @@ var APIWs = (function () {
             _this.wsState = WSState.Null;
             setTimeout(function () { return _this.startWs(); }, 1000);
         };
-        console.log("WebSocket connection commencing");
     };
     APIWs.prototype.rpc = function (method, params) {
         var _this = this;
@@ -98,7 +96,6 @@ var APIWs = (function () {
         // // for (let i=0; i<p.length; i++) {
         // // 	p[i] = params[i]
         // // }
-        var self = this;
         var data = JSON.stringify({ id: id, method: method, params: params });
         this.live.set(id, [undefined, undefined]);
         return new Promise(function (resolve, reject) {
@@ -182,6 +179,18 @@ var APIWs = (function () {
     };
     APIWs.prototype.MergedFileGit = function (repoOwner, repoName, path) {
         return this.rpc("MergedFileGit", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.FileExistsOurHeadTheirHead = function (repoOwner, repoName, path) {
+        return this.rpc("FileExistsOurHeadTheirHead", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.IsOurHeadInWd = function (repoOwner, repoName, path) {
+        return this.rpc("IsOurHeadInWd", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.SaveOurHeadToWd = function (repoOwner, repoName, path) {
+        return this.rpc("SaveOurHeadToWd", [repoOwner, repoName, path]);
+    };
+    APIWs.prototype.SaveTheirHeadToWd = function (repoOwner, repoName, path) {
+        return this.rpc("SaveTheirHeadToWd", [repoOwner, repoName, path]);
     };
     APIWs.prototype.SaveMergingFile = function (repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent) {
         return this.rpc("SaveMergingFile", [repoOwner, repoName, path, workingExists, workingContent, theirExists, theirContent]);
@@ -273,7 +282,7 @@ var AddNewBookDialog$1 = (function () {
         var t = AddNewBookDialog._template;
         if (!t) {
             var d = document.createElement('div');
-            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Contributing</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Copy project\"/></form></div></div>";
+            d.innerHTML = "<div><div><h1>Add a project</h1><fieldset><label><input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label><label><input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label><label><input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label></fieldset><button data-event=\"click:choseType\" class=\"btn\">Next</button></div><div><h1>New project</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New project\"/></form></div><div><h1>Adaptation</h1><form method=\"post\" action=\"/github/create/new\"><input type=\"hidden\" name=\"action\" value=\"new\"/><label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label><label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label><label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label><label><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"New adaptation\"/></form></div><div><h1>Contributing</h1><form method=\"post\" action=\"/github/create/fork\"><input type=\"hidden\" name=\"action\" value=\"fork\"/><label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label><label style=\"display:none;\"><input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label><input type=\"submit\" class=\"btn\" value=\"Copy project\"/></form></div></div>";
             t = d.firstElementChild;
             AddNewBookDialog._template = t;
         }
@@ -655,6 +664,24 @@ var conflict_FileListDisplay = (function () {
         this.el = n;
     }
     return conflict_FileListDisplay;
+}());
+var conflict_MergeImageEditor = (function () {
+    function conflict_MergeImageEditor() {
+        var t = conflict_MergeImageEditor._template;
+        if (!t) {
+            var d = document.createElement('div');
+            d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\"><div>\n\t</div><div>\n\t</div></div>";
+            t = d.firstElementChild;
+            conflict_MergeImageEditor._template = t;
+        }
+        var n = t.cloneNode(true);
+        this.$ = {
+            ours: n.childNodes[0],
+            theirs: n.childNodes[1],
+        };
+        this.el = n;
+    }
+    return conflict_MergeImageEditor;
 }());
 var conflict_MergeInstructions = (function () {
     function conflict_MergeInstructions() {
@@ -1377,6 +1404,16 @@ var FileContent = (function () {
     return FileContent;
 }());
 
+var ImageIdentify = (function () {
+    function ImageIdentify() {
+    }
+    ImageIdentify.isImage = function (name) {
+        var imgRegexp = new RegExp(".*.(jpg|png|tiff|svg|gif)$");
+        return imgRegexp.test(name);
+    };
+    return ImageIdentify;
+}());
+
 var EditorEvents;
 (function (EditorEvents) {
     EditorEvents[EditorEvents["SAVED"] = 1] = "SAVED";
@@ -1565,8 +1602,7 @@ var RepoFileEditorCM$1 = (function (_super) {
             this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
             return;
         }
-        var imgRegexp = new RegExp(".*.(jpg|png|tiff|svg|gif)$");
-        if (imgRegexp.test(file.Name())) {
+        if (ImageIdentify.isImage(file.Name())) {
             this.imageEditor.setFile(file);
             this.showImageEditor();
             this.file = undefined;
@@ -2647,7 +2683,7 @@ var RepoEditorPage = (function () {
             evt.preventDefault();
             evt.stopPropagation();
             var l = document.location;
-            var jekyllUrl = l.protocol + "//" + l.host + "/jekyll/" + _this.repoOwner + "/" + _this.repoName + "/";
+            var jekyllUrl = l.protocol + "//" + l.host + "/jekyll-restart/" + _this.repoOwner + "/" + _this.repoName + "/";
             console.log("URL = " + jekyllUrl);
             window.open(jekyllUrl, _this.repoOwner + "-" + _this.repoName + "-jekyll");
         });
@@ -3053,6 +3089,7 @@ var MergeEditorControlBar = (function () {
         ln("single-revert-our", MergeEditorAction.RevertOur);
         ln("single-revert-their", MergeEditorAction.RevertTheir);
         ln("single-revert-git", MergeEditorAction.RevertGit);
+        this.imageEditing = false;
     }
     MergeEditorControlBar.prototype.get = function (key) {
         return document.getElementById("merge-editor-control-" + key);
@@ -3068,6 +3105,20 @@ var MergeEditorControlBar = (function () {
         else {
             el.setAttribute("disabled", "disabled");
         }
+    };
+    MergeEditorControlBar.prototype.setImageEditing = function (b) {
+        var sel = document.querySelectorAll(".hide-for-image");
+        for (var i = 0; i < sel.length; i++) {
+            var el = sel.item(i);
+            if (b) {
+                el.setAttribute('hold-display', el.style.display);
+                el.style.display = 'none';
+            }
+            else {
+                el.style.display = el.getAttribute('hold-display');
+            }
+        }
+        this.imageEditing = b;
     };
     MergeEditorControlBar.prototype.SetFile = function (f) {
         if (this.file) {
@@ -3085,16 +3136,113 @@ var MergeEditorControlBar = (function () {
             return;
         }
         var f = this.file;
-        if (f.WorkingFile().Exists || f.TheirFile().Exists) {
-            // One or the other exists
-            this.DeleteButton.removeAttribute("disabled");
-        }
-        else {
-            this.DeleteButton.setAttribute("disabled", "disabled");
+        if (!this.imageEditing) {
+            if (f.WorkingFile().Exists || f.TheirFile().Exists) {
+                // One or the other exists
+                this.DeleteButton.removeAttribute("disabled");
+            }
+            else {
+                this.DeleteButton.setAttribute("disabled", "disabled");
+            }
         }
     };
     return MergeEditorControlBar;
 }());
+
+var VERSION_OUR = "our-head";
+var VERSION_THEIR = "their-head";
+var MergeImageEditorView = (function () {
+    function MergeImageEditorView(context, parent, path, version, selected) {
+        var _this = this;
+        this.context = context;
+        this.path = path;
+        this.version = version;
+        this.selected = selected;
+        this.img = document.createElement('img');
+        this.img.classList.add("merge-image");
+        this.img.classList.add(version);
+        if (this.selected) {
+            this.img.classList.add('selected');
+        }
+        this.img.src = "/www-version/" + version + "/" + this.context.RepoOwner + "/" + this.context.RepoName + "/" + path;
+        this.img.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            evt.stopPropagation();
+            if (_this.selected) {
+                return;
+            }
+            _this.img.dispatchEvent(new CustomEvent("ImageSelected", { bubbles: true, cancelable: true, detail: {
+                    Path: _this.path,
+                    Version: _this.version
+                }
+            }));
+        });
+        parent.appendChild(this.img);
+    }
+    MergeImageEditorView.prototype.select = function (s) {
+        if (s == this.selected) {
+            return;
+        }
+        if (s) {
+            this.img.classList.add('selected');
+        }
+        else {
+            this.img.classList.remove('selected');
+        }
+        this.selected = s;
+    };
+    return MergeImageEditorView;
+}());
+/**
+ * MergeImageEditor displays two images - ours and theirs - to the user, allowing them to select
+ * the one they wish to keep as the merge result.
+ */
+var MergeImageEditor = (function (_super) {
+    tslib_1.__extends(MergeImageEditor, _super);
+    function MergeImageEditor(context, parent, path) {
+        var _this = _super.call(this) || this;
+        _this.context = context;
+        EBW.API().IsOurHeadInWd(context.RepoOwner, context.RepoName, path)
+            .then(function (args) {
+            var oursInWd = args[0];
+            _this.ours = new MergeImageEditorView(context, _this.$.ours, path, VERSION_OUR, oursInWd);
+            _this.theirs = new MergeImageEditorView(context, _this.$.theirs, path, VERSION_THEIR, !oursInWd);
+            _this.apiInFlight = false;
+            _this.el.addEventListener("ImageSelected", function (evt) {
+                if (_this.apiInFlight)
+                    return; // can't have two api calls in flight at the same time
+                var api = EBW.API();
+                var p;
+                var ourVersion = evt.detail.Version == VERSION_OUR;
+                _this.apiInFlight = true;
+                if (ourVersion) {
+                    p = api.SaveOurHeadToWd(context.RepoOwner, context.RepoName, path);
+                }
+                else {
+                    p = api.SaveTheirHeadToWd(context.RepoOwner, context.RepoName, path);
+                }
+                p.then(function () {
+                    var ours = evt.detail.V;
+                    _this.ours.select(ourVersion);
+                    _this.theirs.select(!ourVersion);
+                    _this.apiInFlight = false;
+                })
+                    .catch(function (err) {
+                    EBW.Error(err);
+                    console.error(err);
+                    _this.apiInFlight = false;
+                });
+            });
+        })
+            .catch(function (err) {
+            EBW.Error(err);
+            console.error(err);
+        });
+        parent.appendChild(_this.el);
+        return _this;
+    }
+    return MergeImageEditor;
+}(conflict_MergeImageEditor));
 
 var MergeEditor$1 = (function () {
     function MergeEditor(context, parent) {
@@ -3188,15 +3336,11 @@ var MergeEditor$1 = (function () {
     MergeEditor.prototype.CopyTheir = function () {
         // We leave source undefined, so that our editor will update
         // when the change arrives		
-        console.log("isTheirDeleted = " + this.isTheirDeleted() + ", text = " + this.getTheirText());
         this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
-        console.log("this.file = ", this.file);
     };
     MergeEditor.prototype.CopyWorking = function () {
         // We leave source undefined, so that our editor will update
         // when the change arrives
-        console.log("isWorkingDeleted = " + this.isWorkingDeleted());
-        console.log("working text = " + this.getTheirText());
         this.file.SetTheirContent(undefined, this.isWorkingDeleted() ? undefined : this.getWorkingText());
     };
     MergeEditor.prototype.RevertOur = function () {
@@ -3248,6 +3392,10 @@ var MergeEditor$1 = (function () {
         this.getRightCM().getDoc().setValue(s);
     };
     MergeEditor.prototype.SaveFile = function () {
+        if (this.mergeImageEditor != null) {
+            // SaveFile returns automatically if we're resolving images
+            return Promise.resolve("");
+        }
         if (this.file) {
             var f_1 = this.file;
             var w = this.getWorkingText();
@@ -3282,19 +3430,32 @@ var MergeEditor$1 = (function () {
     // Merge starts merging a file.
     MergeEditor.prototype.Merge = function (file) {
         var _this = this;
-        console.log("Merge: " + file.Path());
+        // console.log(`Merge: ${file.Path()}`);
         if (this.file && this.file.Path() == file.Path()) {
             return; // Nothing to do if we're selecting the same file
         }
         // Save any file we're currently editing
         if (this.file) {
-            this.SaveFile();
+            if (null == this.mergeImageEditor) {
+                this.SaveFile();
+            }
             this.file.Listen.remove(this.FileEventListener, this);
         }
         // Controls must receive update before we do.
         // TODO : Actually, the controls should listen to US, not to the
-        // file, and we should have an 'EditorStateModel'...
+        // file, and we should have an 'EditorStateModel'... something for next version ;)
         this.controls.SetFile(file);
+        if (ImageIdentify.isImage(file.Path())) {
+            this.parent.textContent = "";
+            this.mergeImageEditor = new MergeImageEditor(this.context, this.parent, file.Path());
+            this.file = file;
+            this.file.Listen.add(this.FileEventListener, this);
+            console.log("created new MergeImageEditor with parent ", this.parent);
+            this.controls.setImageEditing(true);
+            return;
+        }
+        this.controls.setImageEditing(false);
+        this.mergeImageEditor = null;
         // VERY importantly, we don't listen to the file 
         // until after we've concluded the FetchContent, because
         // we won't have an editor to populate when FetchContent

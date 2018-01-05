@@ -4,5 +4,18 @@
 		{
 			"path": "."
 		}
-	]
+	],
+	"settings":
+	{
+		"env": {
+			"Linux": {
+				"GOPATH" :"./src/go"
+			}
+		},
+        "GoSublime": {
+            "env": {
+            	"GOPATH": "$HOME/proj/ebw/electric-book-gui/src/go"
+            }
+        }
+	}
 }

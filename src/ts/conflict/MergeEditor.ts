@@ -3,7 +3,9 @@ import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {FileContent, FileEvent, File} from './File';
+import {ImageIdentify} from '../ImageIdentify';
 import {MergeEditorAction, MergeEditorControlBar} from './MergeEditorControlBar';
+import {MergeImageEditor} from './MergeImageEditor';
 import jQuery = require('jquery');
 
 import signals = require('signals');
@@ -17,6 +19,7 @@ export class MergeEditor implements ConflictEditor {
 	protected editLeft = true;
 	protected editBoth = true;
 	protected controls : MergeEditorControlBar;
+	protected mergeImageEditor : MergeImageEditor;
 
 	constructor(
 		protected context:Context,
@@ -109,15 +112,11 @@ export class MergeEditor implements ConflictEditor {
 	CopyTheir() : void {
 		// We leave source undefined, so that our editor will update
 		// when the change arrives		
-		console.log(`isTheirDeleted = ${this.isTheirDeleted()}, text = ${this.getTheirText()}`);
 		this.file.SetWorkingContent(undefined, this.isTheirDeleted() ? undefined : this.getTheirText());
-		console.log(`this.file = `, this.file);
 	}
 	CopyWorking() : void {
 		// We leave source undefined, so that our editor will update
 		// when the change arrives
-		console.log(`isWorkingDeleted = ${this.isWorkingDeleted()}`);
-		console.log(`working text = ${this.getTheirText()}`);
 		this.file.SetTheirContent(undefined, this.isWorkingDeleted() ? undefined : this.getWorkingText());
 	}
 	RevertOur() : void {
@@ -166,6 +165,10 @@ export class MergeEditor implements ConflictEditor {
 		this.getRightCM().getDoc().setValue(s);
 	}
 	SaveFile() : Promise<string> {
+		if (this.mergeImageEditor!=null) {
+			// SaveFile returns automatically if we're resolving images
+			return Promise.resolve(``);
+		}
 		if (this.file) {
 			let f = this.file;
 			let w = this.getWorkingText();
@@ -200,19 +203,33 @@ export class MergeEditor implements ConflictEditor {
 	}
 	// Merge starts merging a file.
 	Merge(file:File) : void {
-		console.log(`Merge: ${file.Path()}`);
+		// console.log(`Merge: ${file.Path()}`);
 		if (this.file && this.file.Path()==file.Path()) {
 			return;	// Nothing to do if we're selecting the same file
 		}
 		// Save any file we're currently editing
 		if (this.file) {
-			this.SaveFile();
+			if (null==this.mergeImageEditor) {
+				this.SaveFile();
+			}
 			this.file.Listen.remove(this.FileEventListener, this);
 		}
 		// Controls must receive update before we do.
 		// TODO : Actually, the controls should listen to US, not to the
-		// file, and we should have an 'EditorStateModel'...
+		// file, and we should have an 'EditorStateModel'... something for next version ;)
 		this.controls.SetFile(file);
+
+		if (ImageIdentify.isImage(file.Path())) {
+			this.parent.textContent = ``;
+			this.mergeImageEditor = new MergeImageEditor(this.context, this.parent, file.Path());
+			this.file = file;
+			this.file.Listen.add(this.FileEventListener, this);
+			console.log(`created new MergeImageEditor with parent `, this.parent);
+			this.controls.setImageEditing(true);
+			return;
+		}
+		this.controls.setImageEditing(false);
+		this.mergeImageEditor= null;
 		// VERY importantly, we don't listen to the file 
 		// until after we've concluded the FetchContent, because
 		// we won't have an editor to populate when FetchContent

@@ -4,6 +4,7 @@ enum WSState {
 	Connected = 2
 }
 
+
 export class APIWs {
 	protected id: number;
 	protected url: string;
@@ -39,16 +40,16 @@ export class APIWs {
 		return;
 	}
 	startWs():void {
-		console.log(`APIWs::startWs() wsState = ${this.wsState}`);
 		if (this.wsState!=WSState.Null) {
 			return;
 		}
 		this.wsState = WSState.Connecting;
+
 		this.ws = new WebSocket(this.url);
 		this.ws.onmessage = (evt)=> {
 			let res:any = JSON.parse(evt.data);
 			if (undefined == res || undefined==res.id) {
-				console.error(`Failed to parse response: ${evt.data}`);				
+				console.error(`Failed to parse response: ${evt.data}`);
 				return;
 			}
 			let id = res.id as number;
@@ -75,8 +76,8 @@ export class APIWs {
 			this.wsState = WSState.Null;
 		};
 		this.ws.onopen = (evt)=> {
-			console.log("Connected websocket");
 			this.wsState = WSState.Connected;
+			console.log("Connected websocket");
 			for (let q of this.queue) {
 				this.ws.send(q);
 			}
@@ -88,7 +89,6 @@ export class APIWs {
 			this.wsState = WSState.Null;
 			setTimeout( ()=> this.startWs(), 1000 );
 		}
-		console.log(`WebSocket connection commencing`);
 	}
 	rpc(method:string, params:any[]) {
 		let id = this.id++;
@@ -99,7 +99,7 @@ export class APIWs {
 		// // for (let i=0; i<p.length; i++) {
 		// // 	p[i] = params[i]
 		// // }
-		let self = this;
+
 		let data = JSON.stringify({ id:id, method:method, params:params });
 		this.live.set(id, [undefined,undefined]);
 		return new Promise( (resolve:(...a:any[])=>void,reject:(a:any)=>void)=> {
@@ -206,6 +206,22 @@ export class APIWs {
 	
 	MergedFileGit (repoOwner:string,repoName:string,path:string) {
 		return this.rpc("MergedFileGit",  [repoOwner,repoName,path] );
+	}
+	
+	FileExistsOurHeadTheirHead (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("FileExistsOurHeadTheirHead",  [repoOwner,repoName,path] );
+	}
+	
+	IsOurHeadInWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("IsOurHeadInWd",  [repoOwner,repoName,path] );
+	}
+	
+	SaveOurHeadToWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("SaveOurHeadToWd",  [repoOwner,repoName,path] );
+	}
+	
+	SaveTheirHeadToWd (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("SaveTheirHeadToWd",  [repoOwner,repoName,path] );
 	}
 	
 	SaveMergingFile (repoOwner:string,repoName:string,path:string,workingExists:boolean,workingContent:string,theirExists:boolean,theirContent:string) {

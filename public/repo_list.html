@@ -37,7 +37,10 @@
 
                 <div>
                 {{- if eq .Owner.GetLogin $userLogin}}My
-                {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} {{if .GetFork}}version{{else}}original{{end}}
+                {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} 
+                {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" target="_blank">{{.Parent.FullName}}</a>
+                {{else}}original
+                {{- end}}
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
                 {{- end}}</div>

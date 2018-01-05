@@ -1,0 +1,33 @@
+#merge-image-editor {
+	// display: flex;
+	// flex-direction: row;
+	// justify-content: space-between;
+	// align-items: stretch;
+	display: block;
+	
+	width: 100%;
+
+	position: relative;
+
+	& > div {
+		margin: 0;
+
+		width: 50%;
+		height: 100%;
+
+		display: inline-block;
+	}
+
+	.merge-image {
+		display: block;
+		max-width: 100%;
+		max-height: 100%;
+		border: 2px solid transparent;
+
+		cursor: pointer;
+		&.selected {
+			border: 2px solid green;
+		}
+
+	}
+}

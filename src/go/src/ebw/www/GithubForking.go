@@ -38,7 +38,10 @@ func githubCreateFork(c *Context) error {
 		return err
 	}
 
-	if err := git.ContributeToRepo(client, repoUserAndName, repoPrivate); nil != err {
+	flashCallback := func(msg string) {
+		c.FlashSuccess(`Invitation Sent`, msg, map[string]interface{}{})
+	}
+	if err := git.ContributeToRepo(client, repoUserAndName, repoPrivate, flashCallback); nil != err {
 		return err
 	}
 

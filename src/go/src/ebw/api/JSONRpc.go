@@ -9,6 +9,7 @@ package api
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
 
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
@@ -205,6 +206,55 @@ func (rpc *API) MergedFileGit(repoOwner, repoName, path string) (bool, string, e
 		return false, ``, err
 	}
 	return mergeable, string(raw), nil
+}
+
+func (rpc *API) FileExistsOurHeadTheirHead(repoOwner, repoName, path string) (bool, bool, error) {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil != err {
+		return false, false, err
+	}
+	existsOur, existsTheir := true, true
+	_, err = g.CatFileVersion(path, git.GFV_OUR_HEAD, nil)
+	if nil != err {
+		if os.IsNotExist(err) {
+			existsOur = false
+		} else {
+			return false, false, err
+		}
+	}
+	_, err = g.CatFileVersion(path, git.GFV_THEIR_HEAD, nil)
+	if nil != err {
+		if os.IsNotExist(err) {
+			existsTheir = false
+		} else {
+			return false, false, err
+		}
+	}
+	return existsOur, existsTheir, nil
+}
+
+func (rpc *API) IsOurHeadInWd(repoOwner, repoName, path string) (bool, error) {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil != err {
+		return false, err
+	}
+	return g.IsOurHeadInWd(path)
+}
+
+func (rpc *API) SaveOurHeadToWd(repoOwner, repoName, path string) error {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	return g.WriteVersionToWd(path, git.GFV_OUR_HEAD)
+}
+
+func (rpc *API) SaveTheirHeadToWd(repoOwner, repoName, path string) error {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil != err {
+		return err
+	}
+	return g.WriteVersionToWd(path, git.GFV_THEIR_HEAD)
 }
 
 // SaveMergingFile saves the 'Working' and 'Their' versions of the working

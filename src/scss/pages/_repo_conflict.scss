@@ -110,7 +110,7 @@
 				// justify-content: space-between;
 				// align-items: stretch;
 
-				&.pr-merge>div {					
+				&.pr-merge>div:not(.merge-image-editor) {					
 					display: flex;
 					flex-direction: row;
 					align-items: stretch;
@@ -119,8 +119,9 @@
 				&>div {
 					position: absolute;
 					top: 0; bottom: 0; left:0; right:0;
-
-
+					// position: relative;
+				}
+				&>div:not(.merge-image-editor) {
 					& > div {
 						float:none;
 						flex-grow: 0;

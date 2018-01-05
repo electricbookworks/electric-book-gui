@@ -87,7 +87,7 @@ export class RepoEditorPage {
 		document.getElementById(`repo-jekyll`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			let l = document.location;
-			let jekyllUrl = `${l.protocol}//${l.host}/jekyll/${this.repoOwner}/${this.repoName}/`;
+			let jekyllUrl = `${l.protocol}//${l.host}/jekyll-restart/${this.repoOwner}/${this.repoName}/`;
 			console.log(`URL = ${jekyllUrl}`);
 			window.open(jekyllUrl, `${this.repoOwner}-${this.repoName}-jekyll`);
 		});

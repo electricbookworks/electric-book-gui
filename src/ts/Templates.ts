@@ -22,6 +22,7 @@ export namespace EL {
 	export type conflict_ClosePRDialog =	HTMLDivElement;
 	export type conflict_FileDisplay =	HTMLLIElement;
 	export type conflict_FileListDisplay =	HTMLUListElement;
+	export type conflict_MergeImageEditor =	HTMLDivElement;
 	export type conflict_MergeInstructions =	HTMLDivElement;
 	
 }
@@ -131,6 +132,10 @@ export namespace R {
 		};
 	export interface conflict_FileListDisplay {
 		};
+	export interface conflict_MergeImageEditor {
+		ours: HTMLDivElement,
+		theirs: HTMLDivElement,
+		};
 	export interface conflict_MergeInstructions {
 		show: HTMLDivElement,
 		text: HTMLDivElement,
@@ -171,7 +176,7 @@ export class AddNewBookDialog {
 			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="New adaptation"/></form></div><div><h1>Contributing</h1><form method="post" action="/github/create/fork"><input type="hidden" name="action" value="fork"/><label>Enter the GitHub owner and repo for the project you will contribute to.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
-		</label><label><input type="checkbox" name="private" value="private"/>
+		</label><label style="display:none;"><input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label><input type="submit" class="btn" value="Copy project"/></form></div></div>`;
 			t = d.firstElementChild as HTMLDivElement;
@@ -651,6 +656,28 @@ export class conflict_FileListDisplay {
 		}
 		let n = t.cloneNode(true) as HTMLUListElement;
 		this.$ = {
+		};
+		this.el = n;
+	}
+}
+export class conflict_MergeImageEditor {
+	public static _template : HTMLDivElement;
+	public el : HTMLDivElement;
+	public $ : R.conflict_MergeImageEditor;
+	constructor() {
+		let t = conflict_MergeImageEditor._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor"><div>
+	</div><div>
+	</div></div>`;
+			t = d.firstElementChild as HTMLDivElement;
+			conflict_MergeImageEditor._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLDivElement;
+		this.$ = {
+			ours: n.childNodes[0] as HTMLDivElement,
+			theirs: n.childNodes[1] as HTMLDivElement,
 		};
 		this.el = n;
 	}
