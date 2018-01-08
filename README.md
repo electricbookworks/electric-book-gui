@@ -24,6 +24,10 @@ Place the token and your GitHub username in `~/.ebw.yml`:
         - token:
         - name:
 
+### Restricting user access
+
+You can limit users by setting the `allowed_users:` in the `electricbook-N.yml` configuration file. This means you can have an Electric Book Manager for only your specified users.
+
 ## Running the app
 
 Start the local electricbook server:
