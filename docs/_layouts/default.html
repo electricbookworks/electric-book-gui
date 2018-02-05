@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{ page.title }}</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css">
+</head>
+<body>
+
+	<div class="wrapper">
+
+		<div class="masthead">
+			<a href="{{ site.baseurl }}" class="title">{{ site.title }}</a>
+		</div>
+
+		<div class="navigation">
+			{% include nav.html %}
+		</div>
+
+		<div class="content">
+			<div class="content-inner">
+				{{ content }}
+			</div>
+		</div>
+
+	</div>
+
+</body>
+</html>

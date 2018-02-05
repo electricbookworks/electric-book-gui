@@ -1,0 +1,12 @@
+<nav>
+	<ul>
+		{% assign current-page-url = page.url %}
+		{% assign pages = site.pages | where_exp: "page", "page.path contains '.md'" %}
+		{% assign pages = pages | sort: "order" %}
+		{% for page in pages %}
+			<li {% if page.url == current-page-url %} class="active"{% endif %}>
+				<a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</nav>
