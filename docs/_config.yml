@@ -18,8 +18,8 @@ email: support@electricbook.works
 description: >- # this means to ignore newlines until "baseurl:"
   Documentation for the Electric Book Manager, a web application for
   using the Electric Book workflow from anywhere.
-baseurl: "/docs" # the subpath of your site, e.g. /blog
-url: "http://electricbook.github.io/electric-book-gui" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "/electric-book-gui" # the subpath of your site, e.g. /blog
+url: "http://electricbook.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
