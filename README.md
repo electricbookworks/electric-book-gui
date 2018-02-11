@@ -28,6 +28,10 @@ Place the token and your GitHub username in `~/.ebw.yml`:
 
 You can limit users by setting the `allowed_users:` in the `electricbook-N.yml` configuration file. This means you can have an Electric Book Manager for only your specified users.
 
+You must restart the electricbook service for changes to take effect: `systemctl restart electricbook`
+
+It will restart at once, with your updated allowed users. Do this at a quiet time, possibly notifying your users in advance. There is an outside chance that you will drop someone's session while they're doing something, e.g. halfway through a save, and they will simply have to retry the action.
+
 ## Running the app
 
 Start the local electricbook server:
