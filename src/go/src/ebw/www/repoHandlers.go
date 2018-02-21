@@ -321,11 +321,10 @@ func repoFileServer(c *Context) error {
 		return nil
 	}
 
-	root, err := os.Getwd()
+	root, err := git.RepoDir(client.Username, ``, ``)
 	if nil != err {
 		return util.Error(err)
 	}
-	root = filepath.Join(root, config.Config.GitCache, client.Username)
 	glog.Infof(`Serving %s from %s`, c.R.RequestURI, root)
 	fs := http.StripPrefix(`/www/`, http.FileServer(http.Dir(root)))
 	fs.ServeHTTP(c.W, c.R)
