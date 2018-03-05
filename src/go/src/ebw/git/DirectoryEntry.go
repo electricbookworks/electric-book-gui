@@ -12,6 +12,7 @@ type DirectoryEntry interface {
 	Name() string
 	IsDirectory() bool
 	Map() map[string]interface{}
+	Filter(base string, f func(fullname string) bool) DirectoryEntry
 }
 
 type File struct {
@@ -31,6 +32,13 @@ func (f *File) IsDirectory() bool {
 	return false
 }
 
+func (f *File) Filter(base string, filter func(fullname string) bool) DirectoryEntry {
+	if filter(filepath.Join(base, f.name)) {
+		return nil
+	}
+	return f
+}
+
 func (f *File) Map() map[string]interface{} {
 	return map[string]interface{}{
 		"N": f.name,
@@ -40,6 +48,29 @@ func (f *File) Map() map[string]interface{} {
 type Directory struct {
 	name  string
 	Files []DirectoryEntry
+}
+
+func (d *Directory) Filter(base string, filter func(fullname string) bool) DirectoryEntry {
+	if filter(filepath.Join(base, d.name)) {
+		return nil
+	}
+	n := &Directory{
+		name:  d.name,
+		Files: make([]DirectoryEntry, 0, len(d.Files)),
+	}
+	var dbase string
+	if `` != base {
+		dbase = filepath.Join(base, d.name)
+	} else {
+		dbase = d.name
+	}
+	for _, f := range d.Files {
+		de := f.Filter(dbase, filter)
+		if nil != de {
+			n.Files = append(n.Files, de)
+		}
+	}
+	return n
 }
 
 func (d *Directory) Name() string {

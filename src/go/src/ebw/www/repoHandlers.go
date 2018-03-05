@@ -119,7 +119,7 @@ func repoView(c *Context) error {
 	}
 	repoDir := r.RepoPath()
 	c.D[`Path`] = repoDir
-	c.D[`RepoFiles`], err = git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
+	repoFiles, err := git.ListAllRepoFiles(client, client.Username, repoOwner, repoName)
 	if nil != err {
 		return err
 	}
@@ -129,7 +129,8 @@ func repoView(c *Context) error {
 		return err
 	}
 	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
-
+	repoFiles = repoFiles.Filter(``, proseConfig.IgnoreFilter())
+	c.D[`RepoFiles`] = repoFiles
 	return c.Render(`repo_view.html`, nil)
 }
 
