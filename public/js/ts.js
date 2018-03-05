@@ -2741,6 +2741,10 @@ var FileEvent;
     FileEvent[FileEvent["TheirChanged"] = 1] = "TheirChanged";
     FileEvent[FileEvent["StatusChanged"] = 2] = "StatusChanged";
 })(FileEvent || (FileEvent = {}));
+// File models a single conflicted file in the repo.
+// All communication with the conflicted file occurs through this single
+// class, which will coordinate any other internal-classes that it might need,
+// like the file status.
 var File$1 = (function () {
     function File(context, path, status) {
         this.context = context;
