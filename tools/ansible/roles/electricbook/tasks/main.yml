@@ -20,7 +20,7 @@
 
 - name: Set permissions on git_cache
   file: >
-    name=/opt/electricbook/git_cache
+    name="{{git_cache}}"
     owner=electricbook
     group=electricbook
     recurse=yes
