@@ -132,7 +132,8 @@ func (g *Git) IsOurHeadInWd(path string) (bool, error) {
 	our, err := g.CatFileVersion(path, GFV_OUR_HEAD, nil)
 	oursNotExist := false
 	if nil != err {
-		if !os.IsNotExist(err) {
+		if !(os.IsNotExist(err) || git2go.IsErrorCode(err, git2go.ErrNotFound)) {
+			glog.Errorf(`IsOurHeadInWd(%s) - error %s`, path, err.Error())
 			return false, err
 		}
 		oursNotExist = true
@@ -163,7 +164,7 @@ func (g *Git) IsOurHeadInWd(path string) (bool, error) {
 func (g *Git) WriteVersionToWd(path string, v GitFileVersion) error {
 	raw, err := g.CatFileVersion(path, v, nil)
 	if nil != err {
-		if !os.IsNotExist(err) {
+		if !(os.IsNotExist(err) || git2go.IsErrorCode(err, git2go.ErrNotFound)) {
 			return err
 		}
 		// We ignore errors here, since the file might not exist, which is fine by us...
@@ -823,6 +824,7 @@ func (g *Git) readPathForTreeObject(object *git2go.Object, path string) ([]byte,
 	if nil != err {
 		// We don't report ErrNotFound, since this is a 'valid' error. We just bounce it
 		// back
+		glog.Errorf(`tree.EntryByPath(%s) : Error %s`, path, err.Error())
 		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
 			return nil, err
 		}
@@ -840,6 +842,7 @@ func (g *Git) readPathForTreeObject(object *git2go.Object, path string) ([]byte,
 func (g *Git) readPathForTreeReference(head *git2go.Reference, path string) ([]byte, error) {
 	tree, err := head.Peel(git2go.ObjectTree)
 	if nil != err {
+		glog.Errorf(`readPathForTreeReference(%s) - %s`, path, err.Error())
 		return nil, g.Error(err)
 	}
 	defer tree.Free()

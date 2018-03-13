@@ -4,16 +4,19 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	// "net/http"
 
 	"github.com/golang/glog"
 	// "github.com/google/go-github/github"
 	"gopkg.in/gomail.v2"
+	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/book"
 	"ebw/config"
@@ -343,14 +346,25 @@ func repoVersionedFileServer(c *Context) error {
 		return err
 	}
 	raw, err := repo.Git.CatFileVersion(path, gitVersion, nil)
+	mimeType := mime.TypeByExtension(filepath.Ext(path))
 	if nil != err {
-		if !os.IsNotExist(err) {
+		if !(os.IsNotExist(err) || git2go.IsErrorCode(err, git2go.ErrNotFound)) {
 			return err
 		}
+		if strings.HasPrefix(mimeType, "image/") {
+			c.W.Header().Add("Content-Type", "image/svg+xml")
+			raw, err = ioutil.ReadFile(`public/img/not-found.svg`)
+			if nil != err {
+				http.Error(c.W, err.Error(), http.StatusNotFound)
+				return nil
+			}
+			c.W.Write(raw)
+			return nil
+		}
+
 		http.Error(c.W, err.Error(), http.StatusNotFound)
 		return nil
 	}
-	mimeType := mime.TypeByExtension(filepath.Ext(path))
 	c.W.Header().Add("Content-Type", mimeType)
 	c.W.Write(raw)
 	return nil
