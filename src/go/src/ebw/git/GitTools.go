@@ -57,7 +57,7 @@ func RepoDir(user, repoOwner, repoName string) (string, error) {
 		return ``, util.Error(err)
 	}
 	if filepath.IsAbs(config.Config.GitCache) {
-		root = filepath.Join(config.Config.GitCache)
+		root = filepath.Join(config.Config.GitCache, user)
 	} else {
 		root = filepath.Join(root, config.Config.GitCache, user)
 	}
