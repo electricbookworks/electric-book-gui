@@ -189,7 +189,7 @@ export class File {
 		let fc = new FileContent(content!=undefined, content);
 		this.cache.set(`their`, fc);
 		this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
-	}
+	} 
 	Save() : Promise<void> {
 		let working = this.cache.get(`working`);
 		let their = this.cache.get(`their`);

@@ -2,11 +2,13 @@ import {ConflictEditor} from './ConflictEditor';
 import {Context} from '../Context';
 import {EBW} from '../EBW';
 import {File,FileEvent,FileContent} from './File';
+import {ImageIdentify} from '../ImageIdentify';
 import {MergeEditorControlBar,MergeEditorAction} from './MergeEditorControlBar';
 
 import signals = require('signals');
 import CodeMirror = require('codemirror');
 import {EditorCodeMirror} from '../EditorCodeMirror';
+import {MergeImageEditor} from './MergeImageEditor';
 
 export class SingleEditor implements ConflictEditor {
 	public Listen:signals.Signal;
@@ -14,14 +16,16 @@ export class SingleEditor implements ConflictEditor {
 	protected editor:EditorCodeMirror;
 	protected isDeleted:boolean;
 	protected controls:MergeEditorControlBar;
+	protected imageEditor: MergeImageEditor;
 
 	constructor(protected context:Context,
 		protected parent:HTMLElement) {
 		this.Listen = new signals.Signal();
-		this.editor = new EditorCodeMirror(parent);
 
 		this.controls = new MergeEditorControlBar();
-		this.controls.Listen.add(this.controlAction, this);		
+		this.controls.Listen.add(this.controlAction, this);
+		this.imageEditor = undefined;
+		this.editor = undefined;
 	}
 
 	controlAction(act:MergeEditorAction) {
@@ -72,6 +76,9 @@ export class SingleEditor implements ConflictEditor {
 		return this.isDeleted;
 	}
 	SaveFile() : Promise<string> {
+		if (this.imageEditor) {
+			return Promise.resolve(``);
+		}
 		if (this.file) {
 			let f = this.file;
 			let w = this.getWorkingText();
@@ -110,14 +117,30 @@ export class SingleEditor implements ConflictEditor {
 		}
 		// Save any file we're currently editing
 		if (this.file) {
-			this.SaveFile();
+			if (!this.imageEditor) {
+				this.SaveFile();
+			}
 			this.file.Listen.remove(this.FileEventListener, this);
 			this.file = undefined;
 		}
 		// Controls must receive update before we do.
 		// TODO : Actually, the controls should listen to US, not to the
 		// file, and we should have an 'EditorStateModel'...
-		
+		if (ImageIdentify.isImage(file.Path())) {
+			this.parent.textContent = ``;
+			this.imageEditor = new MergeImageEditor(
+				this.context, this.parent, file.Path()
+				);
+			this.file = file;
+			this.file.Listen.add(this.FileEventListener, this);
+			console.log(`created new MergeImageEditor with parent `, this.parent);
+			this.controls.setImageEditing(true);
+			return;
+		}
+		this.controls.setImageEditing(false);
+		this.imageEditor= null;		
+		this.editor = new EditorCodeMirror(this.parent);
+
 		//this.controls.SetFile(file);
 
 		// VERY importantly, we don't listen to the file 

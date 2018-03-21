@@ -20,9 +20,10 @@
 
 - name: Set permissions on git_cache
   file: >
-    name=/opt/electricbook/git_cache
+    name="{{git_cache}}"
     owner=electricbook
     group=electricbook
+    state=directory
     recurse=yes
   become: yes
 
@@ -42,7 +43,7 @@
   become: yes 
   notify: 'restart electricbook'
 
-- name: install electricbook configuration electricbook-0.yml
+- name: install-config
   template: >
     dest=/opt/electricbook/electricbook-0.yml
     src=electricbook-0.yml.j2

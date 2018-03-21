@@ -62,7 +62,7 @@ export class MergeImageEditor extends Template {
 			(args)=>{
 				let oursInWd:boolean = args[0] as boolean;
 				this.ours = new MergeImageEditorView(context, this.$.ours, path, VERSION_OUR, oursInWd);
-				this.theirs = new MergeImageEditorView(context,this.$.theirs, path, VERSION_THEIR, !oursInWd);
+				this.theirs = new MergeImageEditorView(context, this.$.theirs, path, VERSION_THEIR, !oursInWd);
 				this.apiInFlight = false;
 				this.el.addEventListener(`ImageSelected`, (evt:CustomEvent)=>{
 					if (this.apiInFlight) return;	// can't have two api calls in flight at the same time

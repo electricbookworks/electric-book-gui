@@ -1,6 +1,7 @@
 global
         log /dev/log    local0
         log /dev/log    local1 notice
+        # We're running haproxy in a chroot environment
         chroot /var/lib/haproxy
         stats socket /run/haproxy/admin.sock mode 660 level admin
         stats timeout 30s
@@ -17,24 +18,38 @@ global
         #  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
         ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS
         ssl-default-bind-options no-sslv3
+        tune.ssl.default-dh-param 4196
 
+        # Load the acme certbot plugin that will handle domain validation
+        lua-load /etc/haproxy/plugins/acme-http01-webroot.lua
 
 defaults
         log     global
         mode    http
         option  httplog
         option  dontlognull
+        # Some basic timeouts for our server
         timeout connect 600s
         timeout client 600s
         timeout server 600s
         timeout client-fin 30s
 
-
 backend ebw
         timeout tunnel 10h
         server ebw 127.0.0.1:8080
 
-frontend web
+frontend http
         bind *:80
         mode http
+        # Allow the certbot plugin to handle acme challenges
+        acl url_acme_http01 path_beg /.well-known/acme-challenge/
+        http-request use-service lua.acme-http01 if METH_GET url_acme_http01
+        # Otherwise, redirect the user to https
+        redirect scheme https code 301
+        default_backend ebw
+
+frontend https
+        # Use SSL with the cert location used by certbot
+        bind *:443 ssl crt /etc/letsencrypt/live/{{fqdn}}/haproxy.pem
+        reqadd X-Forwarded-Proto:\ https
         default_backend ebw
