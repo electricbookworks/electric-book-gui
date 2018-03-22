@@ -70,3 +70,13 @@
 - include: nginx.yml
   when: >
     'nginx'==webserver
+
+
+- name: install2
+  copy: >
+    dest=/opt/electricbook/bin/electricbook
+    force=yes
+    src=electricbook
+    mode=0755
+  become: yes 
+  notify: 'restart electricbook'    

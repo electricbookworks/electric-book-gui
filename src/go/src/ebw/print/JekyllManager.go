@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/golang/glog"
 
@@ -31,7 +32,7 @@ func NewJekyllManager() *JekyllManager {
 }
 
 func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
-	// glog.Infof(`ClearJekyll(%s,%s,%s)`, user, repoOwner, repoName)
+	glog.Infof(`ClearJekyll(%s,%s,%s)`, user, repoOwner, repoName)
 	jm.lock.Lock()
 	defer jm.lock.Unlock()
 
@@ -50,7 +51,9 @@ func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
 		return nil
 	}
 	if nil != j {
-		j.Kill()
+		go j.Kill()
+		// We allow it 1 second to die...
+		time.Sleep(time.Second)
 	}
 	delete(ru, repoName)
 	return nil
@@ -86,7 +89,7 @@ func (jm *JekyllManager) GetJekyll(user, repoOwner, repoName string) (*Jekyll, e
 			manager: jm,
 			path:    [3]string{user, repoOwner, repoName},
 			output:  NewOutErrMerge(),
-			KILL:    make(chan bool),
+			KILL:    make(chan bool, 1), // buffered channel so exited process won't cause issues
 		}
 		ru[repoName] = j
 		if err := j.start(os.Stdout, os.Stderr); nil != err {

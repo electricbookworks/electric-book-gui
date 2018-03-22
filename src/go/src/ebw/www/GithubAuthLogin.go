@@ -120,6 +120,7 @@ func githubAuth(c *Context) error {
 			return loginUser()
 		}
 	}
+	glog.Infof(`Rejecting %s against list %v`, user.GetLogin(), config.Config.AllowedUsers)
 	c.FlashError(`Not Permitted`,
 		`Sorry, but `+user.GetLogin()+` is not permitted to access this system`,
 		map[string]interface{}{})

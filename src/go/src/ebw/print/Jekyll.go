@@ -239,21 +239,28 @@ func (j *Jekyll) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (j *Jekyll) shutdown() {
 	j.manager.lock.Lock()
 	defer j.manager.lock.Unlock()
-
-	if err := j.cmd.Process.Signal(os.Interrupt); nil != err {
-		glog.Errorf(`ERROR interrupting process for jekyll: %s`, err.Error)
-	}
-	glog.Infof(`os Interrupt sent to process`)
-	// if err := j.cmd.Process.Kill(); nil != err {
-	// 	glog.Errorf(`ERROR killing process for jeckyl: %s`, err.Error())
-	// }
-	if err := j.cmd.Wait(); nil != err {
-		glog.Errorf(`ERROR waiting for jekyll for %s: %s`, j.RepoDir, err.Error())
-	}
-	glog.Infof(`shutdown should be done`)
-	j.manager.ports.Release(j.Port)
+	// Even if we don't succeed in shutting down, we don't want another
+	// process from the manager trying to kill this, since the KILL loop
+	// is closed.
 	j.manager.remove(j)
+	// The actual process of shutting down jekyll can happen offline
+	go func() {
+		if err := j.cmd.Process.Signal(os.Interrupt); nil != err {
+			glog.Errorf(`ERROR interrupting process for jekyll: %s`, err.Error)
+		}
+		glog.Infof(`os Interrupt sent to process`)
+		// if err := j.cmd.Process.Kill(); nil != err {
+		// 	glog.Errorf(`ERROR killing process for jeckyl: %s`, err.Error())
+		// }
+		if err := j.cmd.Wait(); nil != err {
+			glog.Errorf(`ERROR waiting for jekyll for %s: %s`, j.RepoDir, err.Error())
+		}
+		glog.Infof(`shutdown should be done`)
 
+		j.manager.lock.Lock()
+		j.manager.ports.Release(j.Port)
+		j.manager.lock.Unlock()
+	}()
 }
 
 var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>
