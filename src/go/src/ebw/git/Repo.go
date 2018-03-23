@@ -458,9 +458,11 @@ func (r *Repo) GetRepoState() (RepoState, error) {
 
 	// Check ahead/behind for our github repo and for our
 	// parent repo. These are EBMAhead and EBMBehind.
+	glog.Infof(`Going to FetchRemote('origin')`)
 	if err := r.FetchRemote(`origin`); nil != err {
 		return 0, err
 	}
+	glog.Infof(`FetchRemote('origin') completed`)
 
 	// glog.Infof("fetched remote, going to lookupbranch")
 
@@ -1285,11 +1287,13 @@ func (r *Repo) AutoProcessState() (bool, error) {
 	if nil != err {
 		return false, err
 	}
+	glog.Infof(`GetRepoState completed`)
 
 	// If we're conflicted, we can't do anything except handle the conflict.
 	if state.LocalConflicted() {
 		return false, nil
 	}
+	glog.Infof(`not LocalConflicted`)
 	// If we've got local changes, staged or unstaged, we don't
 	// need in particular to do anything
 	// if state.LocalChanges() {
@@ -1300,20 +1304,26 @@ func (r *Repo) AutoProcessState() (bool, error) {
 	// }
 	// If we're ahead, and not behind, we can PUSH
 	if state.LocalAhead() && !state.LocalBehind() {
+		glog.Infof(`LocalAhead() && !LocalBehind`)
 		err := r.PushOrigin()
+		glog.Infof(`PushOrigin completed`)
 		if nil != err {
 			return false, err
 		}
 		r.ResetState()
+		glog.Infof(`ResetState completed`)
 		return true, nil
 	}
 	// If we're behind, and have no local changes, we can PULL
 	if state.LocalBehind() && !state.LocalAhead() && !state.LocalChanges() {
+		glog.Infof(`LocalBehind && !LocalAhead && !LocalChanges`)
 		err := r.PullOrigin()
+		glog.Infof(`PullOrigin completed`)
 		if nil != err {
 			return false, err
 		}
 		r.ResetState()
+		glog.Infof(`ResetState completed`)
 		return true, nil
 	}
 	// ParentAhead and ParentBehind are handled by the user intervention

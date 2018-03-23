@@ -30,8 +30,8 @@ defaults
         option  dontlognull
         # Some basic timeouts for our server
         timeout connect 600s
-        timeout client 600s
-        timeout server 600s
+        timeout client 1h
+        timeout server 1h
         timeout client-fin 30s
 
 backend ebw

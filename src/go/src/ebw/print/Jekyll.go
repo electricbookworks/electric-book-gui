@@ -121,7 +121,8 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			strconv.FormatInt(j.Port, 10),
 			`--incremental`,
 			`--watch`,
-			`--verbose`)
+		// `--verbose`,
+		)
 		inR, _, err := os.Pipe()
 		if nil != err {
 			j.SetError(err)
@@ -162,6 +163,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 		// We wait for the server to come up before we return
 		tryCount := 0
 		for {
+			glog.Infof(`Trying to Get %s`, targetUrl.String())
 			test, err := http.Get(targetUrl.String())
 			if nil == err {
 				test.Body.Close()
