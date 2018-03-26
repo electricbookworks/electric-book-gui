@@ -76,13 +76,14 @@ func Rvm(cout, cerr io.Writer, dir string, args ...string) *exec.Cmd {
 	c := exec.Command(config.Config.Rvm, cargs...)
 	c.Stdout, c.Stderr = cout, cerr
 	c.Dir = dir
-	glog.Infof(`Rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
+	glog.Infof(`rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
 	return c
 }
 
 func (j *Jekyll) start(cout, cerr io.Writer) error {
 	j.ServerStarting = true
 	go func() {
+		startTime := time.Now()
 		defer func() {
 			j.lock.Lock()
 			j.ServerStarting = false
@@ -119,7 +120,9 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			`-P`,
 			strconv.FormatInt(j.Port, 10),
 			`--incremental`,
-			`--watch`)
+			`--watch`,
+		// `--verbose`,
+		)
 		inR, _, err := os.Pipe()
 		if nil != err {
 			j.SetError(err)
@@ -130,7 +133,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 		j.cmd.Stdin = inR
 		if err := j.cmd.Start(); nil != err {
 			j.SetError(err)
-			util.Error(fmt.Errorf(`ERROR starting jeckyl: %s`, err.Error()))
+			util.Error(fmt.Errorf(`ERROR starting jekyll: %s`, err.Error()))
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
@@ -138,7 +141,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			ps, err := j.cmd.Process.Wait()
 			if nil != err {
 				j.SetError(err)
-				util.Error(fmt.Errorf(`ERROR on jeckyll process Wait: %s`, err.Error()))
+				util.Error(fmt.Errorf(`ERROR on jekyll process Wait: %s`, err.Error()))
 				return
 			}
 			if ps.Success() {
@@ -160,6 +163,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 		// We wait for the server to come up before we return
 		tryCount := 0
 		for {
+			glog.Infof(`Trying to Get %s`, targetUrl.String())
 			test, err := http.Get(targetUrl.String())
 			if nil == err {
 				test.Body.Close()
@@ -176,7 +180,8 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			}
 			time.Sleep(time.Second)
 		}
-		glog.Infof(`Server is up on %s`, targetUrl.String())
+		glog.Infof(`Server is up on %s after %.3fs`, targetUrl.String(),
+			time.Now().Sub(startTime).Seconds())
 
 		// Func to stop the server if it's inactive for 15 minutes, or if j.KILL
 		// receives a post
@@ -187,7 +192,7 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 				select {
 				case <-t.C:
 					j.lock.Lock()
-					maxDuration := 15
+					maxDuration := 45
 					if time.Now().Add(-1 * time.Duration(maxDuration) * time.Minute).After(j.lastRequest) {
 						exit = true
 						break
@@ -239,21 +244,29 @@ func (j *Jekyll) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (j *Jekyll) shutdown() {
 	j.manager.lock.Lock()
 	defer j.manager.lock.Unlock()
-
-	if err := j.cmd.Process.Signal(os.Interrupt); nil != err {
-		glog.Errorf(`ERROR interrupting process for jekyll: %s`, err.Error)
-	}
-	glog.Infof(`os Interrupt sent to process`)
-	// if err := j.cmd.Process.Kill(); nil != err {
-	// 	glog.Errorf(`ERROR killing process for jeckyl: %s`, err.Error())
-	// }
-	if err := j.cmd.Wait(); nil != err {
-		glog.Errorf(`ERROR waiting for jekyll for %s: %s`, j.RepoDir, err.Error())
-	}
-	glog.Infof(`shutdown should be done`)
-	j.manager.ports.Release(j.Port)
+	// Even if we don't succeed in shutting down, we don't want another
+	// process from the manager trying to kill this, since the KILL loop
+	// is closed.
 	j.manager.remove(j)
-
+	// The actual process of shutting down jekyll can happen offline
+	go func() {
+		if err := j.cmd.Process.Signal(os.Interrupt); nil != err {
+			glog.Errorf(`ERROR interrupting process for jekyll: %s`, err.Error)
+		}
+		glog.Infof(`os Interrupt sent to process`)
+		// if err := j.cmd.Process.Kill(); nil != err {
+		// 	glog.Errorf(`ERROR killing process for jeckyl: %s`, err.Error())
+		// }
+		if err := j.cmd.Wait(); nil != err {
+			glog.Errorf(`ERROR waiting for jekyll for %s: %s`, j.RepoDir, err.Error())
+		}
+		glog.Infof(`shutdown should be done`)
+		// Cannot release the port until the process is shutdown, to be sure
+		// that a new process won't fail because the port is in use
+		j.manager.lock.Lock()
+		j.manager.ports.Release(j.Port)
+		j.manager.lock.Unlock()
+	}()
 }
 
 var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>

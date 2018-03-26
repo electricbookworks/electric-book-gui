@@ -229,15 +229,18 @@ func repoUpdate(c *Context) error {
 
 	next := c.P(`next`)
 
+	glog.Infof(`Loading repo`)
 	repo, err := c.Repo()
 	if nil != err {
 		return err
 	}
+	glog.Infof(`Created repo`)
 	// Handle auto-processing of the repo state
 	changed, err := repo.AutoProcessState()
 	if nil != err {
 		return err
 	}
+	glog.Infof(`AutoProcessState completed, next=%s`, next)
 	if changed {
 		return c.Redirect(`/repo/%s/%s/update?next=%s`, repoOwner, repoName, url.QueryEscape(next))
 	}
