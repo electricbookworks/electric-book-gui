@@ -23,5 +23,8 @@ go get -d gopkg.in/libgit2/git2go.v25
 cd src/gopkg.in/libgit2/git2go.v25
 git checkout next
 git submodule update --init
+if [[ ! -e repository_mergeheads.go ]]; then
+	ln -s ../../../../git2go_fix/repository_mergeheads.go .
+fi
 make install
 popd
