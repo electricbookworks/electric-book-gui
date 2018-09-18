@@ -17,6 +17,9 @@ $color-mid-light: #e0e0e0;
 $color-light: #ffffff;
 $color-links: #477DB2;
 
+$color-notice: #99d8cb;
+$color-alert: #ebbc00;
+
 $border-radius: 0.2em;
 $rule-thickness: 1px;
 
@@ -125,13 +128,17 @@ nav {
 h1, h2, h3, h4, h5 {
 	font-family: $font-display-main;
 }
-
 h1 {
 	font-weight: bold;
 	font-size: 2.4em;
 	line-height: 1.2;
 }
-
+p {
+	margin: 0 0 0.6em 0;
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
 code {
     font-family: $font-code;
     font-size: 80%;
@@ -149,12 +156,10 @@ pre {
         padding: 0;
     }
 }
-
 a {
 	text-decoration: none;
 	color: $color-links;
 }
-
 table {
 	width: 100%;
 	th, td {
@@ -168,4 +173,13 @@ table {
 	padding: 0;
 	border: $rule-thickness solid $color-mid;
 	padding: 0.25em;
+}
+
+.notice {
+	padding: 1em;
+	background-color: $color-notice;
+	margin: 0;
+	&.alert {
+		background-color: $color-alert;
+	}
 }
