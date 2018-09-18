@@ -43,7 +43,7 @@ If you want to make a copy of a project but do not ever want to send submissions
 
 ## Contribute translations
 
-To create a translation of a book, follow the [Electric Book guidelines on Translations](../setup/translations.html).
+To create a translation of a book, follow the [Electric Book workflow documentation on Translations](https://electricbookworks.github.io/electric-book/docs/setup/translations.html).
 
 ## Update from the parent project
 
