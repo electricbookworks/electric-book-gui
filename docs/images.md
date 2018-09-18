@@ -15,7 +15,7 @@ You must provide separate images for each output format that you want to produce
 
 Each folder should contain the same set of images, formatted appropriately for each format. For instance, while their file names must be identical, web images might be full-colour, 96dpi, and up to 800 pixels wide; while print-pdf images might be in greyscale, 300dpi and 2400 pixels wide. And your _source images may be full-colour and 600dpi. For more on image optimization, see [Images](../editing/images.html).
 
-For a professional conversion service, you can also contact [Fire and Lion](https://fireandlion.com).
+For a professional conversion service, you can also contact [Electric Book Works](https://electricbookworks.com).
 
 ## Adding images
 
