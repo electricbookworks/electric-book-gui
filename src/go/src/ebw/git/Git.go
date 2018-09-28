@@ -782,3 +782,37 @@ func (g *Git) WalkConflicts(f ConflictWalkFunc) error {
 	}
 	return nil
 }
+
+// TagDiff returns the difference between two tags / indexes that are given
+func (g *Git) TagDiff(t1id, t2id string) error {
+	t1oid, err := git2go.NewOid(t1id)
+	if nil!=err {
+		return g.Error(err)
+	}
+	t2oid, err := git2go.NewOid(t2id)
+	if nil!=err {
+		return g.Error(err)
+	}
+	t1, err := g.Repository.LookupTree(t1oid)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer t1.Free()
+	t2, err := g.Repository.LookupTree(t2oid)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer t2.Free()
+	diffOpts, err := git2go.DefaultDiffOptions()
+	if nil!=err {
+		return g.Error(err)
+	}
+	diff, err := g.Repository.DiffTreeToTree(t1, t2, &diffOpts)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer diff.Free()
+	fmt.Println("Ok 1")
+	return nil
+
+}

@@ -1,6 +1,7 @@
 #!/bin/bash
 # SOME BASIC DEPENDENCIES
-sudo apt-get install git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev
+set -e
+sudo apt-get install -y git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev
 # INSTALL YARN
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -9,11 +10,11 @@ sudo apt-get install yarn
 # INSTALL YARN DEPENDENCIES
 yarn install
 sudo yarn global add gulp-cli rollup typescript
-if [[ ! -f /usr/bin/env/node ]]; then
-	sudo apt-get install -y nodejs-legacy
-fi
+# if [[ ! -f /usr/bin/env/node ]]; then
+# 	sudo apt-get install -y nodejs-legacy
+# fi
 # FORCE NODE_SASS REBUILD, WHICH SEEMS NECESSARY TO GET VENDOR DIRECTORY IN PLACE
-npm rebuild node-sass --force
+# npm rebuild node-sass --force
 
 # INSTALL RVM
 # This should be done in the bookworks playbook...
@@ -31,5 +32,6 @@ source /usr/local/rvm/scripts/rvm
 rvm install ruby-2.4.0
 
 cp repository_mergeheads.go src/go/src/gopkg.in/libgit2/git2go.v25/repository_mergeheads.go
+cp repository_mergeheads.go src/go/src/ebw/vendor/gopkg.in/libgit2/git2go.v25
 
 

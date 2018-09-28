@@ -22,6 +22,7 @@ func GithubCommand() *commander.Command {
 				RemoteCommand,
 				BranchNameCommand,
 				RootDirCommand,
+				ListWatchersCommand,
 			)
 		})
 }
@@ -147,6 +148,35 @@ func RootDirCommand() *commander.Command {
 				return err
 			}
 			fmt.Println(root)
+			return nil
+		})
+}
+
+func ListWatchersCommand() *commander.Command {
+	fs := flag.NewFlagSet(`watchers`, flag.ExitOnError)
+	repo := fs.String(`repo`, ``, `Repo watched`)
+	owner := fs.String(`owner`, ``, `Owner of the repo`)
+	return commander.NewCommand(
+		`watchers`,
+		`List all watchers on this repo`,
+		nil,
+		func([]string) error {
+			client, err := git.ClientFromCLIConfig()
+			if nil != err {
+				return err
+			}
+			r, err := git.NewRepo(client, *owner, *repo)
+			if nil!=err {
+				return err
+			}
+			defer r.Close()
+			watchers, err := r.ListWatchers()
+			if nil!=err {
+				return err
+			}
+			for _, u := range watchers {
+				fmt.Println(*u.Login)
+			}
 			return nil
 		})
 }

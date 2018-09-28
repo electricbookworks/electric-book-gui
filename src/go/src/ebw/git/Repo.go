@@ -52,6 +52,27 @@ type Repo struct {
 	Git *Git
 }
 
+// ListWatchers lists all the watchers of the repo on Github
+func (r *Repo) ListWatchers() ([]*github.User, error) {
+	users := []*github.User{}
+	var opts github.ListOptions
+	if err := GithubPaginate(&opts, func() (*github.Response, error) {
+		u, res, err := r.Client.Client.Activity.ListWatchers(
+			r.Client.Context,
+			r.RepoOwner,
+			r.RepoName,
+			&opts)
+		if nil!=err {
+			return nil, util.Error(err)
+		}
+		users = append(users, u...)
+		return res, err
+	}); nil!=err {
+		return nil, err
+	}
+	return users, nil
+}
+
 // Close closes the repo and any resources it is using
 func (r *Repo) Close() {
 	if nil != r.Repository {

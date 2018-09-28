@@ -8,7 +8,7 @@ import (
 	"time"
 
 	// "github.com/google/go-github/github"
-	// "github.com/golang/glog"
+	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
@@ -36,13 +36,16 @@ type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
-		if config.Config.RecoverPanics {
-			if e := recover(); nil != e {
+		if e := recover(); nil != e {
+			if config.Config.RecoverPanics {
 				if err, ok := e.(error); ok {
 					WebError(w, r, err)
 					return
 				}
 				WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
+			} else {
+				glog.Errorf(`PANIC w/out recovery: %v`, e)
+				panic(e)
 			}
 		}
 	}()

@@ -16,8 +16,8 @@ rvm: "/usr/local/rvm/bin/rvm"
 ruby_version: "2.4.0"
 # 64 byte session_auth string
 session_auth: "64-byteChar"
-# 32 byte session_enc string
-session_enc: "32-bytes"
+# 32 byte session_encrypt string
+session_encrypt: "32-bytes"
 error_mail:
   to: ""
   from: ""

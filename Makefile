@@ -25,7 +25,7 @@ prepare:
 	export GOPATH=`pwd`/src/go ; \
 	go get -u github.com/kardianos/govendor; \
 	pushd src/go/src/ebw; \
-	../../../../bin/govendor sync; \
+	../../bin/govendor sync; \
 	popd; \
 	./install-libgit2.sh
 

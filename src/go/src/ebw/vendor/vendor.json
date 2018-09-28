@@ -103,6 +103,12 @@
 			"revisionTime": "2016-10-19T02:33:40Z"
 		},
 		{
+			"checksumSHA1": "ZGOsgr3QIbI+9qGJEpzXnlb/mM4=",
+			"path": "github.com/juju/errors",
+			"revision": "22422dad46e14561a0854ad42497a75af9b61909",
+			"revisionTime": "2018-08-06T07:45:54Z"
+		},
+		{
 			"checksumSHA1": "CcNzUdLUb1aq6X3HGZteAMgltxY=",
 			"path": "github.com/julienschmidt/sse",
 			"revision": "dedc8dfa3d5dbf90d2c4d70dfc25e7f8d657b424",

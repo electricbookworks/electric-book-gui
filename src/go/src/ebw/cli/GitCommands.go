@@ -66,6 +66,7 @@ func GitCommands() *commander.Command {
 				GitUpstreamActionCommand,
 				GitUpstreamCanPullCommand,
 				GitUpstreamCanCreatePRCommand,
+				GitTagDiffCommand,
 			)
 		})
 }
@@ -535,6 +536,24 @@ func GitSetUsernameEmailCommand() *commander.Command {
 			return g.SetUsernameEmail(user, email)
 		})
 }
+
+
+func GitTagDiffCommand() *commander.Command {
+	return commander.NewCommand(`tagdiff`, `diff between two tags`,
+		nil,
+		func(args []string) error {
+			if 2!=len(args) {
+				return fmt.Errorf(`You must supply the two tags to diff as params to tagdiff: ebw tagdiff [t1] [t2]`)
+			}
+			g := mustNewGit()
+			defer g.Close()
+
+			return g.TagDiff(args[0], args[1])
+
+			return nil
+		})
+}
+
 func GitUpdateRemoteGithubIdentityCommand() *commander.Command {
 	fs := flag.NewFlagSet(`update-github-identity`, flag.ExitOnError)
 	u := fs.String(`u`, ``, `Username for github`)
