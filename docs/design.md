@@ -7,7 +7,7 @@ order: 7
 
 # Design books
 
-The design of your books is created in CSS stylesheets. These are written in a syntaxes called CSS or Sass. Each output format has a dedicated stylesheet:
+The design of your books is created in CSS stylesheets. These are written in a syntax called CSS or Sass. Each output format has a dedicated stylesheet:
 
 - `print-pdf.scss`
 - `screen-pdf.scss`

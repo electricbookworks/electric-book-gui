@@ -19,7 +19,7 @@ For a professional conversion service, you can also contact [Electric Book Works
 
 ## Adding images
 
-1. From the dashboard, click on the project you would like to add images to. This take redirect you to the project detail page.
+1. From the dashboard, click on the project you would like to add images to. This will redirect you to the project detail page.
 2. Click ‘Image Files’. This will take you to a ‘Files’ page.
 3. Once you have optimized images for each format, drag and drop one image at a time from your computer onto the screen. This will prompt you to enter a path name for where the image must be stored. Remember that path names depend on what format the image is for. For example, a publisher logo for the print book (if your folder containing the book is indeed called `book`, which is the template default for the first book) would be `book/images/print-pdf/publisher-logo.jpg`; and for web outupt it would be `book/images/web/publisher-logo.jpg`; and your hi-res source image would go into `book/images/_source/publisher-logo.jpg`; and so on for `epub`, `screen-pdf` and `app`.
 4. Once you have entered the path and clicked ‘Okay’, near the bottom of the page you should see a message pop up that says ‘Image uploaded’.
