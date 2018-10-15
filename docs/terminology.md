@@ -5,7 +5,7 @@ order: 9
 
 # Terminology
 
-One the EBM we want to avoid using technical Git terms in favour of common editorial, publishing terms. This list compares technical Git terms to their non-technical equivalents used in the EBM.
+On the EBM we want to avoid using technical Git terms in favour of common editorial, publishing terms. This list compares technical Git terms to their non-technical equivalents used in the EBM.
 
 | Technical term                | Non-technical term                          |
 | :---------------------------- | :---------------------------------          |

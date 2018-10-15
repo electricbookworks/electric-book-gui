@@ -43,23 +43,23 @@ If you want to make a copy of a project but do not ever want to send submissions
 
 ## Contribute translations
 
-To create a translation of a book, follow the [Electric Book guidelines on Translations](../setup/translations.html).
+To create a translation of a book, follow the [Electric Book workflow documentation on Translations](https://electricbookworks.github.io/electric-book/docs/setup/translations.html).
 
 ## Update from the parent project
 
-While collaborating on a book by editing your own copy of it, it is essential to keep your copy up to date with any changes made to the parent version, especially if there are many people contributing to it. When you updating from the original, you get any new changes and content from the parent version of your project in your own copy.
+While collaborating on a book by editing your own copy of it, it is essential to keep your copy up to date with any changes made to the parent version, especially if there are many people contributing to it. When you update from the original, you get any new changes and content from the parent version of your project in your own copy.
 
 When there are changes in the parent project, you will see a notification on your project's page in the EBM, and a button to click to update from the original. When you click it, changes in the parent will be merged automatically with your changes.
 
-You will not be able to update from the parent version if you have made changes that you haven’t committed. This is because updating before committing your work would make it impossible for Git, the software running int he background, to merge the parent files with yours. So save and commit your work first.
+You will not be able to update from the parent version if you have made changes that you haven’t committed. This is because updating before committing your work would make it impossible for Git, the software running in the background, to merge the parent files with yours. So save and commit your work first.
 
-Once you have committed your project, go to the project page (from the dashboard, click on the name of your project).
+Once you have committed your work, go to the project page (from the dashboard, click on the name of your project).
 
 If there is content in the parent version that is not yet in your copy, you will see an ‘Update my copy from the original’ button. 
 
 Click this button to merge changes from the parent into your version. If the parent version and your version include changes to the same lines of text or to images, you will be asked to resolve these conflicts in an editor. Manually edit your version, then click 'Mark resolved' and 'Accept update'.
 
-If you click ‘View Edit History’, you will be able to see the latest changes to your copy, including the work that hasbeen merged in from the parent version.
+If you click ‘View Edit History’, you will be able to see the latest changes to your copy, including the work that has been merged in from the parent version.
 
 While you must save and commit before updating, you can submit your changes for review before or after updating from the parent version.
 
@@ -100,9 +100,9 @@ To manage who can collaborate on your version of the project:
 2. You will see a ‘Collaboration’ button on that page. Click this button to open a new tab in your browser (if a new tab doesn't open, make sure your browser isn’t preventing new popups), which will prompt you to sign into GitHub.
 3. This will redirect you to repository settings page on GitHub.
 4. To add a collaborator on GitHub, go to the ‘Collaborators’ tab, and add their username (note that each collaborator must have a GitHub account).
-5. If you are managing a private repository inan organisation that can provide read or write access, be careful to set whether you want the collaborator to have read or write access. If they have write access, they can act as a managing editor on the project: they can edit the original directly and review incoming submissions.
+5. If you are managing a private repository in an organisation that can provide read or write access, be careful to set whether you want the collaborator to have read or write access. If they have write access, they can act as a managing editor on the project: they can edit the original directly and review incoming submissions.
 
-    If you are working in a public repository, when you invite a someone to collaborate they always have write access to your project, making them a managing editor of your version, and not simply a contributor.
+    If you are working in a public repository, when you invite someone to collaborate they always have write access to your project, making them a managing editor of your version, and not simply a contributor.
 
 For good version control, collaborators should not be able to write into your version of the project; but should work in their own copy. It is therefore essential that after accepting your invitation, if collaborators do not see *their own version* of the project on their dashboard, they should click ‘Add a project’ and ‘Contribute to an existing project.’
 

@@ -7,4 +7,4 @@ order: 20
 
 You can have a developer [set up your own EBM](https://github.com/electricbookworks/electric-book-gui) or pay for access to an existing one.
 
-[Fire and Lion](https://fireandlion.com) maintains a paid EBM service for clients. [Contact Fire and Lion](mailto:team@fireandlion.com) for details.
+[Electric Book Works](https://electricbookworks.com) maintains a paid EBM service for clients. [Contact Electric Book Works](mailto:team@electricbookworks.com) for details.
