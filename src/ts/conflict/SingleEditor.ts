@@ -138,7 +138,8 @@ export class SingleEditor implements ConflictEditor {
 			return;
 		}
 		this.controls.setImageEditing(false);
-		this.imageEditor= null;		
+		this.imageEditor= null;
+		this.parent.innerHTML = ``;
 		this.editor = new EditorCodeMirror(this.parent);
 
 		//this.controls.SetFile(file);

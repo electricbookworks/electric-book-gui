@@ -16,6 +16,8 @@ import (
 
 	"github.com/google/go-github/github"
 	git2go "gopkg.in/libgit2/git2go.v25"
+	"github.com/juju/errors"
+	"github.com/golang/glog"
 
 	"ebw/logger"
 	"ebw/util"
@@ -293,6 +295,7 @@ func (g *Git) Error(err error) error {
 	g.Log.ErrorDepth(1, `%v`, err)
 	return err
 }
+
 
 // GetUpstreamRemoteActions indicates the possible actions we could perform
 // on upstream repo.
@@ -814,5 +817,30 @@ func (g *Git) TagDiff(t1id, t2id string) error {
 	defer diff.Free()
 	fmt.Println("Ok 1")
 	return nil
+}
 
+func (g *Git) ListCommits() ([]*CommitSummary, error) {
+	rv, err := g.Repository.Walk()
+	if nil!=err {
+		return nil, errors.Trace(err)
+	}
+	defer rv.Free()
+	// rv.Reset()
+	rv.PushHead()	// The the rev walker to have an initial position
+	list := []*CommitSummary{}
+	glog.Infof(`About to iterate through repository commits`)
+	if err := rv.Iterate(func(c *git2go.Commit) bool {
+		glog.Infof(`Commit : %s %10s %s`, 
+			c.Committer().When.Format(`20060102`),
+			c.TreeId().String(), c.Message())
+		list = append(list, &CommitSummary{
+			When: c.Committer().When,
+			OID: c.TreeId().String(),
+			Message: c.Message(),
+			})
+		return true
+		}); nil!=err {
+		return nil, errors.Trace(err)
+	}
+	return list, nil
 }

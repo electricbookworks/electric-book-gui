@@ -36,6 +36,81 @@ func repoFileViewer(c *Context) error {
 	return c.Render(`repo_file_viewer.html`, nil)
 }
 
+func repoDiffFiles(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	diffs, err := r.Git.CommitDiffs(fromOID, toOID)
+	if nil!=err {
+		return err
+	}
+	c.D[`Diffs`] = diffs
+	return c.Render(`repo_diff_file_viewer.html`, nil)
+}
+
+func repoDiffFileServer(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	OIDandExt := c.Vars[`OID`]
+	ext := filepath.Ext(OIDandExt)
+	OID := OIDandExt[0:len(OIDandExt)-len(ext)]
+	oid, err := git2go.NewOid(OID)
+	if nil!=err {
+		return err
+	}
+	mimeType := mime.TypeByExtension(ext)
+	blob, err := r.Git.Repository.LookupBlob(oid)
+	if nil!=err {
+		return err
+	}
+	defer blob.Free()
+	c.W.Header().Set(`Content-Type`, mimeType)
+	c.W.Write(blob.Contents())
+	return nil
+}
+
+func repoDiff(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+
+	commits, err := r.Git.ListCommits()
+	if nil!=err {
+		return err
+	}
+	c.D[`CommitSummaries`] = commits
+	return c.Render(`repo_diff_viewer.html`, nil)
+}
+
 func repoCommit(c *Context) error {
 	client := Client(c.W, c.R)
 	if nil == client {
@@ -252,6 +327,7 @@ func repoUpdate(c *Context) error {
 		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
 	case `detail`:
 	case ``:
+		glog.Infof(`Redirecting to /repo/%s/%s/details`, repoOwner, repoName)
 		return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 	default:
 		return c.Redirect(next)

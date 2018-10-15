@@ -94,6 +94,49 @@ func (rpc *API) StageFileAndReturnMergingState(repoOwner, repoName, path string)
 	return state.String(), nil
 }
 
+func (rpc *API) ListWatchers(repoOwner, repoName string) ([]string, error) {
+	repo, err := git.NewRepo(rpc.Client, repoOwner, repoName)
+	if nil!=err {
+		return nil, err
+	}
+	defer repo.Close()
+	users, err := repo.ListWatchers()
+	if nil!=err {
+		return nil, err
+	}
+	names := make([]string, len(users))
+	for i, u := range users {
+		names[i] = *u.Login
+	}
+	return names, nil
+}
+
+// List all the commits on the given repo
+func (rpc *API) ListCommits(repoOwner, repoName string) ([]*git.CommitSummary, error) {
+	repo, err := git.NewRepo(rpc.Client,repoOwner, repoName)
+	if nil!=err {
+		return nil,err
+	}
+	defer repo.Close()
+	commits, err := repo.Git.ListCommits()
+	if nil!=err {
+		return nil, err
+	}
+	return commits, nil
+}
+
+func (rpc *API) ListWatched() ([]string, error) {
+	repos, err := rpc.Client.ListWatched()
+	if nil!=err {
+		return nil, err
+	}
+	r := make([]string, len(repos))
+	for i, repo := range repos {
+		r[i] = repo.GetFullName()
+	}
+	return r, nil
+}
+
 func (rpc *API) SaveWorkingFile(repoOwner, repoName, path, content string) error {
 	return git.SaveWorkingFile(rpc.Client, repoOwner, repoName, path, []byte(content))
 }

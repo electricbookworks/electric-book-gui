@@ -13,6 +13,7 @@ import {FSReadCache} from './FS/FSReadCache';
 import {FSSession} from './FS/FSSession';
 
 import {FSFileList} from './FSFileList';
+import {FSFileTree} from './FSFileTree';
 import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
 
 /**
@@ -48,7 +49,8 @@ export class RepoEditorPage {
 		let overlayFS = new FSOverlay(remoteFS, localFS);
 		this.FS = new FSNotify(overlayFS);
 		
-		new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+		//new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+		new FSFileTree(filesList, this.editor, this.FS, this.proseIgnoreFunction);
 
 		new RepoEditorPage_NewFileDialog(
 			document.getElementById('repo-new-file'),

@@ -71,6 +71,8 @@ class repoEditorActionBar {
 export class RepoFileEditorCM extends Template {
 	protected textEditor : EditorCodeMirror;
 	protected imageEditor: EditorImage;
+	
+	protected loadingFile : FSFileEdit;
 	protected file: FSFileEdit;
 	protected undoKey: string;
 	public EditEvents: signals.Signal;
@@ -199,6 +201,7 @@ export class RepoFileEditorCM extends Template {
 		this.textEditor.setHistory(sessionStorage.getItem(key));
 	}
 
+
 	setFile(file:FSFileEdit) {
 		if (this.file) {
 			if (this.file.Name()==file.Name()) {
@@ -225,9 +228,20 @@ export class RepoFileEditorCM extends Template {
 		}
 		this.showTextEditor();
 
+		this.loadingFile = file;
 		file.GetText()
 		.then(
 			(t:string)=>{
+				// If we start loading file A, then start loading file
+				// B, and file B returns before file A, when file A
+				// returns, we are configuring ourselves as file A when
+				// in fact we should be file B.
+				// This if statement catches an 'out-of-sequence' 
+				// loaded A, and just ignores it, since we are now loading
+				// B.
+				if (this.loadingFile.Name()!=file.Name()) {
+					return;
+				}
 				this.file = file;
 				this.file.SetEditing(true);
 				this.setBoundFilenames();

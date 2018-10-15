@@ -50,7 +50,7 @@ func (g *Git) GithubRemote(remoteName string) (*GithubRemote, error) {
 	return gr, nil
 }
 
-// GitubClient returns a github.Client configured with the
+// GithubClient returns a github.Client configured with the
 // password for the `origin` remote of this git repo. It ONLY uses the
 // password, hence it requires the password to be a github TOKEN. If the
 // password is not a token, the github client it returns will not work.

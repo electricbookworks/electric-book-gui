@@ -3778,10 +3778,13 @@ body {
   flex-direction: column;
   align-items: stretch;
   justify-content: space-between;
-  min-height: 100vh; }
+  min-height: 100vh;
+  max-height: 100vh;
+  position: relative; }
   body main {
     flex-grow: 1; }
   body footer {
+    flex-grow: 0;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -4667,6 +4670,51 @@ body {
     flex-grow: 0;
     font-size: 0.5em;
     font-weight: bold; }
+
+#repo-diff-viewer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  position: relative; }
+  #repo-diff-viewer .footer {
+    flex-grow: 0;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end; }
+  #repo-diff-viewer .workspace {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    position: relative; }
+    #repo-diff-viewer .workspace .commit-list {
+      flex-grow: 1;
+      height: 100%;
+      position: relative; }
+      #repo-diff-viewer .workspace .commit-list .commit-summary-list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: scroll; }
+      #repo-diff-viewer .workspace .commit-list .commit-summary {
+        padding: 0.6em 1em;
+        border-top: 1px solid #ddd;
+        cursor: pointer; }
+        #repo-diff-viewer .workspace .commit-list .commit-summary .when {
+          font-weight: bold; }
+        #repo-diff-viewer .workspace .commit-list .commit-summary:hover {
+          background-color: #cfc; }
+        #repo-diff-viewer .workspace .commit-list .commit-summary.selected {
+          background-color: #8c8; }
+      #repo-diff-viewer .workspace .commit-list .commit-summary:first-child {
+        border-top: 0px; }
 
 #merge-image-editor {
   display: block;

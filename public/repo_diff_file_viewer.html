@@ -1,0 +1,18 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+
+<main id="repo-diff-file-viewer" class="workspace">
+	{{- range .Diffs -}}
+	{{- if . -}}
+	<div>{{.State}}:<a href="../../diff-serve/{{.Old.OIDPath}}">{{.Old.GetPath}}</a>:<a href="../../diff-serve/{{.New.OIDPath}}">{{.New.GetPath}}</a></div>
+	{{- else}}<div>NIL</div>
+	{{- end}}
+	{{- end}}
+</main>
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffFileViewerPage">
+</script>
+<script type="text/hidden" id="commit-summaries">
+{{- /* .CommitSummaries | json | raw */ -}}
+</script>
+
+{{template "_footer.html" .}}

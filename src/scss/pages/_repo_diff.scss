@@ -1,0 +1,58 @@
+#repo-diff-viewer {
+  flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+  position: relative;
+
+  .footer {
+    flex-grow: 0;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+  .workspace {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+    position: relative;
+
+   .commit-list {
+      flex-grow: 1;
+      height: 100%;
+      position: relative;
+
+      .commit-summary-list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: scroll;
+      }
+      .commit-summary {
+        padding: 0.6em 1em;
+        border-top: 1px solid $color-lightgray;
+        cursor: pointer;
+        .when {
+          font-weight: bold;
+        }
+        &:hover {
+          background-color: #cfc;
+        }
+        &.selected {
+          background-color: #8c8;
+        }
+      }
+      .commit-summary:first-child {
+        border-top: 0px;
+      }
+    }
+  }
+}

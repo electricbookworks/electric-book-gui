@@ -147,6 +147,15 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         APIWs.prototype.StageFileAndReturnMergingState = function (repoOwner, repoName, path) {
             return this.rpc("StageFileAndReturnMergingState", [repoOwner, repoName, path]);
         };
+        APIWs.prototype.ListWatchers = function (repoOwner, repoName) {
+            return this.rpc("ListWatchers", [repoOwner, repoName]);
+        };
+        APIWs.prototype.ListCommits = function (repoOwner, repoName) {
+            return this.rpc("ListCommits", [repoOwner, repoName]);
+        };
+        APIWs.prototype.ListWatched = function () {
+            return this.rpc("ListWatched", []);
+        };
         APIWs.prototype.SaveWorkingFile = function (repoOwner, repoName, path, content) {
             return this.rpc("SaveWorkingFile", [repoOwner, repoName, path, content]);
         };
@@ -287,7 +296,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = AddNewBookDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button class=\"btn\" data-event=\"click:choseType\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input value=\"New adaptation\" type=\"submit\" class=\"btn\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input value=\"Copy project\" type=\"submit\" class=\"btn\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input value=\"new\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input placeholder=\"e.g. MobyDick\" type=\"text\" name=\"repo_new\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input class=\"btn\" value=\"New project\" type=\"submit\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\" type=\"text\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input name=\"action\" value=\"fork\" type=\"hidden\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 AddNewBookDialog._template = t;
             }
@@ -450,7 +459,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = BoundFilename._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"bound-filename\">\n\t<span>Select a file to edit</span>\n\t<a href=\"#\" target=\"_github\"><img src=\"/img/github-dark.svg\"/></a>\n</div>\n";
+                d.innerHTML = "<div class=\"bound-filename\">\n\t<span>Select a file to edit</span>\n\t<a target=\"_github\" href=\"#\"><img src=\"/img/github-dark.svg\"/></a>\n</div>\n";
                 t = d.firstElementChild;
                 BoundFilename._template = t;
             }
@@ -537,6 +546,71 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         }
         return CommitMessageDialog;
     }());
+    var CommitSummaryListView = (function () {
+        function CommitSummaryListView() {
+            var t = CommitSummaryListView._template;
+            if (!t) {
+                var d = document.createElement('div');
+                d.innerHTML = "<div class=\"commit-summary-list\">\n</div>\n";
+                t = d.firstElementChild;
+                CommitSummaryListView._template = t;
+            }
+            var n = t.cloneNode(true);
+            this.$ = {
+                summaries: n,
+            };
+            /*
+            
+            
+            if (!this.$.summaries) {
+                console.error("Failed to resolve item summaries on path  of ", n);
+                debugger;
+            } else {
+                console.log("summaries resolved to ", this.$.summaries);
+            }
+            
+            */
+            this.el = n;
+        }
+        return CommitSummaryListView;
+    }());
+    var CommitSummaryView = (function () {
+        function CommitSummaryView() {
+            var t = CommitSummaryView._template;
+            if (!t) {
+                var d = document.createElement('div');
+                d.innerHTML = "<div class=\"commit-summary\">\n  <div class=\"when\"> </div>\n  <div class=\"message\"> </div>\n</div>\n";
+                t = d.firstElementChild;
+                CommitSummaryView._template = t;
+            }
+            var n = t.cloneNode(true);
+            this.$ = {
+                when: n.childNodes[1],
+                message: n.childNodes[3],
+            };
+            /*
+            
+            
+            if (!this.$.when) {
+                console.error("Failed to resolve item when on path .childNodes[1] of ", n);
+                debugger;
+            } else {
+                console.log("when resolved to ", this.$.when);
+            }
+            
+            
+            if (!this.$.message) {
+                console.error("Failed to resolve item message on path .childNodes[3] of ", n);
+                debugger;
+            } else {
+                console.log("message resolved to ", this.$.message);
+            }
+            
+            */
+            this.el = n;
+        }
+        return CommitSummaryView;
+    }());
     var EditorImage = (function () {
         function EditorImage() {
             var t = EditorImage._template;
@@ -618,7 +692,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = FileListDialog_Item._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t\t<input name=\"file-list\" type=\"radio\"/>\n\t\t<span/>\n\t</li>\n</ul>\n";
+                d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t\t<input type=\"radio\" name=\"file-list\"/>\n\t\t<span/>\n\t</li>\n</ul>\n";
                 t = d.firstElementChild.childNodes[1];
                 FileListDialog_Item._template = t;
             }
@@ -657,7 +731,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = FoundationRevealDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div data-reveal=\"\" class=\"reveal\" id=\"new-file-dialog\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
+                d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
                 t = d.firstElementChild;
                 FoundationRevealDialog._template = t;
             }
@@ -724,7 +798,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = LoginTokenList._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input type=\"text\" placeholder=\"token\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
+                d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input placeholder=\"token\" type=\"text\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
                 t = d.firstElementChild;
                 LoginTokenList._template = t;
             }
@@ -908,7 +982,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = RepoEditorPage_RenameFileDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input placeholder=\"/book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
                 t = d.firstElementChild;
                 RepoEditorPage_RenameFileDialog._template = t;
             }
@@ -1028,7 +1102,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = RepoFileViewerPage._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input placeholder=\"Enter search text to find images.\" type=\"text\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
+                d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input type=\"text\" placeholder=\"Enter search text to find images.\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 RepoFileViewerPage._template = t;
             }
@@ -1065,7 +1139,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = conflict_ClosePRDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input value=\"no\" data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-no\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_ClosePRDialog._template = t;
             }
@@ -1184,7 +1258,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = conflict_MergeImageEditor._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"merge-image-editor\" id=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_MergeImageEditor._template = t;
             }
@@ -1515,6 +1589,18 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                     });
                 });
             }
+            EBW.API().ListWatchers(context.RepoOwner, context.RepoName).then(function (_a) {
+                var watchers = _a[0];
+                console.log("watchers = ", watchers);
+            });
+            EBW.API().ListWatched().then(function (_a) {
+                var watched = _a[0];
+                console.log("watched = ", watched);
+            });
+            EBW.API().ListCommits(context.RepoOwner, context.RepoName).then(function (_a) {
+                var commits = _a[0];
+                console.log("commits = ", commits);
+            });
             // let dialog = new RepoMergeDialog(context, undefined);
             // RepoMergeButton.init(this.context, dialog);
             // dialog.MergeEvent.add(this.mergeEvent, this);
@@ -2184,8 +2270,19 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 return;
             }
             this.showTextEditor();
+            this.loadingFile = file;
             file.GetText()
                 .then(function (t) {
+                // If we start loading file A, then start loading file
+                // B, and file B returns before file A, when file A
+                // returns, we are configuring ourselves as file A when
+                // in fact we should be file B.
+                // This if statement catches an 'out-of-sequence' 
+                // loaded A, and just ignores it, since we are now loading
+                // B.
+                if (_this.loadingFile.Name() != file.Name()) {
+                    return;
+                }
                 _this.file = file;
                 _this.file.SetEditing(true);
                 _this.setBoundFilenames();
@@ -3083,11 +3180,11 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
 
     // import {Directory} from './Directory';
     /**
-     * FSFileList shows a list of the files in the
+     * FSFileTree shows a list of the files in the
      * given filesystem.
      */
-    var FSFileList = (function () {
-        function FSFileList(parent, editor, FS, ignoreFunction) {
+    var FSFileTree = (function () {
+        function FSFileTree(parent, editor, FS, ignoreFunction) {
             this.parent = parent;
             this.editor = editor;
             this.FS = FS;
@@ -3096,11 +3193,11 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             this.FS.Listeners.add(this.FSEvent, this);
             this.files = new Map();
         }
-        FSFileList.prototype.FSEvent = function (path, fc) {
+        FSFileTree.prototype.FSEvent = function (path, fc) {
             if (!fc) {
                 debugger;
             }
-            // console.log(`FSFileList.FSEvent -- fileContent = `, fc);
+            console.log("FSFileList.FSEvent -- fileContent = ", fc);
             var f = this.files.get(fc.Name);
             switch (fc.Stat) {
                 case FileStat.New:
@@ -3127,7 +3224,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 f.FSEvent(path, fc);
             }
         };
-        FSFileList.prototype.newFile = function (fc) {
+        FSFileTree.prototype.newFile = function (fc) {
             var _this = this;
             var f = new FSFileList_File$1(this.parent, fc, this.FS, {
                 clickFile: function (evt) {
@@ -3141,7 +3238,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             this.files.set(fc.Name, f);
             return f;
         };
-        return FSFileList;
+        return FSFileTree;
     }());
 
     var File = (function () {
@@ -3281,7 +3378,8 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var localFS = new FSSession("temp-rootf", this.repoOwner, this.repoName);
             var overlayFS = new FSOverlay(remoteFS, localFS);
             this.FS = new FSNotify(overlayFS);
-            new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+            //new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+            new FSFileTree(filesList, this.editor, this.FS, this.proseIgnoreFunction);
             new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
             new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
             new ControlTag(document.getElementById("files-show-tag"), function (showing) {
@@ -4443,6 +4541,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             }
             this.controls.setImageEditing(false);
             this.imageEditor = null;
+            this.parent.innerHTML = "";
             this.editor = new EditorCodeMirror(this.parent);
             //this.controls.SetFile(file);
             // VERY importantly, we don't listen to the file 
@@ -4708,6 +4807,130 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         return PullRequestMergePage;
     }());
 
+    var CommitSummary = (function () {
+        function CommitSummary(when, oid, message) {
+            this.when = when;
+            this.oid = oid;
+            this.message = message;
+        }
+        CommitSummary.prototype.When = function () {
+            return this.when;
+        };
+        CommitSummary.prototype.Message = function () {
+            return this.message;
+        };
+        CommitSummary.prototype.OID = function () {
+            return this.oid;
+        };
+        return CommitSummary;
+    }());
+
+    var CommitSummaryList = (function () {
+        function CommitSummaryList() {
+            this.listeners = new Array();
+        }
+        CommitSummaryList.prototype.addListener = function (l) {
+            this.listeners.push(l);
+        };
+        CommitSummaryList.prototype.removeListener = function (l) {
+            this.listeners.remove(l);
+        };
+        CommitSummaryList.prototype.add = function (cs) {
+            this.listeners.forEach(function (l) { return l.addCommit(cs); });
+        };
+        return CommitSummaryList;
+    }());
+
+    var CommitSummaryView$1 = (function (_super) {
+        tslib_1.__extends(CommitSummaryView$$1, _super);
+        function CommitSummaryView$$1(parent) {
+            var _this = _super.call(this) || this;
+            parent.appendChild(_this.el);
+            _this.el.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.el.dispatchEvent(new CustomEvent('commit-click', {
+                    'detail': _this,
+                    'bubbles': true,
+                    'cancelable': true
+                }));
+            });
+            return _this;
+        }
+        CommitSummaryView$$1.prototype.set = function (cs) {
+            this.commit = cs;
+            this.$.when.textContent = cs.When();
+            this.$.message.textContent = cs.Message();
+        };
+        CommitSummaryView$$1.prototype.OID = function () {
+            return this.commit.OID();
+        };
+        CommitSummaryView$$1.prototype.Select = function (state) {
+            this.el.classList.toggle('selected', state);
+            console.log("toggled selected state on ", this.el);
+        };
+        return CommitSummaryView$$1;
+    }(CommitSummaryView));
+
+    var CommitSummaryListView$1 = (function (_super) {
+        tslib_1.__extends(CommitSummaryListView$$1, _super);
+        function CommitSummaryListView$$1(parent, list) {
+            var _this = _super.call(this) || this;
+            parent.appendChild(_this.el);
+            list.addListener(_this);
+            _this.selected = undefined;
+            // console.log(`CommitSummaryListView, this.$ = `, this.$);
+            _this.el.addEventListener("commit-click", function (evt) {
+                if (_this.selected) {
+                    _this.selected.Select(false);
+                }
+                _this.selected = evt.detail;
+                _this.selected.Select(true);
+            });
+            return _this;
+        }
+        CommitSummaryListView$$1.prototype.addCommit = function (c) {
+            var csv = new CommitSummaryView$1(this.$.summaries);
+            csv.set(c);
+        };
+        return CommitSummaryListView$$1;
+    }(CommitSummaryListView));
+
+    var RepoDiffViewerPage = (function () {
+        function RepoDiffViewerPage(context) {
+            var _this = this;
+            this.context = context;
+            var commits = JSON.parse(document.getElementById('commit-summaries').innerText);
+            var summaries = new CommitSummaryList();
+            var fromList = new CommitSummaryListView$1(document.getElementById("commit-from"), summaries);
+            var toList = new CommitSummaryListView$1(document.getElementById("commit-to"), summaries);
+            commits.forEach(function (c) {
+                summaries.add(new CommitSummary(c.When, c.OID, c.Message));
+            });
+            fromList.el.addEventListener("commit-click", function (evt) {
+                _this.fromOID = evt.detail.OID();
+                _this.enableViewButton();
+            });
+            toList.el.addEventListener("commit-click", function (evt) {
+                _this.toOID = evt.detail.OID();
+                _this.enableViewButton();
+            });
+            this.viewButton = document.getElementById("diff-view");
+            this.enableViewButton();
+            this.viewButton.addEventListener("click", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                context.RepoRedirect("diff/" + _this.fromOID + "/" + _this.toOID);
+            });
+        }
+        RepoDiffViewerPage.prototype.enableViewButton = function () {
+            var disable = (this.fromOID == undefined) || (this.toOID == undefined);
+            this.viewButton.disabled = disable;
+            console.log("viewButton.disabled = " + this.viewButton.disabled);
+        };
+        return RepoDiffViewerPage;
+    }());
+
     var DOMInsert = (function () {
         function DOMInsert(parent) {
             this.parent = parent;
@@ -4938,8 +5161,10 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                         case 'RepoConflictPage':
                             new RepoConflictPage(context);
                             break;
+                        case 'RepoDiffViewerPage':
+                            new RepoDiffViewerPage(context);
+                            break;
                         case 'RepoFileViewerPage':
-                            console.log("Creating RepoFileViewerPage");
                             new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
                             break;
                     }

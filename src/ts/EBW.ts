@@ -9,6 +9,7 @@ import {RepoEditorPage} from './RepoEditorPage';
 import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
+import {RepoDiffViewerPage} from './RepoDiffViewerPage';
 import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
@@ -33,8 +34,10 @@ export class EBW {
 					case 'RepoConflictPage':
 						new RepoConflictPage(context);
 						break;
+					case 'RepoDiffViewerPage':
+						new RepoDiffViewerPage(context);
+						break;
 					case 'RepoFileViewerPage':
-						console.log(`Creating RepoFileViewerPage`); 
 						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);
 						break;
 				}

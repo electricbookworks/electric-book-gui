@@ -1,0 +1,19 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+
+<main id="repo-diff-viewer">
+	<div class="workspace">
+		<div id="commit-from" class="commit-list"> </div>
+		<div id="commit-to" class="commit-list"> </div>
+	</div>
+	<div class="footer">
+		<button id="diff-view" class="button" >View Diff</button>
+	</div>
+</main>
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffViewerPage">
+</script>
+<script type="text/hidden" id="commit-summaries">
+{{- .CommitSummaries | json | raw -}}
+</script>
+
+{{template "_footer.html" .}}
