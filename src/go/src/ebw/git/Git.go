@@ -287,6 +287,59 @@ func (g *Git) DefaultSignature() (*git2go.Signature, error) {
 	return sig, nil
 }
 
+type DiffHunk struct {
+	Hunk git2go.DiffHunk
+	Lines  []git2go.DiffLine
+}
+
+func (g *Git) DiffBlobs(fromOIDs, fromName, toOIDs, toName string) ([]*DiffHunk,error) {
+	fromOID, err := git2go.NewOid(fromOIDs)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	toOID, err := git2go.NewOid(toOIDs)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	fromB, err := g.Repository.LookupBlob(fromOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	toB, err := g.Repository.LookupBlob(toOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	hunks := []*DiffHunk{}
+	var currentHunk *DiffHunk
+
+	lineCallback := func(line git2go.DiffLine) error {
+		if nil==currentHunk {
+			panic(`Need currentHunk`)
+		}
+		currentHunk.Lines = append(currentHunk.Lines, line)		
+		return nil
+	}
+	hunkCallback := func(hunk git2go.DiffHunk) (git2go.DiffForEachLineCallback, error) {
+		currentHunk = &DiffHunk{
+			Lines: []git2go.DiffLine{},
+			Hunk: hunk,
+		}
+		hunks = append(hunks, currentHunk)
+		return lineCallback, nil
+	}
+	fileCallback := func(delta git2go.DiffDelta, f float64) (git2go.DiffForEachHunkCallback, error) {
+		return hunkCallback, nil
+	}
+	if err := git2go.DiffBlobs(fromB, fromName, toB, toName, &git2go.DiffOptions{
+		Flags:git2go.DiffNormal|git2go.DiffForceText|git2go.DiffMinimal,
+		ContextLines: 2,
+		InterhunkLines: 3,
+		}, fileCallback, git2go.DiffDetailLines); nil!=err {
+		return nil, util.Error(err)
+	}
+	return hunks, nil
+}
+
 // Error logs an error and returns an error, or returns nil if err is nil.
 func (g *Git) Error(err error) error {
 	if nil == err {

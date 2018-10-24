@@ -100,7 +100,13 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
-		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `install`).Run(); nil != err {
+		if err := Rvm(jout, jerr, j.RepoDir, `bundle`,`update`, `--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+			j.SetError(err)
+			util.Error(err)
+			fmt.Fprintln(jerr, err.Error())
+			return
+		}
+		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `install`,`--retry`,`5`).Run(); nil != err {
 			j.SetError(err)
 			util.Error(err)
 

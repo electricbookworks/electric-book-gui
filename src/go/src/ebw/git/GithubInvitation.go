@@ -14,6 +14,7 @@ type GithubInvitation struct {
 
 // UserInvitations returns a slice of all the open invitations for the current user.
 func (c *Client) UserInvitations() ([]*GithubInvitation, error) {
+	// return []*GithubInvitation{}, nil
 	invites := []*GithubInvitation{}
 	listOptions := github.ListOptions{}
 	if err := GithubPaginate(&listOptions, func() (*github.Response, error) {

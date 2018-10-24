@@ -64,8 +64,10 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff`, WebHandler(repoDiff))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}/{index}`, WebHandler(repoDiffPatch))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}`, WebHandler(repoDiffFiles))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff-serve/{OID}`, WebHandler(repoDiffFileServer))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff-diff/{fromOID}/{toOID}`, WebHandler(repoDiffDiff))
 	r.Handle(`/repo/{repoOwner}/{repoName}/files`, WebHandler(repoFileViewer))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
@@ -148,6 +150,7 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		"IsSpecialUser": func(username string) bool {
 			return "craigmj" == username || "arthurattwell" == username
 		},
+
 	})
 	if err := filepath.Walk("public", func(name string, info os.FileInfo, err error) error {
 		// glog.Infof("walk: %s", name)

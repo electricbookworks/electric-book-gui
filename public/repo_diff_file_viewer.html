@@ -1,10 +1,12 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+{{- $ToOID := .ToOID}}
 <main id="repo-diff-file-viewer" class="workspace">
 	{{- range .Diffs -}}
+	<span><a href="{{$ToOID}}/{{.Index}}">patch</a></span>
 	{{- if . -}}
-	<div>{{.State}}:<a href="../../diff-serve/{{.Old.OIDPath}}">{{.Old.GetPath}}</a>:<a href="../../diff-serve/{{.New.OIDPath}}">{{.New.GetPath}}</a></div>
+	<div>{{ if and .Old .New}}<a href="../../diff-diff/{{.Old.OID}}/{{.New.OID}}">{{.State}}</a>{{else}}{{.State}}{{end}}:<a href="../../diff-serve/{{.Old.OIDPath}}">{{.Old.GetPath}}</a>:<a href="../../diff-serve/{{.New.OIDPath}}">{{.New.GetPath}}</a></div>
 	{{- else}}<div>NIL</div>
 	{{- end}}
 	{{- end}}

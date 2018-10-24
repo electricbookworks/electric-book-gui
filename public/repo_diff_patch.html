@@ -1,0 +1,35 @@
+{{template "_header.html" .}}
+{{template "_nav_main.html" .}}
+<style type="text/css">
+#repo-diff-patch tbody td, #repo-diff-patch tbody th {
+	padding: 0;
+}
+</style>
+<main id="repo-diff-patch" class="">
+</main>
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	console.log('generating diff');
+	var patch = document.getElementById('patch').innerText;
+	console.log(`patch = `, patch);
+	if (false) {
+		var diffHtml = Diff2Html.getPrettyHtml(
+		  patch,
+		  {inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side'}
+		);
+		document.getElementById("repo-diff-patch").innerHTML = diffHtml;
+	} else {
+		var diff2htmlUi = new Diff2HtmlUI({diff: patch});
+		diff2htmlUi.draw('#repo-diff-patch', {inputFormat: 'diff', showFiles: true, matching: 'lines'});
+		// diff2htmlUi.highlightCode('#repo-diff-patch');
+	}
+	console.log('diff generated!');
+});
+</script>
+<script type="text/hidden" id="patch">
+	{{- .Patch.String | raw -}}
+</script>
+
+{{template "_footer.html" .}}

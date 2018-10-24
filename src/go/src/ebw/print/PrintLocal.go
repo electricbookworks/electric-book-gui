@@ -81,7 +81,11 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 		glog.Errorf(`Error %s: gem install bundler : %s`, repoPath, err.Error())
 		return ``, err
 	}
-	if err := Rvm(cout, cerr, repoPath, `bundle`, `install`).Run(); nil != err {
+	if err := Rvm(cout, cerr, repoPath, `bundle`,`update`,`--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+		glog.Errorf(`Error %s: bundle update --all --retry 5: %s`, repoPath, err.Error() )
+		return ``, err
+	}
+	if err := Rvm(cout, cerr, repoPath, `bundle`, `install`,`--retry`,`5`).Run(); nil != err {
 		glog.Errorf(`Error %s: bundle install: %s`, repoPath, err.Error())
 		return ``, err
 	}

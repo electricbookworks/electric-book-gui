@@ -152,6 +152,44 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 	return changes, nil
 }
 
+// CommitDiffsPatch returns the indexed patch for 
+// the differences between the two commits
+// stored as fromOID and toOID
+func (g *Git) CommitDiffsPatch(fromOID, toOID string, index int) (*git2go.Patch, error) {
+	fromTreeID, err := git2go.NewOid(fromOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	toTreeID, err := git2go.NewOid(toOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	fromTree, err := g.Repository.LookupTree(fromTreeID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	defer fromTree.Free()
+
+	toTree, err := g.Repository.LookupTree(toTreeID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	defer toTree.Free()
+
+	diffOptions, err := git2go.DefaultDiffOptions()
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	diff, err := g.Repository.DiffTreeToTree(fromTree, toTree, 
+		&diffOptions)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	defer diff.Free()
+
+	return diff.Patch(index)
+}
+
 // func (g *Git) CommitDiffsFile(fromOID, toOID string, index int, fromFile bool) () {
 // 	fromTreeID, err := git2go.NewOid(fromOID)
 // 	if nil!=err {

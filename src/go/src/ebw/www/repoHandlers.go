@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"strconv"
 	// "net/http"
 
 	"github.com/golang/glog"
@@ -54,8 +55,58 @@ func repoDiffFiles(c *Context) error {
 	if nil!=err {
 		return err
 	}
+	c.D[`FromOID`], c.D[`ToOID`] = fromOID, toOID
 	c.D[`Diffs`] = diffs
 	return c.Render(`repo_diff_file_viewer.html`, nil)
+}
+
+func repoDiffPatch(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	index, err := strconv.ParseInt(c.Vars[`index`], 10, 64)
+	if nil!=err {
+		return err
+	}
+	patch, err := r.Git.CommitDiffsPatch(fromOID, toOID, int(index))
+	if nil!=err {
+		return err
+	}
+	defer patch.Free()
+	c.D[`Patch`] = patch
+
+	return c.Render(`repo_diff_patch.html`, nil)
+}
+
+// repoDiffDiff serves the DIFF file that is generated between the two OID's.
+func repoDiffDiff(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`], c.D[`RepoName`]=repoOwner, repoName
+	r, err := c.Repo()
+	if nil!=err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	hunks, err := r.Git.DiffBlobs(fromOID, `from-name`, toOID, `to-name`)
+	if nil!=err {
+		return err
+	}
+	c.D[`Hunks`]=hunks
+	return c.Render(`repo_diff_file_diff.html`, nil)
 }
 
 func repoDiffFileServer(c *Context) error {
