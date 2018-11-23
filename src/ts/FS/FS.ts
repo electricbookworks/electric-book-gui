@@ -32,6 +32,12 @@ export function FileStatString(fs:FileStat) : string {
 	return "-- ERROR : undefined FileStat ---";
 }
 
+export function SetFileStatCSS(el: HTMLElement, fs:FileStat) : void {
+	el.classList.remove(
+		"FileStat-Exists","FileStat-Changed","FileStat-New","FileStat-Deleted","FileStat-NotExist");
+	el.classList.add("FileStat-" + FileStatString(fs));
+}
+
 export class FileContent {
 	constructor(
 		public readonly Name:string, 

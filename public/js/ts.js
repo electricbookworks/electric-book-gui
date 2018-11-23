@@ -296,7 +296,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = AddNewBookDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input value=\"new\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input placeholder=\"e.g. MobyDick\" type=\"text\" name=\"repo_new\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input class=\"btn\" value=\"New project\" type=\"submit\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\" type=\"text\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input name=\"action\" value=\"fork\" type=\"hidden\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input placeholder=\"e.g. MobyDick\" type=\"text\" name=\"repo_new\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form action=\"/github/create/fork\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 AddNewBookDialog._template = t;
             }
@@ -459,7 +459,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = BoundFilename._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"bound-filename\">\n\t<span>Select a file to edit</span>\n\t<a target=\"_github\" href=\"#\"><img src=\"/img/github-dark.svg\"/></a>\n</div>\n";
+                d.innerHTML = "<div class=\"bound-filename\">\n\t<span>Select a file to edit</span>\n\t<a href=\"#\" target=\"_github\"><img src=\"/img/github-dark.svg\"/></a>\n</div>\n";
                 t = d.firstElementChild;
                 BoundFilename._template = t;
             }
@@ -496,7 +496,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = CommitMessageDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input name=\"commitMessage\" id=\"commitMessage\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
                 t = d.firstElementChild;
                 CommitMessageDialog._template = t;
             }
@@ -628,36 +628,6 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             this.el = n;
         }
         return EditorImage;
-    }());
-    var FSFileList_File = (function () {
-        function FSFileList_File() {
-            var t = FSFileList_File._template;
-            if (!t) {
-                var d = document.createElement('div');
-                d.innerHTML = "<ul>\n\t<li data-set=\"this\" class=\"allfiles-file\">\n\t\t<div data-event=\"click:clickFile\">NAME\n\t\t</div>\n\t</li>\n</ul>\n";
-                t = d.firstElementChild.childNodes[1];
-                FSFileList_File._template = t;
-            }
-            var n = t.cloneNode(true);
-            n = n.childNodes[1];
-            this.$ = {
-                name: n,
-            };
-            /*
-            
-            
-            
-            if (!this.$.name) {
-                console.error("Failed to resolve item name on path  of ", n);
-                debugger;
-            } else {
-                console.log("name resolved to ", this.$.name);
-            }
-            
-            */
-            this.el = n;
-        }
-        return FSFileList_File;
     }());
     var FileListDialog = (function () {
         function FileListDialog() {
@@ -798,7 +768,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = LoginTokenList._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input placeholder=\"token\" type=\"text\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
+                d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input type=\"text\" placeholder=\"token\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
                 t = d.firstElementChild;
                 LoginTokenList._template = t;
             }
@@ -954,7 +924,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = RepoEditorPage_NewFileDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input data-event=\"change\" type=\"text\" placeholder=\"book/text/chapter-7.md\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
                 t = d.firstElementChild;
                 RepoEditorPage_NewFileDialog._template = t;
             }
@@ -1134,12 +1104,67 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         }
         return RepoFileViewerPage;
     }());
+    var Tree_NodeView = (function () {
+        function Tree_NodeView() {
+            var t = Tree_NodeView._template;
+            if (!t) {
+                var d = document.createElement('div');
+                d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><svg height=\"1em\" viewBox=\"0 0 100 100\" width=\"1em\">\n\t\t<rect ry=\"10\" x=\"2\" y=\"2\" width=\"96\" height=\"96\" class=\"grect\" rx=\"10\"/>\n\t\t<g transform=\"translate(50 50)\">\n\t\t\t<rect class=\"plusvg\" x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\"/>\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg plusvg2\"/>\n\t\t</g>\n\t\t</svg></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
+                t = d.firstElementChild;
+                Tree_NodeView._template = t;
+            }
+            var n = t.cloneNode(true);
+            this.$ = {
+                close: n.childNodes[1].childNodes[0],
+                svg: n.childNodes[1].childNodes[0].childNodes[0],
+                name: n.childNodes[1].childNodes[1],
+                children: n.childNodes[3],
+            };
+            /*
+            
+            
+            if (!this.$.close) {
+                console.error("Failed to resolve item close on path .childNodes[1].childNodes[0] of ", n);
+                debugger;
+            } else {
+                console.log("close resolved to ", this.$.close);
+            }
+            
+            
+            if (!this.$.svg) {
+                console.error("Failed to resolve item svg on path .childNodes[1].childNodes[0].childNodes[0] of ", n);
+                debugger;
+            } else {
+                console.log("svg resolved to ", this.$.svg);
+            }
+            
+            
+            if (!this.$.name) {
+                console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
+                debugger;
+            } else {
+                console.log("name resolved to ", this.$.name);
+            }
+            
+            
+            if (!this.$.children) {
+                console.error("Failed to resolve item children on path .childNodes[3] of ", n);
+                debugger;
+            } else {
+                console.log("children resolved to ", this.$.children);
+            }
+            
+            */
+            this.el = n;
+        }
+        return Tree_NodeView;
+    }());
     var conflict_ClosePRDialog = (function () {
         function conflict_ClosePRDialog() {
             var t = conflict_ClosePRDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input value=\"no\" data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-no\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_ClosePRDialog._template = t;
             }
@@ -1258,7 +1283,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = conflict_MergeImageEditor._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div class=\"merge-image-editor\" id=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_MergeImageEditor._template = t;
             }
@@ -2038,6 +2063,26 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         /** The file does not exist */
         FileStat[FileStat["NotExist"] = 5] = "NotExist";
     })(FileStat || (FileStat = {}));
+    function FileStatString(fs) {
+        switch (fs) {
+            case FileStat.Exists:
+                return "Exists";
+            case FileStat.Changed:
+                return "Changed";
+            case FileStat.New:
+                return "New";
+            case FileStat.Deleted:
+                return "Deleted";
+            case FileStat.NotExist:
+                return "NotExist";
+        }
+        debugger;
+        return "-- ERROR : undefined FileStat ---";
+    }
+    function SetFileStatCSS(el, fs) {
+        el.classList.remove("FileStat-Exists", "FileStat-Changed", "FileStat-New", "FileStat-Deleted", "FileStat-NotExist");
+        el.classList.add("FileStat-" + FileStatString(fs));
+    }
     var FileContent = (function () {
         function FileContent(Name, Stat, Content, Original) {
             this.Name = Name;
@@ -3118,125 +3163,656 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         return FSReadCache;
     }());
 
-    /**
-     * FSFileList_File implements a single file element in the
-     * list of files in the FileSystem.
-     *
-     * It doesn't listen directly to the FS, but rather gets the
-     * FSFileList to trigger it's FSEvent method.
-     */
-    var FSFileList_File$1 = (function (_super) {
-        tslib_1.__extends(FSFileList_File$$1, _super);
-        function FSFileList_File$$1(parent, file, FS, events, ignoreFunction) {
-            var _this = _super.call(this) || this;
-            _this.file = file;
-            _this.FS = FS;
-            _this.ignoreFunction = ignoreFunction;
-            if (_this.ignoreFunction(_this.file.Name)) {
-                _this.el.classList.add('ignore');
-            }
-            _this.$.name.textContent = _this.file.Name;
-            Eventify(_this.el, events);
-            // This method will be triggered by FSFileList.
-            // this.FS.Listeners.add(this.FSEvent, this);
-            AddToParent(parent, _this.el);
-            return _this;
+    /// <reference path="Signal.ts" />
+    /*
+    *	@desc   	An object that represents a binding between a Signal and a listener function.
+    *               Released under the MIT license
+    *				http://millermedeiros.github.com/js-signals/
+    *
+    *	@version	1.0 - 7th March 2013
+    *
+    *	@author 	Richard Davey, TypeScript conversion
+    *	@author		Miller Medeiros, JS Signals
+    *	@author		Robert Penner, AS Signals
+    *
+    *	@url		http://www.kiwijs.org
+    *
+    */
+    var SignalBinding = (function () {
+        /**
+        * Object that represents a binding between a Signal and a listener function.
+        * <br />- <strong>This is an internal constructor and shouldn't be called by regular users.</strong>
+        * <br />- inspired by Joa Ebert AS3 SignalBinding and Robert Penner's Slot classes.
+        * @author Miller Medeiros
+        * @constructor
+        * @internal
+        * @name SignalBinding
+        * @param {Signal} signal Reference to Signal object that listener is currently bound to.
+        * @param {Function} listener Handler function bound to the signal.
+        * @param {boolean} isOnce If binding should be executed just once.
+        * @param {Object} [listenerContext] Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+        * @param {Number} [priority] The priority level of the event listener. (default = 0).
+        */
+        function SignalBinding(signal, listener, isOnce, listenerContext, priority) {
+            if (priority === void 0) { priority = 0; }
+            /**
+            * If binding is active and should be executed.
+            * @type boolean
+            */
+            this.active = true;
+            /**
+            * Default parameters passed to listener during `Signal.dispatch` and `SignalBinding.execute`. (curried parameters)
+            * @type Array|null
+            */
+            this.params = null;
+            this._listener = listener;
+            this._isOnce = isOnce;
+            this.context = listenerContext;
+            this._signal = signal;
+            this.priority = priority || 0;
         }
-        FSFileList_File$$1.prototype.FSEvent = function (path, fc) {
-            var _this = this;
-            // console.log(`In FSFileList_File.FSEvent(${path}) - stat = ${fc.Stat}`)
-            if (path != this.file.Name) {
-                // If path's don't match, this doesn't affect us.
-                return;
+        /**
+        * Call listener passing arbitrary parameters.
+        * <p>If binding was added using `Signal.addOnce()` it will be automatically removed from signal dispatch queue, this method is used internally for the signal dispatch.</p>
+        * @param {Array} [paramsArr] Array of parameters that should be passed to the listener
+        * @return {*} Value returned by the listener.
+        */
+        SignalBinding.prototype.execute = function (paramsArr) {
+            var handlerReturn;
+            var params;
+            if (this.active && !!this._listener) {
+                params = this.params ? this.params.concat(paramsArr) : paramsArr;
+                handlerReturn = this._listener.apply(this.context, params);
+                if (this._isOnce) {
+                    this.detach();
+                }
             }
-            switch (fc.Stat) {
-                case FileStat.Changed:
-                    this.FS.IsDirty(this.file.Name)
-                        .then(function (dirty) {
-                        if (dirty) {
-                            _this.el.classList.add('changed');
-                        }
-                        else {
-                            _this.el.classList.remove('changed');
-                        }
-                    });
-                    this.el.classList.remove("removed");
-                    break;
-                case FileStat.Deleted:
-                    this.el.classList.remove('changed');
-                    this.el.classList.add('removed');
-                    break;
-                case FileStat.Exists:
-                    this.el.classList.remove('changed', 'removed');
-                    break;
-                case FileStat.NotExist:
-                    this.el.remove();
-                    this.FS.Listeners.remove(this.FSEvent, this);
-                    break;
+            return handlerReturn;
+        };
+        /**
+        * Detach binding from signal.
+        * - alias to: mySignal.remove(myBinding.getListener());
+        * @return {Function|null} Handler function bound to the signal or `null` if binding was previously detached.
+        */
+        SignalBinding.prototype.detach = function () {
+            return this.isBound() ? this._signal.remove(this._listener, this.context) : null;
+        };
+        /**
+        * @return {Boolean} `true` if binding is still bound to the signal and have a listener.
+        */
+        SignalBinding.prototype.isBound = function () {
+            return (!!this._signal && !!this._listener);
+        };
+        /**
+        * @return {boolean} If SignalBinding will only be executed once.
+        */
+        SignalBinding.prototype.isOnce = function () {
+            return this._isOnce;
+        };
+        /**
+        * @return {Function} Handler function bound to the signal.
+        */
+        SignalBinding.prototype.getListener = function () {
+            return this._listener;
+        };
+        /**
+        * @return {Signal} Signal that listener is currently bound to.
+        */
+        SignalBinding.prototype.getSignal = function () {
+            return this._signal;
+        };
+        /**
+        * Delete instance properties
+        * @private
+        */
+        SignalBinding.prototype._destroy = function () {
+            delete this._signal;
+            delete this._listener;
+            delete this.context;
+        };
+        /**
+        * @return {string} String representation of the object.
+        */
+        SignalBinding.prototype.toString = function () {
+            return '[SignalBinding isOnce:' + this._isOnce + ', isBound:' + this.isBound() + ', active:' + this.active + ']';
+        };
+        return SignalBinding;
+    }());
+
+    /**
+    *	@desc       A TypeScript conversion of JS Signals by Miller Medeiros
+    *               Released under the MIT license
+    *				http://millermedeiros.github.com/js-signals/
+    *
+    *	@version	1.0 - 7th March 2013
+    *
+    *	@author 	Richard Davey, TypeScript conversion
+    *	@author		Miller Medeiros, JS Signals
+    *	@author		Robert Penner, AS Signals
+    *
+    *	@url		http://www.photonstorm.com
+    */
+    /**
+    * Custom event broadcaster
+    * <br />- inspired by Robert Penner's AS3 Signals.
+    * @name Signal
+    * @author Miller Medeiros
+    * @constructor
+    */
+    var Signal = (function () {
+        function Signal() {
+            /**
+            * @property _bindings
+            * @type Array
+            * @private
+            */
+            this._bindings = [];
+            /**
+            * @property _prevParams
+            * @type Any
+            * @private
+            */
+            this._prevParams = null;
+            /**
+            * If Signal should keep record of previously dispatched parameters and
+            * automatically execute listener during `add()`/`addOnce()` if Signal was
+            * already dispatched before.
+            * @type boolean
+            */
+            this.memorize = false;
+            /**
+            * @type boolean
+            * @private
+            */
+            this._shouldPropagate = true;
+            /**
+            * If Signal is active and should broadcast events.
+            * <p><strong>IMPORTANT:</strong> Setting this property during a dispatch will only affect the next dispatch, if you want to stop the propagation of a signal use `halt()` instead.</p>
+            * @type boolean
+            */
+            this.active = true;
+        }
+        /**
+        * @method validateListener
+        * @param {Any} listener
+        * @param {Any} fnName
+        */
+        Signal.prototype.validateListener = function (listener, fnName) {
+            if (typeof listener !== 'function') {
+                throw new Error('listener is a required param of {fn}() and should be a Function.'.replace('{fn}', fnName));
             }
         };
-        return FSFileList_File$$1;
-    }(FSFileList_File));
+        /**
+        * @param {Function} listener
+        * @param {boolean} isOnce
+        * @param {Object} [listenerContext]
+        * @param {Number} [priority]
+        * @return {SignalBinding}
+        * @private
+        */
+        Signal.prototype._registerListener = function (listener, isOnce, listenerContext, priority) {
+            var prevIndex = this._indexOfListener(listener, listenerContext);
+            var binding;
+            if (prevIndex !== -1) {
+                binding = this._bindings[prevIndex];
+                if (binding.isOnce() !== isOnce) {
+                    throw new Error('You cannot add' + (isOnce ? '' : 'Once') + '() then add' + (!isOnce ? '' : 'Once') + '() the same listener without removing the relationship first.');
+                }
+            }
+            else {
+                binding = new SignalBinding(this, listener, isOnce, listenerContext, priority);
+                this._addBinding(binding);
+            }
+            if (this.memorize && this._prevParams) {
+                binding.execute(this._prevParams);
+            }
+            return binding;
+        };
+        /**
+        * @method _addBinding
+        * @param {SignalBinding} binding
+        * @private
+        */
+        Signal.prototype._addBinding = function (binding) {
+            //simplified insertion sort
+            var n = this._bindings.length;
+            do {
+                --n;
+            } while (this._bindings[n] && binding.priority <= this._bindings[n].priority);
+            this._bindings.splice(n + 1, 0, binding);
+        };
+        /**
+        * @method _indexOfListener
+        * @param {Function} listener
+        * @return {number}
+        * @private
+        */
+        Signal.prototype._indexOfListener = function (listener, context) {
+            var n = this._bindings.length;
+            var cur;
+            while (n--) {
+                cur = this._bindings[n];
+                if (cur.getListener() === listener && cur.context === context) {
+                    return n;
+                }
+            }
+            return -1;
+        };
+        /**
+        * Check if listener was attached to Signal.
+        * @param {Function} listener
+        * @param {Object} [context]
+        * @return {boolean} if Signal has the specified listener.
+        */
+        Signal.prototype.has = function (listener, context) {
+            if (context === void 0) { context = null; }
+            return this._indexOfListener(listener, context) !== -1;
+        };
+        /**
+        * Add a listener to the signal.
+        * @param {Function} listener Signal handler function.
+        * @param {Object} [listenerContext] Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+        * @param {Number} [priority] The priority level of the event listener. Listeners with higher priority will be executed before listeners with lower priority. Listeners with same priority level will be executed at the same order as they were added. (default = 0)
+        * @return {SignalBinding} An Object representing the binding between the Signal and listener.
+        */
+        Signal.prototype.add = function (listener, listenerContext, priority) {
+            if (listenerContext === void 0) { listenerContext = null; }
+            if (priority === void 0) { priority = 0; }
+            this.validateListener(listener, 'add');
+            return this._registerListener(listener, false, listenerContext, priority);
+        };
+        /**
+        * Add listener to the signal that should be removed after first execution (will be executed only once).
+        * @param {Function} listener Signal handler function.
+        * @param {Object} [listenerContext] Context on which listener will be executed (object that should represent the `this` variable inside listener function).
+        * @param {Number} [priority] The priority level of the event listener. Listeners with higher priority will be executed before listeners with lower priority. Listeners with same priority level will be executed at the same order as they were added. (default = 0)
+        * @return {SignalBinding} An Object representing the binding between the Signal and listener.
+        */
+        Signal.prototype.addOnce = function (listener, listenerContext, priority) {
+            if (listenerContext === void 0) { listenerContext = null; }
+            if (priority === void 0) { priority = 0; }
+            this.validateListener(listener, 'addOnce');
+            return this._registerListener(listener, true, listenerContext, priority);
+        };
+        /**
+        * Remove a single listener from the dispatch queue.
+        * @param {Function} listener Handler function that should be removed.
+        * @param {Object} [context] Execution context (since you can add the same handler multiple times if executing in a different context).
+        * @return {Function} Listener handler function.
+        */
+        Signal.prototype.remove = function (listener, context) {
+            if (context === void 0) { context = null; }
+            this.validateListener(listener, 'remove');
+            var i = this._indexOfListener(listener, context);
+            if (i !== -1) {
+                this._bindings[i]._destroy(); //no reason to a SignalBinding exist if it isn't attached to a signal
+                this._bindings.splice(i, 1);
+            }
+            return listener;
+        };
+        /**
+        * Remove all listeners from the Signal.
+        */
+        Signal.prototype.removeAll = function () {
+            var n = this._bindings.length;
+            while (n--) {
+                this._bindings[n]._destroy();
+            }
+            this._bindings.length = 0;
+        };
+        /**
+        * @return {number} Number of listeners attached to the Signal.
+        */
+        Signal.prototype.getNumListeners = function () {
+            return this._bindings.length;
+        };
+        /**
+        * Stop propagation of the event, blocking the dispatch to next listeners on the queue.
+        * <p><strong>IMPORTANT:</strong> should be called only during signal dispatch, calling it before/after dispatch won't affect signal broadcast.</p>
+        * @see Signal.prototype.disable
+        */
+        Signal.prototype.halt = function () {
+            this._shouldPropagate = false;
+        };
+        /**
+        * Dispatch/Broadcast Signal to all listeners added to the queue.
+        * @param {...*} [params] Parameters that should be passed to each handler.
+        */
+        Signal.prototype.dispatch = function () {
+            var paramsArr = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                paramsArr[_i] = arguments[_i];
+            }
+            if (!this.active) {
+                return;
+            }
+            var n = this._bindings.length;
+            var bindings;
+            if (this.memorize) {
+                this._prevParams = paramsArr;
+            }
+            if (!n) {
+                //should come after memorize
+                return;
+            }
+            bindings = this._bindings.slice(0); //clone array in case add/remove items during dispatch
+            this._shouldPropagate = true; //in case `halt` was called before dispatch or during the previous dispatch.
+            //execute all callbacks until end of the list or until a callback returns `false` or stops propagation
+            //reverse loop since listeners with higher priority will be added at the end of the list
+            do {
+                n--;
+            } while (bindings[n] && this._shouldPropagate && bindings[n].execute(paramsArr) !== false);
+        };
+        /**
+        * Forget memorized arguments.
+        * @see Signal.memorize
+        */
+        Signal.prototype.forget = function () {
+            this._prevParams = null;
+        };
+        /**
+        * Remove all bindings from signal and destroy any reference to external objects (destroy Signal object).
+        * <p><strong>IMPORTANT:</strong> calling any method on the signal instance after calling dispose will throw errors.</p>
+        */
+        Signal.prototype.dispose = function () {
+            this.removeAll();
+            delete this._bindings;
+            delete this._prevParams;
+        };
+        /**
+        * @return {string} String representation of the object.
+        */
+        Signal.prototype.toString = function () {
+            return '[Signal active:' + this.active + ' numListeners:' + this.getNumListeners() + ']';
+        };
+        return Signal;
+    }());
+    /**
+    * Signals Version Number
+    * @property VERSION
+    * @type String
+    * @const
+    */
+    Signal.VERSION = '1.0.0';
+
+    var NodeType;
+    (function (NodeType) {
+        NodeType[NodeType["FILE"] = 1] = "FILE";
+        NodeType[NodeType["DIR"] = 2] = "DIR";
+    })(NodeType || (NodeType = {}));
+    // Node is a generic node in a tree. It might be a leaf, it might not.
+    var Node = (function () {
+        function Node(parent, name, nodeType, data) {
+            this.parent = parent;
+            this.name = name;
+            this.nodeType = nodeType;
+            this.data = data;
+            this.changed = new Signal();
+            this.removed = new Signal();
+            this.added = new Signal();
+            this.children = new Array();
+            // if (null!=parent) {
+            // 	this.changed.add( (...paramsArr: any[])=>parent.changed.dispatch(this.arguments) );
+            // }
+        }
+        Node.prototype.depth = function () {
+            if (null == this.parent) {
+                return 0;
+            }
+            return 1 + this.parent.depth();
+        };
+        Node.prototype.canCollapse = function () {
+            return (this.nodeType == NodeType.DIR);
+        };
+        Node.prototype.child = function (name) {
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                if (c.name == name) {
+                    return c;
+                }
+            }
+            return undefined;
+        };
+        Node.prototype.parents = function () {
+            if (null == this.parent) {
+                // The root Node is a placeholder, and returns as a non-existent node
+                var a_1 = [];
+                return a_1;
+            }
+            var a = this.parent.parents();
+            a.push(this);
+            return a;
+        };
+        Node.prototype.path = function () {
+            return this.parents().map(function (n) { return n.name; }).join("/");
+        };
+        Node.prototype.add = function (n) {
+            // TODO: SORT CHILDREN
+            this.children.push(n);
+            n.parent = this;
+            // TODO: Notify listeners of the new child - NODE_ADDED
+            this.added.dispatch(n);
+        };
+        Node.prototype.remove = function () {
+            var i = this.parent.children.indexOf(this);
+            if (-1 == i) {
+                console.error("failed to find Node " + this.name + " in list of parent's children");
+                return;
+            }
+            this.parent.children.splice(i, 1);
+            this.removed.dispatch(this);
+        };
+        Node.prototype.change = function () {
+            this.changed.dispath(this);
+        };
+        return Node;
+    }());
+
+    var FileSystem = (function () {
+        function FileSystem(root) {
+            this.root = root;
+        }
+        FileSystem.prototype.NodeFromPath = function (path) {
+            return this.from_path_recurse(this.path_array(path), this.root, null);
+        };
+        FileSystem.prototype.PathFromNode = function (node) {
+            return '/' + node.parents().map(function (n) { return n.name; }).join("/");
+        };
+        FileSystem.prototype.FindOrCreateFileNode = function (path, data) {
+            return this.from_path_recurse(this.path_array(path), this.root, function (path, parent) {
+                var nt = NodeType.FILE;
+                if (1 < path.length) {
+                    nt = NodeType.DIR;
+                }
+                var n = new Node(parent, path[0], nt, data);
+                parent.add(n); // @TODO : SHOULD REALLY SORT FILES AS THEY ARE ADDED TO THE FileSystem in FileSystem.ts
+                return n;
+            });
+        };
+        FileSystem.prototype.path_array = function (path) {
+            var p = path.split("/");
+            if ("" == p[0]) {
+                p = p.slice(1);
+            }
+            return p;
+        };
+        FileSystem.prototype.from_path_recurse = function (path, n, handler) {
+            var c = n.child(path[0]);
+            if (undefined == c && handler) {
+                c = handler(path, n);
+            }
+            if (undefined == c || path.length == 1) {
+                return c;
+            }
+            return this.from_path_recurse(path.slice(1), c, handler);
+        };
+        return FileSystem;
+    }());
+
+    var FileSystemView = (function () {
+        function FileSystemView(context, FS, parent, ignoreFunction, notifier) {
+            this.context = context;
+            this.FS = FS;
+            this.parent = parent;
+            this.ignoreFunction = ignoreFunction;
+            this.files = new Map();
+            this.FS.root.added.add(this.nodeAdded, this);
+            notifier.Listeners.add(this.notifyFileChange, this);
+        }
+        FileSystemView.prototype.nodeAdded = function (n) {
+            new NodeView(this, n, this.parent, this.ignoreFunction);
+        };
+        FileSystemView.prototype.closedKeyForNode = function (n) {
+            return this.context.RepoOwner + ":" + this.context.RepoName + ":" + this.FS.PathFromNode(n)
+                + ".fsv.closed";
+        };
+        FileSystemView.prototype.isClosed = function (node) {
+            var v = window.localStorage.getItem(this.closedKeyForNode(node));
+            return "t" == v;
+        };
+        FileSystemView.prototype.setClosed = function (node, closed) {
+            var key = this.closedKeyForNode(node);
+            if (closed) {
+                window.localStorage.setItem(key, "t");
+            }
+            else {
+                window.localStorage.removeItem(key);
+            }
+        };
+        FileSystemView.prototype.notifyFileChange = function (path, fc) {
+            console.log("FileSystemView.notifyFileChanged(path=" + path + ")");
+            var node = this.files[path];
+            if (node) {
+                node.notifyFileChange(fc);
+            }
+        };
+        FileSystemView.prototype.mapView = function (n) {
+            this.files[n.path()] = n;
+        };
+        return FileSystemView;
+    }());
+    var NodeView = (function (_super) {
+        tslib_1.__extends(NodeView, _super);
+        function NodeView(FSV, node, parent, ignoreFunction) {
+            var _this = _super.call(this) || this;
+            _this.FSV = FSV;
+            _this.node = node;
+            _this.parent = parent;
+            _this.ignoreFunction = ignoreFunction;
+            _this.$.name.innerText = _this.node.name;
+            if (node.canCollapse()) {
+                _this.$.close.addEventListener("click", function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    var c = _this.$.children;
+                    _this.el.classList.toggle("closed");
+                    _this.FSV.setClosed(_this.node, _this.el.classList.contains("closed"));
+                });
+                _this.el.classList.add("node-dir");
+            }
+            else {
+                _this.el.classList.add("node-file");
+                _this.el.addEventListener("click", function (evt) {
+                    evt.preventDefault();
+                    evt.stopPropagation();
+                    _this.el.dispatchEvent(new CustomEvent("ebw-FileClicked", {
+                        bubbles: true,
+                        cancelable: true,
+                        detail: _this.node,
+                    }));
+                });
+            }
+            if (FSV.isClosed(node)) {
+                _this.el.classList.add("closed");
+            }
+            if (_this.ignoreFunction(_this.node.name)) {
+                _this.el.classList.add("ignore");
+            }
+            _this.node.added.add(_this.childAdded, _this);
+            // this.el.style.marginLeft = (0.4*node.depth())+"em";
+            parent.appendChild(_this.el);
+            _this.FSV.mapView(_this);
+            return _this;
+        }
+        NodeView.prototype.childAdded = function (n) {
+            new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
+        };
+        NodeView.prototype.notifyFileChange = function (fc) {
+            console.log("notifyFileChange received in NodeView for ", this.node.path());
+            SetFileStatCSS(this.el, fc.Stat);
+        };
+        NodeView.prototype.path = function () {
+            return this.node.path();
+        };
+        return NodeView;
+    }(Tree_NodeView));
 
     // import {Directory} from './Directory';
     /**
      * FSFileTree shows a list of the files in the
-     * given filesystem.
+     * given filesystem. This is a UI Element that connects to an FS via a FSNotify
      */
     var FSFileTree = (function () {
-        function FSFileTree(parent, editor, FS, ignoreFunction) {
+        function FSFileTree(context, parent, editor, FS, ignoreFunction) {
+            var _this = this;
+            this.context = context;
             this.parent = parent;
             this.editor = editor;
             this.FS = FS;
             this.ignoreFunction = ignoreFunction;
             this.api = EBW.API();
             this.FS.Listeners.add(this.FSEvent, this);
-            this.files = new Map();
+            this.root = new Node(null, "", NodeType.DIR, null);
+            this.FileSystem = new FileSystem(this.root);
+            this.View = new FileSystemView(this.context, this.FileSystem, parent, this.ignoreFunction, this.FS);
+            parent.addEventListener("ebw-FileClicked", function (evt) {
+                var n = evt.detail;
+                var fc = n.data;
+                _this.FS.Read(fc.Name)
+                    .then(function (fc) {
+                    _this.editor.setFile(new FSFileEdit(fc, _this.FS));
+                });
+            });
         }
         FSFileTree.prototype.FSEvent = function (path, fc) {
             if (!fc) {
                 debugger;
             }
-            console.log("FSFileList.FSEvent -- fileContent = ", fc);
-            var f = this.files.get(fc.Name);
             switch (fc.Stat) {
                 case FileStat.New:
                 //	fallthrough
                 case FileStat.Exists:
                 // fallthrough
                 case FileStat.Changed:
-                    if (!f) {
-                        this.newFile(fc);
-                    }
+                    this.FileSystem.FindOrCreateFileNode(path, fc);
+                    // if (!f) {
+                    // 	this.newFile(fc);
+                    // }
                     break;
                 case FileStat.Deleted:
                     // Nothing to do - filelist_file will handle
                     // css style change.
                     break;
                 case FileStat.NotExist:
-                    if (f) {
-                        this.files.delete(fc.Name);
-                    }
                     break;
-            }
-            // Trigger the FSFileList_File FSEvent callback.
-            if (f) {
-                f.FSEvent(path, fc);
             }
         };
         FSFileTree.prototype.newFile = function (fc) {
-            var _this = this;
-            var f = new FSFileList_File$1(this.parent, fc, this.FS, {
-                clickFile: function (evt) {
-                    _this.FS.Read(fc.Name)
-                        .then(function (fc) {
-                        var edit = new FSFileEdit(fc, _this.FS);
-                        _this.editor.setFile(edit);
-                    });
+            /*
+            let f = new FSFileList_File(this.parent, fc, this.FS, {
+                clickFile: (evt:any)=>{
+                    this.FS.Read(fc.Name)
+                    .then(
+                        (fc:FileContent)=>{
+                            let edit = new FSFileEdit(fc, this.FS);
+                            this.editor.setFile(edit);
+                        });
                 }
-            }, this.ignoreFunction);
+            },
+            this.ignoreFunction);
             this.files.set(fc.Name, f);
             return f;
+            */
         };
         return FSFileTree;
     }());
@@ -3360,26 +3936,23 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
      *
      */
     var RepoEditorPage = (function () {
-        function RepoEditorPage(repoOwner, repoName, filesList, filesJson, proseIgnoreFunction) {
+        function RepoEditorPage(context, filesList, filesJson, proseIgnoreFunction) {
             var _this = this;
-            this.repoOwner = repoOwner;
-            this.repoName = repoName;
+            this.context = context;
             this.proseIgnoreFunction = proseIgnoreFunction;
+            console.log("filesList= ", filesList);
             sessionStorage.clear();
-            this.repoOwner = repoOwner;
-            this.repoName = repoName;
             this.editor = undefined;
-            this.editor = new RepoFileEditorCM$1(repoOwner, repoName, document.getElementById('editor'), {
+            this.editor = new RepoFileEditorCM$1(context.RepoOwner, context.RepoName, document.getElementById('editor'), {
                 Rename: function () {
                     return;
                 }
             });
-            var remoteFS = new FSReadCache(new FSRemote(this.repoOwner, this.repoName));
-            var localFS = new FSSession("temp-rootf", this.repoOwner, this.repoName);
+            var remoteFS = new FSReadCache(new FSRemote(this.context.RepoOwner, this.context.RepoName));
+            var localFS = new FSSession("temp-rootf", this.context.RepoOwner, this.context.RepoName);
             var overlayFS = new FSOverlay(remoteFS, localFS);
             this.FS = new FSNotify(overlayFS);
-            //new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
-            new FSFileTree(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+            new FSFileTree(this.context, filesList, this.editor, this.FS, this.proseIgnoreFunction);
             new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
             new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
             new ControlTag(document.getElementById("files-show-tag"), function (showing) {
@@ -3389,28 +3962,28 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                     .style.visibility = showing ? "visible" : "hidden";
                 var f = document.getElementById("page-footer");
                 f.style.display = showing ? 'flex' : 'none';
-                // console.log(`set footer = `, f);
             });
             FSPrimeFromJS(this.FS, filesJson);
             document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
-                new PrintListener(_this.repoOwner, _this.repoName, "book", "print");
+                new PrintListener(_this.context.RepoOwner, _this.context.RepoName, "book", "print");
             });
             document.getElementById("repo-print-screen").addEventListener("click", function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
-                new PrintListener(_this.repoOwner, _this.repoName, "book", "screen");
+                new PrintListener(_this.context.RepoOwner, _this.context.RepoName, "book", "screen");
             });
             document.getElementById("repo-jekyll").addEventListener("click", function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
                 var l = document.location;
-                var jekyllUrl = l.protocol + "//" + l.host + "/jekyll-restart/" + _this.repoOwner + "/" + _this.repoName + "/";
+                var jekyllUrl = l.protocol + "//" + l.host + "/jekyll-restart/" +
+                    (_this.context.RepoOwner + "/" + _this.context.RepoName + "/");
                 console.log("URL = " + jekyllUrl);
-                window.open(jekyllUrl, _this.repoOwner + "-" + _this.repoName + "-jekyll");
+                window.open(jekyllUrl, _this.context.RepoOwner + "-" + _this.context.RepoName + "-jekyll");
             });
             /**
              * @TODO
@@ -3418,21 +3991,6 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
              * check that the user has saved any changes.
              */
         }
-        RepoEditorPage.instantiate = function () {
-            var el = document.getElementById("repo-editor-page");
-            if (el) {
-                var repoOwner = el.getAttribute('repo-owner');
-                var repoName = el.getAttribute('repo-name');
-                // let volume = new VolumeElement()
-                // let allFilesList = document.querySelector(`[data-instance='AllFilesList']`);
-                var filesList = document.querySelector("[data-instance='AllFilesList']");
-                var primeFSel = document.getElementById("volume-element");
-                var primeFSjs = JSON.parse(primeFSel.innerText);
-                new RepoEditorPage(repoOwner, repoName, filesList, primeFSjs, function (name) {
-                    return false;
-                });
-            }
-        };
         return RepoEditorPage;
     }());
     window.RepoEditorPage = RepoEditorPage;
@@ -5167,12 +5725,14 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                         case 'RepoFileViewerPage':
                             new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
                             break;
+                        case 'RepoEditorPage':
+                            new RepoEditorPage(context, document.querySelector("[data-instance='AllFilesList']"), window.repoEditorData.files, window.repoEditorData.ignoreFilter);
+                            break;
                     }
                 }
                 /* TODO: This should actually use a Router
                    to determine what content we have. */
                 AddNewBookDialog$1.instantiate();
-                RepoEditorPage.instantiate();
                 PullRequestMergePage.instantiate();
             }
             return EBW.instance;

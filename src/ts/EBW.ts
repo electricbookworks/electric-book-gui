@@ -40,12 +40,19 @@ export class EBW {
 					case 'RepoFileViewerPage':
 						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);
 						break;
+					case 'RepoEditorPage':			
+						new RepoEditorPage(
+							context,
+							document.querySelector(`[data-instance='AllFilesList']`),
+							window.repoEditorData.files,
+							window.repoEditorData.ignoreFilter
+						);
+						break;
 				}
 			}
 			/* TODO: This should actually use a Router
 			   to determine what content we have. */
 			AddNewBookDialog.instantiate();
-			RepoEditorPage.instantiate();
 			PullRequestMergePage.instantiate();
 		}
 		return EBW.instance;

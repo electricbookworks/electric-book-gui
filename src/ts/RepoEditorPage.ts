@@ -1,4 +1,5 @@
 import {ControlTag} from './ControlTag';
+import {Context} from './Context';
 import {EBW} from './EBW';
 import {PrintListener} from './PrintListener';
 import {RepoFileEditorCM} from './RepoFileEditorCM';
@@ -26,31 +27,28 @@ export class RepoEditorPage {
 	protected FS: FSNotify;
 
 	constructor(
-		protected repoOwner:string, 
-		protected repoName:string,
+		protected context: Context,
 		filesList: HTMLElement,
 		filesJson: any,
 		protected proseIgnoreFunction: (name:string)=>boolean
 	) {
+		console.log(`filesList= `, filesList);
 		sessionStorage.clear();
-		this.repoOwner = repoOwner;
-		this.repoName = repoName;
 		this.editor = undefined;
 		this.editor = new RepoFileEditorCM(
-			repoOwner, repoName,
+			context.RepoOwner, context.RepoName,
 			document.getElementById('editor'), {
 			Rename: ():void=>{
 				return;
 			}
 		});
 
-		let remoteFS = new FSReadCache(new FSRemote(this.repoOwner, this.repoName));
-		let localFS = new FSSession(`temp-rootf`, this.repoOwner, this.repoName);
+		let remoteFS = new FSReadCache(new FSRemote(this.context.RepoOwner, this.context.RepoName));
+		let localFS = new FSSession(`temp-rootf`, this.context.RepoOwner, this.context.RepoName);
 		let overlayFS = new FSOverlay(remoteFS, localFS);
 		this.FS = new FSNotify(overlayFS);
 		
-		//new FSFileList(filesList, this.editor, this.FS, this.proseIgnoreFunction);
-		new FSFileTree(filesList, this.editor, this.FS, this.proseIgnoreFunction);
+		new FSFileTree(this.context, filesList, this.editor, this.FS, this.proseIgnoreFunction);
 
 		new RepoEditorPage_NewFileDialog(
 			document.getElementById('repo-new-file'),
@@ -70,7 +68,6 @@ export class RepoEditorPage {
 
 				let f = document.getElementById(`page-footer`);
 				f.style.display = showing ? 'flex' : 'none';
-				// console.log(`set footer = `, f);
 			});
 
 		
@@ -79,45 +76,26 @@ export class RepoEditorPage {
 		document.getElementById(`repo-print-printer`).addEventListener('click', evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			EBW.Toast(`Creating your PDF. We'll open it in a new tab when it's ready.`);
-			new PrintListener(this.repoOwner, this.repoName, `book`, `print`);
+			new PrintListener(this.context.RepoOwner, this.context.RepoName, `book`, `print`);
 		});
 		document.getElementById(`repo-print-screen`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			EBW.Toast(`Creating your PDF. We'll open it in a new tab when it's ready.`);
-			new PrintListener(this.repoOwner, this.repoName, `book`, `screen`);
+			new PrintListener(this.context.RepoOwner, this.context.RepoName, `book`, `screen`);
 		});
 		document.getElementById(`repo-jekyll`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			let l = document.location;
-			let jekyllUrl = `${l.protocol}//${l.host}/jekyll-restart/${this.repoOwner}/${this.repoName}/`;
+			let jekyllUrl = `${l.protocol}//${l.host}/jekyll-restart/` + 
+				`${this.context.RepoOwner}/${this.context.RepoName}/`;
 			console.log(`URL = ${jekyllUrl}`);
-			window.open(jekyllUrl, `${this.repoOwner}-${this.repoName}-jekyll`);
+			window.open(jekyllUrl, `${this.context.RepoOwner}-${this.context.RepoName}-jekyll`);
 		});
 		/**
 		 * @TODO
 		 * Need to catch any attempt to leave RepoEditorPage and
 		 * check that the user has saved any changes.
 		 */
-	}
-	static instantiate() {
-		let el = document.getElementById(`repo-editor-page`);
-		if (el) {
-			let repoOwner = el.getAttribute('repo-owner');
-			let repoName = el.getAttribute('repo-name');
-			// let volume = new VolumeElement()
-			// let allFilesList = document.querySelector(`[data-instance='AllFilesList']`);
-
-			let filesList = document.querySelector(`[data-instance='AllFilesList']`);
-			let primeFSel = document.getElementById(`volume-element`);
-			let primeFSjs = JSON.parse(primeFSel.innerText);
-			new RepoEditorPage(repoOwner, repoName, 
-				filesList as HTMLElement,
-				primeFSjs, 
-				function(name:string) {
-					return false;
-				}
-			);
-		}
 	}
 }
 

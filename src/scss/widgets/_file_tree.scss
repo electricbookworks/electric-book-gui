@@ -1,0 +1,72 @@
+#all-files-editor {
+	.node.node-file {
+		.closer {
+			visibility: hidden;
+		}
+		.name {
+			cursor: pointer;
+		}
+		border-bottom: 1px solid #f8f8f8;
+	}
+	.node.FileStat-Exists {
+
+	}
+	.node.FileStat-Changed {
+		background-color: $color-status-modified;
+	}
+	.node.FileStat-Deleted{
+		text-decoration: line-through;
+		color: $color-status-deleted;
+	}
+	.node.FileStat-New {
+		background-color: $color-status-new;
+	}
+	.node.FileStat-NotExist {
+		.name {
+			text-decoration: line-through;
+			color: #ccc;
+		}
+	}
+	div.children {
+		margin-left: 1em;
+		overflow:hidden;			
+		transition: height 0.3s;
+	}
+	.node .name {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+	}
+	.node.closed .children {
+		display: none;
+	}
+	.node .closer {
+		cursor: pointer;
+		margin-right: 0.3em;
+	}
+	.node svg {
+		padding: 2px;
+		.grect {
+			fill: #f8f8f8;
+			stroke: #999;
+			stroke-width: 4;
+		}	
+		&:hover .grect {
+			stroke: red;
+		}
+	}
+	.node .plusvg {
+		fill: #666;
+		transition: fill 0.3s, transform 0.3s;
+	}
+	.node .plusvg2 {
+		transform: rotate(0deg);
+	}
+	.node.closed .plusvg2 {
+		transform: rotate(90deg); 
+	}
+	.node.ignore {
+		display: none;
+	}
+}
