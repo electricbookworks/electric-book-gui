@@ -28,116 +28,116 @@ $break-point-l: 800px;
 // Structure
 
 body {
-	font-family: $font-text-main;
-	font-size: $font-size;
-	color: $color-text;
-	line-height: 1.5;
-	margin: 0;
+    font-family: $font-text-main;
+    font-size: $font-size;
+    color: $color-text;
+    line-height: 1.5;
+    margin: 0;
 }
 
 .wrapper {
-	margin: 0 auto;
-	padding: 0 0 2em 0;
-	overflow-x: hidden;
+    margin: 0 auto;
+    padding: 0 0 2em 0;
+    overflow-x: hidden;
 }
 
 .masthead {
-	font-family: $font-display-main;
-	width: 100%;
-	padding: 0.5em;
-	border-bottom: $rule-thickness solid $color-mid;
-	margin: 0 0 2em 0;
-	background-color: $color-accent;
-	text-align: center;
-	@media (min-width: $break-point-l) {
-		padding: 1em;
-	}
-	.title {
-		line-height: 1.2;
-		max-width: 60%;
-		display: inline-block;
-		color: $color-mid-light;
-	}
+    font-family: $font-display-main;
+    width: 100%;
+    padding: 0.5em;
+    border-bottom: $rule-thickness solid $color-mid;
+    margin: 0 0 2em 0;
+    background-color: $color-accent;
+    text-align: center;
+    @media (min-width: $break-point-l) {
+        padding: 1em;
+    }
+    .title {
+        line-height: 1.2;
+        max-width: 60%;
+        display: inline-block;
+        color: $color-mid-light;
+    }
 }
 
 .navigation {
-	padding: 0.5em 0.5em;
-	@media (min-width: $break-point-l) {
-		float: left;
-		position: fixed;
-		width: 14em;
-		top: 6.4em; // aligns with content heading
-		height: 100vh;
-		overflow-x: hidden;
-	}
+    padding: 0.5em 0.5em;
+    @media (min-width: $break-point-l) {
+        float: left;
+        position: fixed;
+        width: 14em;
+        top: 6.4em; // aligns with content heading
+        height: 100vh;
+        overflow-x: hidden;
+    }
 }
 
 nav {
-	font-family: $font-display-main;
-	position: absolute;
-	top: -0.5em;
-	left: 0.5em;
-	@media (min-width: $break-point-l) {
-		top: 0;
-	}
-	&:before {
-		content: "\2261";
-		display: block;
-		font-size: 2.3em;
-		font-family: $font-code;
-		color: $color-mid-light;
-		margin-right: 0.16em; // for refined positioning
-		@media (min-width: $break-point-l) {
-			display: none;
-		}
-	}
-	&:hover ul {
-		display: block;
-		background-color: $color-light;
-	}
-	ul {
-		padding: 0.5em;
-		border: $rule-thickness solid $color-mid;
-		list-style-type: none;
-		margin: 0;
-		display: none; // hide till nav:before hover
-		@media (min-width: $break-point-l) {
-			display: block;
-		}
-		li {
-			line-height: 1;
-			margin-bottom: 0.5em;
-		}
-	}
+    font-family: $font-display-main;
+    position: absolute;
+    top: -0.5em;
+    left: 0.5em;
+    @media (min-width: $break-point-l) {
+        top: 0;
+    }
+    &:before {
+        content: "\2261";
+        display: block;
+        font-size: 2.3em;
+        font-family: $font-code;
+        color: $color-mid-light;
+        margin-right: 0.16em; // for refined positioning
+        @media (min-width: $break-point-l) {
+            display: none;
+        }
+    }
+    &:hover ul {
+        display: block;
+        background-color: $color-light;
+    }
+    ul {
+        padding: 0.5em;
+        border: $rule-thickness solid $color-mid;
+        list-style-type: none;
+        margin: 0;
+        display: none; // hide till nav:before hover
+        @media (min-width: $break-point-l) {
+            display: block;
+        }
+        li {
+            line-height: 1;
+            margin-bottom: 0.5em;
+        }
+    }
 }
 
 .content {
-	margin: auto;
-	.content-inner {
-		max-width: $max-width;
-		margin: auto;
-		padding: 0 0.5em;
-	}
-	@media (min-width: $break-point-l) {
-		margin: 0 0 0 16em;
-	}
+    margin: auto;
+    .content-inner {
+        max-width: $max-width;
+        margin: auto;
+        padding: 0 0.5em;
+    }
+    @media (min-width: $break-point-l) {
+        margin: 0 0 0 16em;
+    }
 }
 
 // Typography
 
 h1, h2, h3, h4, h5 {
-	font-family: $font-display-main;
+    font-family: $font-display-main;
 }
 h1 {
-	font-weight: bold;
-	font-size: 2.4em;
-	line-height: 1.2;
+    font-weight: bold;
+    font-size: 2.4em;
+    line-height: 1.2;
 }
 p {
-	margin: 0 0 0.6em 0;
-	&:last-child {
-		margin-bottom: 0;
-	}
+    margin: 0 0 0.6em 0;
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 code {
     font-family: $font-code;
@@ -157,29 +157,37 @@ pre {
     }
 }
 a {
-	text-decoration: none;
-	color: $color-links;
+    text-decoration: none;
+    color: $color-links;
 }
 table {
-	width: 100%;
-	th, td {
-		border-bottom: $rule-thickness solid $color-mid;
-		padding: 0 0.25em 0 0;
-	}
+    width: 100%;
+    th, td {
+        border-bottom: $rule-thickness solid $color-mid;
+        padding: 0 0.25em 0 0;
+    }
 }
 
 #markdown-toc {
-	list-style-type: none;
-	padding: 0;
-	border: $rule-thickness solid $color-mid;
-	padding: 0.25em;
+    list-style-type: none;
+    padding: 0;
+    border: $rule-thickness solid $color-mid;
+    padding: 0.25em;
 }
 
 .notice {
-	padding: 1em;
-	background-color: $color-notice;
-	margin: 0;
-	&.alert {
-		background-color: $color-alert;
-	}
+    padding: 1em;
+    background-color: $color-notice;
+    margin: 0;
+    &.alert {
+        background-color: $color-alert;
+    }
+}
+
+blockquote.box {
+    border: $rule-thickness solid $color-mid;
+    padding: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    background-color: $color-mid;
 }
