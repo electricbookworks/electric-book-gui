@@ -1,6 +1,10 @@
 # The Electric Book Manager
 
-This is work in progress. The Electric Book Manager is a web-based interface for managing the [Electric Book workflow](http://electricbook.works/). It will enable non-technical publishing teams to edit book content, review contributions, and output PDF, web- and epub-ready files. See the features currently in development [here](https://github.com/electricbookworks/electric-book-gui/projects/1).
+This is work in progress. The Electric Book Manager is a web-based interface for managing books created with the [Electric Book template](http://electricbookworks.github.io/electric-book/).\*
+
+It enables non-technical publishing teams to edit book content, review contributions, and output PDF, web- and epub-ready files. See the features currently in development [here](https://github.com/electricbookworks/electric-book-gui/projects/1).
+
+> \* The EBM is designed to work with Electric Book projects. It will see any repo in your GitHub account that has a `_data/meta.yml` file, which is a key element of any Electric Book project.
 
 # electricbook GUI tool
 
