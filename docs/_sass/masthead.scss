@@ -1,0 +1,44 @@
+// Masthead
+
+.masthead {
+	background-color: $masthead-background-color;
+	color: $masthead-text-color;
+	display: table;
+	height: 2em;
+	overflow-y: hidden; // Prevents horizontal scrolling
+	position: relative;
+	width: 100%;
+	z-index: 2; // above the nav bar
+	.logo {
+		// Template styles assume a square logo
+		display: table-cell;
+		padding: 0.5em;
+		width: 2em;
+		vertical-align: middle;
+		line-height: 0;
+		img {
+			max-height: 2em;
+		}
+	}
+	.identity {
+		display: table;
+		vertical-align: middle;
+		padding: 0.5em;
+		.name {
+			font-weight: bold;
+			display: table-row;
+			padding: 0.5em;
+			vertical-align: middle;
+			a {
+				color: inherit;
+			}
+		}
+		.tagline {
+			display: table-row;
+			padding: 0 0 0 1em;
+			vertical-align: middle;
+			font-size: 0.7em;
+			font-family: $font-main;
+		}
+	}
+}

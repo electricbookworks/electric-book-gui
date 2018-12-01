@@ -1,0 +1,15 @@
+{% comment %}If this is a post and it's in a category,
+add links to the next and previous posts.{% endcomment %}
+{% if page.categories %}
+
+    <div class="page-navigation">
+
+        <div class="page-navigation-prev-next">
+
+            {% include collection-pagination.html %}
+
+        </div><!--.page-navigation-->
+
+    </div><!--.page-navigation-->
+
+{% endif %}

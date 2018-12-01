@@ -1,0 +1,32 @@
+# This file stores various settings for your site.
+# You can include the values of these fields in markdown, e.g.:
+# {{ site.data.settings.name }}
+
+# The main name of your site
+name: "Electric Book Manager"
+
+# A tagline for your site, often shown with the name
+tagline: "Documentation"
+
+# A description of your site, e.g. for social-media snippets
+description: "Documentation, in development, for the Electric Book Manager."
+
+# The main language of your site. Use the IANA language subtag.
+# See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+# or lookup here: https://r12a.github.io/app-subtags/
+language: "en"
+
+# A default image for your site, e.g. for social-media snippets
+image: ""
+
+# The logo for your site, if you have one
+logo: ""
+
+# The final, canonical address of your live site
+url: "https://electricbookworks.github.io/electric-book-gui/"
+
+# Your Google Analytics ID, if you're using Google Analytics
+google-analytics-id: "UA-5570316-42"
+
+# Your email address, e.g. for the contact form to use
+email: "support@electricbookworks.com"

@@ -1,0 +1,96 @@
+{% comment %}Outputs a list of child pages (not grandchildren).{% endcomment %}
+
+{% comment %}How shall we sort the collection?
+If a sort order is specified in the include tag, sort by that.
+Otherwise if the page has an order specified, sort by that.
+Otherwise if the page has a date, sort by that.
+Otherwise, sort by the page title.{% endcomment %}
+{% if include.order %}
+	{% assign sort-order = include.order %}
+{% elsif page.order and page.order != "" %}
+	{% assign sort-order = "order" %}
+{% elsif page.date and page.date != "" %}
+	{% assign sort-order = "date" %}
+{% else %}
+	{% assign sort-order = "title" %}
+{% endif %}
+
+{% comment %}Let users set or override the collection.{% endcomment %}
+{% if include.collection %}
+	{% assign child-pages-list-collection = include.collection %}
+	{% assign this-and-child-pages = site.[child-pages-list-collection] | where_exp: "item", "item.url contains child-pages-list-collection" | sort: sort-order %}
+	{% if sort-order == "date" %}
+		{% assign this-and-child-pages = this-and-child-pages | reverse %}
+	{% endif %}
+{% elsif page.collection %}
+	{% assign child-pages-list-collection = page.collection %}
+	{% assign this-and-child-pages = site.[child-pages-list-collection] | where_exp: "item", "item.url contains page.url" | sort: sort-order %}
+	{% if sort-order == "date" %}
+		{% assign this-and-child-pages = this-and-child-pages | reverse %}
+	{% endif %}
+{% else %}
+	{% comment %}Assume the collection is the same as the file name.{% endcomment %}
+	{% assign child-pages-list-file-name = page.path | split: "/" | last | split: "." | first %}
+	{% assign child-pages-list-collection = child-pages-list-file-name %}
+	{% assign this-and-child-pages = site.[child-pages-list-collection] | where_exp: "item", "item.url contains page.url" | sort: sort-order %}
+	{% if sort-order == "date" %}
+		{% assign this-and-child-pages = this-and-child-pages | reverse %}
+	{% endif %}
+{% endif %}
+
+{% comment %}If this is the home page, its depth will be 0,
+and children in the collection will be two levels deeper.{% endcomment %}
+{% assign this-page-depth = page.url | split: "/" | size %}
+{% if this-page-depth == 0 %}
+	{% assign children-page-depth = 3 %}
+{% else %}
+	{% assign children-page-depth = page.url | split: "/" | size | plus: 1 %}
+{% endif %}
+
+{% if include.show == "preview" %}
+
+<div class="child-pages">
+	{% for item in this-and-child-pages %}
+		{% assign child-page-depth = item.url | split: "/" | size %}
+		{% if child-page-depth == children-page-depth %}
+			<div class="child-pages-preview">
+				{% if item.image %}
+					<a href="{{ site.baseurl }}{{ item.url }}">
+						{% include image file=item.image %}
+					</a>
+				{% endif %}
+				<p class="child-pages-preview-title">
+					<a href="{{ site.baseurl }}{{ item.url }}">{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}</a>
+				</p>
+				<p class="child-pages-preview-excerpt">
+
+					{% if item.description %}
+						{% assign child-page-description = item.description %}
+					{% else %}
+						{% capture child-page-description %}{% include second-block-excerpt.html content=item.content %}{% endcapture %}
+					{% endif %}
+
+					{{ child-page-description | markdownify | replace: "<p>", "" | replace: "</p>", "", | strip_newlines }}
+					<a href="{{ site.baseurl }}{{ item.url }}" class="read-more">Read more</a>
+				</p>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>
+
+{% else %}
+
+<div class="child-pages">
+	<ul class="child-pages-list">
+		{% for item in this-and-child-pages %}
+			{% assign child-page-depth = item.url | split: "/" | size %}
+			{% if child-page-depth == children-page-depth %}
+				<li>
+					<a href="{{ site.baseurl }}{{ item.url }}">{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}</a>
+				</li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+</div>
+
+{% endif %}

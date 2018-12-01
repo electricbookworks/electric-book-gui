@@ -12,7 +12,7 @@ A project can contain one or more books, such as a series or collection. It will
 
 When you contribute to an existing project, you create your own version of it to work in. That is, you copy a parent project. Then, from time to time, you can choose to submit your changes to that parent.
 
-> To create a new project, see [Create a new project](create-new-project.html).
+> To create a new project, see [Create a new project](../create-new-project).
 {:.box}
 
 Before you make your copy, you need to have ready:
