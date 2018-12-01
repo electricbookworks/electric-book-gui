@@ -1,31 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>{{ page.title }}</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css">
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body>
+{% include header.html %}
+{% include masthead.html %}
 
-	<div class="wrapper">
+	<div class="content">
 
-		<div class="masthead">
-			<a href="{{ site.baseurl }}/" class="title">{{ site.title }}</a>
-		</div>
+		{% include nav.html %}
 
-		<div class="navigation">
-			{% include nav.html %}
-		</div>
+    	<div class="content-inner">
 
-		<div class="content">
-			<div class="content-inner">
-				{{ content }}
-			</div>
-		</div>
+			{{ content }}
 
-	</div>
+			{% include page-info.html %}
+			{% include page-navigation.html %}
 
-</body>
-</html>
+    	</div><!--.content-inner-->
+	</div><!--.content-->
+
+{% include footer.html %}

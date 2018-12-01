@@ -1,0 +1,13 @@
+<ul class="page-toc">
+
+    {% assign page-show-categories = page.show-categories | remove: " " | split: "," %}
+
+    {% for category in site.data.categories %}
+    
+        {% if page-show-categories contains category.slug %}
+            <li><a href="#{{ category.slug }}">{{ category.label }}</a></li>
+        {% endif %}
+
+    {% endfor %}
+    
+</ul>

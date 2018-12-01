@@ -1,0 +1,21 @@
+// Styles when printed out
+@media print {
+	// Avoid browser only printing first page
+	* {
+		position: initial!important;
+		overflow: visible!important;
+	}
+	html, body {
+		background-color: white;
+		overflow-x: auto;
+	}
+	.footer {
+		display: none;
+	}
+	button, a.button {
+		display: none;
+	}
+	.nav-wrapper {
+		display: none;
+	}
+}

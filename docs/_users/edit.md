@@ -16,7 +16,7 @@ order: 4
 1. Once signed in, click on the name of your project (or click ‘Manage’ next to the name) to open the project-details page.
 2. On the details page, click ‘Edit’ to load the editor.
 3. In the sidebar on the left, click on the file you want to edit. For instance, to edit Chapter 1 in the ‘book’ folder, you might open `book/text/01.md`.
-4. Edit the text in markdown. (See the [guidelines on markdown](../editing/markdown.html).)
+4. Edit the text in markdown. (See our [guidelines on markdown](https://electricbookworks.github.io/electric-book/docs/editing/markdown.html).)
 
 ### Searching in files
 
@@ -74,4 +74,4 @@ You do not have to submit your changes after every commit. Try to group similar 
 
 Also keep in mind that sensible batches of commits and submissions makes it easier for a managing editor to review.
 
-For more detail on collaborating, see [Collaboration](collaborate.html).
+For more detail on collaborating, see [Collaboration](../collaboration).

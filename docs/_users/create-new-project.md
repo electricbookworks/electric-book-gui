@@ -15,7 +15,7 @@ You create a new project from a template. For that template, you can use:
 - the blank Electric Book template, to create a brand new project; or
 - an existing project, to create a new, separate adaptation of it.
 
-> To contribute to an existing project, see [Contribute to an existing project](contribute-to-a-project.html)
+> To contribute to an existing project, see [Contribute to an existing project](../contribute-to-a-project)
 {:.box}
 
 * Page contents

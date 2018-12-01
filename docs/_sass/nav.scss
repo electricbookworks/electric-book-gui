@@ -1,0 +1,156 @@
+// Nav
+
+.nav-wrapper {
+	background-color: $dropdown-nav-color;
+	color: $text-color-dark;
+	padding: 0;
+	@media only screen and (min-width: $break-point-l) {
+		height: 100%;
+		padding: $line-height * 1em;
+		position: relative;
+		background-color: $side-nav-color;
+		min-width: $side-nav-width;
+		margin-right: $line-height * 1em;
+	}
+	// Style 'show menu' label button and hide it by default
+	// Thanks https://medialoot.com/blog/how-to-create-a-responsive-navigation-menu-using-only-css/
+	.show-menu {
+		// On wide screens, this is display: none;
+	    color: $dropdown-nav-icon-color;
+	    display: block;
+	    font-size: 2.3em; // magic number alert!
+	    position: absolute;
+	    right: 0.5em;
+	    top: 0;
+	    z-index: 10; // show above masthead
+	    @media only screen and (min-width: $break-point-l) {
+	    	display: none;
+	    }
+	    img {
+			border: none;
+		}
+	}
+	// Close button on mobile menu
+	.hide-menu {
+		float: left;
+		img {
+			width: 2em;
+			border: none;
+			@media (min-width: $break-point-l) {
+				display: none;
+			}
+		}
+		@media only screen and (min-width: $break-point-l) {
+	    	display: none;
+	    }	
+	}
+	// Hide actual checkbox
+	input[type=checkbox]{
+	    display: none;
+	}
+	// Show menu when invisible checkbox is checked
+	input[type=checkbox]:checked ~ nav {
+	    display: table;
+	}
+	nav {
+		background-color: $side-nav-color;
+		display: none; // hidden by default until show-menu is clicked
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: $dropdown-nav-width;
+		height: 100%;
+		z-index: 5;
+		padding: 4em 0 0 0; // make space for dropdown menu icon
+		ul, ol {
+			font-size: $dropdown-nav-font-size;
+			padding: 0; // overrides user-agent
+			list-style-type: none;
+			width: 80%; // makes space for close button
+    		float: right; // makes space for close button
+			li {
+				margin: 1em 1em 0 0;
+				&:first-child {
+					margin-top: 0;
+				}
+				&.active {
+					a {
+						font-weight: bold;
+					}
+				}
+				&.inactive {
+					a {
+						font-weight: normal;
+					}
+				}
+				// Make the label cover the text area when there is no no-link
+				// so that clicking it expands the submenu.
+				&.no-link {
+					label {
+						margin-left: -10em;
+						padding-left: 10em;
+					}
+				}
+				ul {
+					margin: 0.5em 0 0 0.5em;
+					width: 100%;
+					float: none;
+					font-size: 1em; // prevents font getting smaller if $dropdown-nav-font-size is smaller
+					li {
+						margin: 0.5em 0 0 0;
+						padding-left: 0.5em;
+						&:first-child {
+							margin-top: 0;
+						}
+					}
+				}
+			}
+		}
+		a {
+			color: inherit;
+		}
+		@media only screen and (min-width: $break-point-l) {
+			display: block;
+			position: relative;
+			left: 0;
+			top: 0;
+			padding: 0;
+			width: $side-nav-width;
+			ul {
+				display: block;
+				width: 100%;
+				float: none;
+				font-size: $side-nav-font-size;
+				li {
+					margin: 1em 1em 0 0;
+					display: block;
+					&:first-child {
+						margin-top: 0;
+					}
+				}
+			}
+		}
+	}
+	// Submenu dropdowns
+	// Hide submenus
+	ul ul {
+		display: none;
+	}
+	// Hide actual checkbox
+	.show-submenu {
+		img {
+			width: 0.75em;
+			display: inline-block;
+			margin-left: 0.5em;
+			margin-bottom: 0.1em; // nudge to centre-align with text
+			border: none;
+		}
+	}
+	input[type=checkbox]{
+	    display: none;
+	}
+	// Show submenu when invisible checkbox is checked
+	input[type=checkbox]:checked ~ ul {
+	    display: block;
+	}
+}

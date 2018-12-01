@@ -1,0 +1,34 @@
+// Post excerpts
+
+.post-excerpts {
+	padding-top: 1em;
+	@media only screen and (min-width: $break-point-l) {
+		padding-top: 2em;
+	}
+}
+.post-excerpt {
+	padding: 0 1em;
+	@media only screen and (min-width: $break-point-l) {
+		padding: 0 2em;
+	}
+	h3, h4, h5 {
+		margin-bottom: 0;
+	}
+}
+// The div around the image
+.post-excerpt-image {
+	max-width: 100%;
+	overflow: hidden;
+	text-align: center;
+}
+// The post author in an excerpt
+.post-excerpt-author {
+	line-height: $line-height;
+	margin: 0.5em 0;
+}
+// The text in an excerpt
+.post-excerpt-text {
+	.post-excerpt-text-more {
+		display: inline-block;
+	}
+}
