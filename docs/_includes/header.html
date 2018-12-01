@@ -28,6 +28,10 @@
 		<meta name="msapplication-config" content="{{site.baseurl}}/images/icons/browserconfig.xml">
 		<meta name="theme-color" content="#ffffff">
 
+		{% if site.data.settings.google-analytics-id and site.data.settings.google-analytics-id != "" and site.data.settings.google-analytics-id != "UA-00000000-0" %}
+			{% include google-analytics.html  %}
+		{% endif %}
+
 	</head>
 
 <body {% if page.style or page.collection %}class="{% endif %}{{ page.style }}{% if page.collection %}{{ page.collection }}{% endif %}{% if page.style or page.collection %}"{% endif %}>
