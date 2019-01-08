@@ -35,7 +35,6 @@ export class FileSystemView {
 		}		
 	}
 	notifyFileChange(path:string, fc:FileContent):void {
-		console.log(`FileSystemView.notifyFileChanged(path=${path})`);
 		let node = this.files[path];
 		if (node) {
 			node.notifyFileChange(fc);
@@ -87,7 +86,6 @@ class NodeView extends NodeViewTemplate{
 		new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
 	}
 	notifyFileChange(fc:FileContent) : void {
-		console.log(`notifyFileChange received in NodeView for `, this.node.path());
 		SetFileStatCSS(this.el, fc.Stat);
 	}
 	path() : string {

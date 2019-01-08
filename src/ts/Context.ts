@@ -7,7 +7,7 @@ import {EBW} from './EBW';
 // just much better controlled because it's a class we defined and pass around,
 // and can therefore modify for children if that is appropriate at some point.
 export class Context {
-	constructor(protected el: HTMLElement, public RepoOwner: string, public RepoName: string) {
+	constructor(protected el: HTMLElement, public Username: string, public RepoOwner: string, public RepoName: string) {
 		// I should probably also pass the EBW in the context,
 		// but since _all_ of the EBW methods are static, it is
 		// pretty unnecessary

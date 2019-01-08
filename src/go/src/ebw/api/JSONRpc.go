@@ -251,6 +251,64 @@ func (rpc *API) MergedFileGit(repoOwner, repoName, path string) (bool, string, e
 	return mergeable, string(raw), nil
 }
 
+func (rpc *API) ReadFileData(repoOwner, repoName, version, path string) (*git.FileData, error) {
+	v, err := git.ParseGitFileVersion(version)
+	if nil!=err {
+		return nil, err
+	}
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil!=err {
+		return nil, err
+	}
+	return g.ReadFileData(path, v)
+}
+
+func (rpc *API) WriteAndStageFile(repoOwner, repoName, path string, data string) (*git.FileData, error) {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil!=err {
+		return nil, err
+	}
+	if err = g.WriteFileWD(path, []byte(data)); nil!=err {
+		return nil, err
+	}
+	if err = g.StageFile(path); nil!=err {
+		return nil, err
+	}
+
+	return g.ReadFileData(path, git.GFV_OUR_WD);
+}
+
+
+func (rpc *API) RevertFile(repoOwner, repoName, path string) (*git.FileData, error) {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil!=err {
+		return nil, err
+	}
+	if err = g.RevertFile(path); nil!=err {
+		return nil, err
+	}
+	// Stage the REVERTED file version
+	if err = g.StageFile(path); nil!=err {
+		return nil, err
+	}
+	return g.ReadFileData(path, git.GFV_OUR_WD);
+}
+
+
+func (rpc *API) RemoveAndStageFile(repoOwner, repoName, path string) error {
+	g, err := rpc.Git(repoOwner, repoName)
+	if nil!=err {
+		return err
+	}
+	if err = g.RemoveFileWD(path); nil!=err {
+		return err
+	}
+	if err = g.StageFile(path); nil!=err {
+		return err
+	}
+	return nil
+}
+
 func (rpc *API) FileExistsOurHeadTheirHead(repoOwner, repoName, path string) (bool, bool, error) {
 	g, err := rpc.Git(repoOwner, repoName)
 	if nil != err {

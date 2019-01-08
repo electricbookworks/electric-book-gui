@@ -262,6 +262,80 @@ func (g *Git) Close() error {
 	return nil
 }
 
+// StageFile adds the named file to the index, or removes the file
+// from the index if it does not exist in the working dir. This is
+// intended as a functional equivalent of `git add [path]`
+func (g *Git) StageFile(path string) error {	
+	path = stripSeparatorPrefix(path)
+	index, err := g.Repository.Index()
+	if nil != err {
+		return g.Error(err)
+	}
+	defer index.Free()
+
+	fileExists, err := util.FileExists(g.Path(path))
+	if nil != err {
+		return err
+	}
+	if fileExists {
+		if err := index.AddByPath(path); nil != err {
+			return g.Error(fmt.Errorf(`Failed to AddByPath %s: %s`, path, err.Error()))
+		}
+	} else {
+		if err := index.RemoveByPath(path); nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				glog.Infof(`ERR not found on RemoveByPath for %s`, path)
+			} else {
+				return g.Error(err)
+			}
+		}
+	}
+	if err := index.Write(); nil != err {
+		return g.Error(err)
+	}
+	return nil
+}
+
+
+func (g *Git) FilesAndHashes() ([][2]string, error) {
+	filesAndHashes := [][2]string{}
+	exclude := func(path string, info os.FileInfo) bool {
+		if info.IsDir() {
+			if filepath.Base(path)==`.git` {
+				return true
+			}
+		}
+		return false
+	}
+	if err := filepath.Walk(g.Path(), func(path string, info os.FileInfo, err error) error {
+		glog.Infof(`Walk path=%s`, path)
+		if nil!=err {
+			return err
+		}
+		excl := exclude(path,info)
+
+		if info.IsDir() {
+			if excl {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		if !excl {
+			sha, err := util.CalcFileSHA(path)
+			if nil!=err {
+				return errors.Trace(err)
+			}
+			filesAndHashes = append(filesAndHashes, [2]string{ g.RelPath(path), *sha })
+		}
+		return nil
+		}); nil!=err {
+		return nil, g.Error(err)
+	}
+	return filesAndHashes, nil
+}
+
+
 // DefaultSignature guesses at a signature for the repo based on the
 // git username and config
 func (g *Git) DefaultSignature() (*git2go.Signature, error) {
@@ -563,6 +637,40 @@ func (g *Git) Path(path ...string) string {
 	}
 	return filepath.Join(g.Repository.Workdir(), filepath.Join(path...))
 }
+// RelPath returns the given path relative to the Git working directory path
+func (g *Git) RelPath(path string) string {
+	p, err := filepath.Rel(g.Path(), path)
+	if nil!=err {
+		g.Error(err)
+		return err.Error()
+	}
+	return p
+}
+
+// WriteFileWD writes the given file contents to the Working Directory.
+// It does NOT stage the file
+func (g *Git) WriteFileWD(path string, content []byte) error {
+	path = g.Path(stripSeparatorPrefix(path))
+	os.MkdirAll(filepath.Dir(path), 0755)
+	if err := ioutil.WriteFile(path, content, 0644); nil!=err {
+		return g.Error(err)
+	}
+	return nil
+}
+
+// RemoveFileWD removes the named file from the working directory.
+func (g *Git) RemoveFileWD(path string) error {
+	path = g.Path(stripSeparatorPrefix(path))
+	err := os.Remove(path)
+	if nil!=err {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return g.Error(err)
+	}
+	return nil
+}
+
 
 // PathEBWConfig returns the path to the ebw config directory
 func (g *Git) PathEBWConfig(path ...string) string {

@@ -13,6 +13,7 @@ import (
 	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
+	"github.com/juju/errors"
 
 	"ebw/config"
 	"ebw/git"
@@ -45,6 +46,7 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
 			} else {
 				glog.Errorf(`PANIC w/out recovery: %v`, e)
+				glog.Error(errors.ErrorStack(e.(error)))
 				panic(e)
 			}
 		}
@@ -56,13 +58,16 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	flds := logrus.Fields{}
+	username := ``
 	if nil != client && `` != client.Username {
 		flds = logrus.Fields{`username`: client.Username}
+		username= client.Username
 	}
+
 	c := &Context{
 		R:       r,
 		W:       w,
-		D:       map[string]interface{}{},
+		D:       map[string]interface{}{`Username`:username},
 		Vars:    mux.Vars(r),
 		Client:  client,
 		Session: session,

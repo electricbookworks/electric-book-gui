@@ -16,6 +16,7 @@ import {FSSession} from './FS/FSSession';
 import {FSFileList} from './FSFileList';
 import {FSFileTree} from './FSFileTree';
 import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
+import {SHA1} from './FS2/SHA1';
 
 /**
  * RepoEditorPage is the JS controller for the page that allows
@@ -33,6 +34,8 @@ export class RepoEditorPage {
 		protected proseIgnoreFunction: (name:string)=>boolean
 	) {
 		console.log(`filesList= `, filesList);
+		let test="This is a test";
+		console.log(`sha1(${test}) = ` , SHA1(test));
 		sessionStorage.clear();
 		this.editor = undefined;
 		this.editor = new RepoFileEditorCM(

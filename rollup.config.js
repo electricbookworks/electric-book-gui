@@ -1,16 +1,18 @@
 import typescript from 'rollup-plugin-typescript';
 
 export default {
-	entry: 'src/ts/EBW.ts',
-	format: 'iife',
-	moduleName: 'EBW',
-	dest: 'public/js/ts.js',
-	sourceMap: true,
-	external: ['tslib','TSFoundation'],
-	globals: {
-		'tslib':'tslib',
-		'TSFoundation':'TSFoundation'
+	input: 'src/ts/EBW.ts',
+	output: {
+		file: 'public/js/ts.js',
+		format: 'iife',
+		globals: {
+			'tslib':'tslib',
+			'TSFoundation':'TSFoundation'
+		},
+		name: "EBW",
+		sourceMap: true
 	},
+	external: ['tslib','TSFoundation'],
 	plugins: [
 		typescript({
 			typescript: require('./node_modules/typescript'),

@@ -189,6 +189,15 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         APIWs.prototype.MergedFileGit = function (repoOwner, repoName, path) {
             return this.rpc("MergedFileGit", [repoOwner, repoName, path]);
         };
+        APIWs.prototype.ReadFileData = function (repoOwner, repoName, version, path) {
+            return this.rpc("ReadFileData", [repoOwner, repoName, version, path]);
+        };
+        APIWs.prototype.WriteAndStageFile = function (repoOwner, repoName, path, data) {
+            return this.rpc("WriteAndStageFile", [repoOwner, repoName, path, data]);
+        };
+        APIWs.prototype.RemoveAndStageFile = function (repoOwner, repoName, path) {
+            return this.rpc("RemoveAndStageFile", [repoOwner, repoName, path]);
+        };
         APIWs.prototype.FileExistsOurHeadTheirHead = function (repoOwner, repoName, path) {
             return this.rpc("FileExistsOurHeadTheirHead", [repoOwner, repoName, path]);
         };
@@ -225,8 +234,9 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
     // just much better controlled because it's a class we defined and pass around,
     // and can therefore modify for children if that is appropriate at some point.
     var Context = (function () {
-        function Context(el, RepoOwner, RepoName) {
+        function Context(el, Username, RepoOwner, RepoName) {
             this.el = el;
+            this.Username = Username;
             this.RepoOwner = RepoOwner;
             this.RepoName = RepoName;
             // I should probably also pass the EBW in the context,
@@ -296,7 +306,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = AddNewBookDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input placeholder=\"e.g. MobyDick\" type=\"text\" name=\"repo_new\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form action=\"/github/create/fork\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"adaptation\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input placeholder=\"e.g. electricbookworks/electric-book\" type=\"text\" name=\"template\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form action=\"/github/create/fork\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input placeholder=\"e.g. electricbooks/core\" type=\"text\" name=\"collaborate_repo\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 AddNewBookDialog._template = t;
             }
@@ -496,7 +506,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = CommitMessageDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input name=\"commitMessage\" id=\"commitMessage\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
                 t = d.firstElementChild;
                 CommitMessageDialog._template = t;
             }
@@ -701,7 +711,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = FoundationRevealDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
+                d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button aria-label=\"Close popup\" type=\"button\" data-close=\"\" class=\"close-button\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
                 t = d.firstElementChild;
                 FoundationRevealDialog._template = t;
             }
@@ -952,7 +962,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = RepoEditorPage_RenameFileDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input placeholder=\"/book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button data-event=\"click\" class=\"btn\">Rename</button>\n</div>\n";
                 t = d.firstElementChild;
                 RepoEditorPage_RenameFileDialog._template = t;
             }
@@ -1109,7 +1119,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = Tree_NodeView._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><svg height=\"1em\" viewBox=\"0 0 100 100\" width=\"1em\">\n\t\t<rect ry=\"10\" x=\"2\" y=\"2\" width=\"96\" height=\"96\" class=\"grect\" rx=\"10\"/>\n\t\t<g transform=\"translate(50 50)\">\n\t\t\t<rect class=\"plusvg\" x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\"/>\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg plusvg2\"/>\n\t\t</g>\n\t\t</svg></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
+                d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><svg width=\"1em\" height=\"1em\" viewBox=\"0 0 100 100\">\n\t\t<rect x=\"2\" y=\"2\" width=\"96\" height=\"96\" class=\"grect\" rx=\"10\" ry=\"10\"/>\n\t\t<g transform=\"translate(50 50)\">\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg\"/>\n\t\t\t<rect stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg plusvg2\" x=\"-30\" y=\"-4\"/>\n\t\t</g>\n\t\t</svg></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
                 t = d.firstElementChild;
                 Tree_NodeView._template = t;
             }
@@ -1164,7 +1174,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = conflict_ClosePRDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input value=\"no\" data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-no\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_ClosePRDialog._template = t;
             }
@@ -1283,7 +1293,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var t = conflict_MergeImageEditor._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"merge-image-editor\" id=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_MergeImageEditor._template = t;
             }
@@ -2044,70 +2054,43 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
     }(EditorImage));
 
     /**
-     * FileStat provides information on the status of a file
-     * in a given filesystem.
+     * FileState provides information on the status of a file
+     * in a given filesystem vis-a-vis its parent
+     * filesystem.
      */
     /**
-     * FileStat provides information on the status of a file
-     * in a given filesystem.
-     */ var FileStat;
-    (function (FileStat) {
-        /** The file exists an is unchanged */
-        FileStat[FileStat["Exists"] = 1] = "Exists";
-        /** The file exists, and has changed */
-        FileStat[FileStat["Changed"] = 2] = "Changed";
-        /** The file is a new file */
-        FileStat[FileStat["New"] = 3] = "New";
-        /** The file is deleted / marked for deletion */
-        FileStat[FileStat["Deleted"] = 4] = "Deleted";
-        /** The file does not exist */
-        FileStat[FileStat["NotExist"] = 5] = "NotExist";
-    })(FileStat || (FileStat = {}));
-    function FileStatString(fs) {
-        switch (fs) {
-            case FileStat.Exists:
-                return "Exists";
-            case FileStat.Changed:
-                return "Changed";
-            case FileStat.New:
-                return "New";
-            case FileStat.Deleted:
-                return "Deleted";
-            case FileStat.NotExist:
-                return "NotExist";
-        }
-        debugger;
-        return "-- ERROR : undefined FileStat ---";
-    }
-    function SetFileStatCSS(el, fs) {
-        el.classList.remove("FileStat-Exists", "FileStat-Changed", "FileStat-New", "FileStat-Deleted", "FileStat-NotExist");
-        el.classList.add("FileStat-" + FileStatString(fs));
-    }
-    var FileContent = (function () {
-        function FileContent(Name, Stat, Content, Original) {
-            this.Name = Name;
-            this.Stat = Stat;
-            this.Content = Content;
-            this.Original = Original;
-        }
-        FileContent.prototype.IsContentKnown = function () {
-            return (undefined != typeof this.Content);
-        };
-        FileContent.prototype.Serialize = function () {
-            return JSON.stringify(this);
-        };
-        FileContent.FromJS = function (json) {
-            var js = JSON.parse(json);
-            return new FileContent(js.Name, js.Stat, js.Content);
-        };
-        FileContent.prototype.OriginalName = function () {
-            if (this.Original) {
-                return this.Original.OriginalName();
+     * FileState provides information on the status of a file
+     * in a given filesystem vis-a-vis its parent
+     * filesystem.
+     */ var FileState;
+    (function (FileState) {
+        FileState[FileState["New"] = 1] = "New";
+        FileState[FileState["Deleted"] = 2] = "Deleted";
+        FileState[FileState["Absent"] = 3] = "Absent";
+        FileState[FileState["Changed"] = 4] = "Changed";
+        FileState[FileState["Unchanged"] = 5] = "Unchanged";
+        FileState[FileState["Undefined"] = 6] = "Undefined"; // Typically if there is not parent FS
+    })(FileState || (FileState = {}));
+    function SetFileStateCSS(el, fs) {
+        console.log("SetFileStateCSS = el=", el, ", fs=", FileStateString(fs));
+        for (var _i = 0, _a = [FileState.New, FileState.Deleted, FileState.Absent, FileState.Changed, FileState.Unchanged]; _i < _a.length; _i++) {
+            var s = _a[_i];
+            var c = 'state-' + FileStateString(s);
+            el.classList.remove(c);
+            if (fs == s) {
+                el.classList.add(c);
             }
-            return this.Name;
-        };
-        return FileContent;
-    }());
+        }
+    }
+    function FileStateString(fs) {
+        switch (fs) {
+            case FileState.New: return "new";
+            case FileState.Deleted: return "deleted";
+            case FileState.Absent: return "absent";
+            case FileState.Changed: return "changed";
+            case FileState.Unchanged: return "unchanged";
+        }
+    }
 
     var ImageIdentify = (function () {
         function ImageIdentify() {
@@ -2121,10 +2104,42 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
 
     var EditorEvents;
     (function (EditorEvents) {
-        EditorEvents[EditorEvents["SAVED"] = 1] = "SAVED";
-        EditorEvents[EditorEvents["CHANGED"] = 2] = "CHANGED";
-        EditorEvents[EditorEvents["LOADED"] = 3] = "LOADED";
+        EditorEvents[EditorEvents["Saved"] = 1] = "Saved";
+        EditorEvents[EditorEvents["Changed"] = 2] = "Changed";
+        EditorEvents[EditorEvents["Loaded"] = 3] = "Loaded";
+        EditorEvents[EditorEvents["Unloaded"] = 4] = "Unloaded";
     })(EditorEvents || (EditorEvents = {}));
+    /**
+     * EditorEvent is the event sent by the RepoFileEditor when a file is being edited, saved, or
+     * a new file is being loaded.
+     */
+    var EditorEvent = (function () {
+        function EditorEvent(event, file) {
+            if (file === void 0) { file = undefined; }
+            this.event = event;
+            this.file = file;
+        }
+        EditorEvent.Saved = function (f) {
+            return new EditorEvent(EditorEvents.Saved, f);
+        };
+        EditorEvent.Changed = function (f) {
+            return new EditorEvent(EditorEvents.Changed, f);
+        };
+        EditorEvent.Loaded = function (f) {
+            if (f === void 0) { f = undefined; }
+            return new EditorEvent(EditorEvents.Loaded, f);
+        };
+        EditorEvent.Unloaded = function (f) {
+            return new EditorEvent(EditorEvents.Unloaded, f);
+        };
+        EditorEvent.prototype.File = function () { return this.file; };
+        EditorEvent.prototype.Event = function () { return this.event; };
+        return EditorEvent;
+    }());
+    /**
+     * repoEditorActionBar provides the buttons that are used to interact with the editor for
+     * saving, undoing and deleting.
+     */
     var repoEditorActionBar = (function () {
         function repoEditorActionBar(editor) {
             var _this = this;
@@ -2145,9 +2160,11 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 _this.editor.deleteEditorFile();
             });
             this.renameButton = document.getElementById("editor-rename-button");
-            this.editor.EditEvents.add(this.EditEvents, this);
+            this.editor.Listeners.add(this.EditorEvents, this);
         }
-        repoEditorActionBar.prototype.EditEvents = function (ev, file) {
+        repoEditorActionBar.prototype.EditorEvents = function (ev) {
+            // console.log(`repoEditoActionBar.EditorEvents: ev = `, ev);
+            var file = ev.File();
             if (!file) {
                 this.deleteButton.disabled = true;
                 this.deleteButton.innerText = 'Delete';
@@ -2172,14 +2189,15 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
      */
     var RepoFileEditorCM$1 = (function (_super) {
         tslib_1.__extends(RepoFileEditorCM$$1, _super);
-        function RepoFileEditorCM$$1(repoOwner, repoName, parent, callbacks) {
+        function RepoFileEditorCM$$1(repoOwner, repoName, parent, callbacks, FS) {
             var _this = _super.call(this) || this;
             _this.parent = parent;
             _this.callbacks = callbacks;
+            _this.FS = FS;
             _this.undoKey = "RepoFileEditorCM:UndoHistory:" + encodeURIComponent(repoOwner) + ":" + encodeURIComponent(repoName) + ":";
-            _this.EditEvents = new signals.Signal();
+            _this.Listeners = new signals.Signal();
             new repoEditorActionBar(_this);
-            _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+            _this.Listeners.dispatch(EditorEvent.Loaded());
             _this.textEditor = new EditorCodeMirror(_this.$.textEditor);
             _this.imageEditor = new EditorImage$1(_this.$.imageEditor, repoOwner, repoName);
             _this.parent.appendChild(_this.el);
@@ -2192,12 +2210,19 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 .then(function (b) {
                 if (!b)
                     return;
-                _this.file.Revert()
-                    .then(function (fc) {
-                    _this.file.SetFileContent(fc);
-                    _this.textEditor.setValue(fc.Content);
-                    _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
-                });
+                _this.FS.Revert(_this.file.Name())
+                    .then(function (f) {
+                    console.log("RepoFileEditorCM.undoEditorFile: Revert returned file=", f);
+                    _this.file = f;
+                    f.DataEvenIfDeleted()
+                        .then(function (raw) {
+                        if ('undefined' == typeof raw) {
+                            raw = '';
+                        }
+                        _this.textEditor.setValue(raw);
+                        _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
+                    });
+                }).catch(EWB.Error);
             });
         };
         /**
@@ -2209,57 +2234,55 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 EBW.Alert("Please choose a file before using delete/undelete");
                 return;
             }
-            if (this.file.IsDeleted()) {
-                this.file.Save(this.textEditor.getValue(), FileStat.Changed)
-                    .then(function (fc) {
-                    if (fc.Stat != FileStat.NotExist) {
-                        _this.file.SetFileContent(fc);
-                        _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
-                    }
-                    else {
-                        _this.file = undefined;
-                        _this.setFile(undefined);
-                        _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
-                    }
-                });
-                return;
-            }
-            EBW.Confirm("Are you sure you want to delete " + this.file.Name() + "?")
-                .then(function () {
-                return _this.file.Remove()
-                    .then(function (fc) {
-                    if (fc.Stat == FileStat.NotExist) {
-                        _this.file = undefined;
-                        _this.setFile(undefined);
-                        _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
-                    }
-                    else {
-                        _this.file.SetFileContent(fc);
-                        _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
-                    }
-                });
-            })
-                .catch(EBW.Error);
+            // Need to check that this is a text file... no, I won't get deleteEditorFile _unless_
+            // this is a text file.
+            this.file.data = this.textEditor.getValue();
+            this.FS.FileState(this.file.Name())
+                .then(function (fs) {
+                if (fs == FileState.Deleted) {
+                    // Actually want to undo this deletion
+                    // this.file.SetFileContent(fc.Content);
+                    _this.file.DataEvenIfDeleted()
+                        .then(function (raw) {
+                        _this.FS.Write(_this.file.Name(), raw);
+                    })
+                        .then(function (f) { _this.file = f; return Promise.resolve(); })
+                        .catch(EBW.Error);
+                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
+                }
+                else {
+                    EBW.Confirm("Are you sure you want to delete " + _this.file.Name() + "?")
+                        .then(function () {
+                        return _this.FS.Remove(_this.file.Name())
+                            .then(function (f) {
+                            _this.Listeners.dispatch(EditorEvent.Unloaded(_this.file));
+                            _this.file = undefined;
+                            _this.setFile(undefined);
+                            _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+                        });
+                    })
+                        .catch(EBW.Error);
+                }
+            });
         };
         RepoFileEditorCM$$1.prototype.saveEditorFile = function () {
             var _this = this;
-            this.file.Save(this.textEditor.getValue())
-                .then(function (fc) {
-                console.log("About to Sync " + _this.file.Name());
-                return _this.file.Sync();
-            })
-                .then(function (fc) {
-                if (fc.Stat == FileStat.NotExist) {
-                    EBW.Toast(_this.file.Name() + " removed");
+            /* @TODO Need to ensure that no file-load occurs during file-save */
+            var f = this.file;
+            this.FS.Write(f.Name(), this.textEditor.getValue())
+                .then(function (f) { return _this.FS.Sync(f.Name()); })
+                .then(function (f) {
+                if (!f.exists) {
+                    EBW.Toast(f.Name() + " removed");
                     // By presetting file to undefined, we ensure that
                     // setFile doesn't save the file again
                     _this.file = undefined;
                     _this.setFile(undefined);
-                    _this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+                    _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
                 }
                 else {
-                    _this.file.SetFileContent(fc);
-                    _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
+                    _this.file = f;
+                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
                     EBW.Toast(_this.file.Name() + " saved.");
                 }
             })
@@ -2293,30 +2316,33 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             var _this = this;
             if (this.file) {
                 if (this.file.Name() == file.Name()) {
+                    console.log("We're already editing " + file.Name() + " - nothing to do");
                     // Cannot set to the file we're currently editing
                     return;
                 }
-                this.file.Save(this.textEditor.getValue());
-                this.file.SetEditing(false);
+                this.file.data = this.textEditor.getValue();
+                this.FS.Set(this.file);
                 this.saveHistoryFor(this.file.Name());
+                this.Listeners.dispatch(EditorEvent.Unloaded(this.file));
+                this.file = undefined;
             }
             if ('undefined' == typeof file) {
                 this.file = undefined;
                 this.setText('Please select a file to edit.');
                 this.setBoundFilenames();
-                this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+                this.Listeners.dispatch(EditorEvent.Loaded(undefined));
                 return;
             }
             if (ImageIdentify.isImage(file.Name())) {
                 this.imageEditor.setFile(file);
                 this.showImageEditor();
                 this.file = undefined;
-                this.EditEvents.dispatch(EditorEvents.LOADED, undefined);
+                this.Listeners.dispatch(EditorEvent.Loaded(undefined));
                 return;
             }
             this.showTextEditor();
             this.loadingFile = file;
-            file.GetText()
+            file.DataEvenIfDeleted()
                 .then(function (t) {
                 // If we start loading file A, then start loading file
                 // B, and file B returns before file A, when file A
@@ -2329,27 +2355,25 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                     return;
                 }
                 _this.file = file;
-                _this.file.SetEditing(true);
                 _this.setBoundFilenames();
                 _this.setText(t);
                 _this.restoreHistoryFor(_this.file.Name());
                 _this.textEditor.setModeOnFilename(file.Name());
                 _this.textEditor.focus();
-                _this.EditEvents.dispatch(EditorEvents.CHANGED, _this.file);
+                // HAD BEEN .Changed
+                _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
             })
-                .catch(function (err) {
-                EBW.Error(err);
-            });
+                .catch(EBW.Error);
         };
-        RepoFileEditorCM$$1.prototype.File = function () {
-            return this.file;
-        };
+        RepoFileEditorCM$$1.prototype.File = function () { return this.file; };
         RepoFileEditorCM$$1.prototype.Rename = function (name) {
             var _this = this;
-            return this.file.Rename(name)
-                .then(function () {
-                console.log("Rename is concluded: this.file = ", _this.file);
+            return this.FS.Move(this.file.Name(), name)
+                .then(function (f) {
+                _this.Listeners.dispatch(EditorEvent.Unloaded(_this.file));
+                _this.file = f;
                 BoundFilename$1.SetFilename(name);
+                _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
                 return Promise.resolve();
             });
         };
@@ -2372,143 +2396,34 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
     }(RepoFileEditorCM));
 
     /**
-     * FSFileEdit is a wrapper around a file that is being
-     * edited.
-     */
-    var FSFileEdit = (function () {
-        function FSFileEdit(fc, FS) {
-            this.fc = fc;
-            this.FS = FS;
-            this.DirtySignal = new signals.Signal();
-            this.EditingSignal = new signals.Signal();
-        }
-        FSFileEdit.prototype.SetFileContent = function (fc) {
-            this.fc = fc;
-        };
-        FSFileEdit.prototype.FileContent = function () {
-            return this.fc;
-        };
-        FSFileEdit.prototype.Revert = function () {
-            var _this = this;
-            return this.FS.Revert(this.fc.Name)
-                .then(function (fc) {
-                _this.fc = fc;
-                return Promise.resolve(fc);
-            });
-        };
-        FSFileEdit.prototype.Rename = function (toPath) {
-            var _this = this;
-            var oldName = this.fc.Name;
-            return this.FS.Rename(this.fc.Name, toPath)
-                .then(function (_a) {
-                var fOld = _a[0], fNew = _a[1];
-                _this.FS.Sync(oldName);
-                _this.fc = fNew;
-                _this.Sync();
-                // this.signalDirty();
-                return Promise.resolve([fOld, fNew]);
-            });
-        };
-        FSFileEdit.prototype.Remove = function () {
-            var _this = this;
-            return this.FS.Remove(this.fc.Name)
-                .then(function (fc) {
-                _this.fc = fc;
-                _this.signalDirty();
-                return Promise.resolve(fc);
-            });
-        };
-        FSFileEdit.prototype.Name = function () {
-            return this.fc.Name;
-        };
-        FSFileEdit.prototype.SetEditing = function (editing) {
-            this.editing = editing;
-            this.EditingSignal.dispatch(this, editing);
-        };
-        FSFileEdit.prototype.IsDeleted = function () {
-            return this.fc.Stat == FileStat.Deleted;
-        };
-        FSFileEdit.prototype.IsEditing = function () {
-            return this.editing;
-        };
-        FSFileEdit.prototype.IsDirty = function () {
-            return this.FS.IsDirty(this.fc.Name);
-        };
-        FSFileEdit.prototype.signalDirty = function () {
-            var _this = this;
-            this.IsDirty().then(function (dirty) {
-                _this.DirtySignal.dispatch(_this, dirty);
-            });
-        };
-        FSFileEdit.prototype.Save = function (t, fs) {
-            var _this = this;
-            // If FileStat is Changed, or Deleted, we want to keep 
-            // that stat.
-            if (!fs) {
-                fs = this.fc.Stat;
-                if (fs == FileStat.New || fs == FileStat.Exists || fs == FileStat.NotExist) {
-                    fs = FileStat.Changed;
-                }
-            }
-            return this.FS.Write(this.fc.Name, fs, t)
-                .then(function (fc) {
-                _this.fc = fc;
-                _this.signalDirty();
-                return Promise.resolve(fc);
-            });
-        };
-        FSFileEdit.prototype.Sync = function () {
-            var _this = this;
-            return this.FS.Sync(this.fc.Name)
-                .then(function (fcs) {
-                var fc = fcs[0];
-                _this.fc = fc;
-                return Promise.resolve(fc);
-            });
-        };
-        FSFileEdit.prototype.GetText = function () {
-            var _this = this;
-            if (this.fc.Content) {
-                return Promise.resolve(this.fc.Content);
-            }
-            return this.FS.Read(this.fc.Name)
-                .then(function (fc) {
-                console.log("FSFileEdit.FS.Read returned ", fc);
-                _this.fc = fc;
-                return Promise.resolve(fc.Content);
-            });
-        };
-        return FSFileEdit;
-    }());
-
-    /**
      * RepoEditorPage_NewFileDialog displays a new file
      * dialog on the RepoPageEditor page.
      *
      */
     var RepoEditorPage_NewFileDialog$1 = (function (_super) {
         tslib_1.__extends(RepoEditorPage_NewFileDialog$$1, _super);
-        function RepoEditorPage_NewFileDialog$$1(openElement, FS, editor) {
+        function RepoEditorPage_NewFileDialog$$1(context, openElement, FS, editor) {
             var _this = _super.call(this) || this;
+            _this.context = context;
+            _this.openElement = openElement;
             _this.FS = FS;
             _this.editor = editor;
-            _a = _this.FS.RepoOwnerName(), _this.repoOwner = _a[0], _this.repoName = _a[1];
             document.body.appendChild(_this.el);
             _this.$el = jQuery(_this.el);
             Eventify(_this.el, {
                 "click": function (evt) {
                     var filename = _this.$.filename.value;
-                    _this.FS.Stat(filename)
+                    _this.FS.FileState(filename)
                         .then(function (fs) {
-                        if (!(fs == FileStat.NotExist || fs == FileStat.Deleted)) {
+                        if (!(fs == FileState.Absent || fs == FileState.Deleted || fs == FileState.Undefined)) {
                             EBW.Alert("A file named " + filename + " already exists");
                             return;
                         }
-                        _this.FS.Write(filename, FileStat.New, "")
-                            .then(function (fc) {
+                        _this.FS.Write(filename, "")
+                            .then(function (f) {
+                            console.log("Wrote file: ", f);
                             _this.dialog.Close();
-                            var edit = new FSFileEdit(fc, FS);
-                            _this.editor.setFile(edit);
+                            _this.editor.setFile(f);
                         });
                     });
                 },
@@ -2527,7 +2442,6 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 }
             });
             return _this;
-            var _a;
         }
         return RepoEditorPage_NewFileDialog$$1;
     }(RepoEditorPage_NewFileDialog));
@@ -2538,11 +2452,11 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
      */
     var RepoEditorPage_RenameFileDialog$1 = (function (_super) {
         tslib_1.__extends(RepoEditorPage_RenameFileDialog$$1, _super);
-        function RepoEditorPage_RenameFileDialog$$1(openElement, FS, editor) {
+        function RepoEditorPage_RenameFileDialog$$1(context, openElement, editor) {
             var _this = _super.call(this) || this;
-            _this.FS = FS;
+            _this.context = context;
+            _this.openElement = openElement;
             _this.editor = editor;
-            _a = _this.FS.RepoOwnerName(), _this.repoOwner = _a[0], _this.repoName = _a[1];
             Eventify(_this.el, {
                 "click": function (evt) {
                     var toName = _this.$.filename.value;
@@ -2568,600 +2482,463 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 }
             });
             return _this;
-            var _a;
         }
         return RepoEditorPage_RenameFileDialog$$1;
     }(RepoEditorPage_RenameFileDialog));
 
-    /**
-     * FSNotify implements a FS that passes all actual
-     * functions through to an underlying FS, but that
-     * notifies listeners of activities on the FS.
-     */
-    var FSNotify = (function () {
-        function FSNotify(source) {
-            this.source = source;
-            this.Listeners = new signals.Signal();
+    function SHA1(input) {
+        var sha = new jsSHA("SHA-1", "TEXT");
+        sha.update(input);
+        return sha.getHash("HEX");
+    }
+
+    var File = (function () {
+        function File(name, exists, hash, data) {
+            if (hash === void 0) { hash = undefined; }
+            if (data === void 0) { data = undefined; }
+            this.name = name;
+            this.exists = exists;
+            this.hash = hash;
+            this.data = data;
+            this.state = FileState.Undefined;
         }
-        FSNotify.prototype.Write = function (path, stat, content) {
-            var _this = this;
-            return this.source.Write(path, stat, content)
-                .then(function (fc) {
-                _this.Listeners.dispatch(path, fc);
-                return Promise.resolve(fc);
-            });
+        File.prototype.Serialize = function () {
+            return JSON.stringify(this);
         };
-        FSNotify.prototype.Remove = function (path, stat) {
-            var _this = this;
-            return this.source.Remove(path, stat)
-                .then(function (fc) {
-                _this.Listeners.dispatch(path, fc);
-                return Promise.resolve(fc);
-            });
+        File.Deserialize = function (js) {
+            var o = JSON.parse(js);
+            return new File(o.name, o.exists, o.hash, o.data);
         };
-        FSNotify.prototype.Rename = function (fromPath, toPath) {
-            var _this = this;
-            return this.source.Rename(fromPath, toPath)
-                .then(function (_a) {
-                var fOld = _a[0], fNew = _a[1];
-                _this.Listeners.dispatch(fromPath, fOld);
-                _this.Listeners.dispatch(toPath, fNew);
-                return Promise.resolve([fOld, fNew]);
-            });
+        File.FromWireFile = function (w) {
+            return new File(w.Path, w.Exists, w.Hash == "" ? undefined : w.Hash, w.Data == "" ? undefined : w.Data);
         };
-        FSNotify.prototype.Revert = function (path) {
-            var _this = this;
-            return this.source.Revert(path)
-                .then(function (fc) {
-                _this.Listeners.dispatch(path, fc);
-                return Promise.resolve(fc);
-            });
+        File.prototype.Name = function () {
+            return this.name;
         };
-        FSNotify.prototype.Sync = function (path) {
-            var _this = this;
-            return this.source.Sync(path)
-                .then(function (fcs) {
-                for (var _i = 0, fcs_1 = fcs; _i < fcs_1.length; _i++) {
-                    var fc = fcs_1[_i];
-                    _this.Listeners.dispatch(fc.Name, fc);
+        Object.defineProperty(File.prototype, "path", {
+            get: function () { return this.name; },
+            enumerable: true,
+            configurable: true
+        });
+        File.prototype.Exists = function () {
+            return Promise.resolve(this.exists);
+        };
+        File.prototype.Data = function () {
+            if (!this.exists) {
+                return Promise.resolve(undefined);
+            }
+            return Promise.resolve(this.data);
+        };
+        File.prototype.DataEvenIfDeleted = function () {
+            return Promise.resolve(this.data);
+        };
+        // It is possible to have the Hash and not the data. One might do this
+        // for the HEAD FS, for eg., since we are only really interested in the
+        // WD files content.
+        File.prototype.Hash = function () {
+            if (undefined == this.hash) {
+                if (undefined == this.data) {
+                    return undefined;
                 }
-                return Promise.resolve(fcs);
-            });
+                this.hash = SHA1(this.data);
+            }
+            return this.hash;
         };
-        //=============================================================
-        //======= all methods below this point simply pass their calls
-        //======= to the underlying FS, and don't require notification.
-        //=============================================================
-        FSNotify.prototype.RepoOwnerName = function () { return this.source.RepoOwnerName(); };
-        FSNotify.prototype.Stat = function (path) { return this.source.Stat(path); };
-        FSNotify.prototype.Read = function (path) { return this.source.Read(path); };
-        FSNotify.prototype.IsDirty = function (path) { return this.source.IsDirty(path); };
-        return FSNotify;
+        File.prototype.SetState = function (s) {
+            this.state = s;
+        };
+        File.prototype.SetStateCSS = function (el) {
+            SetFileStateCSS(el, this.state);
+        };
+        File.prototype.SetData = function (d, hash) {
+            if (hash === void 0) { hash = undefined; }
+            this.data = d;
+            // Recalc hash
+            if (undefined == d) {
+                this.hash = undefined;
+            }
+            else {
+                if (undefined == hash)
+                    this.hash = SHA1(this.data);
+                else
+                    this.hash = hash;
+            }
+        };
+        File.prototype.SetExists = function (e) {
+            this.exists = e;
+        };
+        File.prototype.IsDeleted = function () {
+            return this.state == FileState.Deleted;
+        };
+        return File;
     }());
 
-    var FSOverlay = (function () {
-        function FSOverlay(below, above) {
-            this.below = below;
-            this.above = above;
-            this.changes = new Set();
+    /**
+     * Base class implmentation of a File System.
+     */
+    var FSImpl = (function () {
+        function FSImpl(parent) {
+            this.parent = parent;
         }
-        FSOverlay.prototype.IsDirty = function (path) {
+        FSImpl.prototype.Move = function (from, to) {
             var _this = this;
-            return this.above.Stat(path)
-                .then(function (aboveStat) {
-                if (aboveStat == FileStat.Exists || aboveStat == FileStat.NotExist) {
-                    return Promise.resolve(false);
+            return this.Read(to)
+                .then(function (f) {
+                if (from == to) {
+                    return Promise.resolve(f);
                 }
-                if (aboveStat == FileStat.New) {
-                    return Promise.resolve(true);
+                if (f.exists) {
+                    console.log("FOUND " + to + ": ", f);
+                    return Promise.reject("The destination file " + to + " already exists.");
                 }
-                return _this.below.Stat(path)
-                    .then(function (belowStat) {
-                    switch (belowStat) {
-                        case FileStat.NotExist:
-                        //fallthrough
-                        case FileStat.Changed:
-                        //fallthrough
-                        case FileStat.New:
-                        //fallthrough
-                        case FileStat.NotExist:
-                            return Promise.resolve(true);
-                    }
-                    return Promise.all([_this.above.Read(path), _this.below.Read(path)])
-                        .then(function (fcs) {
-                        var aboveC = fcs[0], belowC = fcs[1];
-                        // console.log(`FSOverlay.IsDirty(${path}): aboveC =`);
-                        // console.log(aboveC);
-                        // console.log(`belowC = `);
-                        // console.log(belowC);
-                        // console.log(`Resolving aboveC.Content!=belowC.Content = `,
-                        // aboveC.Content != belowC.Content);
-                        if (!aboveC.Content) {
-                            return Promise.resolve(false);
-                        }
-                        return Promise.resolve(aboveC.Content != belowC.Content);
+                return _this.Read(from)
+                    .then(function (f) { return f.Data(); })
+                    .then(function (raw) { return _this.Write(to, raw); })
+                    .then(function (f) {
+                    return _this.Remove(from)
+                        .then(function (_) {
+                        return Promise.resolve(f);
                     });
                 });
             });
         };
-        FSOverlay.prototype.RepoOwnerName = function () {
-            return this.below.RepoOwnerName();
-        };
-        FSOverlay.prototype.Stat = function (path) {
+        FSImpl.prototype.Set = function (f) {
             var _this = this;
-            return this.above.Stat(path)
-                .then(function (s) {
-                if (FileStat.NotExist == s) {
-                    return _this.below.Stat(path);
+            return f.Exists()
+                .then(function (exists) {
+                if (exists) {
+                    return f.Data()
+                        .then(function (raw) { return _this.Write(f.Name(), raw); });
                 }
-                return Promise.resolve(s);
-            });
-        };
-        FSOverlay.prototype.Read = function (path) {
-            var _this = this;
-            return this.above.Stat(path)
-                .then(function (s) {
-                switch (s) {
-                    case FileStat.Exists:
-                        return _this.readAndCachePath(path);
-                    case FileStat.Changed:
-                    //fallthrough
-                    case FileStat.New:
-                    //fallthrough
-                    case FileStat.Deleted:
-                        return _this.above.Read(path);
-                    case FileStat.NotExist:
-                        return _this.below.Read(path)
-                            .then(function (c) {
-                            _this.above.Write(path, c.Stat, c.Content);
-                            return Promise.resolve(c);
-                        });
+                else {
+                    return _this.Remove(f.Name());
                 }
             });
         };
-        FSOverlay.prototype.readAndCachePath = function (path) {
+        FSImpl.prototype.Revert = function (path) {
             var _this = this;
-            return this.above.Read(path)
-                .then(function (fc) {
-                if (fc.Content) {
-                    return Promise.resolve(fc);
-                }
-                return _this.below.Read(path)
-                    .then(function (fc) {
-                    return _this.above.Write(path, fc.Stat, fc.Content);
-                });
+            if (null == this.Parent()) {
+                return Promise.reject("Cannot revert on a FS without a parent FS");
+            }
+            console.log("FSImpl.Revert : this.Parent().Name() = " + this.Parent().Name());
+            return this.Parent().Read(path)
+                .then(function (f) { return _this.Set(f); });
+        };
+        /**
+         * Parent filesystem, or the parent filesystem with the given
+         * name.
+         */
+        FSImpl.prototype.Parent = function (name) {
+            if (name === void 0) { name = ""; }
+            if (null == this.parent) {
+                return null;
+            }
+            if (("" == name) || (name == this.parent.Name())) {
+                return this.parent;
+            }
+            return this.parent.Parent(name);
+        };
+        /**
+         * setState sets the state of a File and returns a Promise with
+         * the File with its state set.
+         */
+        FSImpl.prototype.setState = function (f) {
+            return this.FileState(f.Name())
+                .then(function (fs) {
+                f.state = fs;
+                return Promise.resolve(f);
             });
         };
-        FSOverlay.prototype.Write = function (path, stat, content) {
-            var _this = this;
-            return this.above.Write(path, stat, content)
-                .then(function (fc) {
-                // console.log(`FSOverlay.Write(${path}): stat = ${stat}`);
-                if (!(fc.Stat == FileStat.Exists || fc.Stat == FileStat.NotExist)) {
-                    _this.changes.add(path);
-                }
-                return Promise.resolve(fc);
-            });
-        };
-        FSOverlay.prototype.Remove = function (path, stat) {
-            var _this = this;
-            return this.above.Remove(path, stat)
-                .then(function (fc) {
-                _this.changes.add(path);
-                return Promise.resolve(fc);
-            });
-        };
-        FSOverlay.prototype.Rename = function (fromPath, toPath) {
-            var _this = this;
-            return this.above.Rename(fromPath, toPath)
+        /**
+         * State returns the state of a file between this FS and this FS's parent.
+         */
+        FSImpl.prototype.FileState = function (path) {
+            if (!this.Parent()) {
+                return Promise.resolve(FileState.Undefined);
+            }
+            return Promise.all([this.Read(path), this.Parent().Read(path)])
                 .then(function (_a) {
-                var fOld = _a[0], fNew = _a[1];
-                console.log("FSOverlay.Rename.then : fOld, fNew = ", fOld, fNew);
-                _this.changes.add(fromPath);
-                _this.changes.add(toPath);
-                return Promise.resolve([fOld, fNew]);
-            });
-        };
-        FSOverlay.prototype.Revert = function (path) {
-            var _this = this;
-            // @TODO NEED TO CONSIDER THE ISSUES AROUND REVERTING
-            // VIA ORIGINALNAME...
-            return this.above.Read(path)
-                .then(function (c) {
-                return _this.below.Read(c.OriginalName());
-            })
-                .then(function (c) {
-                return _this.above.Write(path, c.Stat, c.Content);
-            })
-                .then(function (fc) {
-                // We're reverted path, so it's not longer
-                // changed.
-                _this.changes.delete(path);
-                return _this.above.Read(path);
-            });
-        };
-        FSOverlay.prototype.Sync = function (path) {
-            var _this = this;
-            // If we're given a path name, then we work with
-            // that path only. If we' are not given a path,
-            // we synchronised all changed files.
-            if (path) {
-                return this.above.Read(path)
-                    .then(function (fc) {
-                    switch (fc.Stat) {
-                        case FileStat.New:
-                        // fallthrough
-                        case FileStat.Changed:
-                            return _this.below.Write(fc.Name, fc.Stat, fc.Content);
-                        case FileStat.Deleted:
-                        // fallthrough
-                        case FileStat.NotExist:
-                            return _this.below.Remove(fc.Name, fc.Stat);
-                    }
-                    return Promise.resolve(fc);
-                })
-                    .then(function (fc) {
-                    return _this.above.Write(fc.Name, fc.Stat, fc.Content);
-                })
-                    .then(function (fc) {
-                    _this.changes.delete(path);
-                    console.log("Returning from FSOverlay single-file sync: fc = ", fc);
-                    return Promise.resolve([fc]);
-                });
-            }
-            // We do two passes through our changes list, first
-            // doing all Writes then doing all Deletes. Therefore,
-            // if any writes fail, the deletes aren't executed, which
-            // can be valuable when managing renames.
-            var writePromises = new Array();
-            var _loop_1 = function (p) {
-                writePromises.push(this_1.above.Read(p)
-                    .then(function (fc) {
-                    if (fc.Stat == FileStat.New || fc.Stat == FileStat.Changed) {
-                        return _this.below.Write(p, fc.Stat, fc.Content);
-                    }
-                    else {
-                        return Promise.resolve(fc);
-                    }
-                })
-                    .then(function (fc) {
-                    if (fc) {
-                        return _this.above.Write(p, fc.Stat, fc.Content);
-                    }
-                    else {
-                        return Promise.resolve(fc);
-                    }
-                }));
-            };
-            var this_1 = this;
-            for (var _i = 0, _a = this.changes; _i < _a.length; _i++) {
-                var p = _a[_i];
-                _loop_1(p);
-            }
-            return Promise.all(writePromises)
-                .then(function (fcsP) {
-                var removePromises = [];
-                for (var _i = 0, fcsP_1 = fcsP; _i < fcsP_1.length; _i++) {
-                    var fc = fcsP_1[_i];
-                    if (fc.Stat == FileStat.Deleted || fc.Stat == FileStat.NotExist) {
-                        removePromises.push(_this.below.Remove(fc.Name)
-                            .then(function (fc) {
-                            return _this.above.Remove(fc.Name, fc.Stat);
-                        }));
-                    }
-                    else {
-                        removePromises.push(Promise.resolve(fc));
-                    }
+                var top = _a[0], bottom = _a[1];
+                console.log("FileState " + path + " : top.hash=" + top.hash + ", bottom.hash=" + bottom.hash);
+                var fs = FileState.Unchanged;
+                if (top.exists && !bottom.exists) {
+                    fs = FileState.New;
                 }
-                return Promise.all(removePromises);
-            })
-                .then(function (fcs) {
-                // We're synced, so there are not more changes
-                _this.changes.clear();
-                return Promise.resolve(fcs);
+                else if ((!top.exists) && bottom.exists) {
+                    fs = FileState.Deleted;
+                }
+                else if (!(top.exists || bottom.exists)) {
+                    fs = FileState.Absent;
+                }
+                else if (top.Hash() != bottom.Hash()) {
+                    fs = FileState.Changed;
+                }
+                return Promise.resolve(fs);
             });
         };
-        return FSOverlay;
+        return FSImpl;
     }());
 
     /**
-     * FSRemote is a FileSystem stored on a remote
-     * server.
+     * The Memory-based filesystem on this browser right now.
+     * Not yet synced to the lower FS.
      */
-    var FSRemote = (function () {
-        function FSRemote(repoOwner, repoName) {
-            this.repoOwner = repoOwner;
-            this.repoName = repoName;
+    var MemFS = (function (_super) {
+        tslib_1.__extends(MemFS, _super);
+        function MemFS(key, parent) {
+            var _this = _super.call(this, parent) || this;
+            _this.key = key;
+            _this.cache = new Map();
+            return _this;
         }
-        FSRemote.prototype.Stat = function (path) {
-            return EBW.API()
-                .FileExists(this.repoOwner, this.repoName, path)
-                .then(function (_a) {
-                var exists = _a[0];
-                // Remote system is definitive
-                return Promise.resolve(exists ? FileStat.Exists : FileStat.NotExist);
-            });
-        };
-        FSRemote.prototype.Read = function (path) {
-            return EBW.API()
-                .GetFileString(this.repoOwner, this.repoName, path)
-                .then(function (_a) {
-                var content = _a[0];
-                return new FileContent(path, FileStat.Exists, content);
-            });
-        };
-        FSRemote.prototype.Write = function (path, stat, content) {
-            if ('undefined' == typeof content) {
-                return Promise.reject("FSRemote cannot write file " + path + " without content.");
+        MemFS.prototype.getCache = function (path) {
+            if (this.cache.has(path)) {
+                // let f = this.cache.get(path);
+                // return f;
+                return this.cache.get(path);
             }
-            return EBW.API()
-                .UpdateFile(this.repoOwner, this.repoName, path, content)
-                .then(function () {
-                return new FileContent(path, FileStat.Exists, content);
-            });
+            return undefined;
         };
-        FSRemote.prototype.Rename = function (fromPath, toPath) {
+        MemFS.prototype.setCache = function (f) {
+            this.cache.set(f.name, f);
+        };
+        MemFS.prototype.clearCache = function (path) {
+            if (typeof path == 'string') {
+                this.cache.delete(path);
+            }
+            else {
+                this.cache.delete(path.name);
+            }
+        };
+        MemFS.prototype.Name = function () { return "mem"; };
+        MemFS.prototype.Read = function (path) {
             var _this = this;
-            return EBW.API().RenameFile(this.repoOwner, this.repoName, fromPath, toPath)
-                .then(function () {
-                return _this.Read(toPath)
-                    .then(function (fNew) {
-                    var fOld = new FileContent(fromPath, FileStat.NotExist);
-                    return Promise.resolve([fOld, fNew]);
+            var f = this.getCache(path);
+            if (undefined != f) {
+                return Promise.resolve(f);
+            }
+            if (null == this.parent) {
+                /* TODO: Should this return a 'FileNotExists' file? */
+                return Promise.resolve(undefined);
+            }
+            return this.parent
+                .Read(path)
+                .then(function (f) {
+                _this.setCache(f);
+                return _this.setState(f);
+            });
+        };
+        MemFS.prototype.Write = function (path, data) {
+            var _this = this;
+            return this.setState(new File(path, true, undefined, data))
+                .then(function (f) {
+                _this.setCache(f);
+                return _this.setState(f);
+            });
+        };
+        MemFS.prototype.Remove = function (path) {
+            var _this = this;
+            return this.Read(path)
+                .then(function (f) {
+                f.exists = false;
+                _this.setCache(f);
+                return _this.setState(f);
+            });
+        };
+        // Revert(path:string):Promise<File> {
+        // 	// Use the FSImpl implementation of Revert, which will
+        // 	// read from Parent and write to us.
+        // 	return this.super.Revert(path)
+        // 	.then(
+        // 		(f:File)=>{
+        // 			this.setCache(f);
+        // 			return this.setState(f);
+        // 		});
+        // }
+        MemFS.prototype.Sync = function (path) {
+            var _this = this;
+            var f = this.getCache(path);
+            if (undefined == f) {
+                return Promise.reject("Cannot sync file " + path + " that doesn't exist in FileSystem");
+            }
+            if (undefined == this.parent) {
+                return Promise.reject("Cannot sync on a FileSystem that doesn't have a parent");
+            }
+            if (f.Exists()) {
+                return f.Data().then(function (data) {
+                    return _this.parent.Write(path, data);
                 });
+            }
+            return this.parent.Remove(path)
+                .then(function (_) { return _this.setState(f); });
+        };
+        return MemFS;
+    }(FSImpl));
+
+    var WorkingDirFS = (function (_super) {
+        tslib_1.__extends(WorkingDirFS, _super);
+        function WorkingDirFS(context, parent) {
+            var _this = _super.call(this, parent) || this;
+            _this.context = context;
+            return _this;
+        }
+        WorkingDirFS.prototype.Name = function () { return "working"; };
+        WorkingDirFS.prototype.Read = function (path) {
+            var _this = this;
+            return this.context.API()
+                .ReadFileData(this.context.RepoOwner, this.context.RepoName, "our-wd", path)
+                .then(function (_a) {
+                var w = _a[0];
+                var f = File.FromWireFile(w);
+                return _this.setState(f);
             });
         };
-        FSRemote.prototype.Remove = function (path, stat) {
-            return EBW.API().RemoveFile(this.repoOwner, this.repoName, path)
-                .then(function () {
-                return Promise.resolve(new FileContent(path, FileStat.NotExist));
+        WorkingDirFS.prototype.Write = function (path, data) {
+            var _this = this;
+            return this.context.API()
+                .WriteAndStageFile(this.context.RepoOwner, this.context.RepoName, path, data).then(function (_a) {
+                var w = _a[0];
+                return _this.setState(File.FromWireFile(w));
             });
         };
-        FSRemote.prototype.Sync = function (path) {
-            return Promise.reject("FSRemote doesn't support Sync()");
+        WorkingDirFS.prototype.Remove = function (path) {
+            var _this = this;
+            return this.context.API()
+                .RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
+                .then(function () { return _this.setState(new File(path, false)); });
         };
-        FSRemote.prototype.RepoOwnerName = function () {
-            return [this.repoOwner, this.repoName];
+        WorkingDirFS.prototype.Sync = function (path) {
+            var _this = this;
+            // Sync'ing a WorkingDir is adding to the Index
+            return this.context.API()
+                .StageFile(this.context.RepoOwner, this.context.RepoName, path)
+                .then(function () { return _this.Read(path); });
         };
-        FSRemote.prototype.Revert = function (path) {
-            return Promise.reject("FSRemove doesn't support Revert");
+        WorkingDirFS.prototype.Revert = function (path) {
+            return this.context.API()
+                .RevertFile(this.context.RepoOwner, this.context.RepoName, path)
+                .then(function (_a) {
+                var w = _a[0];
+                return setState(File.FromWireFile(w));
+            });
         };
-        FSRemote.prototype.IsDirty = function (path) { return Promise.reject("FSRemote doesn't support IsDirty"); };
-        return FSRemote;
-    }());
+        return WorkingDirFS;
+    }(FSImpl));
 
-    var store = (function () {
-        function store() {
-            this.s = new Map();
+    /**
+     * NotifyFS is transparent, but notifies listeners of any changes to
+     * a path.
+     */
+    var NotifyFS = (function (_super) {
+        tslib_1.__extends(NotifyFS, _super);
+        function NotifyFS(parent) {
+            var _this = _super.call(this, parent) || this;
+            _this.parent = parent;
+            _this.Listeners = new signals.Signal();
+            return _this;
         }
-        store.prototype.clear = function () {
-            this.s.clear();
-        };
-        store.prototype.removeItem = function (k) {
-            this.s.delete(k);
-        };
-        store.prototype.getItem = function (k) {
-            // console.log(`store::getItem(${k}) = `, this.s.get(k));
-            return this.s.get(k);
-        };
-        store.prototype.setItem = function (k, v) {
-            // console.log(`store::setItem ${k} = ${v}`);
-            this.s.set(k, v);
-        };
-        return store;
-    }());
-    var singleton;
-    function Store() {
-        if ('undefined' != typeof sessionStorage) {
-            return sessionStorage;
-        }
-        if (!singleton) {
-            singleton = new store();
-        }
-        return singleton;
-    }
-
-    var FSSession = (function () {
-        function FSSession(name, repoOwner, repoName, defaultRemoveStat) {
-            if (defaultRemoveStat === void 0) { defaultRemoveStat = FileStat.Deleted; }
-            this.name = name;
-            this.repoOwner = repoOwner;
-            this.repoName = repoName;
-            this.defaultRemoveStat = defaultRemoveStat;
-            this.key = encodeURIComponent(this.name) + ":" +
-                encodeURIComponent(this.repoOwner) + ":" +
-                encodeURIComponent(this.repoName) + ":";
-        }
-        FSSession.prototype.get = function (path) {
-            var js = Store().getItem(this.key + path);
-            if (!js) {
-                return undefined;
-            }
-            return FileContent.FromJS(js);
-        };
-        FSSession.prototype.set = function (c) {
-            if (c.Stat == FileStat.NotExist) {
-                this.delete(c.Name);
-                return;
-            }
-            Store().setItem(this.key + c.Name, c.Serialize());
-        };
-        FSSession.prototype.delete = function (path) {
-            Store().removeItem(this.key + path);
-        };
-        FSSession.prototype.Stat = function (path) {
-            var c = this.get(path);
-            return Promise.resolve(c ? c.Stat : FileStat.NotExist);
-        };
-        FSSession.prototype.Read = function (path) {
-            var c = this.get(path);
-            if (!c) {
-                return Promise.reject(path + " does not exist");
-            }
-            return Promise.resolve(c);
-        };
-        FSSession.prototype.Write = function (path, stat, content) {
-            var f = new FileContent(path, stat, content);
-            this.set(f);
+        NotifyFS.prototype.notify = function (f) {
+            this.Listeners.dispatch(f);
             return Promise.resolve(f);
         };
-        FSSession.prototype.Remove = function (path, stat) {
-            var c = this.get(path);
-            if (!c) {
-                console.log("Tried to remove " + path + " which does not appear to exist");
-                return Promise.resolve(new FileContent(path, FileStat.NotExist));
-            }
-            if (!stat) {
-                stat = this.defaultRemoveStat;
-            }
-            var fc = new FileContent(path, stat, c.Content);
-            this.set(fc);
-            return Promise.resolve(fc);
+        NotifyFS.prototype.Name = function () { return this.parent.Name(); };
+        NotifyFS.prototype.Read = function (path) {
+            return this.parent.Read(path);
         };
-        FSSession.prototype.Rename = function (fromPath, toPath) {
-            if (fromPath == toPath) {
-                return Promise.reject("Renaming isn't changing name");
-            }
-            var f = this.get(fromPath);
-            var t = this.get(toPath);
-            if (!f) {
-                return Promise.reject(fromPath + " does not exist");
-            }
-            if (t) {
-                return Promise.reject(toPath + " already exists");
-            }
-            t = new FileContent(toPath, FileStat.Changed, f.Content, f);
-            this.set(t);
-            f = new FileContent(fromPath, this.defaultRemoveStat, f.Content);
-            this.set(f);
-            return Promise.resolve([f, t]);
+        NotifyFS.prototype.Write = function (path, data) {
+            var _this = this;
+            return this.parent.Write(path, data)
+                .then(function (f) { return _this.notify(f); });
         };
-        FSSession.prototype.Sync = function (path) {
-            return Promise.reject("FSSession doesn't support Sync");
+        NotifyFS.prototype.Remove = function (path) {
+            var _this = this;
+            return this.parent.Remove(path)
+                .then(function (f) { return _this.notify(f); });
         };
-        FSSession.prototype.RepoOwnerName = function () {
-            return [this.repoOwner, this.repoName];
+        NotifyFS.prototype.Sync = function (path) {
+            var _this = this;
+            return this.parent.Sync(path)
+                .then(function (f) { return _this.notify(f); });
         };
-        FSSession.prototype.Revert = function (path) {
-            return Promise.reject("FSSession doesn't support Revert");
+        NotifyFS.prototype.Revert = function (path) {
+            var _this = this;
+            return this.parent.Revert(path)
+                .then(function (f) { return _this.notify(f); });
         };
-        FSSession.prototype.IsDirty = function (path) { return Promise.reject("FSSession doesn't support IsDirty"); };
-        return FSSession;
-    }());
+        // Notify is a transparent FS, so the call to parent needs to actually
+        // be the call to its parent's parent
+        NotifyFS.prototype.Parent = function (name) {
+            if (name === void 0) { name = ""; }
+            return this.parent.Parent(name);
+        };
+        return NotifyFS;
+    }(FSImpl));
 
-    /**
-     * FSReadCache is PURELY a session storage based
-     * cache over a resource-intensive remote cache. It
-     * caches file existence and file reads, but all
-     * writes, renames and removes are handled by the remote
-     * content system. It doesn't track any sense of
-     * Dirty file state.
-     *
-     * Because FSReadCache is purely a READ Cache, it cannot
-     * do anything like revert, since that requires the underlying
-     * FS to handle revert, so Revert is simply passed to the
-     * underlying FS.
-     */
-    var FSReadCache = (function () {
-        function FSReadCache(source) {
-            this.source = source;
-            var _a = this.source.RepoOwnerName(), owner = _a[0], name = _a[1];
-            this.cache = new FSSession("source-cache", owner, name);
+    // ReadCacheFS is a read-only cache between an underlying FS and a session based
+    // cache. All Writes, Syncs, etc are passed transparently through. For all intents and
+    // purposes - except caching - it is transparent.
+    var ReadCacheFS = (function (_super) {
+        tslib_1.__extends(ReadCacheFS, _super);
+        function ReadCacheFS(key, parent) {
+            var _this = _super.call(this, parent) || this;
+            _this.key = key;
+            return _this;
         }
-        FSReadCache.prototype.RepoOwnerName = function () {
-            return this.source.RepoOwnerName();
+        ReadCacheFS.prototype.cacheKey = function (path) {
+            return this.key + ":" + path;
         };
-        FSReadCache.prototype.Read = function (path) {
-            var _this = this;
-            return this.cache.Stat(path)
-                .then(function (s) {
-                switch (s) {
-                    case FileStat.Exists:
-                        return _this.readAndCachePath(path);
-                    case FileStat.Changed:
-                    //fallthrough
-                    case FileStat.New:
-                    //fallthrough
-                    case FileStat.Deleted:
-                        return _this.cache.Read(path);
-                    case FileStat.NotExist:
-                        return _this.source.Read(path)
-                            .then(function (c) {
-                            _this.cache.Write(path, c.Stat, c.Content);
-                            return Promise.resolve(c);
-                        });
-                }
-            });
+        ReadCacheFS.prototype.clearCache = function (path) {
+            sessionStorage.removeItem(this.cacheKey(path));
         };
-        FSReadCache.prototype.readAndCachePath = function (path) {
-            var _this = this;
-            return this.cache.Read(path)
-                .then(function (fc) {
-                if (fc.Content) {
-                    return Promise.resolve(fc);
-                }
-                return _this.source.Read(path)
-                    .then(function (fc) {
-                    return _this.cache.Write(path, fc.Stat, fc.Content);
-                });
-            });
+        ReadCacheFS.prototype.setCache = function (f) {
+            sessionStorage.setItem(this.cacheKey(f.Name()), f.Serialize());
+            return Promise.resolve(f);
         };
-        FSReadCache.prototype.Remove = function (path, stat) {
-            var _this = this;
-            return this.source.Remove(path, stat).then(function (fc) {
-                console.log("ReadCache.Remove received " + path + ": stat = ", fc.Stat);
-                return _this.cache.Remove(path, fc.Stat)
-                    .then(function (rfc) {
-                    console.log("ReadCache.Remove returning ", rfc);
-                    return Promise.resolve(rfc);
-                });
-            });
-        };
-        FSReadCache.prototype.Rename = function (fromPath, toPath) {
-            var _this = this;
-            return this.source.Rename(fromPath, toPath).then(function (_a) {
-                var fOld = _a[0], fNew = _a[1];
-                return _this.cache.Write(toPath, fNew.Stat, fNew.Content)
-                    .then(function (_) {
-                    return _this.cache.Remove(fromPath, fOld.Stat);
-                })
-                    .then(function (_) {
-                    return Promise.resolve([fOld, fNew]);
-                });
-            });
-        };
-        FSReadCache.prototype.Revert = function (path) {
-            var _this = this;
-            return this.source.Revert(path)
-                .then(function (c) {
-                return _this.cache.Write(c.Name, c.Stat, c.Content);
-            });
-        };
-        FSReadCache.prototype.Stat = function (path) {
-            var _this = this;
-            return this.cache.Stat(path)
-                .then(function (s) {
-                if (FileStat.NotExist == s) {
-                    return _this.source.Stat(path);
-                }
-                return Promise.resolve(s);
-            });
-        };
-        FSReadCache.prototype.Sync = function (path) {
-            return this.source.Sync(path);
-        };
-        FSReadCache.prototype.Write = function (path, stat, content) {
-            var _this = this;
-            if ('undefined' == typeof content) {
-                return this.cache.Write(path, stat);
+        ReadCacheFS.prototype.getCache = function (path) {
+            var js = sessionStorage.getItem(this.cacheKey(path));
+            if (null == js) {
+                return undefined;
             }
-            return this.source.Write(path, stat, content).then(function (fc) {
-                return _this.cache.Write(fc.Name, fc.Stat, fc.Content);
-            });
+            return File.Deserialize(js);
         };
-        FSReadCache.prototype.IsDirty = function (path) { return Promise.reject("FSReadCache doesn't support IsDirty"); };
-        return FSReadCache;
-    }());
+        ReadCacheFS.prototype.Name = function () { return this.parent.Name(); };
+        ReadCacheFS.prototype.Read = function (path) {
+            var _this = this;
+            var f = this.getCache(path);
+            if (undefined != f) {
+                return Promise.resolve(f);
+            }
+            return this.parent.Read(path)
+                .then(function (f) { return _this.setCache(f); });
+        };
+        ReadCacheFS.prototype.Write = function (path, data) {
+            var _this = this;
+            return this.parent.Write(path, data)
+                .then(function (f) { return _this.setCache(f); });
+        };
+        // A transparent FS, so the call to parent needs to actually
+        // be the call to its parent's parent
+        ReadCacheFS.prototype.Parent = function (name) {
+            if (name === void 0) { name = ""; }
+            return this.parent.Parent(name);
+        };
+        ReadCacheFS.prototype.Remove = function (path) {
+            var _this = this;
+            return this.parent.Remove(path)
+                .then(function (f) { return _this.setCache(f); });
+        };
+        ReadCacheFS.prototype.Sync = function (path) {
+            var _this = this;
+            return this.parent.Sync(path)
+                .then(function (f) { return _this.setCache(f); });
+        };
+        ReadCacheFS.prototype.Revert = function (path) {
+            var _this = this;
+            return this.parent.Revert(path)
+                .then(function (f) { return _this.setCache(f); });
+        };
+        return ReadCacheFS;
+    }(FSImpl));
 
     /// <reference path="Signal.ts" />
     /*
@@ -3551,9 +3328,6 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             this.removed = new Signal();
             this.added = new Signal();
             this.children = new Array();
-            // if (null!=parent) {
-            // 	this.changed.add( (...paramsArr: any[])=>parent.changed.dispatch(this.arguments) );
-            // }
         }
         Node.prototype.depth = function () {
             if (null == this.parent) {
@@ -3584,7 +3358,16 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             return a;
         };
         Node.prototype.path = function () {
-            return this.parents().map(function (n) { return n.name; }).join("/");
+            return '/' + this.parents().map(function (n) { return n.name; }).join("/");
+        };
+        /**
+         * root returns the root node of the tree in which this node is located
+         */
+        Node.prototype.root = function () {
+            if (this.parent) {
+                return this.parent.root();
+            }
+            return this;
         };
         Node.prototype.add = function (n) {
             // TODO: SORT CHILDREN
@@ -3592,6 +3375,13 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             n.parent = this;
             // TODO: Notify listeners of the new child - NODE_ADDED
             this.added.dispatch(n);
+        };
+        /**
+         * find returns the Node for the given path from the root of
+         * this Node's filesystem.
+         */
+        Node.prototype.find = function (path) {
+            return this.root().recurse_path(Node.path_array(path), undefined);
         };
         Node.prototype.remove = function () {
             var i = this.parent.children.indexOf(this);
@@ -3605,21 +3395,12 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         Node.prototype.change = function () {
             this.changed.dispath(this);
         };
-        return Node;
-    }());
-
-    var FileSystem = (function () {
-        function FileSystem(root) {
-            this.root = root;
-        }
-        FileSystem.prototype.NodeFromPath = function (path) {
-            return this.from_path_recurse(this.path_array(path), this.root, null);
+        Node.prototype.NodeFromPath = function (path) {
+            return this.root().recurse_path(Node.path_array(path), null);
         };
-        FileSystem.prototype.PathFromNode = function (node) {
-            return '/' + node.parents().map(function (n) { return n.name; }).join("/");
-        };
-        FileSystem.prototype.FindOrCreateFileNode = function (path, data) {
-            return this.from_path_recurse(this.path_array(path), this.root, function (path, parent) {
+        Node.prototype.FindOrCreateFileNode = function (path, data) {
+            if (data === void 0) { data = undefined; }
+            return this.root().recurse_path(Node.path_array(path), function (path, parent) {
                 var nt = NodeType.FILE;
                 if (1 < path.length) {
                     nt = NodeType.DIR;
@@ -3629,65 +3410,85 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 return n;
             });
         };
-        FileSystem.prototype.path_array = function (path) {
+        Node.prototype.FindFileNode = function (path) {
+            return this.root().recurse_path(Node.path_array(path));
+        };
+        Node.path_array = function (path) {
             var p = path.split("/");
             if ("" == p[0]) {
                 p = p.slice(1);
             }
             return p;
         };
-        FileSystem.prototype.from_path_recurse = function (path, n, handler) {
-            var c = n.child(path[0]);
+        Node.prototype.recurse_path = function (path, handler) {
+            var c = this.child(path[0]);
             if (undefined == c && handler) {
-                c = handler(path, n);
+                c = handler(path, this);
             }
             if (undefined == c || path.length == 1) {
                 return c;
             }
-            return this.from_path_recurse(path.slice(1), c, handler);
+            return c.recurse_path(path.slice(1), handler);
         };
-        return FileSystem;
+        return Node;
     }());
 
+    /**
+     * FileSystemView displays a FileSystem, with each node either a Directory or a
+     * FileView itself.
+     * When a file is clicked, an `ebw-file-clicked` event will be dispatched from the
+     * parent element.
+     */
     var FileSystemView = (function () {
-        function FileSystemView(context, FS, parent, ignoreFunction, notifier) {
+        function FileSystemView(context, root, parent, ignoreFunction, notifyFS) {
             this.context = context;
-            this.FS = FS;
+            this.root = root;
             this.parent = parent;
             this.ignoreFunction = ignoreFunction;
-            this.files = new Map();
-            this.FS.root.added.add(this.nodeAdded, this);
-            notifier.Listeners.add(this.notifyFileChange, this);
+            this.notifyFS = notifyFS;
+            this.views = new Map();
+            this.root.added.add(this.nodeAdded, this);
+            this.notifyFS.Listeners.add(this.notifyFileChange, this);
         }
         FileSystemView.prototype.nodeAdded = function (n) {
             new NodeView(this, n, this.parent, this.ignoreFunction);
         };
-        FileSystemView.prototype.closedKeyForNode = function (n) {
-            return this.context.RepoOwner + ":" + this.context.RepoName + ":" + this.FS.PathFromNode(n)
+        FileSystemView.prototype.prepopulate = function (paths) {
+            for (var _i = 0, paths_1 = paths; _i < paths_1.length; _i++) {
+                var p = paths_1[_i];
+                this.root.FindOrCreateFileNode(p);
+            }
+        };
+        FileSystemView.prototype.notifyFileChange = function (f) {
+            var view = this.views[f.path];
+            if (view) {
+                view.notifyFileChange(this.notifyFS, f);
+            }
+        };
+        FileSystemView.prototype.apply = function (path, f) {
+            var v = this.views[path];
+            if (v)
+                f(v);
+        };
+        FileSystemView.prototype.mapView = function (n) {
+            this.views[n.path()] = n;
+        };
+        FileSystemView.prototype.keyForNode = function (n) {
+            return this.context.RepoOwner + ":" + this.context.RepoName + ":" + n.path()
                 + ".fsv.closed";
         };
         FileSystemView.prototype.isClosed = function (node) {
-            var v = window.localStorage.getItem(this.closedKeyForNode(node));
+            var v = window.localStorage.getItem(this.keyForNode(node));
             return "t" == v;
         };
         FileSystemView.prototype.setClosed = function (node, closed) {
-            var key = this.closedKeyForNode(node);
+            var key = this.keyForNode(node);
             if (closed) {
                 window.localStorage.setItem(key, "t");
             }
             else {
                 window.localStorage.removeItem(key);
             }
-        };
-        FileSystemView.prototype.notifyFileChange = function (path, fc) {
-            console.log("FileSystemView.notifyFileChanged(path=" + path + ")");
-            var node = this.files[path];
-            if (node) {
-                node.notifyFileChange(fc);
-            }
-        };
-        FileSystemView.prototype.mapView = function (n) {
-            this.files[n.path()] = n;
         };
         return FileSystemView;
     }());
@@ -3715,10 +3516,10 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 _this.el.addEventListener("click", function (evt) {
                     evt.preventDefault();
                     evt.stopPropagation();
-                    _this.el.dispatchEvent(new CustomEvent("ebw-FileClicked", {
+                    _this.el.dispatchEvent(new CustomEvent("ebw-file-clicked", {
                         bubbles: true,
                         cancelable: true,
-                        detail: _this.node,
+                        detail: _this.path(),
                     }));
                 });
             }
@@ -3737,9 +3538,14 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         NodeView.prototype.childAdded = function (n) {
             new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
         };
-        NodeView.prototype.notifyFileChange = function (fc) {
-            console.log("notifyFileChange received in NodeView for ", this.node.path());
-            SetFileStatCSS(this.el, fc.Stat);
+        NodeView.prototype.notifyFileChange = function (fs, f) {
+            f.SetStateCSS(this.el);
+        };
+        NodeView.prototype.notifyEditing = function (b) {
+            this.el.classList.remove("editing-in-progress");
+            if (b) {
+                this.el.classList.add("editing-in-progress");
+            }
         };
         NodeView.prototype.path = function () {
             return this.node.path();
@@ -3749,186 +3555,80 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
 
     // import {Directory} from './Directory';
     /**
-     * FSFileTree shows a list of the files in the
-     * given filesystem. This is a UI Element that connects to an FS via a FSNotify
+     * FileSystemConnector links a view of the FileSystem as implemented
+     * by a Tree/FileSystemView2 with the RepoFileEditorCM, ensuring that
+     * when a `ebw-file-clicked` event is received from the FileSystemView,
+     * the editor begins editing the file. Likewise, any events it the
+     * FS filesystem will be reported to the FileSystemView.
      */
-    var FSFileTree = (function () {
-        function FSFileTree(context, parent, editor, FS, ignoreFunction) {
+    var FileSystemConnector = (function () {
+        function FileSystemConnector(context, parent, editor, FS, ignoreFunction, filesJson, filesAndHashes) {
             var _this = this;
             this.context = context;
             this.parent = parent;
             this.editor = editor;
             this.FS = FS;
             this.ignoreFunction = ignoreFunction;
+            this.filesJson = filesJson;
             this.api = EBW.API();
             this.FS.Listeners.add(this.FSEvent, this);
             this.root = new Node(null, "", NodeType.DIR, null);
-            this.FileSystem = new FileSystem(this.root);
-            this.View = new FileSystemView(this.context, this.FileSystem, parent, this.ignoreFunction, this.FS);
-            parent.addEventListener("ebw-FileClicked", function (evt) {
-                var n = evt.detail;
-                var fc = n.data;
-                _this.FS.Read(fc.Name)
-                    .then(function (fc) {
-                    _this.editor.setFile(new FSFileEdit(fc, _this.FS));
-                });
+            this.View = new FileSystemView(this.context, this.root, parent, this.ignoreFunction, this.FS);
+            parent.addEventListener("ebw-file-clicked", function (evt) {
+                var path = evt.detail;
+                _this.FS.Read(path)
+                    .then(function (f) {
+                    _this.editor.setFile(f);
+                })
+                    .catch(EBW.Error);
             });
+            this.View.prepopulate(filesAndHashes.map(function (_a) {
+                var p = _a[0], h = _a[1];
+                return p;
+            }));
+            this.editor.Listeners.add(this.EditorEvent, this);
         }
-        FSFileTree.prototype.FSEvent = function (path, fc) {
-            if (!fc) {
-                debugger;
+        FileSystemConnector.prototype.EditorEvent = function (evt) {
+            var f = evt.File();
+            if (!f)
+                return;
+            var v = this.root.FindOrCreateFileNode(f.Name());
+            if (!v) {
+                console.error("FileSystemConnector.EditorEvent: Failed to find a NodeView for file ", f.Name());
+                return;
             }
-            switch (fc.Stat) {
-                case FileStat.New:
+            var editing = true;
+            switch (evt.Event()) {
+                case EditorEvents.Saved:
+                case EditorEvents.Changed:
+                case EditorEvents.Loaded:
+                    editing = true;
+                    break;
+                case EditorEvents.Unloaded:
+                    editing = false;
+                    break;
+            }
+            this.View.apply(f.Name(), function (v) { return v.notifyEditing(editing); });
+        };
+        FileSystemConnector.prototype.FSEvent = function (f) {
+            console.log("FileSystemConnector.FSEvent, f=", f);
+            switch (f.state) {
+                case FileState.New:
                 //	fallthrough
-                case FileStat.Exists:
+                case FileState.Unchanged:
                 // fallthrough
-                case FileStat.Changed:
-                    this.FileSystem.FindOrCreateFileNode(path, fc);
-                    // if (!f) {
-                    // 	this.newFile(fc);
-                    // }
+                case FileState.Changed:
+                    this.root.FindOrCreateFileNode(f.path);
                     break;
-                case FileStat.Deleted:
-                    // Nothing to do - filelist_file will handle
-                    // css style change.
+                case FileState.Deleted:
+                    // Nothing to do - deletion is a CSS issue
                     break;
-                case FileStat.NotExist:
+                case FileState.NotExist:
                     break;
             }
         };
-        FSFileTree.prototype.newFile = function (fc) {
-            /*
-            let f = new FSFileList_File(this.parent, fc, this.FS, {
-                clickFile: (evt:any)=>{
-                    this.FS.Read(fc.Name)
-                    .then(
-                        (fc:FileContent)=>{
-                            let edit = new FSFileEdit(fc, this.FS);
-                            this.editor.setFile(edit);
-                        });
-                }
-            },
-            this.ignoreFunction);
-            this.files.set(fc.Name, f);
-            return f;
-            */
-        };
-        return FSFileTree;
+        return FileSystemConnector;
     }());
-
-    var File = (function () {
-        function File(parent, name) {
-            this._parent = parent;
-            this._name = name;
-        }
-        File.FromJS = function (parent, js) {
-            return new File(parent, js.N);
-        };
-        File.prototype.Debug = function () {
-            console.log(this.Path());
-        };
-        File.prototype.Path = function () {
-            var p = this._parent ? this._parent.Path() : "";
-            return p + this._name;
-        };
-        File.prototype.IsFile = function () {
-            return true;
-        };
-        File.prototype.Name = function () {
-            return this._name;
-        };
-        return File;
-    }());
-
-    /**
-     * Directory models a directory on the server. It needs to know
-     * its own directory name, and the link to its parent so that it
-     * can construct its full name on the parent.
-     */
-    var Directory = (function () {
-        function Directory(parent, name) {
-            this._parent = parent;
-            this._name = name;
-            this.Files = [];
-        }
-        Directory.FromJS = function (parent, js) {
-            var d = new Directory(parent, js.N);
-            for (var _i = 0, _a = js.F; _i < _a.length; _i++) {
-                var f = _a[_i];
-                var e = void 0;
-                if (f.F) {
-                    e = Directory.FromJS(d, f);
-                    d.Files.push(e);
-                }
-                else {
-                    e = File.FromJS(d, f);
-                    d.Files.push(e);
-                }
-            }
-            return d;
-        };
-        Directory.prototype.Debug = function () {
-            console.log(this.Path());
-            for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
-                var f = _a[_i];
-                f.Debug();
-            }
-        };
-        Directory.prototype.Path = function () {
-            if (this._parent) {
-                return this._parent.Path() + this._name + '/';
-            }
-            return '';
-        };
-        Directory.prototype.Name = function () {
-            return this._name;
-        };
-        Directory.prototype.IsFile = function () {
-            return false;
-        };
-        Directory.prototype.FileNamesOnly = function (filter) {
-            var fs = [];
-            for (var _i = 0, _a = this.Files; _i < _a.length; _i++) {
-                var f = _a[_i];
-                if (f.IsFile()) {
-                    var p = f.Path();
-                    if (!filter || filter(p)) {
-                        fs.push(p);
-                    }
-                }
-                else {
-                    fs = fs.concat(f.FileNamesOnly(filter));
-                }
-            }
-            return fs.sort();
-        };
-        return Directory;
-    }());
-
-    // FSPrimeFromJS adds files to the FileSystem from the 
-    // Directory and File objects serialized in the given js object.
-    // The FileSystem must be able to accomodate empty content
-    // Writes.
-    function FSPrimeFromJS(fs, js) {
-        var d = Directory.FromJS(undefined, js);
-        var filter = function (n) {
-            if ("." == n.substr(0, 1)) {
-                return false;
-            }
-            if ("_output" == n.substr(0, 7)) {
-                return false;
-            }
-            if ("_html" == n.substr(0, 5)) {
-                return false;
-            }
-            return true;
-        };
-        for (var _i = 0, _a = d.FileNamesOnly(filter); _i < _a.length; _i++) {
-            var f = _a[_i];
-            fs.Write(f, FileStat.Exists);
-        }
-    }
 
     /**
      * RepoEditorPage is the JS controller for the page that allows
@@ -3936,25 +3636,27 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
      *
      */
     var RepoEditorPage = (function () {
-        function RepoEditorPage(context, filesList, filesJson, proseIgnoreFunction) {
+        function RepoEditorPage(context, filesListElement, filesJson, proseIgnoreFunction, filesAndHashes) {
             var _this = this;
             this.context = context;
             this.proseIgnoreFunction = proseIgnoreFunction;
-            console.log("filesList= ", filesList);
             sessionStorage.clear();
+            // This is my FileSystem stack, which will ensure that edits are stored in-browser,
+            // and that we can cache reads from the WorkingDirectory.
+            var repoKey = ":/" + context.Username + ":" + context.RepoOwner + ":" + context.RepoName + "/";
+            var wdFS = new WorkingDirFS(this.context, null);
+            var readCacheFS = new ReadCacheFS(SHA1("cache" + repoKey), wdFS);
+            var memFS = new MemFS(SHA1("mem" + repoKey), readCacheFS);
+            this.FS = new NotifyFS(memFS);
             this.editor = undefined;
             this.editor = new RepoFileEditorCM$1(context.RepoOwner, context.RepoName, document.getElementById('editor'), {
                 Rename: function () {
                     return;
                 }
-            });
-            var remoteFS = new FSReadCache(new FSRemote(this.context.RepoOwner, this.context.RepoName));
-            var localFS = new FSSession("temp-rootf", this.context.RepoOwner, this.context.RepoName);
-            var overlayFS = new FSOverlay(remoteFS, localFS);
-            this.FS = new FSNotify(overlayFS);
-            new FSFileTree(this.context, filesList, this.editor, this.FS, this.proseIgnoreFunction);
-            new RepoEditorPage_NewFileDialog$1(document.getElementById('repo-new-file'), this.FS, this.editor);
-            new RepoEditorPage_RenameFileDialog$1(document.getElementById("editor-rename-button"), this.FS, this.editor);
+            }, this.FS);
+            new FileSystemConnector(this.context, filesListElement, this.editor, this.FS, this.proseIgnoreFunction, filesJson, filesAndHashes);
+            new RepoEditorPage_NewFileDialog$1(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
+            new RepoEditorPage_RenameFileDialog$1(this.context, document.getElementById("editor-rename-button"), this.editor);
             new ControlTag(document.getElementById("files-show-tag"), function (showing) {
                 document.getElementById("new-editor-files-nav")
                     .style.width = showing ? "20%" : "0px";
@@ -3963,7 +3665,6 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 var f = document.getElementById("page-footer");
                 f.style.display = showing ? 'flex' : 'none';
             });
-            FSPrimeFromJS(this.FS, filesJson);
             document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
                 evt.preventDefault();
                 evt.stopPropagation();
@@ -4011,7 +3712,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
         return FileStatus;
     }());
 
-    var FileContent$1 = (function () {
+    var FileContent = (function () {
         function FileContent(exists, raw) {
             this.Exists = exists;
             this.Raw = raw ? raw : "";
@@ -4064,9 +3765,9 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 .MergedFileCat(this.context.RepoOwner, this.context.RepoName, this.path)
                 .then(function (_a) {
                 var workingExists = _a[0], working = _a[1], theirExists = _a[2], their = _a[3], gitMerge = _a[4];
-                var workingFile = new FileContent$1(workingExists, working);
-                var theirFile = new FileContent$1(theirExists, their);
-                var gitFile = new FileContent$1(true, gitMerge);
+                var workingFile = new FileContent(workingExists, working);
+                var theirFile = new FileContent(theirExists, their);
+                var gitFile = new FileContent(true, gitMerge);
                 _this.cache.set("working", workingFile);
                 _this.cache.set("their", theirFile);
                 _this.cache.set("git", gitFile);
@@ -4093,7 +3794,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 .MergedFileGit(this.context.RepoOwner, this.context.RepoName, this.path)
                 .then(function (_a) {
                 var automerged = _a[0], text = _a[1];
-                var gitFile = new FileContent$1(true, text);
+                var gitFile = new FileContent(true, text);
                 _this.cache.set("git", gitFile);
                 _this.ListenRPC.dispatch(source, false, "FetchGit");
                 // TODO: Should it be WorkingChanged that we're sending?
@@ -4150,7 +3851,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 .MergeFileOriginal(this.context.RepoOwner, this.context.RepoName, this.path, v)
                 .then(function (_a) {
                 var exists = _a[0], raw = _a[1];
-                return Promise.resolve(new FileContent$1(exists, raw));
+                return Promise.resolve(new FileContent(exists, raw));
             });
         };
         File.prototype.getCachedContent = function (key) {
@@ -4166,24 +3867,24 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             return this.cache.get("working");
         };
         File.prototype.RemoveWorkingFile = function (source) {
-            var fc = new FileContent$1(false, "");
+            var fc = new FileContent(false, "");
             this.cache.set("working", fc);
             this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
             // Don't need to delete on server as this will happen on file save
         };
         File.prototype.RemoveTheirFile = function (source) {
-            var fc = new FileContent$1(false, "");
-            this.cache.set("their", new FileContent$1(false, ""));
+            var fc = new FileContent(false, "");
+            this.cache.set("their", new FileContent(false, ""));
             this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
             // Don't need to delete on server as this will happen on file save
         };
         File.prototype.SetWorkingContent = function (source, content) {
-            var fc = new FileContent$1(content != undefined, content);
+            var fc = new FileContent(content != undefined, content);
             this.cache.set("working", fc);
             this.Listen.dispatch(source, FileEvent.WorkingChanged, fc);
         };
         File.prototype.SetTheirContent = function (source, content) {
-            var fc = new FileContent$1(content != undefined, content);
+            var fc = new FileContent(content != undefined, content);
             this.cache.set("their", fc);
             this.Listen.dispatch(source, FileEvent.TheirChanged, fc);
         };
@@ -4615,10 +4316,10 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
             return this.getLHS();
         };
         MergeEditor.prototype.getWorkingContent = function () {
-            return new FileContent$1(this.isWorkingDeleted(), this.getWorkingText());
+            return new FileContent(this.isWorkingDeleted(), this.getWorkingText());
         };
         MergeEditor.prototype.getTheirContent = function () {
-            return new FileContent$1(this.isTheirDeleted(), this.getTheirText());
+            return new FileContent(this.isTheirDeleted(), this.getTheirText());
         };
         MergeEditor.prototype.CopyTheir = function () {
             // We leave source undefined, so that our editor will update
@@ -5711,7 +5412,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                 var el = document.getElementById("ebw-context");
                 var context = void 0;
                 if (el) {
-                    context = new Context(el, el.getAttribute("data-repo-owner"), el.getAttribute("data-repo-name"));
+                    context = new Context(el, el.getAttribute("data-username"), el.getAttribute("data-repo-owner"), el.getAttribute("data-repo-name"));
                     switch (el.getAttribute('data-page')) {
                         case 'RepoDetailPage':
                             new RepoDetailPage(context);
@@ -5726,7 +5427,7 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
                             new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
                             break;
                         case 'RepoEditorPage':
-                            new RepoEditorPage(context, document.querySelector("[data-instance='AllFilesList']"), window.repoEditorData.files, window.repoEditorData.ignoreFilter);
+                            new RepoEditorPage(context, document.querySelector("[data-instance='AllFilesList']"), window.repoEditorData.files, window.repoEditorData.ignoreFilter, window.repoEditorData.filesAndHashes);
                             break;
                     }
                 }
@@ -5784,4 +5485,3 @@ var EBW = (function (exports,tslib_1,TSFoundation) {
     return exports;
 
 }({},tslib,TSFoundation));
-//# sourceMappingURL=ts.js.map

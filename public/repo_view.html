@@ -38,12 +38,13 @@
 		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
 	</section>
-<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoEditorPage">
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}"  data-username="{{.Username}}" data-page="RepoEditorPage">
 </script>	
 <script type="text/javascript">
 window.repoEditorData = {
 	"files": {{.RepoFiles}},
-	"ignoreFilter": {{.ProseIgnoreFilter}}
+	"ignoreFilter": {{.ProseIgnoreFilter}},
+	"filesAndHashes": {{.FilesAndHashes}}
 };
 </script>
 </main>

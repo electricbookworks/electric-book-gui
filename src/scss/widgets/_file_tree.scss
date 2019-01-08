@@ -8,20 +8,30 @@
 		}
 		border-bottom: 1px solid #f8f8f8;
 	}
-	.node.FileStat-Exists {
+	.node.editing-in-progress .name::after {
+		content: "editing";
+		margin-left: 1em;
+		color: white;
+		background-color: $color-status-new;
+		border-radius: 10000px;
+		font-size: 0.7em;
+		text-transform: uppercase;
+		padding: 0 1em;
+	}
+	.node.state-unchanged {
 
 	}
-	.node.FileStat-Changed {
+	.node.state-changed {
 		background-color: $color-status-modified;
 	}
-	.node.FileStat-Deleted{
+	.node.state-deleted{
 		text-decoration: line-through;
 		color: $color-status-deleted;
 	}
-	.node.FileStat-New {
+	.node.state-new {
 		background-color: $color-status-new;
 	}
-	.node.FileStat-NotExist {
+	.node.state-absent {
 		.name {
 			text-decoration: line-through;
 			color: #ccc;

@@ -3,7 +3,7 @@
  * in a given filesystem.
  */
 export enum FileStat {
-	/** The file exists an is unchanged */
+	/** The file exists and is unchanged */
 	Exists = 1,
 	/** The file exists, and has changed */
 	Changed = 2,

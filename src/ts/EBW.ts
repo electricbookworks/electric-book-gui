@@ -5,7 +5,7 @@ import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
 import {LoginTokenList} from './LoginTokenList';
 import {RepoDetailPage} from './RepoDetailPage';
-import {RepoEditorPage} from './RepoEditorPage';
+import {RepoEditorPage} from './RepoEditorPage2';
 import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
@@ -25,7 +25,7 @@ export class EBW {
 			let el = document.getElementById(`ebw-context`);
 			let context : Context;
 			if (el) {
-				context = new Context(el, el.getAttribute(`data-repo-owner`),
+				context = new Context(el, el.getAttribute(`data-username`), el.getAttribute(`data-repo-owner`),
 					el.getAttribute(`data-repo-name`));
 				switch (el.getAttribute('data-page')) {
 					case 'RepoDetailPage':
@@ -45,7 +45,8 @@ export class EBW {
 							context,
 							document.querySelector(`[data-instance='AllFilesList']`),
 							window.repoEditorData.files,
-							window.repoEditorData.ignoreFilter
+							window.repoEditorData.ignoreFilter,
+							window.repoEditorData.filesAndHashes,
 						);
 						break;
 				}

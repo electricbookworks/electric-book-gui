@@ -220,6 +220,18 @@ export class APIWs {
 		return this.rpc("MergedFileGit",  [repoOwner,repoName,path] );
 	}
 	
+	ReadFileData (repoOwner:string,repoName:string,version:string,path:string) {
+		return this.rpc("ReadFileData",  [repoOwner,repoName,version,path] );
+	}
+	
+	WriteAndStageFile (repoOwner:string,repoName:string,path:string,data:string) {
+		return this.rpc("WriteAndStageFile",  [repoOwner,repoName,path,data] );
+	}
+	
+	RemoveAndStageFile (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("RemoveAndStageFile",  [repoOwner,repoName,path] );
+	}
+	
 	FileExistsOurHeadTheirHead (repoOwner:string,repoName:string,path:string) {
 		return this.rpc("FileExistsOurHeadTheirHead",  [repoOwner,repoName,path] );
 	}

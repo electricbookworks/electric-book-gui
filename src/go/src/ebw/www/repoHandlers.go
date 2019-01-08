@@ -253,6 +253,11 @@ func repoView(c *Context) error {
 		return err
 	}
 
+	filesAndHashes, err := r.Git.FilesAndHashes()
+	if nil!=err {
+		return err
+	}
+
 	proseConfig, err := book.ReadProse(repoDir)
 	if nil != err {
 		return err
@@ -260,6 +265,7 @@ func repoView(c *Context) error {
 	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
 	repoFiles = repoFiles.Filter(``, proseConfig.IgnoreFilter())
 	c.D[`RepoFiles`] = repoFiles
+	c.D[`FilesAndHashes`] = filesAndHashes
 	return c.Render(`repo_view.html`, nil)
 }
 

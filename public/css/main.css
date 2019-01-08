@@ -4133,17 +4133,27 @@ body {
   #all-files-editor .node.node-file .name {
     cursor: pointer; }
 
-#all-files-editor .node.FileStat-Changed {
+#all-files-editor .node.editing-in-progress .name::after {
+  content: "editing";
+  margin-left: 1em;
+  color: white;
+  background-color: #fab414;
+  border-radius: 10000px;
+  font-size: 0.7em;
+  text-transform: uppercase;
+  padding: 0 1em; }
+
+#all-files-editor .node.state-changed {
   background-color: #ddd; }
 
-#all-files-editor .node.FileStat-Deleted {
+#all-files-editor .node.state-deleted {
   text-decoration: line-through;
   color: #fab414; }
 
-#all-files-editor .node.FileStat-New {
+#all-files-editor .node.state-new {
   background-color: #fab414; }
 
-#all-files-editor .node.FileStat-NotExist .name {
+#all-files-editor .node.state-absent .name {
   text-decoration: line-through;
   color: #ccc; }
 

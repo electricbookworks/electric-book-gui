@@ -81,6 +81,14 @@
   become_method: sudo
   notify: "restart haproxy"
 
+- name: cert-renewal-script
+  become: yes
+  tags: certbot
+  template:
+    src: cert-renewal-haproxy.sh
+    dest: /etc/haproxy/plugins/cert-renewal-haproxy.sh
+    mode: 0755
+
 - name: cron-letsencrypt
   become: yes
   cron:

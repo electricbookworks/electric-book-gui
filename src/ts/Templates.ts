@@ -186,7 +186,7 @@ export class AddNewBookDialog {
 				Contribute to an existing project.
 			</label>
 			<label>
-				<input type="radio" value="adaptation" name="new-project-type"/>
+				<input name="new-project-type" type="radio" value="adaptation"/>
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
@@ -197,7 +197,7 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
@@ -212,7 +212,7 @@ export class AddNewBookDialog {
 	</div>
 	<div>
 		<h1>Adaptation</h1>
-		<form action="/github/create/new" method="post">
+		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
@@ -222,7 +222,7 @@ export class AddNewBookDialog {
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
-		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
+		<input placeholder="e.g. electricbookworks/electric-book" type="text" name="template"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -236,7 +236,7 @@ export class AddNewBookDialog {
 		<form action="/github/create/fork" method="post">
 		<input type="hidden" name="action" value="fork"/>
 		<label>Enter the GitHub owner and repo for the project you will contribute to.
-		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
+		<input placeholder="e.g. electricbooks/core" type="text" name="collaborate_repo"/>
 		</label>
 		<label style="display:none;">
 			<input type="checkbox" name="private" value="private"/>
@@ -461,7 +461,7 @@ export class CommitMessageDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="commitMessage">Describe your changes
-		<input name="commitMessage" id="commitMessage" type="text"/>
+		<input type="text" name="commitMessage" id="commitMessage"/>
 		</label>
 	</fieldset>
 	<button class="btn">Commit</button>
@@ -797,7 +797,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button class="close-button" aria-label="Close popup" type="button" data-close="">
+	<button aria-label="Close popup" type="button" data-close="" class="close-button">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -1123,10 +1123,10 @@ export class RepoEditorPage_RenameFileDialog {
 		<div>Renaming <span> </span></div>
 		<label>
 			Enter the full path to your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
-	<button class="btn" data-event="click">Rename</button>
+	<button data-event="click" class="btn">Rename</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1321,11 +1321,11 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input id="resolveOur" type="radio" name="resolve" value="our"/>
+			<input type="radio" name="resolve" value="our" id="resolveOur"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			<input value="git" id="resolveGit" type="radio" name="resolve"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
@@ -1334,7 +1334,7 @@ export class RepoMergeDialog {
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
 	<button class="btn" data-event="click:">Do the Merge</button>
@@ -1416,11 +1416,11 @@ export class Tree_NodeView {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="node">
-	<div class="name"><span class="closer"><svg height="1em" viewBox="0 0 100 100" width="1em">
-		<rect ry="10" x="2" y="2" width="96" height="96" class="grect" rx="10"/>
+	<div class="name"><span class="closer"><svg width="1em" height="1em" viewBox="0 0 100 100">
+		<rect x="2" y="2" width="96" height="96" class="grect" rx="10" ry="10"/>
 		<g transform="translate(50 50)">
-			<rect class="plusvg" x="-30" y="-4" stroke="none" width="60" height="8"/>
-			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg plusvg2"/>
+			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg"/>
+			<rect stroke="none" width="60" height="8" class="plusvg plusvg2" x="-30" y="-4"/>
 		</g>
 		</svg></span><span>NAME</span></div>
 	<div class="children"> </div>
@@ -1488,10 +1488,10 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		<input value="no" data-event="change" type="radio" name="closePR" id="closePR-no"/>No
 		</label>
 		<label for="closePR-yes">
-		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
+		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>
@@ -1634,7 +1634,7 @@ export class conflict_MergeImageEditor {
 		let t = conflict_MergeImageEditor._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="merge-image-editor" id="merge-image-editor">
+			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor">
 	<div>
 	</div>
 	<div>
