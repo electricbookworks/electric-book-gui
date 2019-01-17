@@ -1,0 +1,52 @@
+# This file defines how this project looks to editors on prose.io.
+# Users with GitHub contributor access can edit your book with http://prose.io. 
+# These settings control what they see.
+# See https://github.com/prose/prose/wiki/Prose-Configuration for more info.
+# (We don't use prose.io live previews with siteurl.
+# They are slower than the default preview and unreliable.)
+prose:
+  ignore:
+    - .gitattributes
+    - .gitignore
+    - .htaccess
+    - _config.yml
+    - _prose.yml
+    - Gemfile
+    - Gemfile.lock
+    - CNAME
+    - /_includes
+    - /_layouts
+    - /_sass
+    - /_site
+    - /_tools
+    - /node_modules
+    - /js
+    - /css
+    - eslint.json
+    - gulpfile.js
+    - package.json
+    - package-lock.json
+    - /*/.gitattributes
+    - /*/.gitignore
+    - /*/_config*
+    - /*/_prose.yml
+    - /*/_layouts
+    - /*/_includes
+    - /*/_site
+    - /*/css
+    - run-linux.sh
+    - run-mac.command
+    - run-windows.bat
+    - /*/run-linux.sh
+    - /*/run-mac.command
+    - /*/run-windows.bat
+    - /*/fonts
+    - /*/*/images
+    - /*/*/fonts
+  media: "images"
+  metadata:
+    "":
+      - name: "title"
+        field:
+          element: "text"
+          label: "Page title"

@@ -8,10 +8,20 @@ order: 3
 # Create a new project
 {:.no_toc}
 
+A project can contain one or more books, such as a series or collection. It will be stored on GitHub as a single repository.
+
+You create a new project from a template. For that template, you can use:
+
+- the blank Electric Book template, to create a brand new project; or
+- an existing project, to create a new, separate adaptation of it.
+
+> To contribute to an existing project, see [Contribute to an existing project](../contribute-to-a-project)
+{:.box}
+
 * Page contents
 {:toc}
 
-A project can contain one or more books, such as a series or collection. It will be stored on GitHub as a single repository.
+## Create a brand-new project
 
 To create a brand new project (that is, not contributing to an existing project or creating an adaptation or translation):
 
@@ -40,7 +50,7 @@ It will take a few seconds for the Electric Book Manager to set up your new proj
 
 > Technical note: Creating a new project creates a new repository on GitHub, copies the current Electric Book template to it, and clones the repository to the EBM. The copy of the template is not a fork or clone: it has a clean Git history.
 
-# Create an adaptation
+## Create an adaptation
 
 When you want to create a new project, but starting with another project as your template, you are creating an adaptation. Once created, an adaptation has no ongoing link to its parent, and does not share any version-control history with its parent. It is a completely separate project.
 

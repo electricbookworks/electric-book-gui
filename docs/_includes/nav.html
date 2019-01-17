@@ -1,12 +1,15 @@
-<nav>
-	<ul>
-		{% assign current-page-url = page.url %}
-		{% assign pages = site.pages | where_exp: "page", "page.path contains '.md'" %}
-		{% assign pages = pages | sort: "order" %}
-		{% for page in pages %}
-			<li {% if page.url == current-page-url %} class="active"{% endif %}>
-				<a href="{{ site.baseurl }}{{ page.url }}">{{ page.title }}</a>
-			</li>
-		{% endfor %}
-	</ul>
-</nav>
+{% comment %} Edit your menu in _data/menu.yml. {% endcomment %}
+
+    <div class="nav-wrapper">
+
+        {% comment %} For mobile, this technique creates a clickable button. {% endcomment %}
+        <label for="show-menu" class="show-menu">&#x2261;</label>
+        <input type="checkbox" id="show-menu" role="button">
+
+        <nav>
+            <ul>
+                {% include nav-list.html %}
+            </ul>
+        </nav>
+
+    </div>

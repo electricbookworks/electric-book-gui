@@ -1,0 +1,16 @@
+{% comment %} Edit this template to customise your footer.
+Use footer-cell divs to create columns. {% endcomment %}
+
+		<div class="footer">
+			<div class="footer-cell">
+				<p>{{ site.data.locales[site.data.settings.language].footer.credit | markdownify | replace: "<p>", "" | replace: "</p>", "" }}</p>
+			</div>
+		</div><!--.footer-->
+
+	</div><!--.wrapper-->
+    
+    <!--Scripts-->
+    <script src="{{ site.baseurl }}/js/bundle.js"></script>
+
+</body>
+</html>

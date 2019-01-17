@@ -23,7 +23,7 @@ Most of the guidance on this page is for contributors.
 
 In order to collaborate on a project, you need to make a copy of it that is ‘forked’ from the parent version. This allows you to send submissions to the parent, while working in your own version.
 
-If you want to make a copy of a project but do not ever want to send submissions to the parent (in other words, you want an independent adaptation of a project), see the 'Create an adaptation' section of ['Create a new project'](create-new-project.html).
+If you want to make a copy of a project but do not ever want to send submissions to the parent (in other words, you want an independent adaptation of a project), see the 'Create an adaptation' section of ['Create a new project'](../create-new-project).
 {:.sidenote}
 
 1. Sign in to the Electric Book Manager.

@@ -13,7 +13,7 @@ order: 5
 
 You must provide separate images for each output format that you want to produce. Each format may have different image requirements. Our template comes with six folders for images, which correspond to output formats: `print-pdf`, `screen-pdf`, `web`, `app`, and `epub`, and a `_source` folder for storing master versions of images.
 
-Each folder should contain the same set of images, formatted appropriately for each format. For instance, while their file names must be identical, web images might be full-colour, 96dpi, and up to 800 pixels wide; while print-pdf images might be in greyscale, 300dpi and 2400 pixels wide. And your _source images may be full-colour and 600dpi. For more on image optimization, see [Images](../editing/images.html).
+Each folder should contain the same set of images, formatted appropriately for each format. For instance, while their file names must be identical, web images might be full-colour, 96dpi, and up to 800 pixels wide; while print-pdf images might be in greyscale, 300dpi and 2400 pixels wide. And your _source images may be full-colour and 600dpi. For more on preparing images, see the section on [preparing images](https://electricbookworks.github.io/electric-book/docs/images/preparing-images.html) in the Electric Book workflow docs.
 
 For a professional conversion service, you can also contact [Electric Book Works](https://electricbookworks.com).
 

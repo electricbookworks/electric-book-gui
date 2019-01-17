@@ -1,0 +1,17 @@
+{% capture second-element-as-excerpt %}
+{% comment %}Jekyll's post.excerpt takes the first block element
+on the page, which is often a heading. We want the
+first paragraph, after a heading. So this include
+creates an excerpt from the second element on the page,
+as best it can. YMMV.{% endcomment %}
+
+{% assign content-to-exerpt = page.content %}
+{% if include.content %}
+	{% assign content-to-excerpt = include.content %}
+{% endif %}
+
+{{ content-to-excerpt | split: "
+
+" | shift | first | strip_html | append: " …"}}
+
+{% endcapture %}{{ second-element-as-excerpt | strip_newlines }}

@@ -1,0 +1,56 @@
+// Inputs
+
+input,
+textarea {
+    padding: 0.75em 0.75em;
+    font-family: $font-main;
+    font-size: inherit;
+    color: inherit;
+    border: 1px solid $background-color-mid;
+    display: block;
+    margin: 0 0 ($line-height * 1em) 0;
+    width: 100%;
+    box-sizing: border-box;
+    &[type="submit"] {
+        width: auto;
+    }
+}
+textarea {
+    min-height: ($line-height * 1em) * 7;
+}
+.contact-form {
+	label {
+		display: inline-block;
+		font-weight: bold;
+		margin: 0 0 ($line-height * 0.5em) 0;
+	}
+	&:after {
+		content: "";
+		display: block;
+		clear: both;
+	}
+}
+
+// Buttons
+
+a.button, input[type="submit"] {
+	background-color: $background-color-mid;
+	padding: 0.5em 1em;
+	margin: 0 0.5em 0.5em 0;
+	border-radius: $border-radius;
+	display: inline-block;
+	color: $text-color-light;
+	&.light {
+		background-color: $background-color-light;
+		box-shadow: none;
+		color: $text-color-dark;
+		border: 1px solid $background-color-dark;
+	}
+	&:hover {
+		box-shadow: 0 0.05em 0.3em $background-color-dark;
+	}
+}
+input[type="submit"] {
+	float: right;
+	margin-right: 0;
+}
