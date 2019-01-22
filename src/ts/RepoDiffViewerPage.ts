@@ -3,6 +3,48 @@ import {CommitSummary} from './CommitSummary';
 import {CommitSummaryList} from './CommitSummaryList';
 import {CommitSummaryListView} from './CommitSummaryListView';
 
+class RepoDiffDatesForm {
+	constructor(protected context:Context) {
+		this.fromDate = document.getElementById(`from-date`);
+		this.toDate = document.getElementById(`to-date`);
+		this.button = document.getElementById(`diff-dates-button`);
+
+		let checkClick = (evt)=>{
+			// console.log(`fromDate = '${this.fromDate.value}', toDate = '${this.toDate.value}'`)
+			if ((``==this.fromDate.value) || (``==this.toDate.value)) {
+				this.button.disabled = true;
+				return;
+			}
+			this.button.disabled = false;
+		};
+		this.fromDate.addEventListener(`input`, checkClick);
+		this.toDate.addEventListener(`input`, checkClick);
+		checkClick(null);
+
+		/*
+		
+		// moved on to form submission, so no button handling required
+		// bar enabling /  disabling.
+		//
+
+		if (!this.button) {
+			console.error(`Failed to find diff-dates-button`);
+			return;
+		}
+
+		this.button.addEventListener(`click`, (evt)=>{
+			evt.preventDefault();
+			evt.stopPropagation();
+
+			let from = this.fromDate.value;
+			let to = this.toDate.value;
+			this.context.RepoRedirect(`diff-dates/${from}/${to}`, null);
+		});
+		*/
+
+	}
+}
+
 export class RepoDiffViewerPage {
 	protected fromOID : string;
 	protected toOID: string;
@@ -33,10 +75,12 @@ export class RepoDiffViewerPage {
 			evt.preventDefault(); evt.stopPropagation();
 			context.RepoRedirect(`diff/${this.fromOID}/${this.toOID}`);
 		});
+
+		new RepoDiffDatesForm(context);
 	}
 	enableViewButton() {
 		let disable = (this.fromOID==undefined) || (this.toOID==undefined);
 		this.viewButton.disabled = disable;
-		console.log(`viewButton.disabled = ${this.viewButton.disabled}`);
+		// console.log(`viewButton.disabled = ${this.viewButton.disabled}`);
 	}
 }

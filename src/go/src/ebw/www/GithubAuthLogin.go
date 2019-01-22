@@ -31,7 +31,7 @@ type githubToken struct {
 func githubLogin(c *Context) error {
 	err := cliConfig.ReadConfigFile(filepath.Join(os.Getenv("HOME"), ".ebw.yml"))
 	if nil != err {
-		glog.Error(err)
+		glog.Info(err)
 	}
 	if nil == err {
 		glog.Infof(`Setting c.D['Users']`)
@@ -45,6 +45,7 @@ func githubLogin(c *Context) error {
 	state := util.RandomString(20)
 	c.Session.Values[`github_state`] = state
 	p.Add(`state`, state)
+	glog.Infof(`About to render landing.html`)
 
 	return c.Render("landing.html", map[string]interface{}{
 		"AuthURL":              `https://github.com/login/oauth/authorize?` + p.Encode(),

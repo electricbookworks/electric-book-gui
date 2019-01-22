@@ -67,6 +67,7 @@ func RunWebServer(bind string) error {
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}/{index}`, WebHandler(repoDiffPatch))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}`, WebHandler(repoDiffFiles))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff-serve/{OID}`, WebHandler(repoDiffFileServer))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff-dates`, WebHandler(repoDiffDates))
 	r.Handle(`/repo/{repoOwner}/{repoName}/diff-diff/{fromOID}/{toOID}`, WebHandler(repoDiffDiff))
 	r.Handle(`/repo/{repoOwner}/{repoName}/files`, WebHandler(repoFileViewer))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
@@ -157,11 +158,12 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		if nil != err {
 			return err
 		}
-		if !strings.HasSuffix(name, ".html") {
-			return nil
-		}
 		// We don't parse html in bower_components
-		if strings.Contains(name, `bower_components/`) {
+		if strings.Contains(name, `bower_components/`) || filepath.Base(name)==`bower_components` {
+			glog.Infof(`Skipping %s`, name)
+			return filepath.SkipDir
+		}
+		if !strings.HasSuffix(name, ".html") {
 			return nil
 		}
 		// glog.Infof("Found template: %s", name)
@@ -170,6 +172,7 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 			return err
 		}
 		if _, err := t.New(name[7:]).Parse(string(raw)); nil != err {
+			glog.Errorf(`ERROR PARSING TEMPLATE %s: %s`, name, err.Error())
 			return err
 		}
 		return nil

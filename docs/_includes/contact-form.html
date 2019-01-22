@@ -1,0 +1,23 @@
+{% comment %}
+Contact form createed with Formspree.
+See https://formspree.io for how to activate it.
+{% endcomment %}
+
+<div class="contact-form">
+	<form action="https://formspree.io/{{ site.data.settings.email }}" method="POST">
+
+	    <label for="form-name">{{ site.data.locales[site.data.settings.language].contact.label.name | markdownify | replace: "<p>", "" | replace: "</p>", "" }}</label>
+	    <input type="text" name="name" id="form-name" placeholder="{{ site.data.locales[site.data.settings.language].contact.placeholder.name }}">
+
+	    <label for="form-email">{{ site.data.locales[site.data.settings.language].contact.label.email | markdownify | replace: "<p>", "" | replace: "</p>", "" }}</label>
+	    <input type="email" name="_replyto" id="form-email" placeholder="{{ site.data.locales[site.data.settings.language].contact.placeholder.email }}">
+
+	    <label for="form-message">{{ site.data.locales[site.data.settings.language].contact.label.message | markdownify | replace: "<p>", "" | replace: "</p>", "" }}</label>
+	    <textarea type="text" name="message" id="form-message" placeholder="{{ site.data.locales[site.data.settings.language].contact.placeholder.message }}"></textarea>
+
+	    <input type="submit" value="{{ site.data.locales[site.data.settings.language].input.send }}">
+
+	    <input type="hidden" name="_next" value="" />
+	    <input type="text" name="_gotcha" style="display:none" />
+	</form>
+</div>

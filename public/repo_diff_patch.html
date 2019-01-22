@@ -17,7 +17,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	if (false) {
 		var diffHtml = Diff2Html.getPrettyHtml(
 		  patch,
-		  {inputFormat: 'diff', showFiles: true, matching: 'lines', outputFormat: 'side-by-side'}
+		  {
+		  	inputFormat: 'diff', 
+		  	showFiles: true, 
+		  	matching: 'lines', 
+		  	outputFormat: 'side-by-side',
+		  	synchronisedScroll: true,
+		  }
 		);
 		document.getElementById("repo-diff-patch").innerHTML = diffHtml;
 	} else {

@@ -1,0 +1,26 @@
+// Footer
+
+.footer {
+	background-color: $footer-background-color;
+	box-sizing: border-box;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin: 0;
+	min-width: 100%;
+	max-width: 100%;
+	padding: 1em;
+	text-align: center;
+	z-index: 5;
+	.footer-cell {
+		flex: 0 1 auto;
+		min-width: $content-width / 3; // allows for three cells
+		padding: 1em 0 0 0;
+	}
+	p, ul, ol {
+		font-size: $footer-font-size;
+	}
+	@media only screen and (min-width: $break-point-l) {
+		flex: 1 1 auto;
+	}
+}

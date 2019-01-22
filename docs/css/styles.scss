@@ -1,171 +1,133 @@
 ---
 ---
 
-// Variables
+// Sass styles for Fire and Lion's Jekyll starter template.
+// These styles are written to be mobile-first. That is,
+// they define site design on small screens. Then, at the end
+// of this document, we use media queries to change those designs
+// for large screens.
 
-$max-width: 36em;
+@charset "utf-8";
 
+// Sizes
+$content-width: 40em;
+$side-nav-width: 10em;
+$dropdown-nav-width: 10em;
+$line-height: 1.4;
+$border-radius: 0.02em;
+
+// Fonts
 $font-size: 1.2em;
-$font-text-main: "Crimson", serif;
-$font-display-main: "Source Sans Pro", sans-serif;
-$font-code: Monaco, "DejaVu Sans Mono", "Courier New", monospace;
+$font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+$font-secondary: "Apple Garamond", "Baskerville", "Times New Roman", "Droid Serif", "Times","Source Serif Pro", serif;
+$font-monospace: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", "Source Code Pro", monospace;
+$side-nav-font-size: 1em;
+$dropdown-nav-font-size: 0.8em;
+$footer-font-size: 0.8em;
+$caption-font-size: 0.8em;
 
-$color-accent: #009E7F;
-$color-text: #222222;
-$color-mid: #eeeeee;
-$color-mid-light: #e0e0e0;
-$color-light: #ffffff;
-$color-links: #477DB2;
+// Font @import or @font-face
+// By default (above) we use system fonts.
+// Use @import here to use fonts hosted elsewhere. Example commented out below.
+// For easy @font-face snippets, try https://github.com/arthurattwell/font-faces
+// @import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i');
 
+// Colour palette
+$background-color-dark: #2d7375;
+$background-color-mid: #85c6c2;
+$background-color-light: #ffffff;
+$text-color-dark: #222222;
+$text-color-mid: #e1e1e1;
+$text-color-light: #ffffff;
+$masthead-text-color: $background-color-light;
+$masthead-background-color: #009E7F;
+$side-nav-color: $background-color-light;
+$dropdown-nav-color: $background-color-mid;
+$dropdown-nav-icon-color: $text-color-mid;
+$footer-background-color: $background-color-mid;
+$link-color: #2d4f75;
+$color-notice: #99d8cb;
+$color-alert: #ebbc00;
+
+// Sizes
 $border-radius: 0.2em;
 $rule-thickness: 1px;
 
-$break-point-l: 800px;
+// Media query breakpoints
+$break-point-l: $content-width + $side-nav-width + 10em;
+$break-point-xl: ($content-width * 2) + $side-nav-width + 10em;
 
-// Structure
+// Import partials
+// These import snippets from _sass.
+// Comment out ones you definitely don't need.
+@import "excerpts";
+@import "footer";
+@import "gallery";
+@import "images";
+@import "input";
+@import "masthead";
+@import "nav";
+@import "page-nav";
+@import "polyfills";
+@import "print";
+@import "toc";
+@import "typography";
+@import "verse";
+@import "wrappers";
 
-body {
-	font-family: $font-text-main;
-	font-size: $font-size;
-	color: $color-text;
-	line-height: 1.5;
-	margin: 0;
-}
+// Custom CSS
+// Add your own styles below to override
+// the template partials just imported.
 
-.wrapper {
-	margin: 0 auto;
-	padding: 0 0 2em 0;
-	overflow-x: hidden;
-}
+// Boxes
 
-.masthead {
-	font-family: $font-display-main;
-	width: 100%;
-	padding: 0.5em;
-	border-bottom: $rule-thickness solid $color-mid;
-	margin: 0 0 2em 0;
-	background-color: $color-accent;
-	text-align: center;
-	@media (min-width: $break-point-l) {
-		padding: 1em;
-	}
-	.title {
-		line-height: 1.2;
-		max-width: 60%;
-		display: inline-block;
-		color: $color-mid-light;
-	}
-}
-
-.navigation {
-	padding: 0.5em 0.5em;
-	@media (min-width: $break-point-l) {
-		float: left;
-		position: fixed;
-		width: 14em;
-		top: 6.4em; // aligns with content heading
-		height: 100vh;
-		overflow-x: hidden;
-	}
-}
-
-nav {
-	font-family: $font-display-main;
-	position: absolute;
-	top: -0.5em;
-	left: 0.5em;
-	@media (min-width: $break-point-l) {
-		top: 0;
-	}
-	&:before {
-		content: "\2261";
-		display: block;
-		font-size: 2.3em;
-		font-family: $font-code;
-		color: $color-mid-light;
-		margin-right: 0.16em; // for refined positioning
-		@media (min-width: $break-point-l) {
-			display: none;
-		}
-	}
-	&:hover ul {
-		display: block;
-		background-color: $color-light;
-	}
-	ul {
-		padding: 0.5em;
-		border: $rule-thickness solid $color-mid;
-		list-style-type: none;
-		margin: 0;
-		display: none; // hide till nav:before hover
-		@media (min-width: $break-point-l) {
-			display: block;
-		}
-		li {
-			line-height: 1;
-			margin-bottom: 0.5em;
-		}
-	}
-}
-
-.content {
-	margin: auto;
-	.content-inner {
-		max-width: $max-width;
-		margin: auto;
-		padding: 0 0.5em;
-	}
-	@media (min-width: $break-point-l) {
-		margin: 0 0 0 16em;
-	}
-}
-
-// Typography
-
-h1, h2, h3, h4, h5 {
-	font-family: $font-display-main;
-}
-
-h1 {
-	font-weight: bold;
-	font-size: 2.4em;
-	line-height: 1.2;
-}
-
-code {
-    font-family: $font-code;
-    font-size: 80%;
-    white-space: pre-wrap;
-    background-color: $color-mid;
-    padding: 0.1em 0.3em;
+@mixin box(
+	$box-mixin-text-color: $text-color-dark,
+	$box-mixin-background-color: $background-color-light,
+	$box-mixin-border-color: $text-color-dark) {
+	padding: 1em;
+	margin: 0 0 1em 0;
+	background-color: $box-mixin-background-color;
+	color: $box-mixin-text-color;
+    border: $rule-thickness solid $box-mixin-border-color;
     border-radius: $border-radius;
-}
-pre {
-    background-color: $color-mid;
-    border-radius: $border-radius;
-    margin: 1em 0;
-    padding: 0.5em;
-    code {
-        padding: 0;
+    *:last-child {
+    	margin-bottom: 0;
     }
 }
 
-a {
-	text-decoration: none;
-	color: $color-links;
+.notice {
+    @include box($text-color-dark, $color-notice, $color-notice);
+    &.alert {
+        background-color: $color-alert;
+    }
 }
 
-table {
-	width: 100%;
-	th, td {
-		border-bottom: $rule-thickness solid $color-mid;
-		padding: 0 0.25em 0 0;
-	}
+.box {
+    @include box($text-color-dark, $color-notice, $color-notice);
 }
 
 #markdown-toc {
-	list-style-type: none;
-	padding: 0;
-	border: $rule-thickness solid $color-mid;
-	padding: 0.25em;
+	@include box();
+	margin-top: 2em;
+}
+
+// Headings
+
+.child-pages-preview-title {
+	font-size: 1.5em;
+	margin: 1em 0 0 0;
+}
+
+// Code
+
+pre, code {
+	background-color: $text-color-mid;
+	font-family: $font-monospace;
+	font-size: 0.9em;
+	padding: 0.1em 0.2em;
+	border-radius: $border-radius;
+}
+.highlighter-rouge {
+	margin-bottom: 1em;
 }

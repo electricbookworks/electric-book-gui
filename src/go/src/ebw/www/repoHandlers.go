@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 	"strconv"
+	"time"
 	// "net/http"
 
 	"github.com/golang/glog"
@@ -88,6 +89,41 @@ func repoDiffPatch(c *Context) error {
 	return c.Render(`repo_diff_patch.html`, nil)
 }
 
+func repoDiffDates(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	fromS, toS := c.R.FormValue(`from-date`), c.R.FormValue(`to-date`)
+	from, err := util.ParseTime(fromS)
+	if nil!=err {
+		return err
+	}
+	to, err := util.ParseTime(toS)
+	if nil!=err {
+		return err
+	}
+	r, err := c.Repo()
+	if nil!=err {
+		return err
+	}
+	sc, ec, err := r.Git.CommitsBetween(from, to)
+	if nil!=err {
+		return err
+	}
+
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+
+	glog.Infof(`Chose repos with dates %s and %s`, 
+		sc.Committer().When.Format(`20060102 15:04:05`),
+		ec.Committer().When.Format(`20060102 15:04:05`))
+
+	return c.Redirect(`/repo/%s/%s/diff/%s/%s`, 
+		repoOwner, repoName,
+		sc.TreeId().String(), ec.TreeId().String())
+
+}
+
 // repoDiffDiff serves the DIFF file that is generated between the two OID's.
 func repoDiffDiff(c *Context) error {
 	client := Client(c.W, c.R)
@@ -158,6 +194,22 @@ func repoDiff(c *Context) error {
 	if nil!=err {
 		return err
 	}
+
+	var st, et time.Time
+	for i, c := range commits {
+		t := c.When
+		if 0==i {
+			st, et = t, t
+		} else {
+			if t.Before(st) {
+				st = t
+			}
+			if t.After(et) {
+				et = t
+			}
+		}
+	}
+	c.D[`FirstCommit`], c.D[`LastCommit`] = st, et
 	c.D[`CommitSummaries`] = commits
 	return c.Render(`repo_diff_viewer.html`, nil)
 }

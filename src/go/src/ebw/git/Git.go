@@ -980,6 +980,32 @@ func (g *Git) TagDiff(t1id, t2id string) error {
 	return nil
 }
 
+// CommitsBetween returns the first commit after the start time, and the last
+// commit before the end time.
+func (g *Git) CommitsBetween(start, end time.Time) (*git2go.Commit, *git2go.Commit, error) {
+	var startCommit, endCommit *git2go.Commit
+	startChooser, endChooser := util.NewChooserAfter(start), util.NewChooserBefore(end)
+	rv, err := g.Repository.Walk()
+	if nil!=err {
+		return nil, nil, errors.Trace(err)
+	}
+	defer rv.Free()
+	rv.PushHead()	// initial position for rev walker
+	if err := rv.Iterate(func(c *git2go.Commit) bool {
+		// On first pass, just set both commits
+		if startChooser.Choose(c.Committer().When) {
+			startCommit = c
+		}
+		if endChooser.Choose(c.Committer().When) {
+			endCommit = c
+		}
+		return true
+		}); nil!=err {
+		return nil, nil, errors.Trace(err)
+	}
+	return startCommit, endCommit, nil
+}
+
 func (g *Git) ListCommits() ([]*CommitSummary, error) {
 	rv, err := g.Repository.Walk()
 	if nil!=err {

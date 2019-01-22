@@ -169,6 +169,18 @@
 			"revisionTime": "2017-03-21T23:07:31Z"
 		},
 		{
+			"checksumSHA1": "H2tsIY9G7HMo+vzrTaEb3Q5Kfjg=",
+			"path": "github.com/sergi/go-diff",
+			"revision": "da645544ed44df016359bd4c0e3dc60ee3a0da43",
+			"revisionTime": "2018-02-05T16:33:09Z"
+		},
+		{
+			"checksumSHA1": "QxBGuFiDP7AZx9/QOwJVVDlHjLM=",
+			"path": "github.com/sergi/go-diff/diffmatchpatch",
+			"revision": "da645544ed44df016359bd4c0e3dc60ee3a0da43",
+			"revisionTime": "2018-02-05T16:33:09Z"
+		},
+		{
 			"checksumSHA1": "O2d6k/wJgvPgEfYKO6VvL1zOCc4=",
 			"path": "github.com/sirupsen/logrus",
 			"revision": "e49c59d69b89746796d48156991108c80faf1d7d",

@@ -2,6 +2,17 @@
 {{template "_nav_main.html" .}}
 
 <main id="repo-diff-viewer">
+	<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates" class="top-bar">
+		<label>From</label>
+		<input type="date" id="from-date" name="from-date" value="{{.FirstCommit.Format "2006-01-02"}}"/>
+		<label>To</label>
+		<input type="date" id="to-date" name="to-date" value="{{.LastCommit.Format "2006-01-02"}}"/>
+		<button type="submit" id="diff-dates-button" class="button">Choose commits between dates</button>
+	</form>
+	<div class="explain">
+		<div>or select specific commits from the lists:</div>
+	</div>
+
 	<div class="workspace">
 		<div id="commit-from" class="commit-list"> </div>
 		<div id="commit-to" class="commit-list"> </div>

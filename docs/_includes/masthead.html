@@ -1,0 +1,27 @@
+	<div class="masthead">
+
+		{% if site.data.settings.logo and site.data.settings.logo != "" %}
+			<span class="logo">
+				<a href="{{site.baseurl}}/">
+					{% include image alt=site.data.settings.name src=site.data.settings.logo %}
+				</a>
+			</span>
+		{% endif %}
+
+		<div class="identity">
+			
+			<span class="name">
+				<a href="{{site.baseurl}}/">
+					{{ site.data.settings.name }}
+				</a>
+			</span>
+
+			{% if site.data.settings.tagline and site.data.settings.tagline != "" %}
+				<span class="tagline">
+					{{ site.data.settings.tagline }}
+				</span>
+			{% endif %}
+
+		</div>
+
+	</div><!--.masthead-->

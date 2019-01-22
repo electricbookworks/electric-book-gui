@@ -6,6 +6,27 @@
 	justify-content: space-between;
   position: relative;
 
+  .explain {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    padding: 1em;
+    margin: 0;
+    border-bottom: 1px solid $color-lightgray;
+  }
+  .top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    & > label {
+      margin-right: 1em;
+    }
+    &>input, &>button {
+      margin-bottom: 0;
+    }
+  }
   .footer {
     flex-grow: 0;
     padding: 1em;

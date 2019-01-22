@@ -1,0 +1,40 @@
+<!doctype html>
+<html
+	{% if site.data.settings.language and site.data.settings.language != "" %} lang="{{ site.data.settings.language }}"{% endif %}
+	{% if site.data.locales[site.data.settings.language].direction and site.data.locales[site.data.settings.language].direction != "" %} dir="{{ site.data.locales[language].direction }}"{% endif %}>
+
+	<head>
+		<title>{{ site.data.settings.name }}{% if page.title and page.title != "" %}: {{ page.title | markdownify | strip_html }}{% endif %}</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<meta property="og:title" content="{{ site.data.settings.name }}{% if page.title and page.title != "" %}: {{ page.title | markdownify | strip_html }}{% endif %}" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="{{ site.data.settings.url }}{{ page.url }}" />
+		<meta property="og:image" content="{{ site.data.settings.url }}/images/{% if page.image %}{{ page.image }}{% else %}{{ site.data.settings.image }}{% endif %}" />
+		<meta property="og:description" content="{% if page.description and page.description != "" %}{{ page.description | markdownify | strip_html }}{% elsif page.excerpt and page.excerpt != "" %}{{ page.excerpt | markdownify | strip_html }}{% else %}{{ site.data.settings.description }}{% endif %}" />
+		<meta property="og:site_name" content="{{ site.data.settings.name }}" />
+
+		<link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/styles.css" />
+
+		<!-- Create icons with http://realfavicongenerator.net/ -->
+		<link rel="apple-touch-icon" sizes="180x180" href="{{site.baseurl}}/images/icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="{{site.baseurl}}/images/icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="{{site.baseurl}}/images/icons/favicon-16x16.png">
+		<link rel="manifest" href="{{site.baseurl}}/images/icons/site.webmanifest">
+		<link rel="mask-icon" href="{{site.baseurl}}/images/icons/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="shortcut icon" href="{{site.baseurl}}/images/icons/favicon.ico">
+		<meta name="msapplication-TileColor" content="#00aba9">
+		<meta name="msapplication-config" content="{{site.baseurl}}/images/icons/browserconfig.xml">
+		<meta name="theme-color" content="#ffffff">
+
+		{% if site.data.settings.google-analytics-id and site.data.settings.google-analytics-id != "" and site.data.settings.google-analytics-id != "UA-00000000-0" %}
+			{% include google-analytics.html  %}
+		{% endif %}
+
+	</head>
+
+<body {% if page.style or page.collection %}class="{% endif %}{{ page.style }}{% if page.collection %}{{ page.collection }}{% endif %}{% if page.style or page.collection %}"{% endif %}>
+
+	<div class="wrapper">
+

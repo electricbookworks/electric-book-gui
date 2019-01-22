@@ -1,0 +1,51 @@
+// Page navigation
+
+.page-navigation {
+	a {
+		color: inherit;
+		display: inline-flex;
+		// reserve space for the dark border-bottom
+		& span,
+		& .previous-arrow:hover,
+		& .next-arrow:hover {}
+	}
+	.page-navigation-prev-next {
+		display: flex;
+		justify-content: space-between;
+	    margin: auto;
+		.previous {
+			width: 50%;
+			padding-right: 0.5em;
+		}
+		.next {
+			width: 50%;
+			text-align: right;
+			padding-left: 0.5em;
+		}
+		.previous-arrow {
+			font-style: normal;
+			margin: -0.15em 0.5em 0 0;
+		}
+		.next-arrow {
+			font-style: normal;
+			margin: -0.15em 0 0 0.5em;
+		}
+	}
+	.page-navigation-categories {
+		margin: auto;
+		font-style: normal;
+		font-weight: normal;
+		.page-navigation-categories-list {
+			list-style-type: none;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			text-align: center;
+			li {
+				flex-basis: 8em; // keeps the cats side by side
+				width: 8em;
+				margin: 0 auto 0.5em auto;
+			}
+		}
+	}
+}

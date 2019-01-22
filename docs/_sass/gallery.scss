@@ -1,0 +1,76 @@
+// This partial chooses between a gallery
+// built with inline-blocks or with flex.
+// The default is flex. To choose inline-blocks,
+// set $gallery-blocks: true in styles.css
+
+$gallery-blocks: false !default;
+@if $gallery-blocks {
+	
+	.gallery,
+	.gallery-larger {
+		text-align: justify;
+		img, a {
+			display: inline-block;
+			max-width: 11em;
+			padding: $line-height * 0.5em;
+			&.large {
+				max-width: 18em;
+			}
+			img {
+				width: 100%;
+				padding: 0;
+			}
+		}
+		a {
+			border: 0;
+		}
+		.large {
+			width: 18em;
+			img {
+				max-width: 100%;
+			}
+		}
+	}
+	.gallery-larger {
+		img {
+			width: 18em;
+		}
+	}
+
+} @else {
+
+	.gallery,
+	.gallery-larger {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		justify-content: space-around;
+		img, a {
+			flex: 1 0 10em; // shorthand: flex-grow flex-shrink flex-basis
+			width: 10em;
+			padding: $line-height * 0.5em;
+			&.large {
+				width: 15em;
+				flex: 1 0 15em;
+			}
+			// Images inside anchor tags should not flex,
+			// because the anchor will do the flexing.
+			img {
+				flex: none;
+				width: 100%;
+				padding: 0;
+			}
+		}
+		a {
+			border: 0;
+		}
+		.placeholder {}
+	}
+	.gallery-larger {
+		img {
+			width: 15em;
+			flex: 1 0 15em;
+		}
+	}
+
+}

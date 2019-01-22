@@ -1,8 +1,16 @@
-$bodytext: #444;
-$primary: #009E7F;
-$grey: #ddd;
-$off-grey: #71B8AA;
-$dark-grey: #666;
+$black1: #000000;
+$black2: #262626;
+$black3: #D9D9D9;
+$black4: #E9E9E9;
+$black5: #F5F5F5;
+$yellow1: #FFCC34;
+$yellow2: #FFF8E2;
+
+$bodytext: $black2;
+$primary: $yellow1;
+$grey: $black4;
+$off-grey: $black5;
+$dark-grey: $black3;
 $white: white;
 
 $success-light: rgb(184,213,202);
@@ -11,9 +19,8 @@ $information-light: rgb(254,228,183);
 $error: rgb(240,90,80);
 $error-light: rgb(253,217,202);
 
-
-$color-primary: #1779ba;	//#1779ba in Foundation original
-$color-secondary: #767676;
+$color-primary: $primary;	//#1779ba in Foundation original
+$color-secondary: $grey;
 $color-success: #3adb76;
 $color-warning: #ffae00;
 $color-alert: #cc4637;
@@ -28,8 +35,8 @@ $color-inverse-bg: #eee;
 $color-inverse-fg: $color-primary;
 
 
-$color-primary: #009E7F;
-$color-secondary: #767676;
+$color-primary: $primary;
+$color-secondary: $black2;
 $color-success: #009e7f;	//rgb(184,213,202);
 $color-warning: rgb(250,180,20);
 $color-alert: rgb(240,90,80);
@@ -38,7 +45,7 @@ $color-info: #fab414;
 
 $color-verylightgray: #eee;
 $color-lightgray: #ddd;
-$color-mediumgray: #71B8AA;
+$color-mediumgray: $black4;
 $color-darkgray: #666;
 $color-black: #444;
 $color-white: white;
