@@ -10,11 +10,14 @@ sudo apt-get install yarn
 # INSTALL YARN DEPENDENCIES
 yarn install
 sudo yarn global add gulp-cli rollup typescript
-# if [[ ! -f /usr/bin/env/node ]]; then
-# 	sudo apt-get install -y nodejs-legacy
-# fi
+if [[ $(lsb_release -sr) == '16.04' ]]; then
+	if [[ ! -f /usr/bin/env/node ]]; then
+		sudo apt-get install -y nodejs-legacy
+	fi
+	npm rebuild node-sass --force
+fi
 # FORCE NODE_SASS REBUILD, WHICH SEEMS NECESSARY TO GET VENDOR DIRECTORY IN PLACE
-# npm rebuild node-sass --force
+# 
 
 # INSTALL RVM
 # This should be done in the bookworks playbook...
