@@ -45,7 +45,6 @@
     "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
     "gulp-wrapper": "^1.0.0",
-    "node-sass": "^4.5.2",
     "rollup": "^0.41.6",
     "run-sequence": "^1.2.2",
     "tslib": "^1.6.1"
