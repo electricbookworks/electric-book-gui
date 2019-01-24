@@ -7,13 +7,13 @@
  */
 /*! normalize-scss | MIT/GPLv2 License | bit.ly/normalize-scss */
 /* Document
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * 1. Change the default font family in all browsers (opinionated).
-     * 2. Correct the line height in all browsers.
-     * 3. Prevent adjustments of font size after orientation changes in
-     *    IE on Windows Phone and in iOS.
-     */
+ * 1. Change the default font family in all browsers (opinionated).
+ * 2. Correct the line height in all browsers.
+ * 3. Prevent adjustments of font size after orientation changes in
+ *    IE on Windows Phone and in iOS.
+ */
 html {
   font-family: sans-serif;
   /* 1 */
@@ -25,16 +25,16 @@ html {
   /* 3 */ }
 
 /* Sections
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * Remove the margin in all browsers (opinionated).
-     */
+ * Remove the margin in all browsers (opinionated).
+ */
 body {
   margin: 0; }
 
 /**
-     * Add the correct display in IE 9-.
-     */
+ * Add the correct display in IE 9-.
+ */
 article,
 aside,
 footer,
@@ -44,32 +44,32 @@ section {
   display: block; }
 
 /**
-     * Correct the font size and margin on `h1` elements within `section` and
-     * `article` contexts in Chrome, Firefox, and Safari.
-     */
+ * Correct the font size and margin on `h1` elements within `section` and
+ * `article` contexts in Chrome, Firefox, and Safari.
+ */
 h1 {
   font-size: 2em;
   margin: 0.67em 0; }
 
 /* Grouping content
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * Add the correct display in IE 9-.
-     */
+ * Add the correct display in IE 9-.
+ */
 figcaption,
 figure {
   display: block; }
 
 /**
-     * Add the correct margin in IE 8.
-     */
+ * Add the correct margin in IE 8.
+ */
 figure {
   margin: 1em 40px; }
 
 /**
-     * 1. Add the correct box sizing in Firefox.
-     * 2. Show the overflow in Edge and IE.
-     */
+ * 1. Add the correct box sizing in Firefox.
+ * 2. Show the overflow in Edge and IE.
+ */
 hr {
   box-sizing: content-box;
   /* 1 */
@@ -79,15 +79,15 @@ hr {
   /* 2 */ }
 
 /**
-     * Add the correct display in IE.
-     */
+ * Add the correct display in IE.
+ */
 main {
   display: block; }
 
 /**
-     * 1. Correct the inheritance and scaling of font size in all browsers.
-     * 2. Correct the odd `em` font sizing in all browsers.
-     */
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
 pre {
   font-family: monospace, monospace;
   /* 1 */
@@ -95,11 +95,11 @@ pre {
   /* 2 */ }
 
 /* Links
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * 1. Remove the gray background on active links in IE 10.
-     * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
-     */
+ * 1. Remove the gray background on active links in IE 10.
+ * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.
+ */
 a {
   background-color: transparent;
   /* 1 */
@@ -107,19 +107,19 @@ a {
   /* 2 */ }
 
 /**
-     * Remove the outline on focused links when they are also active or hovered
-     * in all browsers (opinionated).
-     */
+ * Remove the outline on focused links when they are also active or hovered
+ * in all browsers (opinionated).
+ */
 a:active,
 a:hover {
   outline-width: 0; }
 
 /* Text-level semantics
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * 1. Remove the bottom border in Firefox 39-.
-     * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
-     */
+ * 1. Remove the bottom border in Firefox 39-.
+ * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.
+ */
 abbr[title] {
   border-bottom: none;
   /* 1 */
@@ -129,23 +129,23 @@ abbr[title] {
   /* 2 */ }
 
 /**
-     * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
-     */
+ * Prevent the duplicate application of `bolder` by the next rule in Safari 6.
+ */
 b,
 strong {
   font-weight: inherit; }
 
 /**
-     * Add the correct font weight in Chrome, Edge, and Safari.
-     */
+ * Add the correct font weight in Chrome, Edge, and Safari.
+ */
 b,
 strong {
   font-weight: bolder; }
 
 /**
-     * 1. Correct the inheritance and scaling of font size in all browsers.
-     * 2. Correct the odd `em` font sizing in all browsers.
-     */
+ * 1. Correct the inheritance and scaling of font size in all browsers.
+ * 2. Correct the odd `em` font sizing in all browsers.
+ */
 code,
 kbd,
 samp {
@@ -155,28 +155,28 @@ samp {
   /* 2 */ }
 
 /**
-     * Add the correct font style in Android 4.3-.
-     */
+ * Add the correct font style in Android 4.3-.
+ */
 dfn {
   font-style: italic; }
 
 /**
-     * Add the correct background and color in IE 9-.
-     */
+ * Add the correct background and color in IE 9-.
+ */
 mark {
   background-color: #ff0;
   color: #000; }
 
 /**
-     * Add the correct font size in all browsers.
-     */
+ * Add the correct font size in all browsers.
+ */
 small {
   font-size: 80%; }
 
 /**
-     * Prevent `sub` and `sup` elements from affecting the line height in
-     * all browsers.
-     */
+ * Prevent `sub` and `sup` elements from affecting the line height in
+ * all browsers.
+ */
 sub,
 sup {
   font-size: 75%;
@@ -191,39 +191,39 @@ sup {
   top: -0.5em; }
 
 /* Embedded content
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * Add the correct display in IE 9-.
-     */
+ * Add the correct display in IE 9-.
+ */
 audio,
 video {
   display: inline-block; }
 
 /**
-     * Add the correct display in iOS 4-7.
-     */
+ * Add the correct display in iOS 4-7.
+ */
 audio:not([controls]) {
   display: none;
   height: 0; }
 
 /**
-     * Remove the border on images inside links in IE 10-.
-     */
+ * Remove the border on images inside links in IE 10-.
+ */
 img {
   border-style: none; }
 
 /**
-     * Hide the overflow in IE.
-     */
+ * Hide the overflow in IE.
+ */
 svg:not(:root) {
   overflow: hidden; }
 
 /* Forms
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * 1. Change the font styles in all browsers (opinionated).
-     * 2. Remove the margin in Firefox and Safari.
-     */
+ * 1. Change the font styles in all browsers (opinionated).
+ * 2. Remove the margin in Firefox and Safari.
+ */
 button,
 input,
 optgroup,
@@ -239,25 +239,25 @@ textarea {
   /* 2 */ }
 
 /**
-     * Show the overflow in IE.
-     */
+ * Show the overflow in IE.
+ */
 button {
   overflow: visible; }
 
 /**
-     * Remove the inheritance of text transform in Edge, Firefox, and IE.
-     * 1. Remove the inheritance of text transform in Firefox.
-     */
+ * Remove the inheritance of text transform in Edge, Firefox, and IE.
+ * 1. Remove the inheritance of text transform in Firefox.
+ */
 button,
 select {
   /* 1 */
   text-transform: none; }
 
 /**
-     * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
-     *    controls in Android 4.
-     * 2. Correct the inability to style clickable types in iOS and Safari.
-     */
+ * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`
+ *    controls in Android 4.
+ * 2. Correct the inability to style clickable types in iOS and Safari.
+ */
 button,
 html [type="button"],
 [type="reset"],
@@ -270,11 +270,11 @@ button,
 [type="reset"],
 [type="submit"] {
   /**
-       * Remove the inner border and padding in Firefox.
-       */
+   * Remove the inner border and padding in Firefox.
+   */
   /**
-       * Restore the focus styles unset by the previous rule.
-       */ }
+   * Restore the focus styles unset by the previous rule.
+   */ }
   button::-moz-focus-inner,
   [type="button"]::-moz-focus-inner,
   [type="reset"]::-moz-focus-inner,
@@ -288,15 +288,15 @@ button,
     outline: 1px dotted ButtonText; }
 
 /**
-     * Show the overflow in Edge.
-     */
+ * Show the overflow in Edge.
+ */
 input {
   overflow: visible; }
 
 /**
-     * 1. Add the correct box sizing in IE 10-.
-     * 2. Remove the padding in IE 10-.
-     */
+ * 1. Add the correct box sizing in IE 10-.
+ * 2. Remove the padding in IE 10-.
+ */
 [type="checkbox"],
 [type="radio"] {
   box-sizing: border-box;
@@ -305,31 +305,31 @@ input {
   /* 2 */ }
 
 /**
-     * Correct the cursor style of increment and decrement buttons in Chrome.
-     */
+ * Correct the cursor style of increment and decrement buttons in Chrome.
+ */
 [type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
   height: auto; }
 
 /**
-     * 1. Correct the odd appearance in Chrome and Safari.
-     * 2. Correct the outline style in Safari.
-     */
+ * 1. Correct the odd appearance in Chrome and Safari.
+ * 2. Correct the outline style in Safari.
+ */
 [type="search"] {
   -webkit-appearance: textfield;
   /* 1 */
   outline-offset: -2px;
   /* 2 */
   /**
-       * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
-       */ }
+   * Remove the inner padding and cancel buttons in Chrome and Safari on macOS.
+   */ }
   [type="search"]::-webkit-search-cancel-button, [type="search"]::-webkit-search-decoration {
     -webkit-appearance: none; }
 
 /**
-     * 1. Correct the inability to style clickable types in iOS and Safari.
-     * 2. Change font properties to `inherit` in Safari.
-     */
+ * 1. Correct the inability to style clickable types in iOS and Safari.
+ * 2. Change font properties to `inherit` in Safari.
+ */
 ::-webkit-file-upload-button {
   -webkit-appearance: button;
   /* 1 */
@@ -337,19 +337,19 @@ input {
   /* 2 */ }
 
 /**
-     * Change the border, margin, and padding in all browsers (opinionated).
-     */
+ * Change the border, margin, and padding in all browsers (opinionated).
+ */
 fieldset {
   border: 1px solid #c0c0c0;
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em; }
 
 /**
-     * 1. Correct the text wrapping in Edge and IE.
-     * 2. Correct the color inheritance from `fieldset` elements in IE.
-     * 3. Remove the padding so developers are not caught out when they zero out
-     *    `fieldset` elements in all browsers.
-     */
+ * 1. Correct the text wrapping in Edge and IE.
+ * 2. Correct the color inheritance from `fieldset` elements in IE.
+ * 3. Remove the padding so developers are not caught out when they zero out
+ *    `fieldset` elements in all browsers.
+ */
 legend {
   box-sizing: border-box;
   /* 1 */
@@ -365,9 +365,9 @@ legend {
   /* 1 */ }
 
 /**
-     * 1. Add the correct display in IE 9-.
-     * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
-     */
+ * 1. Add the correct display in IE 9-.
+ * 2. Add the correct vertical alignment in Chrome, Firefox, and Opera.
+ */
 progress {
   display: inline-block;
   /* 1 */
@@ -375,50 +375,50 @@ progress {
   /* 2 */ }
 
 /**
-     * Remove the default vertical scrollbar in IE.
-     */
+ * Remove the default vertical scrollbar in IE.
+ */
 textarea {
   overflow: auto; }
 
 /* Interactive
-       ========================================================================== */
+   ========================================================================== */
 /*
-     * Add the correct display in Edge, IE, and Firefox.
-     */
+ * Add the correct display in Edge, IE, and Firefox.
+ */
 details {
   display: block; }
 
 /*
-     * Add the correct display in all browsers.
-     */
+ * Add the correct display in all browsers.
+ */
 summary {
   display: list-item; }
 
 /*
-     * Add the correct display in IE 9-.
-     */
+ * Add the correct display in IE 9-.
+ */
 menu {
   display: block; }
 
 /* Scripting
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * Add the correct display in IE 9-.
-     */
+ * Add the correct display in IE 9-.
+ */
 canvas {
   display: inline-block; }
 
 /**
-     * Add the correct display in IE.
-     */
+ * Add the correct display in IE.
+ */
 template {
   display: none; }
 
 /* Hidden
-       ========================================================================== */
+   ========================================================================== */
 /**
-     * Add the correct display in IE 10-.
-     */
+ * Add the correct display in IE 10-.
+ */
 [hidden] {
   display: none; }
 
@@ -519,9 +519,7 @@ pre {
   .row.collapse > .column, .row.collapse > .columns {
     padding-right: 0;
     padding-left: 0; }
-  .row.is-collapse-child,
-  .row.collapse > .column > .row,
-  .row.collapse > .columns > .row {
+  .row.is-collapse-child, .row.collapse > .column > .row, .row.collapse > .columns > .row {
     margin-right: 0;
     margin-left: 0; }
 
@@ -570,88 +568,88 @@ pre {
   flex-direction: column-reverse; }
 
 .small-1 {
-  flex: 0 0 8.33333%;
-  max-width: 8.33333%; }
+  flex: 0 0 8.3333333333%;
+  max-width: 8.3333333333%; }
 
 .small-offset-0 {
   margin-left: 0%; }
 
 .small-2 {
-  flex: 0 0 16.66667%;
-  max-width: 16.66667%; }
+  flex: 0 0 16.6666666667%;
+  max-width: 16.6666666667%; }
 
 .small-offset-1 {
-  margin-left: 8.33333%; }
+  margin-left: 8.3333333333%; }
 
 .small-3 {
   flex: 0 0 25%;
   max-width: 25%; }
 
 .small-offset-2 {
-  margin-left: 16.66667%; }
+  margin-left: 16.6666666667%; }
 
 .small-4 {
-  flex: 0 0 33.33333%;
-  max-width: 33.33333%; }
+  flex: 0 0 33.3333333333%;
+  max-width: 33.3333333333%; }
 
 .small-offset-3 {
   margin-left: 25%; }
 
 .small-5 {
-  flex: 0 0 41.66667%;
-  max-width: 41.66667%; }
+  flex: 0 0 41.6666666667%;
+  max-width: 41.6666666667%; }
 
 .small-offset-4 {
-  margin-left: 33.33333%; }
+  margin-left: 33.3333333333%; }
 
 .small-6 {
   flex: 0 0 50%;
   max-width: 50%; }
 
 .small-offset-5 {
-  margin-left: 41.66667%; }
+  margin-left: 41.6666666667%; }
 
 .small-7 {
-  flex: 0 0 58.33333%;
-  max-width: 58.33333%; }
+  flex: 0 0 58.3333333333%;
+  max-width: 58.3333333333%; }
 
 .small-offset-6 {
   margin-left: 50%; }
 
 .small-8 {
-  flex: 0 0 66.66667%;
-  max-width: 66.66667%; }
+  flex: 0 0 66.6666666667%;
+  max-width: 66.6666666667%; }
 
 .small-offset-7 {
-  margin-left: 58.33333%; }
+  margin-left: 58.3333333333%; }
 
 .small-9 {
   flex: 0 0 75%;
   max-width: 75%; }
 
 .small-offset-8 {
-  margin-left: 66.66667%; }
+  margin-left: 66.6666666667%; }
 
 .small-10 {
-  flex: 0 0 83.33333%;
-  max-width: 83.33333%; }
+  flex: 0 0 83.3333333333%;
+  max-width: 83.3333333333%; }
 
 .small-offset-9 {
   margin-left: 75%; }
 
 .small-11 {
-  flex: 0 0 91.66667%;
-  max-width: 91.66667%; }
+  flex: 0 0 91.6666666667%;
+  max-width: 91.6666666667%; }
 
 .small-offset-10 {
-  margin-left: 83.33333%; }
+  margin-left: 83.3333333333%; }
 
 .small-12 {
   flex: 0 0 100%;
   max-width: 100%; }
 
 .small-offset-11 {
-  margin-left: 91.66667%; }
+  margin-left: 91.6666666667%; }
 
 .small-order-1 {
   order: 1; }
@@ -686,8 +684,8 @@ pre {
 .small-up-3 {
   flex-wrap: wrap; }
   .small-up-3 > .column, .small-up-3 > .columns {
-    flex: 0 0 33.33333%;
-    max-width: 33.33333%; }
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%; }
 
 .small-up-4 {
   flex-wrap: wrap; }
@@ -704,14 +702,14 @@ pre {
 .small-up-6 {
   flex-wrap: wrap; }
   .small-up-6 > .column, .small-up-6 > .columns {
-    flex: 0 0 16.66667%;
-    max-width: 16.66667%; }
+    flex: 0 0 16.6666666667%;
+    max-width: 16.6666666667%; }
 
 .small-up-7 {
   flex-wrap: wrap; }
   .small-up-7 > .column, .small-up-7 > .columns {
-    flex: 0 0 14.28571%;
-    max-width: 14.28571%; }
+    flex: 0 0 14.2857142857%;
+    max-width: 14.2857142857%; }
 
 .small-up-8 {
   flex-wrap: wrap; }
@@ -729,300 +727,378 @@ pre {
 
 @media print, screen and (min-width: 40em) {
   .medium-1 {
-    flex: 0 0 8.33333%;
-    max-width: 8.33333%; }
+    flex: 0 0 8.3333333333%;
+    max-width: 8.3333333333%; }
+
   .medium-offset-0 {
     margin-left: 0%; }
+
   .medium-2 {
-    flex: 0 0 16.66667%;
-    max-width: 16.66667%; }
+    flex: 0 0 16.6666666667%;
+    max-width: 16.6666666667%; }
+
   .medium-offset-1 {
-    margin-left: 8.33333%; }
+    margin-left: 8.3333333333%; }
+
   .medium-3 {
     flex: 0 0 25%;
     max-width: 25%; }
+
   .medium-offset-2 {
-    margin-left: 16.66667%; }
+    margin-left: 16.6666666667%; }
+
   .medium-4 {
-    flex: 0 0 33.33333%;
-    max-width: 33.33333%; }
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%; }
+
   .medium-offset-3 {
     margin-left: 25%; }
+
   .medium-5 {
-    flex: 0 0 41.66667%;
-    max-width: 41.66667%; }
+    flex: 0 0 41.6666666667%;
+    max-width: 41.6666666667%; }
+
   .medium-offset-4 {
-    margin-left: 33.33333%; }
+    margin-left: 33.3333333333%; }
+
   .medium-6 {
     flex: 0 0 50%;
     max-width: 50%; }
+
   .medium-offset-5 {
-    margin-left: 41.66667%; }
+    margin-left: 41.6666666667%; }
+
   .medium-7 {
-    flex: 0 0 58.33333%;
-    max-width: 58.33333%; }
+    flex: 0 0 58.3333333333%;
+    max-width: 58.3333333333%; }
+
   .medium-offset-6 {
     margin-left: 50%; }
+
   .medium-8 {
-    flex: 0 0 66.66667%;
-    max-width: 66.66667%; }
+    flex: 0 0 66.6666666667%;
+    max-width: 66.6666666667%; }
+
   .medium-offset-7 {
-    margin-left: 58.33333%; }
+    margin-left: 58.3333333333%; }
+
   .medium-9 {
     flex: 0 0 75%;
     max-width: 75%; }
+
   .medium-offset-8 {
-    margin-left: 66.66667%; }
+    margin-left: 66.6666666667%; }
+
   .medium-10 {
-    flex: 0 0 83.33333%;
-    max-width: 83.33333%; }
+    flex: 0 0 83.3333333333%;
+    max-width: 83.3333333333%; }
+
   .medium-offset-9 {
     margin-left: 75%; }
+
   .medium-11 {
-    flex: 0 0 91.66667%;
-    max-width: 91.66667%; }
+    flex: 0 0 91.6666666667%;
+    max-width: 91.6666666667%; }
+
   .medium-offset-10 {
-    margin-left: 83.33333%; }
+    margin-left: 83.3333333333%; }
+
   .medium-12 {
     flex: 0 0 100%;
     max-width: 100%; }
+
   .medium-offset-11 {
-    margin-left: 91.66667%; }
+    margin-left: 91.6666666667%; }
+
   .medium-order-1 {
     order: 1; }
+
   .medium-order-2 {
     order: 2; }
+
   .medium-order-3 {
     order: 3; }
+
   .medium-order-4 {
     order: 4; }
+
   .medium-order-5 {
     order: 5; }
+
   .medium-order-6 {
     order: 6; }
+
   .medium-up-1 {
     flex-wrap: wrap; }
     .medium-up-1 > .column, .medium-up-1 > .columns {
       flex: 0 0 100%;
       max-width: 100%; }
+
   .medium-up-2 {
     flex-wrap: wrap; }
     .medium-up-2 > .column, .medium-up-2 > .columns {
       flex: 0 0 50%;
       max-width: 50%; }
+
   .medium-up-3 {
     flex-wrap: wrap; }
     .medium-up-3 > .column, .medium-up-3 > .columns {
-      flex: 0 0 33.33333%;
-      max-width: 33.33333%; }
+      flex: 0 0 33.3333333333%;
+      max-width: 33.3333333333%; }
+
   .medium-up-4 {
     flex-wrap: wrap; }
     .medium-up-4 > .column, .medium-up-4 > .columns {
       flex: 0 0 25%;
       max-width: 25%; }
+
   .medium-up-5 {
     flex-wrap: wrap; }
     .medium-up-5 > .column, .medium-up-5 > .columns {
       flex: 0 0 20%;
       max-width: 20%; }
+
   .medium-up-6 {
     flex-wrap: wrap; }
     .medium-up-6 > .column, .medium-up-6 > .columns {
-      flex: 0 0 16.66667%;
-      max-width: 16.66667%; }
+      flex: 0 0 16.6666666667%;
+      max-width: 16.6666666667%; }
+
   .medium-up-7 {
     flex-wrap: wrap; }
     .medium-up-7 > .column, .medium-up-7 > .columns {
-      flex: 0 0 14.28571%;
-      max-width: 14.28571%; }
+      flex: 0 0 14.2857142857%;
+      max-width: 14.2857142857%; }
+
   .medium-up-8 {
     flex-wrap: wrap; }
     .medium-up-8 > .column, .medium-up-8 > .columns {
       flex: 0 0 12.5%;
       max-width: 12.5%; } }
-
 @media print, screen and (min-width: 40em) and (min-width: 40em) {
   .medium-expand {
     flex: 1 1 0px; } }
-
 @media print, screen and (min-width: 40em) {
   .medium-flex-dir-row {
     flex-direction: row; }
+
   .medium-flex-dir-row-reverse {
     flex-direction: row-reverse; }
+
   .medium-flex-dir-column {
     flex-direction: column; }
+
   .medium-flex-dir-column-reverse {
     flex-direction: column-reverse; }
+
   .medium-flex-child-auto {
     flex: 1 1 auto; }
+
   .medium-flex-child-grow {
     flex: 1 0 auto; }
+
   .medium-flex-child-shrink {
     flex: 0 1 auto; } }
-
 .row.medium-unstack > .column, .row.medium-unstack > .columns {
   flex: 0 0 100%; }
   @media print, screen and (min-width: 40em) {
     .row.medium-unstack > .column, .row.medium-unstack > .columns {
       flex: 1 1 0px; } }
-
 @media print, screen and (min-width: 40em) {
   .medium-collapse > .column, .medium-collapse > .columns {
     padding-right: 0;
     padding-left: 0; }
+
   .medium-uncollapse > .column, .medium-uncollapse > .columns {
     padding-right: 0.9375rem;
     padding-left: 0.9375rem; } }
-
 @media print, screen and (min-width: 64em) {
   .large-1 {
-    flex: 0 0 8.33333%;
-    max-width: 8.33333%; }
+    flex: 0 0 8.3333333333%;
+    max-width: 8.3333333333%; }
+
   .large-offset-0 {
     margin-left: 0%; }
+
   .large-2 {
-    flex: 0 0 16.66667%;
-    max-width: 16.66667%; }
+    flex: 0 0 16.6666666667%;
+    max-width: 16.6666666667%; }
+
   .large-offset-1 {
-    margin-left: 8.33333%; }
+    margin-left: 8.3333333333%; }
+
   .large-3 {
     flex: 0 0 25%;
     max-width: 25%; }
+
   .large-offset-2 {
-    margin-left: 16.66667%; }
+    margin-left: 16.6666666667%; }
+
   .large-4 {
-    flex: 0 0 33.33333%;
-    max-width: 33.33333%; }
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%; }
+
   .large-offset-3 {
     margin-left: 25%; }
+
   .large-5 {
-    flex: 0 0 41.66667%;
-    max-width: 41.66667%; }
+    flex: 0 0 41.6666666667%;
+    max-width: 41.6666666667%; }
+
   .large-offset-4 {
-    margin-left: 33.33333%; }
+    margin-left: 33.3333333333%; }
+
   .large-6 {
     flex: 0 0 50%;
     max-width: 50%; }
+
   .large-offset-5 {
-    margin-left: 41.66667%; }
+    margin-left: 41.6666666667%; }
+
   .large-7 {
-    flex: 0 0 58.33333%;
-    max-width: 58.33333%; }
+    flex: 0 0 58.3333333333%;
+    max-width: 58.3333333333%; }
+
   .large-offset-6 {
     margin-left: 50%; }
+
   .large-8 {
-    flex: 0 0 66.66667%;
-    max-width: 66.66667%; }
+    flex: 0 0 66.6666666667%;
+    max-width: 66.6666666667%; }
+
   .large-offset-7 {
-    margin-left: 58.33333%; }
+    margin-left: 58.3333333333%; }
+
   .large-9 {
     flex: 0 0 75%;
     max-width: 75%; }
+
   .large-offset-8 {
-    margin-left: 66.66667%; }
+    margin-left: 66.6666666667%; }
+
   .large-10 {
-    flex: 0 0 83.33333%;
-    max-width: 83.33333%; }
+    flex: 0 0 83.3333333333%;
+    max-width: 83.3333333333%; }
+
   .large-offset-9 {
     margin-left: 75%; }
+
   .large-11 {
-    flex: 0 0 91.66667%;
-    max-width: 91.66667%; }
+    flex: 0 0 91.6666666667%;
+    max-width: 91.6666666667%; }
+
   .large-offset-10 {
-    margin-left: 83.33333%; }
+    margin-left: 83.3333333333%; }
+
   .large-12 {
     flex: 0 0 100%;
     max-width: 100%; }
+
   .large-offset-11 {
-    margin-left: 91.66667%; }
+    margin-left: 91.6666666667%; }
+
   .large-order-1 {
     order: 1; }
+
   .large-order-2 {
     order: 2; }
+
   .large-order-3 {
     order: 3; }
+
   .large-order-4 {
     order: 4; }
+
   .large-order-5 {
     order: 5; }
+
   .large-order-6 {
     order: 6; }
+
   .large-up-1 {
     flex-wrap: wrap; }
     .large-up-1 > .column, .large-up-1 > .columns {
       flex: 0 0 100%;
       max-width: 100%; }
+
   .large-up-2 {
     flex-wrap: wrap; }
     .large-up-2 > .column, .large-up-2 > .columns {
       flex: 0 0 50%;
       max-width: 50%; }
+
   .large-up-3 {
     flex-wrap: wrap; }
     .large-up-3 > .column, .large-up-3 > .columns {
-      flex: 0 0 33.33333%;
-      max-width: 33.33333%; }
+      flex: 0 0 33.3333333333%;
+      max-width: 33.3333333333%; }
+
   .large-up-4 {
     flex-wrap: wrap; }
     .large-up-4 > .column, .large-up-4 > .columns {
       flex: 0 0 25%;
       max-width: 25%; }
+
   .large-up-5 {
     flex-wrap: wrap; }
     .large-up-5 > .column, .large-up-5 > .columns {
       flex: 0 0 20%;
       max-width: 20%; }
+
   .large-up-6 {
     flex-wrap: wrap; }
     .large-up-6 > .column, .large-up-6 > .columns {
-      flex: 0 0 16.66667%;
-      max-width: 16.66667%; }
+      flex: 0 0 16.6666666667%;
+      max-width: 16.6666666667%; }
+
   .large-up-7 {
     flex-wrap: wrap; }
     .large-up-7 > .column, .large-up-7 > .columns {
-      flex: 0 0 14.28571%;
-      max-width: 14.28571%; }
+      flex: 0 0 14.2857142857%;
+      max-width: 14.2857142857%; }
+
   .large-up-8 {
     flex-wrap: wrap; }
     .large-up-8 > .column, .large-up-8 > .columns {
       flex: 0 0 12.5%;
       max-width: 12.5%; } }
-
 @media print, screen and (min-width: 64em) and (min-width: 64em) {
   .large-expand {
     flex: 1 1 0px; } }
-
 @media print, screen and (min-width: 64em) {
   .large-flex-dir-row {
     flex-direction: row; }
+
   .large-flex-dir-row-reverse {
     flex-direction: row-reverse; }
+
   .large-flex-dir-column {
     flex-direction: column; }
+
   .large-flex-dir-column-reverse {
     flex-direction: column-reverse; }
+
   .large-flex-child-auto {
     flex: 1 1 auto; }
+
   .large-flex-child-grow {
     flex: 1 0 auto; }
+
   .large-flex-child-shrink {
     flex: 0 1 auto; } }
-
 .row.large-unstack > .column, .row.large-unstack > .columns {
   flex: 0 0 100%; }
   @media print, screen and (min-width: 64em) {
     .row.large-unstack > .column, .row.large-unstack > .columns {
       flex: 1 1 0px; } }
-
 @media print, screen and (min-width: 64em) {
   .large-collapse > .column, .large-collapse > .columns {
     padding-right: 0;
     padding-left: 0; }
+
   .large-uncollapse > .column, .large-uncollapse > .columns {
     padding-right: 0.9375rem;
     padding-left: 0.9375rem; } }
-
 .shrink {
   flex: 0 0 auto;
   max-width: 100%; }
@@ -1138,17 +1214,21 @@ h6 {
 @media print, screen and (min-width: 40em) {
   h1 {
     font-size: 3rem; }
+
   h2 {
     font-size: 2.5rem; }
+
   h3 {
     font-size: 1.9375rem; }
+
   h4 {
     font-size: 1.5625rem; }
+
   h5 {
     font-size: 1.25rem; }
+
   h6 {
     font-size: 1rem; } }
-
 a {
   line-height: inherit;
   color: #FFCC34;
@@ -1270,23 +1350,27 @@ kbd {
 @media print, screen and (min-width: 40em) {
   .medium-text-left {
     text-align: left; }
+
   .medium-text-right {
     text-align: right; }
+
   .medium-text-center {
     text-align: center; }
+
   .medium-text-justify {
     text-align: justify; } }
-
 @media print, screen and (min-width: 64em) {
   .large-text-left {
     text-align: left; }
+
   .large-text-right {
     text-align: right; }
+
   .large-text-center {
     text-align: center; }
+
   .large-text-justify {
     text-align: justify; } }
-
 .show-for-print {
   display: none !important; }
 
@@ -1296,44 +1380,61 @@ kbd {
     box-shadow: none !important;
     color: black !important;
     text-shadow: none !important; }
+
   .show-for-print {
     display: block !important; }
+
   .hide-for-print {
     display: none !important; }
+
   table.show-for-print {
     display: table !important; }
+
   thead.show-for-print {
     display: table-header-group !important; }
+
   tbody.show-for-print {
     display: table-row-group !important; }
+
   tr.show-for-print {
     display: table-row !important; }
+
   td.show-for-print {
     display: table-cell !important; }
+
   th.show-for-print {
     display: table-cell !important; }
+
   a,
   a:visited {
     text-decoration: underline; }
+
   a[href]:after {
     content: " (" attr(href) ")"; }
+
   .ir a:after,
   a[href^='javascript:']:after,
   a[href^='#']:after {
     content: ''; }
+
   abbr[title]:after {
     content: " (" attr(title) ")"; }
+
   pre,
   blockquote {
     border: 1px solid #666;
     page-break-inside: avoid; }
+
   thead {
     display: table-header-group; }
+
   tr,
   img {
     page-break-inside: avoid; }
+
   img {
     max-width: 100% !important; }
+
   @page {
     margin: 0.5cm; }
   p,
@@ -1341,12 +1442,13 @@ kbd {
   h3 {
     orphans: 3;
     widows: 3; }
+
   h2,
   h3 {
     page-break-after: avoid; }
+
   .print-break-inside {
     page-break-inside: auto; } }
-
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
 textarea {
   display: block;
@@ -1381,7 +1483,6 @@ textarea {
 input::placeholder,
 textarea::placeholder {
   color: #E9E9E9; }
-
 input:disabled, input[readonly],
 textarea:disabled,
 textarea[readonly] {
@@ -1736,7 +1837,6 @@ select {
 
 .accordion-item:first-child > :first-child {
   border-radius: 0 0 0 0; }
-
 .accordion-item:last-child > :last-child {
   border-radius: 0 0 0 0; }
 
@@ -2268,16 +2368,13 @@ select {
   top: 100%;
   right: 0;
   left: auto; }
-
 .dropdown.menu > li.opens-right > .is-dropdown-submenu {
   top: 100%;
   right: auto;
   left: 0; }
-
 .dropdown.menu > li.is-dropdown-submenu-parent > a {
   position: relative;
   padding-right: 1.5rem; }
-
 .dropdown.menu > li.is-dropdown-submenu-parent > a::after {
   display: block;
   width: 0;
@@ -2289,27 +2386,20 @@ select {
   border-color: #FFCC34 transparent transparent;
   right: 5px;
   margin-top: -3px; }
-
 [data-whatinput='mouse'] .dropdown.menu a {
   outline: 0; }
-
 .no-js .dropdown.menu ul {
   display: none; }
-
 .dropdown.menu.vertical > li .is-dropdown-submenu {
   top: 0; }
-
 .dropdown.menu.vertical > li.opens-left > .is-dropdown-submenu {
   right: 100%;
   left: auto; }
-
 .dropdown.menu.vertical > li.opens-right > .is-dropdown-submenu {
   right: auto;
   left: 100%; }
-
 .dropdown.menu.vertical > li > a::after {
   right: 14px; }
-
 .dropdown.menu.vertical > li.opens-left > a::after {
   display: block;
   width: 0;
@@ -2319,7 +2409,6 @@ select {
   border-left-width: 0;
   border-right-style: solid;
   border-color: transparent #FFCC34 transparent transparent; }
-
 .dropdown.menu.vertical > li.opens-right > a::after {
   display: block;
   width: 0;
@@ -2329,7 +2418,6 @@ select {
   border-right-width: 0;
   border-left-style: solid;
   border-color: transparent transparent transparent #FFCC34; }
-
 @media print, screen and (min-width: 40em) {
   .dropdown.menu.medium-horizontal > li.opens-left > .is-dropdown-submenu {
     top: 100%;
@@ -2381,7 +2469,6 @@ select {
     border-right-width: 0;
     border-left-style: solid;
     border-color: transparent transparent transparent #FFCC34; } }
-
 @media print, screen and (min-width: 64em) {
   .dropdown.menu.large-horizontal > li.opens-left > .is-dropdown-submenu {
     top: 100%;
@@ -2433,7 +2520,6 @@ select {
     border-right-width: 0;
     border-left-style: solid;
     border-color: transparent transparent transparent #FFCC34; } }
-
 .dropdown.menu.align-right .is-dropdown-submenu.first-sub {
   top: 100%;
   right: 0;
@@ -2724,44 +2810,48 @@ select {
     z-index: 1; }
     .position-left.reveal-for-medium ~ .off-canvas-content {
       margin-left: 250px; }
+
   .position-right.reveal-for-medium {
     transform: none;
     z-index: 1; }
     .position-right.reveal-for-medium ~ .off-canvas-content {
       margin-right: 250px; }
+
   .position-top.reveal-for-medium {
     transform: none;
     z-index: 1; }
     .position-top.reveal-for-medium ~ .off-canvas-content {
       margin-top: 250px; }
+
   .position-bottom.reveal-for-medium {
     transform: none;
     z-index: 1; }
     .position-bottom.reveal-for-medium ~ .off-canvas-content {
       margin-bottom: 250px; } }
-
 @media print, screen and (min-width: 64em) {
   .position-left.reveal-for-large {
     transform: none;
     z-index: 1; }
     .position-left.reveal-for-large ~ .off-canvas-content {
       margin-left: 250px; }
+
   .position-right.reveal-for-large {
     transform: none;
     z-index: 1; }
     .position-right.reveal-for-large ~ .off-canvas-content {
       margin-right: 250px; }
+
   .position-top.reveal-for-large {
     transform: none;
     z-index: 1; }
     .position-top.reveal-for-large ~ .off-canvas-content {
       margin-top: 250px; }
+
   .position-bottom.reveal-for-large {
     transform: none;
     z-index: 1; }
     .position-bottom.reveal-for-large ~ .off-canvas-content {
       margin-bottom: 250px; } }
-
 .orbit {
   position: relative; }
 
@@ -3214,29 +3304,43 @@ table {
   width: 100%;
   margin-bottom: 1rem;
   border-radius: 0; }
-  thead, tbody, tfoot {
+  thead,
+  tbody,
+  tfoot {
     border: 1px solid #f2f2f2;
     background-color: white; }
+
   caption {
     padding: 0.5rem 0.625rem 0.625rem;
     font-weight: bold; }
+
   thead {
     background: #f9f9f9;
     color: #444; }
+
   tfoot {
     background: #f2f2f2;
     color: #444; }
-  thead tr, tfoot tr {
+
+  thead tr,
+  tfoot tr {
     background: transparent; }
-  thead th, thead td, tfoot th, tfoot td {
+  thead th,
+  thead td,
+  tfoot th,
+  tfoot td {
     padding: 0.5rem 0.625rem 0.625rem;
     font-weight: bold;
     text-align: left; }
-  tbody th, tbody td {
+
+  tbody th,
+  tbody td {
     padding: 0.5rem 0.625rem 0.625rem; }
+
   tbody tr:nth-child(even) {
     border-bottom: 0;
     background-color: #f2f2f2; }
+
   table.unstriped tbody {
     background-color: white; }
     table.unstriped tbody tr {
@@ -3263,13 +3367,10 @@ table.scroll {
 
 table.hover thead tr:hover {
   background-color: #f4f4f4; }
-
 table.hover tfoot tr:hover {
   background-color: #ededed; }
-
 table.hover tbody tr:hover {
   background-color: #fafafa; }
-
 table.hover:not(.unstriped) tr:nth-of-type(even):hover {
   background-color: #ededed; }
 
@@ -3601,7 +3702,6 @@ a.thumbnail {
   content: ' ';
   flex-basis: 0;
   order: 1; }
-
 .clearfix::after {
   clear: both; }
 
@@ -3667,31 +3767,39 @@ a.thumbnail {
 @media print, screen and (min-width: 40em) {
   .medium-order-1 {
     order: 1; }
+
   .medium-order-2 {
     order: 2; }
+
   .medium-order-3 {
     order: 3; }
+
   .medium-order-4 {
     order: 4; }
+
   .medium-order-5 {
     order: 5; }
+
   .medium-order-6 {
     order: 6; } }
-
 @media print, screen and (min-width: 64em) {
   .large-order-1 {
     order: 1; }
+
   .large-order-2 {
     order: 2; }
+
   .large-order-3 {
     order: 3; }
+
   .large-order-4 {
     order: 4; }
+
   .large-order-5 {
     order: 5; }
+
   .large-order-6 {
     order: 6; } }
-
 body {
   font-family: 'Source Sans Pro', sans-serif;
   color: #262626; }
@@ -3710,7 +3818,6 @@ p {
 @media (min-width: 43.75em) {
   html {
     line-height: 1.375; } }
-
 h1 {
   font-size: 2em;
   font-weight: bold;
@@ -4106,7 +4213,6 @@ body {
   align-items: baseline; }
   .login-token-list .token-input input {
     padding-right: 1em; }
-
 .login-token-list .token-list .token-display {
   display: flex;
   flex-direction: row;
@@ -4132,7 +4238,6 @@ body {
     visibility: hidden; }
   #all-files-editor .node.node-file .name {
     cursor: pointer; }
-
 #all-files-editor .node.editing-in-progress .name::after {
   content: "editing";
   margin-left: 1em;
@@ -4142,39 +4247,30 @@ body {
   font-size: 0.7em;
   text-transform: uppercase;
   padding: 0 1em; }
-
 #all-files-editor .node.state-changed {
   background-color: #ddd; }
-
 #all-files-editor .node.state-deleted {
   text-decoration: line-through;
   color: #fab414; }
-
 #all-files-editor .node.state-new {
   background-color: #fab414; }
-
 #all-files-editor .node.state-absent .name {
   text-decoration: line-through;
   color: #ccc; }
-
 #all-files-editor div.children {
   margin-left: 1em;
   overflow: hidden;
   transition: height 0.3s; }
-
 #all-files-editor .node .name {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center; }
-
 #all-files-editor .node.closed .children {
   display: none; }
-
 #all-files-editor .node .closer {
   cursor: pointer;
   margin-right: 0.3em; }
-
 #all-files-editor .node svg {
   padding: 2px; }
   #all-files-editor .node svg .grect {
@@ -4183,17 +4279,13 @@ body {
     stroke-width: 4; }
   #all-files-editor .node svg:hover .grect {
     stroke: red; }
-
 #all-files-editor .node .plusvg {
   fill: #666;
   transition: fill 0.3s, transform 0.3s; }
-
 #all-files-editor .node .plusvg2 {
   transform: rotate(0deg); }
-
 #all-files-editor .node.closed .plusvg2 {
   transform: rotate(90deg); }
-
 #all-files-editor .node.ignore {
   display: none; }
 
@@ -4342,16 +4434,13 @@ body {
 
 #pull-request-new input, #pull-request-new textarea, #pull-request-new select {
   margin-left: 0; }
-
 #pull-request-new textarea {
   width: 100%;
   height: 8em;
   margin-bottom: 1em; }
-
 #pull-request-new label {
   display: block;
   margin: 1em 0; }
-
 #pull-request-new input {
   display: block; }
 
@@ -4606,7 +4695,6 @@ body {
   align-items: baseline;
   justify-content: space-between;
   margin-bottom: 1em; }
-
 #repo-detail .repo-detail-section {
   margin-bottom: 1em; }
   #repo-detail .repo-detail-section .edits {
@@ -4912,7 +5000,6 @@ textarea {
   .pull-request {
     display: flex;
     justify-content: space-between; } }
-
 .pull-request .action {
   flex-direction: column;
   justify-content: flex-end; }
@@ -4928,7 +5015,6 @@ textarea {
 
 .form-new-version p {
   margin-bottom: 2em; }
-
 .form-new-version label + p {
   margin-left: 2em; }
 
@@ -4943,7 +5029,6 @@ legend {
   list-style: none;
   padding-left: 0;
   margin-top: 0; }
-
 .action-group li {
   padding: 0.25em 0.5em; }
 
@@ -4954,7 +5039,6 @@ legend {
 
 .actions-editor ul {
   text-align: right; }
-
 .actions-editor li {
   display: inline-block; }
 
@@ -4964,3 +5048,5 @@ legend {
 a[disabled='disabled'] {
   color: #666;
   cursor: default; }
+
+/*# sourceMappingURL=main.css.map */

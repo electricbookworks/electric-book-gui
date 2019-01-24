@@ -1,7 +1,16 @@
 #!/bin/bash
 # SOME BASIC DEPENDENCIES
 set -e
-sudo apt-get install -y git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev
+sudo apt-get install -y git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git
+if [[ ! $(which watchman) ]]; then
+    git clone https://github.com/facebook/watchman.git
+    cd watchman
+    git checkout v4.9.0  # the latest stable release
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
+fi
 # INSTALL YARN
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
