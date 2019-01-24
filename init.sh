@@ -15,7 +15,7 @@ if [[ ! $(which yarn) ]]; then
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 fi
 sudo apt-get update
-sudo apt-get install -y libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev ruby-sass
+sudo apt-get install -y libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev ruby-sass ansible
 
 yarn install
 sudo yarn global add rollup
@@ -62,8 +62,6 @@ if [[ ! -d libgit2-0.25.1 ]]; then
 	popd
 fi
 
-
-
 # pod returns us to our directory where we've got our classes
 popd
 
@@ -90,3 +88,15 @@ fi
 make install
 popd
 sudo ldconfig
+
+# NOW CONFIGURE RVM AND BOOKWORKS NECESSARY PARTS SO THAT PRINTING AND JEKYLL WILL WORK
+pushd tools/ansible
+ansible-playbook -i 'localhost,' -c local playbook-bookworks.yml
+popd
+
+# NOW WE INSTALL RUBIES FOR CURRENT USER - BOOKWORKS ANSIBLE DOESN'T SEEM TO DO IT RIGHT
+# FOR THE CURRENT USER
+source /usr/local/rvm/scripts/rvm
+rvm install ruby-2.4.0
+
+
