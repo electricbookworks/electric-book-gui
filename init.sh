@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+sudo apt-get update
+sudo apt-get install -y curl git vim
 if [[ ! $(which ansible-playbook) ]]; then
 	sudo apt-get update
 	sudo apt-get install -y software-properties-common
@@ -13,30 +15,23 @@ if [[ ! $(which yarn) ]]; then
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 fi
 sudo apt-get update
-sudo apt-get install -y git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev 
-sudo npm install -g uglifycss
+sudo apt-get install -y libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev 
+
+yarn install
 
 pushd /usr/local/
-if [[ ! $(which watchman) ]]; then
-    git clone https://github.com/facebook/watchman.git
-    cd watchman
-    git checkout v4.9.0  # the latest stable release
-    ./autogen.sh
-    ./configure
-    make
-    sudo make install
-fi
 if [[ ! $(which watchman) ]]; then
     if [[ ! -d watchman ]]; then
 	    sudo git clone https://github.com/facebook/watchman.git
     fi
-    cd watchman
+    pushd watchman
     sudo chown -R $USER:$USER .
     git checkout v4.9.0  # the latest stable release
     ./autogen.sh
     ./configure
     make
     sudo make install
+    popd
 fi
 
 if [[ ! $(which go) ]]; then
@@ -52,17 +47,21 @@ if [[ ! -d libgit2-0.25.1 ]]; then
 	sudo curl -LO https://github.com/libgit2/libgit2/archive/v0.25.1.tar.gz
 	sudo tar -xzf v0.25.1.tar.gz
 	sudo rm v0.25.1.tar.gz
+
+	pushd libgit2-0.25.1
+	sudo chown -R $USER:$USER .
+	if [[ ! -d build ]]; then
+		mkdir build
+	fi
+	cd build
+	cmake ..
+	cmake --build .
+	sudo cmake --build . --target install
+	popd
 fi
 
-cd libgit2-0.25.1
-sudo chown -R $USER:$USER .
-if [[ ! -d build ]]; then
-	mkdir build
-fi
-cd build
-cmake ..
-cmake --build .
-sudo cmake --build . --target install
+
+
 # pod returns us to our directory where we've got our classes
 popd
 
