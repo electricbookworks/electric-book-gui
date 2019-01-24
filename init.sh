@@ -15,9 +15,11 @@ if [[ ! $(which yarn) ]]; then
 	echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 fi
 sudo apt-get update
-sudo apt-get install -y libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev 
+sudo apt-get install -y libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git nodejs yarn libsass-dev git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev cmake pkg-config lxc-common lxc-dev python-dev ruby-sass
 
 yarn install
+sudo yarn global add rollup
+
 
 pushd /usr/local/
 if [[ ! $(which watchman) ]]; then
