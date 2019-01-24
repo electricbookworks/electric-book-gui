@@ -22,7 +22,7 @@
 - name: installrvm
   tags: ruby
   include_role:
-    name: rvm_io.ruby
+    name: rvm.ruby
   vars:
     rvm1_rubies: ['ruby-2.4.0']
     rvm1_user: "root"
