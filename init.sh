@@ -1,8 +1,24 @@
 #!/bin/bash
 set -e
-sudo apt install -y cmake curl pkg-config lxc-common lxc-dev
+# SOME BASIC DEPENDENCIES
+set -e
 # pushd will take us to user/local for installing libgit2
 pushd /usr/local/
+sudo apt-get install -y git libssl-dev libxml2-dev libhttp-parser-dev libssh2-1-dev curl libcurl4-gnutls-dev autoconf automake libtool git cmake pkg-config lxc-common lxc-dev python-dev 
+sudo npm install -g uglifycss
+if [[ ! $(which watchman) ]]; then
+    if [[ ! -d watchman ]]; then
+	    sudo git clone https://github.com/facebook/watchman.git
+    fi
+    cd watchman
+    sudo chown -R $USER:$USER .
+    git checkout v4.9.0  # the latest stable release
+    ./autogen.sh
+    ./configure
+    make
+    sudo make install
+fi
+
 if [[ ! $(which go) ]]; then
 	if [[ ! -d go ]]; then
 		sudo curl -O 'https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz'
