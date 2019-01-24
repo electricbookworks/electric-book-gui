@@ -1,14 +1,12 @@
 # Our dependency on rvm_io.ruby will install rvm and bundler
 - name: install bookworks prereqs
-  apt: >
-    name={{item}}
-    state=present
-    force=yes
-  with_items:
+  apt: 
+    state: present
+    force: yes
+    name:
     - git
     - curl
     - vim
-    - libcurl4
     - libfontconfig1
     - libfreetype6
     - libgif7
@@ -19,6 +17,24 @@
     - libpixman-1-0
   become: yes
 
+- name: apt-1804
+  when: ansible_distribution_version == "18.04"
+  become: yes
+  apt:
+    state: present
+    force: yes
+    name: 
+    - libcurl4
+
+- name: apt-1604
+  when: ansible_distribution_version == "16.04"
+  become: yes
+  apt: 
+    state: present
+    force: yes
+    name:
+    - libcurl3
+
 - name: installrvm
   tags: ruby
   include_role:
@@ -28,17 +44,25 @@
     rvm1_user: "root"
     rvm1_install_path: /usr/local/rvm
 
+#- name: rvm
+#  become: yes
+#  tags: ruby
+#  shell: |
+#    \curl -sSL https://get.rvm.io | bash -s stable --ruby
+#    source /usr/local/rvm/scripts/rvm
+#    rvm install 2.4.0
+
 # - name: copy libpng12
 #   become: yes
 #   copy: >
 #     src=libpng12-ubuntu_amd64.deb
 #     dest=/tmp/libpng12.deb
 
-- name: install libpng12
-  become: yes
-  apt: >
-    deb=http://za.archive.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
-    state=present
+#- name: install libpng12
+#  become: yes
+#  apt: >
+#    deb=http://za.archive.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1_amd64.deb
+#    state=present
 
 - name: install prince
   become: yes
@@ -49,10 +73,9 @@
   script: install-first-run.sh
 
 - name: "install prereqs for phantomjs"
-  apt: >
-    name={{item}}
-    state=present
-  with_items:
+  apt:
+    state: present
+    name:
     - build-essential
     - chrpath
     - libssl-dev
