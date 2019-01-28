@@ -12,9 +12,9 @@
   become: yes
 
 - name: install
-  git: >
-    repo={{git_repo}}
-    dest=/opt/electricbook
+  git: 
+    repo: {{git_repo}}
+    dest: /opt/electricbook
   become: yes
 
 - name: Set permissions on git_cache
