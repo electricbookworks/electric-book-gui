@@ -1,8 +1,7 @@
 - name: Install required packages git, vim, libgit2-dev
-  apt: >
-    name={{item}}
-    state=present
-  with_items: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
+  apt:
+    name: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
+    state: present
   become: yes
 
 - name: Create electricbook user

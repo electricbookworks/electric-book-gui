@@ -97,7 +97,7 @@ for domain in ${renewed_certs[@]}; do
 done
 
 # soft-restart haproxy
-if [ "${#renewed_certs[@]}" -gt 0 ]; then
+if [ "{% raw %}${#renewed_certs[@]}{% endraw %}" -gt 0 ]; then
   $HAPROXY_RELOAD_CMD
   if [ $? -ne 0 ]; then
     logger_error "failed to reload haproxy!"
