@@ -24,6 +24,8 @@ export class FileSystemConnector {
 	protected View : FileSystemView;
 	protected root: Node;
 
+	protected loadingFile: string;
+
 	constructor(
 		protected context:Context,
 		protected parent:HTMLElement,
@@ -42,9 +44,14 @@ export class FileSystemConnector {
 
 		parent.addEventListener(`ebw-file-clicked`, (evt)=>{
 			let path = evt.detail as string;
+			this.loadingFile = path;
 			this.FS.Read(path)
 			.then(
 				(f:File)=>{
+					if (this.loadingFile!=f.Name()) {
+						//console.log(`caught out-of-sync file read for : ${f.Name()}`);
+						return;
+					}
 					this.editor.setFile(f);
 				})
 			.catch( EBW.Error );

@@ -288,6 +288,7 @@ export class RepoFileEditorCM extends Template {
 				// loaded A, and just ignores it, since we are now loading
 				// B.
 				if (this.loadingFile.Name()!=file.Name()) {
+					console.log(`Caught the file-arrived-out-of-sync error for file ${file.Name()}`);
 					return;
 				}
 				this.file = file;

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"io/ioutil"
+	"path/filepath"
+	"time"
 
 	"github.com/golang/glog"
 	git2go "gopkg.in/libgit2/git2go.v25"
@@ -24,6 +26,9 @@ func (g *Git) ReadFileData(path string, v GitFileVersion) (*FileData, error) {
 	f := &FileData{
 		Version: v.String(),
 		Path: path,
+	}
+	if filepath.Base(path)==`sleep.md` {
+		time.Sleep(4 * time.Second)
 	}
 	switch v {
 	case GFV_OUR_HEAD:

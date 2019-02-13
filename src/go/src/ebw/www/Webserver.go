@@ -160,7 +160,6 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		}
 		// We don't parse html in bower_components
 		if strings.Contains(name, `bower_components/`) || filepath.Base(name)==`bower_components` {
-			glog.Infof(`Skipping %s`, name)
 			return filepath.SkipDir
 		}
 		if !strings.HasSuffix(name, ".html") {

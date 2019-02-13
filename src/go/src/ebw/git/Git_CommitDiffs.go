@@ -1,11 +1,16 @@
 package git
 
 import (
+	"bytes"
 	"path/filepath"
+	"html"
+	"strings"
 
 	git2go "gopkg.in/libgit2/git2go.v25"
 	"github.com/juju/errors"
 	"github.com/golang/glog"
+	"github.com/sergi/go-diff/diffmatchpatch"
+
 	"ebw/util"
 )
 var _ = errors.New
@@ -152,10 +157,9 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 	return changes, nil
 }
 
-// CommitDiffsPatch returns the indexed patch for 
-// the differences between the two commits
-// stored as fromOID and toOID
-func (g *Git) CommitDiffsPatch(fromOID, toOID string, index int) (*git2go.Patch, error) {
+// CommitDiff returns the diff between
+// two commits. The receiver must call diff.Free()
+func (g *Git) NewCommitDiff(fromOID, toOID string) (*git2go.Diff, error) {
 	fromTreeID, err := git2go.NewOid(fromOID)
 	if nil!=err {
 		return nil, util.Error(err)
@@ -185,9 +189,55 @@ func (g *Git) CommitDiffsPatch(fromOID, toOID string, index int) (*git2go.Patch,
 	if nil!=err {
 		return nil, util.Error(err)
 	}
+	return diff, nil
+}
+
+// CommitDiffsPatch returns the indexed patch for 
+// the differences between the two commits
+// stored as fromOID and toOID
+func (g *Git) CommitDiffsPatch(fromOID, toOID string, index int) (*git2go.Patch, error) {
+	diff, err := g.NewCommitDiff(fromOID, toOID)
+	if nil!=err {
+		return nil, err
+	}
 	defer diff.Free()
 
 	return diff.Patch(index)
+}
+
+func (g *Git) CommitDiffsPretty(fromOID, toOID string, index int) (string ,error) {
+	diff, err := g.NewCommitDiff(fromOID, toOID)
+	if nil!=err {
+		return err.Error(), errors.Trace(err)
+	}
+	defer diff.Free()
+
+	delta, err := diff.GetDelta(index)
+	if nil!=err {
+		return err.Error(), errors.Trace(err)
+	}
+
+	ob, err := g.Repository.LookupBlob(delta.OldFile.Oid)
+	if nil!=err {
+		return err.Error(), errors.Trace(err)
+	}
+	defer ob.Free()
+	nb, err := g.Repository.LookupBlob(delta.NewFile.Oid)
+	if nil!=err {
+		return err.Error(), errors.Trace(err)
+	}
+	defer nb.Free()
+
+	glog.Infof(`OB = %s`, string(ob.Contents()))
+	glog.Infof(`NB = %s`, string(nb.Contents()))
+
+	dmp := diffmatchpatch.New()
+	return PrettyDiff(
+		dmp.DiffMain(
+			string(ob.Contents()),
+			string(nb.Contents()),
+			false,
+		)), nil
 }
 
 // func (g *Git) CommitDiffsFile(fromOID, toOID string, index int, fromFile bool) () {
@@ -235,3 +285,25 @@ func (g *Git) CommitDiffsPatch(fromOID, toOID string, index int) (*git2go.Patch,
 // 	}
 
 // }
+
+func PrettyDiff(diffs []diffmatchpatch.Diff) string {
+	var buff bytes.Buffer
+	for _, diff := range diffs {
+		text := strings.Replace(html.EscapeString(diff.Text), "\n", "&para;<br>", -1)
+		switch diff.Type {
+		case diffmatchpatch.DiffInsert:
+			_, _ = buff.WriteString("<ins class=\"inserted\">")
+			_, _ = buff.WriteString(text)
+			_, _ = buff.WriteString("</ins>")
+		case diffmatchpatch.DiffDelete:
+			_, _ = buff.WriteString("<del class=\"deleted\">")
+			_, _ = buff.WriteString(text)
+			_, _ = buff.WriteString("</del>")
+		case diffmatchpatch.DiffEqual:
+			_, _ = buff.WriteString("<span>")
+			_, _ = buff.WriteString(text)
+			_, _ = buff.WriteString("</span>")
+		}
+	}
+	return buff.String()
+}

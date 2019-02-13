@@ -86,6 +86,12 @@ func repoDiffPatch(c *Context) error {
 	defer patch.Free()
 	c.D[`Patch`] = patch
 
+	pretty, err := r.Git.CommitDiffsPretty(fromOID, toOID, int(index))
+	if nil!=err {
+		return err
+	}
+	c.D[`Pretty`] = pretty
+
 	return c.Render(`repo_diff_patch.html`, nil)
 }
 
