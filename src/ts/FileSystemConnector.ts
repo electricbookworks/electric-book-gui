@@ -86,6 +86,7 @@ export class FileSystemConnector {
 		console.log(`FileSystemConnector.FSEvent, f=`, f);
 		switch (f.state) {
 			case FileState.New:
+				console.log(`FileState.New FSEvent with file `, f);
 				//	fallthrough
 			case FileState.Unchanged:
 				// fallthrough

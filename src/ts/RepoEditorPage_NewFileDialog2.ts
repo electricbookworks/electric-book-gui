@@ -34,6 +34,9 @@ export class RepoEditorPage_NewFileDialog extends Template {
 		Eventify(this.el, {
 			"click": (evt:any)=>{
 				let filename = this.$.filename.value;
+				if (filename.substr(0,1)!='/') {
+					filename = "/" + filename ;
+				}
 				this.FS.FileState(filename)
 				.then(
 					(fs:FileState)=>{
@@ -44,7 +47,7 @@ export class RepoEditorPage_NewFileDialog extends Template {
 						this.FS.Write(filename, ``)
 						.then(
 							(f:File)=>{
-								console.log(`Wrote file: `, f);
+								console.log(`Wrote file  `, f, ` to FS `, this.FS);
 								this.dialog.Close();
 								this.editor.setFile(f);
 							}

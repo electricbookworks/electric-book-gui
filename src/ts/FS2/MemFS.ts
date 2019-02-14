@@ -48,6 +48,7 @@ export class MemFS extends FSImpl {
 			});
 	}
 	Write(path:string, data:string):Promise<File> {
+		console.log(`MemFS.Write(path=`, path, `, data='${data}')`);
 		return this.setState(new File(path, true, undefined, data))
 		.then(
 			(f:File)=>{
