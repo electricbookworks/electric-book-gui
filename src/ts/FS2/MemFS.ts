@@ -48,7 +48,6 @@ export class MemFS extends FSImpl {
 			});
 	}
 	Write(path:string, data:string):Promise<File> {
-		console.log(`MemFS.Write(path=`, path, `, data='${data}')`);
 		return this.setState(new File(path, true, undefined, data))
 		.then(
 			(f:File)=>{
@@ -83,16 +82,24 @@ export class MemFS extends FSImpl {
 		if (undefined==this.parent) {
 			return Promise.reject(`Cannot sync on a FileSystem that doesn't have a parent`);
 		}
-		if (f.Exists()) {
-			return f.Data().then(
-				(data:string)=>{
-					return this.parent.Write(path,data);
-				});
-		}
-		return this.parent.Remove(path)
-		.then(
-			(_:File)=>this.setState(f)
-			);
+		console.log(`Syncing file `, f);
+		return f.Exists().then(
+			(exists:boolean)=>{
+				if (exists) {
+					return f.Data().then(
+						(data:string)=>{
+							return this.parent.Write(path,data);
+						});					
+				}
+				return this.parent.Remove(path)
+				.then(
+					(_:File)=>{
+						console.log(`Sync'd removed file ${path} to parent`);				
+						return this.setState(f);
+					}
+					);
+
+			})
 	}
 }
 

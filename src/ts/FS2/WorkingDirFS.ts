@@ -24,6 +24,7 @@ export class WorkingDirFS extends FSImpl {
 			);
 	}
 	Remove(path:string):Promise<File> {
+		console.log(`WorkingDirFS: Remove(${path})`);
 		return this.context.API()
 		.RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
 		.then(

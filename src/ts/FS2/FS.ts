@@ -20,6 +20,16 @@ export interface FS {
 
 }
 
+export class FSStateAndPath {
+	constructor(public path:String, public state:FileState) {}
+	ShouldSync():boolean {
+		return !(
+			    this.state == FileState.Absent || 
+				this.state == FileState.Unchanged ||
+				this.state == FileState.Undefined);
+	}
+}
+
 /**
  * Base class implmentation of a File System.
  */
@@ -115,7 +125,7 @@ export abstract class FSImpl {
 	}
 
 	/**
-	 * State returns the state of a file between this FS and this FS's parent.
+	 * FileState returns the state of a file between this FS and this FS's parent.
 	 */
 	FileState(path:string):Promise<FileState> {
 		if (!this.Parent()) {
@@ -124,7 +134,7 @@ export abstract class FSImpl {
 		return Promise.all([this.Read(path), this.Parent().Read(path)])
 		.then(
 			([top, bottom]: [File,File])=>{
-				console.log(`FileState ${path} : top.hash=${top.hash}, bottom.hash=${bottom.hash}`);
+				// console.log(`FileState ${path} : top.hash=${top.hash}, bottom.hash=${bottom.hash}`);
 				let fs:FileState = FileState.Unchanged;
 				if (top.exists && !bottom.exists) {
 					fs =  FileState.New;
@@ -137,5 +147,16 @@ export abstract class FSImpl {
 				}
 				return Promise.resolve<FileState>(fs);
 			});
+	}
+
+	/**
+     * FileStateAndPath returns the FSStateAndPath object for the 
+     * given path. This is useful when working with functional classes.
+     */
+	FileStateAndPath(path:string):Promise<FSStateAndPath> {
+		return this.FileState(path)
+		.then(
+			(fs:FileState)=>Promise.resolve<FSStateAndPath>(new FSStateAndPath(path,fs))
+		);
 	}
 }

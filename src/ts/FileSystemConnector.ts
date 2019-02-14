@@ -33,11 +33,11 @@ export class FileSystemConnector {
 		protected FS:NotifyFS,
 		protected ignoreFunction: (name:string)=>boolean,
 		protected filesJson: object,
+		protected root: Node,
 		filesAndHashes:Array<Array<string>>)
 	{
 		this.api = EBW.API();
-		this.FS.Listeners.add(this.FSEvent, this);		
-		this.root = new Node(null, ``, NodeType.DIR, null);		
+		this.FS.Listeners.add(this.FSEvent, this);			
 		this.View = new FileSystemView(
 			this.context, this.root, parent, this.ignoreFunction, 
 			this.FS);
@@ -83,10 +83,12 @@ export class FileSystemConnector {
 	}
 
 	FSEvent(f:File) {
-		console.log(`FileSystemConnector.FSEvent, f=`, f);
+		if (undefined==f) {
+			debugger;
+		}
+		// console.log(`FileSystemConnector.FSEvent, f=`, f);
 		switch (f.state) {
 			case FileState.New:
-				console.log(`FileState.New FSEvent with file `, f);
 				//	fallthrough
 			case FileState.Unchanged:
 				// fallthrough

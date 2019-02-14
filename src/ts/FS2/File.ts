@@ -49,7 +49,7 @@ export class File {
 		return Promise.resolve<string|undefined>(this.data);
 	}
 	DataEvenIfDeleted():Promise<string|undefined> {
-		return Promise.resolve<string|undefined>(this.data);
+		return Promise.resolve<string|undefined>(this.data==undefined?'':this.data);
 	}
 	// It is possible to have the Hash and not the data. One might do this
 	// for the HEAD FS, for eg., since we are only really interested in the
@@ -67,6 +67,9 @@ export class File {
 		this.state = s;
 	}
 	SetStateCSS(el:HTMLElement):void {
+		if (this.state==undefined) {
+			debugger;
+		}
 		SetFileStateCSS(el, this.state);
 	}
 	SetData(d:string|undefined, hash:string|undefined=undefined):void {

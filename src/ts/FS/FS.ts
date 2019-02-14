@@ -33,6 +33,9 @@ export function FileStatString(fs:FileStat) : string {
 }
 
 export function SetFileStatCSS(el: HTMLElement, fs:FileStat) : void {
+	if (fs==undefined) {
+		debugger;
+	}
 	el.classList.remove(
 		"FileStat-Exists","FileStat-Changed","FileStat-New","FileStat-Deleted","FileStat-NotExist");
 	el.classList.add("FileStat-" + FileStatString(fs));

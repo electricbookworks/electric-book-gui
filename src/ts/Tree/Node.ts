@@ -133,5 +133,19 @@ export class Node {
 			return c
 		}
 		return c.recurse_path(path.slice(1), handler);
-	}	
+	}
+
+	walkFiles(handle:(path:string)=>undefined):undefined {
+		if (this.nodeType==NodeType.FILE) {
+			handle(this.path());
+		}
+		for (let c of this.children) {
+			c.walkFiles(handle);
+		}
+	}
+	files() : Array<string> {
+		let a = [];
+		this.walkFiles((p)=>a.push(p));
+		return a;
+	}
 }

@@ -44,6 +44,7 @@ export class ReadCacheFS extends FSImpl {
 		return this.parent.Parent(name);
 	}
 	Remove(path:string):Promise<File> {
+		console.log(`ReadCacheFS.Remove(${path})`);
 		return this.parent.Remove(path)
 		.then((f)=>this.setCache(f));
 	}

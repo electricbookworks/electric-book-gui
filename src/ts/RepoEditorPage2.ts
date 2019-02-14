@@ -15,11 +15,13 @@ import {RepoEditorPage_RenameFileDialog} from './RepoEditorPage_RenameFileDialog
 
 import {File} from './FS2/File';
 import {FileState} from './FS2/FileState';
-import {FS} from './FS2/FS';
+import {FS, FSStateAndPath} from './FS2/FS';
 import {MemFS} from './FS2/MemFS';
 import {WorkingDirFS} from './FS2/WorkingDirFS';
 import {NotifyFS} from './FS2/NotifyFS';
 import {ReadCacheFS} from './FS2/ReadCacheFS';
+import {FileState} from './FS2/FileState';
+import {Node,NodeType} from './Tree/Node';
 
 // import {FSPrimeFromJS} from './FS/FSPrimeFromJS';
 
@@ -35,6 +37,7 @@ import {SHA1} from './FS2/SHA1';
 export class RepoEditorPage {
 	protected editor: RepoFileEditorCM;
 	protected FS: FSNotify;
+	protected Root: Node;
 
 	constructor(
 		protected context: Context,
@@ -52,6 +55,7 @@ export class RepoEditorPage {
 		let readCacheFS = new ReadCacheFS(SHA1(`cache` + repoKey), wdFS);
 		let memFS = new MemFS(SHA1(`mem`+ repoKey), readCacheFS);
 		this.FS = new NotifyFS(memFS);
+		this.Root = new Node(null, ``, NodeType.DIR, null);	
 
 		this.editor = undefined;
 		this.editor = new RepoFileEditorCM(
@@ -69,6 +73,7 @@ export class RepoEditorPage {
 			this.FS, 
 			this.proseIgnoreFunction,
 			filesJson,
+			this.Root,
 			filesAndHashes);
 
 		new RepoEditorPage_NewFileDialog(
@@ -112,10 +117,42 @@ export class RepoEditorPage {
 			window.open(jekyllUrl, `${this.context.RepoOwner}-${this.context.RepoName}-jekyll`);
 		});
 		/**
-		 * @TODO
-		 * Need to catch any attempt to leave RepoEditorPage and
+		 * Catch any attempt to leave RepoEditorPage and
 		 * check that the user has saved any changes.
 		 */
+		window.addEventListener(`beforeunload`, evt=>{
+			evt.returnValue = `Any unsaved changes will be lost. Continue?`;
+		});
+
+		document.getElementById(`repo-save-all`).addEventListener(`click`, evt=>{
+			evt.preventDefault(); evt.stopPropagation();
+			let rs = document.getElementById(`repo-save-all`);
+			rs.classList.add(`active`);
+			this.SyncFiles().then(
+				_=>rs.classList.remove(`active`)
+			);
+		});
+	}
+
+	AreFilesSynced() : Promise<boolean> {
+		Promise.all(this.Root.files().map( (p:string)=>this.FS.FileStateAndPath(p) ))
+		.then (
+			(states:Array<FSStateAndPath>)=>{
+				states = states.filter((fs)=>{
+					return fs.ShouldSync();
+				});
+				return new Promise<boolean>(0==states.length);
+			});
+	}
+	SyncFiles() : Promise {			
+		return Promise.all(this.Root.files().map( (p:string)=>this.FS.FileStateAndPath(p) ))
+		.then (
+			states=>
+				Promise.all(
+					states.filter( fs=>fs.ShouldSync() )
+					.map( fs=>this.FS.Sync(fs.path) )
+				)
+		);
 	}
 }
 

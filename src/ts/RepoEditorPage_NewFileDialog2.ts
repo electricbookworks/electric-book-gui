@@ -34,6 +34,10 @@ export class RepoEditorPage_NewFileDialog extends Template {
 		Eventify(this.el, {
 			"click": (evt:any)=>{
 				let filename = this.$.filename.value;
+				if (0==filename.length) {
+					EBW.Alert(`You need to provide a filename.`);
+					return;
+				}
 				if (filename.substr(0,1)!='/') {
 					filename = "/" + filename ;
 				}
@@ -47,7 +51,6 @@ export class RepoEditorPage_NewFileDialog extends Template {
 						this.FS.Write(filename, ``)
 						.then(
 							(f:File)=>{
-								console.log(`Wrote file  `, f, ` to FS `, this.FS);
 								this.dialog.Close();
 								this.editor.setFile(f);
 							}

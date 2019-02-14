@@ -4962,6 +4962,17 @@ textarea {
       background-color: #E9E9E9;
       color: inherit; }
 
+.btn.active,
+[type="submit"].active {
+  animation: active 1s infinite; }
+
+@keyframes active {
+  0% {
+    background-color: #ffd967; }
+  50% {
+    background-color: red; }
+  100% {
+    background-color: #ffd967; } }
 .btn-wide,
 .input-wide,
 .label-wide {

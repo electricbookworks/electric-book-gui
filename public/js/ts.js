@@ -2073,6 +2073,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
     })(FileState || (FileState = {}));
     function SetFileStateCSS(el, fs) {
         console.log("SetFileStateCSS = el=", el, ", fs=", FileStateString(fs));
+        if (fs == undefined || fs == FileState.Undefined) ;
         for (var _i = 0, _a = [FileState.New, FileState.Deleted, FileState.Absent, FileState.Changed, FileState.Unchanged]; _i < _a.length; _i++) {
             var s = _a[_i];
             var c = 'state-' + FileStateString(s);
@@ -2089,7 +2090,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             case FileState.Absent: return "absent";
             case FileState.Changed: return "changed";
             case FileState.Unchanged: return "unchanged";
+            case FileState.Undefined: return "--UNDEFINED--";
         }
+        return "UNKNOWN STATE: fs = ${fs}";
     }
 
     var ImageIdentify = (function () {
@@ -2414,6 +2417,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             Eventify(_this.el, {
                 "click": function (evt) {
                     var filename = _this.$.filename.value;
+                    if (0 == filename.length) {
+                        EBW.Alert("You need to provide a filename.");
+                        return;
+                    }
                     if (filename.substr(0, 1) != '/') {
                         filename = "/" + filename;
                     }
@@ -2425,7 +2432,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
                         }
                         _this.FS.Write(filename, "")
                             .then(function (f) {
-                            console.log("Wrote file  ", f, " to FS ", _this.FS);
                             _this.dialog.Close();
                             _this.editor.setFile(f);
                         });
@@ -2534,7 +2540,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             return Promise.resolve(this.data);
         };
         File.prototype.DataEvenIfDeleted = function () {
-            return Promise.resolve(this.data);
+            return Promise.resolve(this.data == undefined ? '' : this.data);
         };
         // It is possible to have the Hash and not the data. One might do this
         // for the HEAD FS, for eg., since we are only really interested in the
@@ -2552,6 +2558,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             this.state = s;
         };
         File.prototype.SetStateCSS = function (el) {
+            if (this.state == undefined) {
+                debugger;
+            }
             SetFileStateCSS(el, this.state);
         };
         File.prototype.SetData = function (d, hash) {
@@ -2577,6 +2586,18 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         return File;
     }());
 
+    var FSStateAndPath = (function () {
+        function FSStateAndPath(path, state) {
+            this.path = path;
+            this.state = state;
+        }
+        FSStateAndPath.prototype.ShouldSync = function () {
+            return !(this.state == FileState.Absent ||
+                this.state == FileState.Unchanged ||
+                this.state == FileState.Undefined);
+        };
+        return FSStateAndPath;
+    }());
     /**
      * Base class implmentation of a File System.
      */
@@ -2654,7 +2675,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             });
         };
         /**
-         * State returns the state of a file between this FS and this FS's parent.
+         * FileState returns the state of a file between this FS and this FS's parent.
          */
         FSImpl.prototype.FileState = function (path) {
             if (!this.Parent()) {
@@ -2663,7 +2684,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             return Promise.all([this.Read(path), this.Parent().Read(path)])
                 .then(function (_a) {
                 var top = _a[0], bottom = _a[1];
-                console.log("FileState " + path + " : top.hash=" + top.hash + ", bottom.hash=" + bottom.hash);
+                // console.log(`FileState ${path} : top.hash=${top.hash}, bottom.hash=${bottom.hash}`);
                 var fs = FileState.Unchanged;
                 if (top.exists && !bottom.exists) {
                     fs = FileState.New;
@@ -2679,6 +2700,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
                 }
                 return Promise.resolve(fs);
             });
+        };
+        /**
+         * FileStateAndPath returns the FSStateAndPath object for the
+         * given path. This is useful when working with functional classes.
+         */
+        FSImpl.prototype.FileStateAndPath = function (path) {
+            return this.FileState(path)
+                .then(function (fs) { return Promise.resolve(new FSStateAndPath(path, fs)); });
         };
         return FSImpl;
     }());
@@ -2734,7 +2763,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         MemFS.prototype.Write = function (path, data) {
             var _this = this;
-            console.log("MemFS.Write(path=", path, ", data='" + data + "')");
             return this.setState(new File(path, true, undefined, data))
                 .then(function (f) {
                 _this.setCache(f);
@@ -2769,13 +2797,19 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             if (undefined == this.parent) {
                 return Promise.reject("Cannot sync on a FileSystem that doesn't have a parent");
             }
-            if (f.Exists()) {
-                return f.Data().then(function (data) {
-                    return _this.parent.Write(path, data);
+            console.log("Syncing file ", f);
+            return f.Exists().then(function (exists) {
+                if (exists) {
+                    return f.Data().then(function (data) {
+                        return _this.parent.Write(path, data);
+                    });
+                }
+                return _this.parent.Remove(path)
+                    .then(function (_) {
+                    console.log("Sync'd removed file " + path + " to parent");
+                    return _this.setState(f);
                 });
-            }
-            return this.parent.Remove(path)
-                .then(function (_) { return _this.setState(f); });
+            });
         };
         return MemFS;
     }(FSImpl));
@@ -2808,6 +2842,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         WorkingDirFS.prototype.Remove = function (path) {
             var _this = this;
+            console.log("WorkingDirFS: Remove(" + path + ")");
             return this.context.API()
                 .RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
                 .then(function () { return _this.setState(new File(path, false)); });
@@ -2929,6 +2964,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         ReadCacheFS.prototype.Remove = function (path) {
             var _this = this;
+            console.log("ReadCacheFS.Remove(" + path + ")");
             return this.parent.Remove(path)
                 .then(function (f) { return _this.setCache(f); });
         };
@@ -3435,6 +3471,20 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             }
             return c.recurse_path(path.slice(1), handler);
         };
+        Node.prototype.walkFiles = function (handle) {
+            if (this.nodeType == NodeType.FILE) {
+                handle(this.path());
+            }
+            for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                c.walkFiles(handle);
+            }
+        };
+        Node.prototype.files = function () {
+            var a = [];
+            this.walkFiles(function (p) { return a.push(p); });
+            return a;
+        };
         return Node;
     }());
 
@@ -3567,7 +3617,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
      * FS filesystem will be reported to the FileSystemView.
      */
     var FileSystemConnector = (function () {
-        function FileSystemConnector(context, parent, editor, FS, ignoreFunction, filesJson, filesAndHashes) {
+        function FileSystemConnector(context, parent, editor, FS, ignoreFunction, filesJson, root, filesAndHashes) {
             var _this = this;
             this.context = context;
             this.parent = parent;
@@ -3575,9 +3625,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             this.FS = FS;
             this.ignoreFunction = ignoreFunction;
             this.filesJson = filesJson;
+            this.root = root;
             this.api = EBW.API();
             this.FS.Listeners.add(this.FSEvent, this);
-            this.root = new Node(null, "", NodeType.DIR, null);
             this.View = new FileSystemView(this.context, this.root, parent, this.ignoreFunction, this.FS);
             parent.addEventListener("ebw-file-clicked", function (evt) {
                 var path = evt.detail;
@@ -3621,10 +3671,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             this.View.apply(f.Name(), function (v) { return v.notifyEditing(editing); });
         };
         FileSystemConnector.prototype.FSEvent = function (f) {
-            console.log("FileSystemConnector.FSEvent, f=", f);
+            if (undefined == f) {
+                debugger;
+            }
+            // console.log(`FileSystemConnector.FSEvent, f=`, f);
             switch (f.state) {
                 case FileState.New:
-                    console.log("FileState.New FSEvent with file ", f);
                 //	fallthrough
                 case FileState.Unchanged:
                 // fallthrough
@@ -3659,13 +3711,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var readCacheFS = new ReadCacheFS(SHA1("cache" + repoKey), wdFS);
             var memFS = new MemFS(SHA1("mem" + repoKey), readCacheFS);
             this.FS = new NotifyFS(memFS);
+            this.Root = new Node(null, "", NodeType.DIR, null);
             this.editor = undefined;
             this.editor = new RepoFileEditorCM$1(context.RepoOwner, context.RepoName, document.getElementById('editor'), {
                 Rename: function () {
                     return;
                 }
             }, this.FS);
-            new FileSystemConnector(this.context, filesListElement, this.editor, this.FS, this.proseIgnoreFunction, filesJson, filesAndHashes);
+            new FileSystemConnector(this.context, filesListElement, this.editor, this.FS, this.proseIgnoreFunction, filesJson, this.Root, filesAndHashes);
             new RepoEditorPage_NewFileDialog$1(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
             new RepoEditorPage_RenameFileDialog$1(this.context, document.getElementById("editor-rename-button"), this.editor);
             new ControlTag(document.getElementById("files-show-tag"), function (showing) {
@@ -3698,11 +3751,38 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
                 window.open(jekyllUrl, _this.context.RepoOwner + "-" + _this.context.RepoName + "-jekyll");
             });
             /**
-             * @TODO
-             * Need to catch any attempt to leave RepoEditorPage and
+             * Catch any attempt to leave RepoEditorPage and
              * check that the user has saved any changes.
              */
+            window.addEventListener("beforeunload", function (evt) {
+                evt.returnValue = "Any unsaved changes will be lost. Continue?";
+            });
+            document.getElementById("repo-save-all").addEventListener("click", function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                var rs = document.getElementById("repo-save-all");
+                rs.classList.add("active");
+                _this.SyncFiles().then(function (_) { return rs.classList.remove("active"); });
+            });
         }
+        RepoEditorPage.prototype.AreFilesSynced = function () {
+            var _this = this;
+            Promise.all(this.Root.files().map(function (p) { return _this.FS.FileStateAndPath(p); }))
+                .then(function (states) {
+                states = states.filter(function (fs) {
+                    return fs.ShouldSync();
+                });
+                return new Promise(0 == states.length);
+            });
+        };
+        RepoEditorPage.prototype.SyncFiles = function () {
+            var _this = this;
+            return Promise.all(this.Root.files().map(function (p) { return _this.FS.FileStateAndPath(p); }))
+                .then(function (states) {
+                return Promise.all(states.filter(function (fs) { return fs.ShouldSync(); })
+                    .map(function (fs) { return _this.FS.Sync(fs.path); }));
+            });
+        };
         return RepoEditorPage;
     }());
     window.RepoEditorPage = RepoEditorPage;
