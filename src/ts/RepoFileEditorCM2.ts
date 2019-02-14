@@ -201,7 +201,9 @@ export class RepoFileEditorCM extends Template {
 		/* @TODO Need to ensure that no file-load occurs during file-save */
 		let f = this.file;
 		this.FS.Write(f.Name(), this.textEditor.getValue())
-		.then( (f:File)=>this.FS.Sync(f.Name()) )
+		.then( (f:File)=>{
+			return this.FS.Sync(f.Name());
+			})
 		.then(
 			(f:File)=>{
 				if (!f.exists) {

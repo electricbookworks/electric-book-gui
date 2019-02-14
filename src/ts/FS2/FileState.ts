@@ -13,9 +13,9 @@ export enum FileState {
 };
 
 export function SetFileStateCSS(el:HTMLElement, fs:FileState) : void {
-	console.log(`SetFileStateCSS = el=`, el, `, fs=`, FileStateString(fs));
+	// console.log(`SetFileStateCSS = el=`, el, `, fs=`, FileStateString(fs));
 	if (fs==undefined || fs==FileState.Undefined) {
-		// debugger;
+		console.log(`in SetFileStateCSS: fs=`, fs);
 	}
 	for (let s of [FileState.New, FileState.Deleted, FileState.Absent, FileState.Changed, FileState.Unchanged]) {
 		let c = 'state-' + FileStateString(s);

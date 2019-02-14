@@ -2072,8 +2072,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         FileState[FileState["Undefined"] = 6] = "Undefined"; // Typically if there is not parent FS
     })(FileState || (FileState = {}));
     function SetFileStateCSS(el, fs) {
-        console.log("SetFileStateCSS = el=", el, ", fs=", FileStateString(fs));
-        if (fs == undefined || fs == FileState.Undefined) ;
+        // console.log(`SetFileStateCSS = el=`, el, `, fs=`, FileStateString(fs));
+        if (fs == undefined || fs == FileState.Undefined) {
+            console.log("in SetFileStateCSS: fs=", fs);
+        }
         for (var _i = 0, _a = [FileState.New, FileState.Deleted, FileState.Absent, FileState.Changed, FileState.Unchanged]; _i < _a.length; _i++) {
             var s = _a[_i];
             var c = 'state-' + FileStateString(s);
@@ -2273,7 +2275,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             /* @TODO Need to ensure that no file-load occurs during file-save */
             var f = this.file;
             this.FS.Write(f.Name(), this.textEditor.getValue())
-                .then(function (f) { return _this.FS.Sync(f.Name()); })
+                .then(function (f) {
+                return _this.FS.Sync(f.Name());
+            })
                 .then(function (f) {
                 if (!f.exists) {
                     EBW.Toast(f.Name() + " removed");
@@ -2558,7 +2562,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             this.state = s;
         };
         File.prototype.SetStateCSS = function (el) {
-            if (this.state == undefined) {
+            if (this.state == undefined || this.state == FileState.Undefined) {
                 debugger;
             }
             SetFileStateCSS(el, this.state);
@@ -2762,12 +2766,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             });
         };
         MemFS.prototype.Write = function (path, data) {
-            var _this = this;
-            return this.setState(new File(path, true, undefined, data))
-                .then(function (f) {
-                _this.setCache(f);
-                return _this.setState(f);
-            });
+            var f = new File(path, true, undefined, data);
+            this.setCache(f);
+            return this.setState(f);
         };
         MemFS.prototype.Remove = function (path) {
             var _this = this;
@@ -2797,16 +2798,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             if (undefined == this.parent) {
                 return Promise.reject("Cannot sync on a FileSystem that doesn't have a parent");
             }
-            console.log("Syncing file ", f);
             return f.Exists().then(function (exists) {
                 if (exists) {
-                    return f.Data().then(function (data) {
-                        return _this.parent.Write(path, data);
-                    });
+                    return f.Data()
+                        .then(function (data) { return _this.parent.Write(path, data); })
+                        .then(function (f) { return _this.setState(f); });
                 }
                 return _this.parent.Remove(path)
                     .then(function (_) {
-                    console.log("Sync'd removed file " + path + " to parent");
                     return _this.setState(f);
                 });
             });
@@ -2842,7 +2841,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         WorkingDirFS.prototype.Remove = function (path) {
             var _this = this;
-            console.log("WorkingDirFS: Remove(" + path + ")");
             return this.context.API()
                 .RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
                 .then(function () { return _this.setState(new File(path, false)); });
@@ -2898,7 +2896,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         NotifyFS.prototype.Sync = function (path) {
             var _this = this;
             return this.parent.Sync(path)
-                .then(function (f) { return _this.notify(f); });
+                .then(function (f) {
+                return _this.notify(f);
+            });
         };
         NotifyFS.prototype.Revert = function (path) {
             var _this = this;
@@ -2964,7 +2964,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         ReadCacheFS.prototype.Remove = function (path) {
             var _this = this;
-            console.log("ReadCacheFS.Remove(" + path + ")");
             return this.parent.Remove(path)
                 .then(function (f) { return _this.setCache(f); });
         };
@@ -3594,6 +3593,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
         };
         NodeView.prototype.notifyFileChange = function (fs, f) {
+            // console.log(`notifyFileChange: ${f.Name()}`);
+            // console.trace();
             f.SetStateCSS(this.el);
         };
         NodeView.prototype.notifyEditing = function (b) {

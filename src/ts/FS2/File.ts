@@ -67,7 +67,7 @@ export class File {
 		this.state = s;
 	}
 	SetStateCSS(el:HTMLElement):void {
-		if (this.state==undefined) {
+		if (this.state==undefined || this.state == FileState.Undefined) {
 			debugger;
 		}
 		SetFileStateCSS(el, this.state);

@@ -114,6 +114,8 @@ class NodeView extends NodeViewTemplate{
 		new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
 	}
 	notifyFileChange(fs:FS, f:File) : void {
+		// console.log(`notifyFileChange: ${f.Name()}`);
+		// console.trace();
 		f.SetStateCSS(this.el);
 	}
 	notifyEditing(b:boolean):void {

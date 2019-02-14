@@ -118,7 +118,7 @@ export abstract class FSImpl {
 	protected setState(f:File):Promise<File>{
 		return this.FileState(f.Name())
 		.then(
-			(fs:FileState)=>{
+			(fs:FileState)=>{				
 				f.state = fs;
 				return Promise.resolve<File>(f);
 			});

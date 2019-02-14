@@ -24,12 +24,9 @@ export class WorkingDirFS extends FSImpl {
 			);
 	}
 	Remove(path:string):Promise<File> {
-		console.log(`WorkingDirFS: Remove(${path})`);
 		return this.context.API()
 		.RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
-		.then(
-			()=>this.setState(new File(path, false))
-			);
+		.then(()=>this.setState(new File(path, false)));
 	}
 	Sync(path:String):Promise<File>{
 		// Sync'ing a WorkingDir is adding to the Index

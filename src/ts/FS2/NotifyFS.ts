@@ -31,7 +31,9 @@ export class NotifyFS extends FSImpl {
 	}
 	Sync(path:string):Promise<File> {
 		return this.parent.Sync(path)
-		.then( (f:File)=>this.notify(f) );
+		.then( (f:File)=>{
+			return this.notify(f);
+		});
 	}
 	Revert(path:string):Promise<File> {
 		return this.parent.Revert(path)
@@ -39,7 +41,7 @@ export class NotifyFS extends FSImpl {
 	}
 	// Notify is a transparent FS, so the call to parent needs to actually
 	// be the call to its parent's parent
-	Parent(name=``):FS {
+	Parent(name:string=``):FS {
 		return this.parent.Parent(name);
 	}
 }
