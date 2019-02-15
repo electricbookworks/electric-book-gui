@@ -58,6 +58,18 @@ func repoDiffFiles(c *Context) error {
 	}
 	c.D[`FromOID`], c.D[`ToOID`] = fromOID, toOID
 	c.D[`Diffs`] = diffs
+
+	toTree, err := r.Git.IdToTree(toOID)
+	if nil!=err {
+		return err
+	}
+	defer toTree.Free()
+	proseConfig, err := book.ReadProseTree(r.Repository, toTree, ``)
+	if nil != err {
+		return err
+	}
+	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
+
 	return c.Render(`repo_diff_file_viewer.html`, nil)
 }
 

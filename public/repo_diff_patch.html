@@ -1,5 +1,4 @@
 {{template "_header.html" .}}
-{{template "_nav_main.html" .}}
 <style type="text/css">
 #repo-diff-patch tbody td, #repo-diff-patch tbody th {
 	padding: 0;
@@ -9,10 +8,6 @@
 </main>
 
 
-	<div><h1>PRETTY</h1></div>
-	<div>
-{{.Pretty | raw}}
-	</div>
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="">
 </script>
 <script>
@@ -43,5 +38,4 @@ document.addEventListener('DOMContentLoaded', function() {
 <script type="text/hidden" id="patch">
 	{{- .Patch.String | raw -}}
 </script>
-
 {{template "_footer.html" .}}

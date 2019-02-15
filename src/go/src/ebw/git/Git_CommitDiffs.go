@@ -3,6 +3,7 @@ package git
 import (
 	"bytes"
 	"path/filepath"
+	"fmt"
 	"html"
 	"strings"
 
@@ -22,6 +23,7 @@ const (
 	COMMIT_DIFF_CHANGE = `change`
 	COMMIT_DIFF_RENAME = `rename`
 	COMMIT_DIFF_OTHER = `other`
+	COMMIT_DIFF_UNCHANGED = `unchanged`
 	)
 
 
@@ -54,12 +56,55 @@ func (c *commitDiffFile) OIDPath() string {
 // of EBM, we permit the following, lower-case
 // values (`add`,`delete`,`change`,`rename`,`other`)
 type commitDiff struct {
+	Path string
+	OID string
 	Index int
 	State string
+	URL string
 	Old *commitDiffFile
 	New *commitDiffFile
 }
 
+func (cd *commitDiff) getURL(fromCommit, toCommit string) string {
+	if true {
+		switch cd.State {
+			case COMMIT_DIFF_CHANGE:
+				return fmt.Sprintf(`diff/%s/%s/%d`, fromCommit, toCommit, cd.Index)
+				// return fmt.Sprintf(`diff-diff/%s/%s`, cd.Old.OID, cd.New.OID)
+			case COMMIT_DIFF_ADD:
+				return fmt.Sprintf(`diff-serve/%s`, cd.New.OID)
+			case COMMIT_DIFF_DELETE:
+				return fmt.Sprintf(`diff-serve/%s`, cd.Old.OID)
+			case COMMIT_DIFF_RENAME:
+				fallthrough
+			case COMMIT_DIFF_OTHER:
+				fallthrough
+			case COMMIT_DIFF_UNCHANGED:
+				return fmt.Sprintf(`diff-serve/%s`, cd.OID)
+		}
+		return "-unknown"
+	}
+	if -1<cd.Index {
+		return fmt.Sprintf(`diff/%s/%s/%d`, fromCommit, toCommit, cd.Index)
+	}
+	return fmt.Sprintf(`diff-serve/%s`, cd.OID)
+}
+
+func (cd *commitDiff) Unchanged() bool {
+	return nil==cd.Old && nil==cd.New
+}
+
+func (g *Git) IdToTree(id string) (*git2go.Tree, error) {
+	treeId, err := git2go.NewOid(id)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	t, err := g.Repository.LookupTree(treeId)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	return t, nil
+}
 
 // CommitDiffs returns the differences between the two commits
 // stored as fromOID and toOID
@@ -99,6 +144,7 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 	if nil!=err {
 		return nil, util.Error(err)
 	}
+	changeMap := map[string]*commitDiff{}
 	changes := make([]*commitDiff, ndelta)
 	for i:=0; i<ndelta; i++ {
 		delta, err := diff.GetDelta(i)
@@ -115,12 +161,14 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 				Path: delta.NewFile.Path,
 				OID: delta.NewFile.Oid.String(),
 			}
+			change.Path = delta.NewFile.Path
 		case git2go.DeltaDeleted:
 			change.State = COMMIT_DIFF_DELETE
 			change.Old = &commitDiffFile{
 				Path:delta.OldFile.Path,
 				OID: delta.OldFile.Oid.String(),
 			}
+			change.Path = delta.OldFile.Path
 		case git2go.DeltaModified:			
 			change.State = COMMIT_DIFF_CHANGE
 			change.Old = &commitDiffFile{
@@ -131,6 +179,7 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 				Path: delta.NewFile.Path,
 				OID: delta.NewFile.Oid.String(),
 			}
+			change.Path = delta.NewFile.Path
 		case git2go.DeltaRenamed:
 			change.State = COMMIT_DIFF_RENAME
 			change.Old = &commitDiffFile{
@@ -141,6 +190,7 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 				Path: delta.NewFile.Path,
 				OID: delta.NewFile.Oid.String(),
 			}
+			change.Path = delta.NewFile.Path
 		default:
 			change.State = COMMIT_DIFF_OTHER
 			change.Old = &commitDiffFile{
@@ -151,9 +201,37 @@ func (g *Git) CommitDiffs(fromOID, toOID string) ([]*commitDiff, error) {
 				Path: delta.NewFile.Path,
 				OID: delta.NewFile.Oid.String(),
 			}
+			change.Path = delta.NewFile.Path
 		}
 		changes[i] = change
+		changeMap[change.Path] = change
 	}
+
+	toTree.Walk(func(p string,te *git2go.TreeEntry) int {
+		// Skip directories
+		if te.Type == git2go.ObjectTree {
+			return 0
+		}
+		path := te.Name
+		if ``!=p {
+			path = p + path
+		}
+		_, ok := changeMap[path]
+		if !ok {
+			changes = append(changes, &commitDiff{
+				Path:path,
+				OID: te.Id.String(),
+				Index: -1,
+				State: COMMIT_DIFF_UNCHANGED,				
+				})
+		}
+		return 0
+		})
+
+	for _, c := range changes {
+		c.URL = c.getURL(fromOID, toOID);
+	}
+
 	return changes, nil
 }
 

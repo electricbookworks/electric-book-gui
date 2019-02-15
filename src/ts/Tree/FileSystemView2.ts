@@ -6,6 +6,7 @@ import {File} from '../FS2/File';
 import {FileState, FileStateString, SetFileStateCSS} from '../FS2/FileState';
 import {FS} from '../FS2/FS';
 import {NotifyFS} from '../FS2/NotifyFS';
+import {Styler} from './Styler';
 
 /**
  * FileSystemView displays a FileSystem, with each node either a Directory or a 
@@ -22,18 +23,22 @@ export class FileSystemView {
 		protected root: Node, 
 		protected parent:HTMLElement,
 		protected ignoreFunction: (name:string)=>boolean,
-		protected notifyFS: NotifyFS) 
+		protected notifyFS: NotifyFS|null,
+		protected styler:Styler|null) 
 	{
 		this.views = new Map<string,NodeView>();
 		this.root.added.add(this.nodeAdded, this);
-		this.notifyFS.Listeners.add(this.notifyFileChange, this);
+		if (this.notifyFS) {
+			this.notifyFS.Listeners.add(this.notifyFileChange, this);
+		}
 	}
 
 	nodeAdded(n:Node) : void {		
-		new NodeView(this, n, this.parent, this.ignoreFunction);
+		new NodeView(this, n, this.parent, this.ignoreFunction, this.styler);
 	}
 
 	prepopulate(paths:Array<string>):void {
+		paths.sort();
 		for (let p of paths) {
 			this.root.FindOrCreateFileNode(p);
 		}
@@ -75,7 +80,8 @@ export class FileSystemView {
 
 class NodeView extends NodeViewTemplate{
 	constructor(protected FSV: FileSystemView, protected node: Node, 
-		protected parent:HTMLElement, protected ignoreFunction: (name:string)=>boolean) {
+		protected parent:HTMLElement, protected ignoreFunction: (name:string)=>boolean, 
+		protected styler:(n:Node,el:HTMLElement)=>undefined|null) {
 		super();
 		this.$.name.innerText = this.node.name;
 		if (node.canCollapse()) {
@@ -109,13 +115,15 @@ class NodeView extends NodeViewTemplate{
 		parent.appendChild(this.el);
 
 		this.FSV.mapView(this);
+
+		if (this.styler) {
+			this.styler(this.node, this.el);
+		}
 	}
 	childAdded(n:Node) : void {
-		new NodeView(this.FSV, n, this.$.children, this.ignoreFunction);
+		new NodeView(this.FSV, n, this.$.children, this.ignoreFunction, this.styler);
 	}
 	notifyFileChange(fs:FS, f:File) : void {
-		// console.log(`notifyFileChange: ${f.Name()}`);
-		// console.trace();
 		f.SetStateCSS(this.el);
 	}
 	notifyEditing(b:boolean):void {

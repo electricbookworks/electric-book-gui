@@ -10,6 +10,7 @@ import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
 import {RepoDiffViewerPage} from './RepoDiffViewerPage';
+import {RepoDiffFileViewerPage} from './RepoDiffFileViewerPage';
 import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
@@ -36,6 +37,9 @@ export class EBW {
 						break;
 					case 'RepoDiffViewerPage':
 						new RepoDiffViewerPage(context);
+						break;
+					case 'RepoDiffFileViewerPage':
+						new RepoDiffFileViewerPage(context, document.getElementById(`all-files-editor`), window.pageData);
 						break;
 					case 'RepoFileViewerPage':
 						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);

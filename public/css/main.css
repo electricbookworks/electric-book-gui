@@ -4898,6 +4898,41 @@ ins.inserted {
 del.deleted {
   background-color: #fcc; }
 
+#repo-diff-file-viewer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%; }
+  #repo-diff-file-viewer .file-container {
+    flex-grow: 1;
+    position: relative; }
+    #repo-diff-file-viewer .file-container #all-files-editor {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow: scroll;
+      box-sizing: border-box;
+      margin: 0; }
+      #repo-diff-file-viewer .file-container #all-files-editor .node-file.delete {
+        color: red;
+        text-decoration: line-through; }
+      #repo-diff-file-viewer .file-container #all-files-editor .node-file.add {
+        color: green;
+        font-weight: bold; }
+      #repo-diff-file-viewer .file-container #all-files-editor .node-file.change {
+        color: green; }
+      #repo-diff-file-viewer .file-container #all-files-editor .node-file.unchanged {
+        color: #ccc; }
+  #repo-diff-file-viewer #diff-view {
+    flex-grow: 3;
+    background-color: #eee; }
+
 #merge-image-editor {
   display: block;
   width: 100%;

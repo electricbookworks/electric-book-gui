@@ -1,20 +1,21 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
-XXX
 {{- $ToOID := .ToOID}}
 <main id="repo-diff-file-viewer" class="workspace">
-	{{- range .Diffs -}}
-	<span><a href="{{$ToOID}}/{{.Index}}">patch</a></span>
-	{{- if . -}}
-	<div>{{ if and .Old .New}}<a href="../../diff-diff/{{.Old.OID}}/{{.New.OID}}">{{.State}}</a>{{else}}{{.State}}{{end}}:<a href="../../diff-serve/{{.Old.OIDPath}}">{{.Old.GetPath}}</a>:<a href="../../diff-serve/{{.New.OIDPath}}">{{.New.GetPath}}</a></div>
-	{{- else}}<div>NIL</div>
-	{{- end}}
-	{{- end}}
+	<div class="file-container" id="all-files-editor-container">
+		<div id="all-files-editor" data-instance="AllFilesList"> </div>
+	</div>
+	<iframe id="diff-view" name="diff-view" src="">
+	</iframe>
 </main>
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffFileViewerPage">
 </script>
-<script type="text/hidden" id="commit-summaries">
-{{- /* .CommitSummaries | json | raw */ -}}
+<script type="text/javascript">
+window.pageData = {
+	"diffs": {{.Diffs}},
+	"ignoreFilter": {{.ProseIgnoreFilter}}
+};
 </script>
 
-{{template "_footer.html" .}}
+{{template "_nav_footer.html" .}}
+{{ template "_footer.html" . }}

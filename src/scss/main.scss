@@ -47,6 +47,7 @@ $bp-xl: 80em;
 @import 'pages/repo_list';
 @import 'pages/repo_file_viewer';
 @import 'pages/repo_diff';
+@import 'pages/repo_diff_file_viewer';
 
 // Order is important here, this must come after pages/repo_conflict
 @import 'widgets/merge-image-editor';
