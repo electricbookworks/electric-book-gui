@@ -44,7 +44,7 @@ export class EditorCodeMirror {
 	setModeOnFilename(filename:string) {
 		let r = /\.([^\.]+)$/;
 		let res = r.exec(filename);
-		if (2==res.length) {
+		if (res!=null && 2==res.length) {
 			let suffix = res[1];
 			let modes = new Map<string,string>();
 			modes.set('md','markdown');

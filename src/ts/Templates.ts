@@ -178,7 +178,7 @@ export class AddNewBookDialog {
 		<h1>Add a project</h1>
 		<fieldset>
 			<label>
-				<input type="radio" value="new" name="new-project-type"/>
+				<input name="new-project-type" type="radio" value="new"/>
 				Start a new project.
 			</label>
 			<label>
@@ -197,32 +197,32 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="New project"/>
+		<input value="New project" type="submit" class="btn"/>
 		</form>
 	</div>
 	<div>
 		<h1>Adaptation</h1>
-		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
+		<form action="/github/create/new" method="post">
+		<input name="action" value="new" type="hidden"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
-		<input name="template" placeholder="e.g. electricbookworks/electric-book" type="text"/>
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -414,7 +414,7 @@ export class BoundFilename {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="bound-filename">
 	<span>Select a file to edit</span>
-	<a target="_github" href="#"><img src="/img/github-dark.svg"/></a>
+	<a href="#" target="_github"><img src="/img/github-dark.svg"/></a>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -702,7 +702,7 @@ export class FileListDialog_Item {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
 	<li data-set="this">
-		<input type="radio" name="file-list"/>
+		<input name="file-list" type="radio"/>
 		<span/>
 	</li>
 </ul>
@@ -797,7 +797,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button class="close-button" aria-label="Close popup" type="button" data-close="">
+	<button aria-label="Close popup" type="button" data-close="" class="close-button">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -882,7 +882,7 @@ export class LoginTokenList {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
-		<input placeholder="name" type="text"/>
+		<input type="text" placeholder="name"/>
 		<input type="text" placeholder="token"/>
 		<button class="btn">Add</button>
 	</div>
@@ -1271,7 +1271,7 @@ export class RepoFileViewerPage {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="repo-file-viewer">
 	<div class="searchbar">
-		<input type="text" placeholder="Enter search text to find images."/>
+		<input placeholder="Enter search text to find images." type="text"/>
 	</div>
 	<div class="data">
 	</div>
@@ -1321,23 +1321,23 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input id="resolveOur" type="radio" name="resolve" value="our"/>
+			<input type="radio" name="resolve" value="our" id="resolveOur"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input value="git" id="resolveGit" type="radio" name="resolve"/>
+			<input id="resolveGit" type="radio" name="resolve" value="git"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input name="resolve" value="their" id="resolveTheir" type="radio"/>
+			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
-	<button class="btn" data-event="click:">Do the Merge</button>
+	<button data-event="click:" class="btn">Do the Merge</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1417,10 +1417,10 @@ export class Tree_NodeView {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="node">
 	<div class="name"><span class="closer"><svg width="1em" height="1em" viewBox="0 0 100 100">
-		<rect x="2" y="2" width="96" height="96" class="grect" rx="10" ry="10"/>
+		<rect class="grect" rx="10" ry="10" x="2" y="2" width="96" height="96"/>
 		<g transform="translate(50 50)">
 			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg"/>
-			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg plusvg2"/>
+			<rect y="-4" stroke="none" width="60" height="8" class="plusvg plusvg2" x="-30"/>
 		</g>
 		</svg></span><span>NAME</span></div>
 	<div class="children"> </div>
@@ -1488,16 +1488,16 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input id="closePR-no" value="no" data-event="change" type="radio" name="closePR"/>No
+		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
 		</label>
 		<label for="closePR-yes">
-		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
+		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
 		</label>
 		<label for="closeMessage">Close message
-		<input id="closeMessage" type="text" name="closeMessage"/>
+		<input type="text" name="closeMessage" id="closeMessage"/>
 		</label>
 	</fieldset> 
-	<button class="btn" data-event="click:done">Done</button>
+	<button data-event="click:done" class="btn">Done</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1634,7 +1634,7 @@ export class conflict_MergeImageEditor {
 		let t = conflict_MergeImageEditor._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="merge-image-editor" id="merge-image-editor">
+			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor">
 	<div>
 	</div>
 	<div>
