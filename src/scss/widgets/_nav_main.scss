@@ -4,9 +4,10 @@
 	justify-content: space-between;
 	align-items: baseline;
 	padding: 1em;
-	border-bottom: 1px solid darken($color-inverse-bg, 10%);
+	//border-bottom: 1px solid darken($color-inverse-bg, 10%);
 
 	@include inverse;
+	background-color: black;
 	position: relative;
 
 	img {
@@ -21,6 +22,7 @@
 		& > img {
 			margin-left: 0.5em;
 			margin-right: 0.5em;
+			border-radius: 10000px;
 		}
 	}
 

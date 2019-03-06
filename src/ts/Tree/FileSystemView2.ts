@@ -8,6 +8,62 @@ import {FS} from '../FS2/FS';
 import {NotifyFS} from '../FS2/NotifyFS';
 import {Styler} from './Styler';
 
+
+function addChildNode(parent: HTMLElement, el:HTMLElement):void {
+	if (false) {
+		parent.appendChild(el);
+		sortChildrenOnAttribute(parent, (ae:HTMLElement, be:HTMLElement):boolean => {
+			let a = ae.getAttribute('short-filename');
+			let b = be.getAttribute('short-filename');
+			return a<b;
+		});
+		return;
+	}
+	if (0==parent.children.length) {
+		parent.appendChild(el);
+		return;
+	}
+	let thisFilename = el.getAttribute("short-filename");
+	for (let i=0; i<parent.children.length; i++) {
+		let sibling = parent.children[i];
+		let fn = sibling.getAttribute("short-filename");
+		// console.log(`Comparing ${thisFilename} against ${fn}`);
+		if (fn>thisFilename) {
+			parent.insertBefore(el, sibling);
+			return;
+		}
+	}
+	parent.appendChild(el);
+}
+
+function sortChildrenOnAttribute(parent: HTMLElement, lt: (a:HTMLElement,b:HTMLElement)=>boolean):void {
+	let kids = new Array<HTMLElement>();
+	for (let i=0; i<parent.children.length; i++) {
+		kids.push(parent.children[i]);
+	}
+	parent.innerHTML = ``;
+	console.log(`kids = `, kids);
+	let sort = sortChildrenOnAttribute_recurse(kids, lt);
+	console.log(`sort = `, sort);
+	sort.map( (el:HTMLElement)=>parent.appendChild(el) );
+}
+
+function sortChildrenOnAttribute_recurse(range: Array<HTMLElement>, lt: (a:HTMLElement,b:HTMLElement)=>boolean) : Array<HTMLElement>{
+	if (2>range.length) {
+		return range;
+	}
+	let x = Math.floor(range.length/2);
+	let mid = range[x];
+	let newrange = range.splice(x,1);
+	console.log(`mid = `, mid);
+	let less = newrange.filter( (el:HTMLElement)=>lt(mid, el) );
+	let more = newrange.filter( (el:HTMLElement)=>!lt(mid, el) );
+	
+	return sortChildrenOnAttribute_recurse(less, lt)
+		.concat([mid])
+		.concat(sortChildrenOnAttribute_recurse(more, lt));
+}
+
 /**
  * FileSystemView displays a FileSystem, with each node either a Directory or a 
  * FileView itself.
@@ -34,7 +90,7 @@ export class FileSystemView {
 	}
 
 	nodeAdded(n:Node) : void {		
-		new NodeView(this, n, this.parent, this.ignoreFunction, this.styler);
+		new NodeView(this, n, (el:HTMLElement)=>addChildNode(this.parent, el), this.ignoreFunction, this.styler);
 	}
 
 	prepopulate(paths:Array<string>):void {
@@ -79,8 +135,10 @@ export class FileSystemView {
 }
 
 class NodeView extends NodeViewTemplate{
-	constructor(protected FSV: FileSystemView, protected node: Node, 
-		protected parent:HTMLElement, protected ignoreFunction: (name:string)=>boolean, 
+	constructor(protected FSV: FileSystemView, 
+		protected node: Node, 
+		protected parent: (el:HTMLElement)=>void, 
+		protected ignoreFunction: (name:string)=>boolean, 
 		protected styler:(n:Node,el:HTMLElement)=>undefined|null) {
 		super();
 		this.$.name.innerText = this.node.name;
@@ -111,8 +169,9 @@ class NodeView extends NodeViewTemplate{
 			this.el.classList.add(`ignore`);
 		}
 		this.node.added.add(this.childAdded, this);
+		this.el.setAttribute("short-filename", node.name);
 		// this.el.style.marginLeft = (0.4*node.depth())+"em";
-		parent.appendChild(this.el);
+		parent(this.el);
 
 		this.FSV.mapView(this);
 
@@ -120,12 +179,14 @@ class NodeView extends NodeViewTemplate{
 			this.styler(this.node, this.el);
 		}
 	}
-	childAdded(n:Node) : void {
-		new NodeView(this.FSV, n, this.$.children, this.ignoreFunction, this.styler);
+	childAdded(n:Node) : void {		
+		new NodeView(this.FSV, n, (el:HTMLElement)=>addChildNode(this.$.children, el), this.ignoreFunction, this.styler);
 	}
+
 	notifyFileChange(fs:FS, f:File) : void {
 		f.SetStateCSS(this.el);
 	}
+
 	notifyEditing(b:boolean):void {
 		this.el.classList.remove(`editing-in-progress`);
 		if (b) {

@@ -162,35 +162,45 @@ export class RepoFileEditorCM extends Template {
 		// Need to check that this is a text file... no, I won't get deleteEditorFile _unless_
 		// this is a text file.
 		this.file.data = this.textEditor.getValue();
-		this.FS.FileState(this.file.Name())
+		let file = this.file;
+		this.FS.FileState(file.Name())
 		.then(
 			(fs:FileState)=>{
 				if (fs==FileState.Deleted) {
 
 					// Actually want to undo this deletion
 					// this.file.SetFileContent(fc.Content);
-					this.file.DataEvenIfDeleted()
+					file.DataEvenIfDeleted()
 					.then(
 						(raw:string|undefined)=>{
-							 this.FS.Write(this.file.Name(), raw)
+							 this.FS.Write(file.Name(), raw)
 						})
 					.then(
-						(f:File)=>{ this.file = f; return Promise.resolve(); })
+						(f:File)=>{ 
+							if (this.file.Name()==file.Name()) {
+								this.file = f;
+							}
+							return Promise.resolve(); 
+						})
 					.catch(EBW.Error);
 
-					this.Listeners.dispatch(EditorEvent.Changed(this.file));
+					this.Listeners.dispatch(EditorEvent.Changed(file));
 				} else {
-					EBW.Confirm(`Are you sure you want to delete ${this.file.Name()}?`)
+					EBW.Confirm(`Are you sure you want to delete ${file.Name()}?`)
 					.then(
-						()=>{
-							return this.FS.Remove(this.file.Name())
-							.then(
-								(f:File)=>{
-									this.Listeners.dispatch(EditorEvent.Unloaded(this.file));
-									this.file = undefined;
-									this.setFile(undefined);
-									this.Listeners.dispatch(EditorEvent.Loaded(undefined));
-								});
+						()=>
+							 this.FS.Remove(file.Name())
+					)
+					.then(
+						()=>this.FS.Sync(file.Name()))
+					.then(
+						(f:File)=>{
+							if (this.file.Name()==file.Name()) {
+								this.Listeners.dispatch(EditorEvent.Unloaded(this.file));
+								this.file = undefined;
+								this.setFile(undefined);
+								this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+							}
 						})
 					.catch( EBW.Error );
 				}
@@ -318,12 +328,21 @@ export class RepoFileEditorCM extends Template {
 	File() : File  { return this.file; }
 
 	Rename(name:string) : Promise<void> {
-		return this.FS.Move(this.file.Name(), name)
+		let oldfile = this.file;
+		let newfile = this.file;
+		return this.FS.Move(oldfile.Name(), name)
 		.then( (f:File)=>{
-			this.Listeners.dispatch(EditorEvent.Unloaded(this.file));
-			this.file = f;
-			BoundFilename.SetFilename(name);
-			this.Listeners.dispatch(EditorEvent.Loaded(this.file));
+			return this.FS.Sync(oldfile.Name())
+			.then(
+				(f:File)=>this.FS.Sync(name));
+		})
+		.then( (f:File)=>{
+			if (this.file.Name()==oldfile.Name()) {
+				this.Listeners.dispatch(EditorEvent.Unloaded(oldfile));
+				this.file = f;
+				BoundFilename.SetFilename(name);
+				this.Listeners.dispatch(EditorEvent.Loaded(this.file));
+			}
 			return Promise.resolve();
 		});
 	}

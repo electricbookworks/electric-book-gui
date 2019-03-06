@@ -32,6 +32,7 @@
 		background-color: $color-status-new;
 	}
 	.node.state-absent {
+		display: none;
 		.name {
 			text-decoration: line-through;
 			color: #ccc;

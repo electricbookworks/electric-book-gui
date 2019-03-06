@@ -306,7 +306,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = AddNewBookDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"adaptation\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input value=\"New project\" type=\"submit\" class=\"btn\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input name=\"action\" value=\"new\" type=\"hidden\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input class=\"btn\" value=\"New adaptation\" type=\"submit\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input value=\"new\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input value=\"collaborate\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input value=\"adaptation\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input name=\"repo_new\" placeholder=\"e.g. MobyDick\" type=\"text\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input value=\"private\" type=\"checkbox\" name=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input class=\"btn\" value=\"Copy project\" type=\"submit\"/>\n\t\t</form>\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 AddNewBookDialog._template = t;
             }
@@ -672,7 +672,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = FileListDialog_Item._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t\t<input name=\"file-list\" type=\"radio\"/>\n\t\t<span/>\n\t</li>\n</ul>\n";
+                d.innerHTML = "<ul>\n\t<li data-set=\"this\">\n\t\t<input type=\"radio\" name=\"file-list\"/>\n\t\t<span/>\n\t</li>\n</ul>\n";
                 t = d.firstElementChild.childNodes[1];
                 FileListDialog_Item._template = t;
             }
@@ -711,7 +711,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = FoundationRevealDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button aria-label=\"Close popup\" type=\"button\" data-close=\"\" class=\"close-button\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
+                d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
                 t = d.firstElementChild;
                 FoundationRevealDialog._template = t;
             }
@@ -934,7 +934,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = RepoEditorPage_NewFileDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input placeholder=\"book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
                 t = d.firstElementChild;
                 RepoEditorPage_NewFileDialog._template = t;
             }
@@ -962,7 +962,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = RepoEditorPage_RenameFileDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input placeholder=\"/book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
                 t = d.firstElementChild;
                 RepoEditorPage_RenameFileDialog._template = t;
             }
@@ -1082,7 +1082,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = RepoFileViewerPage._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input placeholder=\"Enter search text to find images.\" type=\"text\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
+                d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input type=\"text\" placeholder=\"Enter search text to find images.\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
                 t = d.firstElementChild;
                 RepoFileViewerPage._template = t;
             }
@@ -1119,7 +1119,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = Tree_NodeView._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><svg width=\"1em\" height=\"1em\" viewBox=\"0 0 100 100\">\n\t\t<rect class=\"grect\" rx=\"10\" ry=\"10\" x=\"2\" y=\"2\" width=\"96\" height=\"96\"/>\n\t\t<g transform=\"translate(50 50)\">\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg\"/>\n\t\t\t<rect y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg plusvg2\" x=\"-30\"/>\n\t\t</g>\n\t\t</svg></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
+                d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><svg height=\"1em\" viewBox=\"0 0 100 100\" width=\"1em\">\n\t\t<rect height=\"96\" class=\"grect\" rx=\"10\" ry=\"10\" x=\"2\" y=\"2\" width=\"96\"/>\n\t\t<g transform=\"translate(50 50)\">\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg\"/>\n\t\t\t<rect x=\"-30\" y=\"-4\" stroke=\"none\" width=\"60\" height=\"8\" class=\"plusvg plusvg2\"/>\n\t\t</g>\n\t\t</svg></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
                 t = d.firstElementChild;
                 Tree_NodeView._template = t;
             }
@@ -1174,7 +1174,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var t = conflict_ClosePRDialog._template;
             if (!t) {
                 var d = document.createElement('div');
-                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button data-event=\"click:done\" class=\"btn\">Done</button>\n</div>\n";
+                d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-yes\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
                 t = d.firstElementChild;
                 conflict_ClosePRDialog._template = t;
             }
@@ -2242,29 +2242,38 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             // Need to check that this is a text file... no, I won't get deleteEditorFile _unless_
             // this is a text file.
             this.file.data = this.textEditor.getValue();
-            this.FS.FileState(this.file.Name())
+            var file = this.file;
+            this.FS.FileState(file.Name())
                 .then(function (fs) {
                 if (fs == FileState.Deleted) {
                     // Actually want to undo this deletion
                     // this.file.SetFileContent(fc.Content);
-                    _this.file.DataEvenIfDeleted()
+                    file.DataEvenIfDeleted()
                         .then(function (raw) {
-                        _this.FS.Write(_this.file.Name(), raw);
+                        _this.FS.Write(file.Name(), raw);
                     })
-                        .then(function (f) { _this.file = f; return Promise.resolve(); })
+                        .then(function (f) {
+                        if (_this.file.Name() == file.Name()) {
+                            _this.file = f;
+                        }
+                        return Promise.resolve();
+                    })
                         .catch(EBW.Error);
-                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
+                    _this.Listeners.dispatch(EditorEvent.Changed(file));
                 }
                 else {
-                    EBW.Confirm("Are you sure you want to delete " + _this.file.Name() + "?")
+                    EBW.Confirm("Are you sure you want to delete " + file.Name() + "?")
                         .then(function () {
-                        return _this.FS.Remove(_this.file.Name())
-                            .then(function (f) {
+                        return _this.FS.Remove(file.Name());
+                    })
+                        .then(function () { return _this.FS.Sync(file.Name()); })
+                        .then(function (f) {
+                        if (_this.file.Name() == file.Name()) {
                             _this.Listeners.dispatch(EditorEvent.Unloaded(_this.file));
                             _this.file = undefined;
                             _this.setFile(undefined);
                             _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
-                        });
+                        }
                     })
                         .catch(EBW.Error);
                 }
@@ -2386,12 +2395,20 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         RepoFileEditorCM$$1.prototype.File = function () { return this.file; };
         RepoFileEditorCM$$1.prototype.Rename = function (name) {
             var _this = this;
-            return this.FS.Move(this.file.Name(), name)
+            var oldfile = this.file;
+            var newfile = this.file;
+            return this.FS.Move(oldfile.Name(), name)
                 .then(function (f) {
-                _this.Listeners.dispatch(EditorEvent.Unloaded(_this.file));
-                _this.file = f;
-                BoundFilename$1.SetFilename(name);
-                _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
+                return _this.FS.Sync(oldfile.Name())
+                    .then(function (f) { return _this.FS.Sync(name); });
+            })
+                .then(function (f) {
+                if (_this.file.Name() == oldfile.Name()) {
+                    _this.Listeners.dispatch(EditorEvent.Unloaded(oldfile));
+                    _this.file = f;
+                    BoundFilename$1.SetFilename(name);
+                    _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
+                }
                 return Promise.resolve();
             });
         };
@@ -3497,6 +3514,23 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         return Node;
     }());
 
+    function addChildNode(parent, el) {
+        if (0 == parent.children.length) {
+            parent.appendChild(el);
+            return;
+        }
+        var thisFilename = el.getAttribute("short-filename");
+        for (var i = 0; i < parent.children.length; i++) {
+            var sibling = parent.children[i];
+            var fn = sibling.getAttribute("short-filename");
+            // console.log(`Comparing ${thisFilename} against ${fn}`);
+            if (fn > thisFilename) {
+                parent.insertBefore(el, sibling);
+                return;
+            }
+        }
+        parent.appendChild(el);
+    }
     /**
      * FileSystemView displays a FileSystem, with each node either a Directory or a
      * FileView itself.
@@ -3518,7 +3552,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             }
         }
         FileSystemView.prototype.nodeAdded = function (n) {
-            new NodeView(this, n, this.parent, this.ignoreFunction, this.styler);
+            var _this = this;
+            new NodeView(this, n, function (el) { return addChildNode(_this.parent, el); }, this.ignoreFunction, this.styler);
         };
         FileSystemView.prototype.prepopulate = function (paths) {
             paths.sort();
@@ -3599,8 +3634,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
                 _this.el.classList.add("ignore");
             }
             _this.node.added.add(_this.childAdded, _this);
+            _this.el.setAttribute("short-filename", node.name);
             // this.el.style.marginLeft = (0.4*node.depth())+"em";
-            parent.appendChild(_this.el);
+            parent(_this.el);
             _this.FSV.mapView(_this);
             if (_this.styler) {
                 _this.styler(_this.node, _this.el);
@@ -3608,7 +3644,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             return _this;
         }
         NodeView.prototype.childAdded = function (n) {
-            new NodeView(this.FSV, n, this.$.children, this.ignoreFunction, this.styler);
+            var _this = this;
+            new NodeView(this.FSV, n, function (el) { return addChildNode(_this.$.children, el); }, this.ignoreFunction, this.styler);
         };
         NodeView.prototype.notifyFileChange = function (fs, f) {
             f.SetStateCSS(this.el);

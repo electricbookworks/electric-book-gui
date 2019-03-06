@@ -3989,9 +3989,9 @@ body {
   justify-content: space-between;
   align-items: baseline;
   padding: 1em;
-  border-bottom: 1px solid #ffbf01;
   background-color: #FFCC34;
   color: white;
+  background-color: black;
   position: relative; }
   .topbar a {
     color: white; }
@@ -4004,7 +4004,8 @@ body {
     box-sizing: content-box; }
   .topbar .username-gravatar > img {
     margin-left: 0.5em;
-    margin-right: 0.5em; }
+    margin-right: 0.5em;
+    border-radius: 10000px; }
   .topbar .topbar-center {
     font-weight: bold; }
 
@@ -4254,9 +4255,11 @@ body {
   color: #fab414; }
 #all-files-editor .node.state-new {
   background-color: #fab414; }
-#all-files-editor .node.state-absent .name {
-  text-decoration: line-through;
-  color: #ccc; }
+#all-files-editor .node.state-absent {
+  display: none; }
+  #all-files-editor .node.state-absent .name {
+    text-decoration: line-through;
+    color: #ccc; }
 #all-files-editor div.children {
   margin-left: 1em;
   overflow: hidden;
