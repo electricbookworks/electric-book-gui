@@ -3537,15 +3537,15 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         };
         FileSystemView.prototype.isClosed = function (node) {
             var v = window.localStorage.getItem(this.keyForNode(node));
-            return "t" == v;
+            return null == v;
         };
         FileSystemView.prototype.setClosed = function (node, closed) {
             var key = this.keyForNode(node);
             if (closed) {
-                window.localStorage.setItem(key, "t");
+                window.localStorage.removeItem(key);
             }
             else {
-                window.localStorage.removeItem(key);
+                window.localStorage.setItem(key, "t");
             }
         };
         return FileSystemView;

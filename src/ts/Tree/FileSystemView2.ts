@@ -66,14 +66,14 @@ export class FileSystemView {
 	}
 	isClosed(node:Node) : boolean {
 		let v = window.localStorage.getItem(this.keyForNode(node));
-		return `t`==v;
+		return null==v;
 	}
 	setClosed(node:Node, closed: boolean) : void {
 		let key  = this.keyForNode(node);
 		if (closed) {
-			window.localStorage.setItem(key, `t`);
-		} else {
 			window.localStorage.removeItem(key);
+		} else {
+			window.localStorage.setItem(key, `t`);
 		}		
 	}
 }
