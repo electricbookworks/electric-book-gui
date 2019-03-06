@@ -2274,23 +2274,33 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
             var _this = this;
             /* @TODO Need to ensure that no file-load occurs during file-save */
             var f = this.file;
-            this.FS.Write(f.Name(), this.textEditor.getValue())
+            var fileText = this.textEditor.getValue();
+            this.FS.Write(f.Name(), fileText)
                 .then(function (f) {
                 return _this.FS.Sync(f.Name());
             })
                 .then(function (f) {
+                /* In the following code, we need to check that we're
+                 * still editing the file we are saving. If somebody has
+                 * started editing a different file, we can't change the
+                 * editors state.
+                 */
                 if (!f.exists) {
                     EBW.Toast(f.Name() + " removed");
-                    // By presetting file to undefined, we ensure that
-                    // setFile doesn't save the file again
-                    _this.file = undefined;
-                    _this.setFile(undefined);
-                    _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+                    if (_this.file.Name() == f.Name()) {
+                        // By presetting file to undefined, we ensure that
+                        // setFile doesn't save the file again
+                        _this.file = undefined;
+                        _this.setFile(undefined);
+                        _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+                    }
                 }
                 else {
-                    _this.file = f;
-                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
-                    EBW.Toast(_this.file.Name() + " saved.");
+                    EBW.Toast(f.Name() + " saved.");
+                    if (_this.file.Name() == f.Name()) {
+                        _this.file = f;
+                        _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
+                    }
                 }
             })
                 .catch(function (err) {

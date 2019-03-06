@@ -200,24 +200,34 @@ export class RepoFileEditorCM extends Template {
 	saveEditorFile() {
 		/* @TODO Need to ensure that no file-load occurs during file-save */
 		let f = this.file;
-		this.FS.Write(f.Name(), this.textEditor.getValue())
+		let fileText = this.textEditor.getValue();
+
+		this.FS.Write(f.Name(), fileText)
 		.then( (f:File)=>{
 			return this.FS.Sync(f.Name());
 			})
 		.then(
 			(f:File)=>{
+				/* In the following code, we need to check that we're
+				 * still editing the file we are saving. If somebody has
+				 * started editing a different file, we can't change the
+				 * editors state.
+				 */
 				if (!f.exists) {
 					EBW.Toast(`${f.Name()} removed`);
-
-					// By presetting file to undefined, we ensure that
-					// setFile doesn't save the file again
-					this.file = undefined;
-					this.setFile(undefined);
-					this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+					if (this.file.Name()==f.Name()) {				
+						// By presetting file to undefined, we ensure that
+						// setFile doesn't save the file again
+						this.file = undefined;
+						this.setFile(undefined);
+						this.Listeners.dispatch(EditorEvent.Loaded(undefined));
+					}
 				} else {
-					this.file = f;
-					this.Listeners.dispatch(EditorEvent.Changed(this.file));
-					EBW.Toast(`${this.file.Name()} saved.`);
+					EBW.Toast(`${f.Name()} saved.`);
+					if (this.file.Name()==f.Name()) {
+						this.file = f;
+						this.Listeners.dispatch(EditorEvent.Changed(this.file));
+					}
 				}
 			})
 		.catch(
