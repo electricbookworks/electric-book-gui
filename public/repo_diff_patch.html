@@ -3,8 +3,29 @@
 #repo-diff-patch tbody td, #repo-diff-patch tbody th {
 	padding: 0;
 }
+#repo-diff-patch.wordwrap .d2h-code-line-ctn {
+	white-space: pre-wrap;
+}
+#wrap-button {
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	width: 2em;
+	height: 2em;
+	border: 2px solid red;
+	background-color: lightgray;
+	color: white;
+	z-index: 10000;
+	cursor: pointer;
+}
+#wrap-button.wordwrap {
+	border-color: green;
+}
 </style>
-<main id="repo-diff-patch" class="">
+<div id="wrap-button" class="wordwrap">
+	Wrap
+</div>
+<main id="repo-diff-patch" class="wordwrap">
 </main>
 
 
@@ -12,9 +33,15 @@
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-	console.log('generating diff');
+	document.getElementById('wrap-button').addEventListener('click',
+		function(evt) {
+			evt.preventDefault(); evt.stopPropagation();
+			document.getElementById('repo-diff-patch')
+				.classList.toggle('wordwrap');
+			document.getElementById('wrap-button')
+				.classList.toggle('wordwrap');
+		});
 	var patch = document.getElementById('patch').innerText;
-	console.log(`patch = `, patch);
 	if (false) {
 		var diffHtml = Diff2Html.getPrettyHtml(
 		  patch,
@@ -32,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		diff2htmlUi.draw('#repo-diff-patch', {inputFormat: 'diff', showFiles: true, matching: 'lines'});
 		// diff2htmlUi.highlightCode('#repo-diff-patch');
 	}
-	console.log('diff generated!');
 });
 </script>
 <script type="text/hidden" id="patch">
