@@ -5411,6 +5411,52 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         return RepoDiffFileViewerPage;
     }());
 
+    var WordWrapButton = (function () {
+        function WordWrapButton(button, container) {
+            var _this = this;
+            this.button = button;
+            this.container = container;
+            this.KEY = "ebw-word-wrap";
+            button.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                _this.toggle();
+            });
+            this.setWordWrap(this.isWordWrap());
+            this.button.style.visibility = 'visible';
+        }
+        WordWrapButton.prototype.isWordWrap = function () {
+            var v = window.localStorage.getItem(this.KEY);
+            if (null == v) {
+                return true;
+            }
+            return "false" != v;
+        };
+        WordWrapButton.prototype.setWordWrap = function (w) {
+            window.localStorage.setItem(this.KEY, w ? "true" : "false");
+            if (w) {
+                this.button.classList.add("wordwrap");
+                this.container.classList.add("wordwrap");
+            }
+            else {
+                this.button.classList.remove("wordwrap");
+                this.container.classList.remove("wordwrap");
+            }
+        };
+        WordWrapButton.prototype.toggle = function () {
+            this.setWordWrap(!this.isWordWrap());
+        };
+        return WordWrapButton;
+    }());
+
+    var RepoDiffPatchPage = (function () {
+        function RepoDiffPatchPage(context) {
+            this.context = context;
+            new WordWrapButton(document.getElementById('wrap-button'), document.getElementById('repo-diff-patch'));
+        }
+        return RepoDiffPatchPage;
+    }());
+
     var DOMInsert = (function () {
         function DOMInsert(parent) {
             this.parent = parent;
@@ -5625,7 +5671,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 
     var EBW = (function () {
         function EBW() {
+            if (null != EBW.instance) {
+                console.log("EBW.instance already set");
+            }
             if (null == EBW.instance) {
+                console.log("Creating EWB.instance");
                 EBW.instance = this;
                 this.api = new APIWs();
                 jQuery(document).foundation();
@@ -5652,6 +5702,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
                             break;
                         case 'RepoEditorPage':
                             new RepoEditorPage(context, document.querySelector("[data-instance='AllFilesList']"), window.repoEditorData.files, window.repoEditorData.ignoreFilter, window.repoEditorData.filesAndHashes);
+                            break;
+                        case 'RepoDiffPatchPage':
+                            new RepoDiffPatchPage(context);
                             break;
                     }
                 }

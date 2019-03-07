@@ -11,13 +11,18 @@ import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
 import {RepoDiffViewerPage} from './RepoDiffViewerPage';
 import {RepoDiffFileViewerPage} from './RepoDiffFileViewerPage';
+import {RepoDiffPatchPage} from './RepoDiffPatchPage';
 import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
 	static instance : EBW;
 	protected api : API;
 	constructor() {
+		if (null!=EBW.instance) {
+			console.log(`EBW.instance already set`);
+		}
 		if (null==EBW.instance) {
+			console.log(`Creating EWB.instance`);
 			EBW.instance = this;
 			this.api = new APIWs();
 			jQuery(document).foundation();
@@ -52,6 +57,9 @@ export class EBW {
 							window.repoEditorData.ignoreFilter,
 							window.repoEditorData.filesAndHashes,
 						);
+						break;
+					case 'RepoDiffPatchPage':
+						new RepoDiffPatchPage(context);
 						break;
 				}
 			}
