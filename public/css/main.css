@@ -3886,18 +3886,19 @@ body {
   align-items: stretch;
   justify-content: space-between;
   min-height: 100vh;
-  max-height: 100vh;
   position: relative; }
+  body.noflex {
+    display: block; }
   body main {
     flex-grow: 1; }
   body footer {
     flex-grow: 0;
+    padding: 1em;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: baseline;
-    padding: 1em;
     background-color: #FFCC34;
     color: white;
     border-top: 1px solid #ffbf01; }
