@@ -12,12 +12,14 @@
   become: yes
 
 - name: install
+  tags: ['bin','public']
   git: 
-    repo: {{git_repo}}
+    repo: "{{git_repo}}"
     dest: /opt/electricbook
   become: yes
 
 - name: Set permissions on git_cache
+  tags: ['bin']
   file: >
     name="{{git_cache}}"
     owner=electricbook
@@ -34,6 +36,7 @@
   become: yes
 
 - name: install electricbook
+  tags: ['bin']
   copy: >
     dest=/opt/electricbook/bin/electricbook
     force=yes

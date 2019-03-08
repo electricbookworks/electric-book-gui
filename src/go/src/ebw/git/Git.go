@@ -308,7 +308,6 @@ func (g *Git) FilesAndHashes() ([][2]string, error) {
 		return false
 	}
 	if err := filepath.Walk(g.Path(), func(path string, info os.FileInfo, err error) error {
-		glog.Infof(`Walk path=%s`, path)
 		if nil!=err {
 			return err
 		}
