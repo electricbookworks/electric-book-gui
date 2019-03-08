@@ -42,11 +42,9 @@
     flex-direction: row;
     align-items: stretch;
     justify-content: space-between;
-    position: relative;
 
    .commit-list {
       flex-grow: 1;
-      height: 100%;
       position: relative;
 
       .commit-summary-list {

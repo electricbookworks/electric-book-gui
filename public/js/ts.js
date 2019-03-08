@@ -5304,6 +5304,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         function RepoDiffDatesForm(context) {
             var _this = this;
             this.context = context;
+            console.log("RepoDiffDatesForm");
             this.fromDate = document.getElementById("from-date");
             this.toDate = document.getElementById("to-date");
             this.button = document.getElementById("diff-dates-button");

@@ -3897,12 +3897,10 @@ body {
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: baseline;
-    padding-top: 1em;
+    padding: 1em;
     background-color: #FFCC34;
     color: white;
     border-top: 1px solid #ffbf01; }
-    body footer div {
-      padding: 0 1em 1em 1em; }
     body footer a {
       color: white; }
       body footer a:hover {
@@ -3991,8 +3989,7 @@ body {
   padding: 1em;
   background-color: #FFCC34;
   color: white;
-  background-color: black;
-  position: relative; }
+  background-color: black; }
   .topbar a {
     color: white; }
     .topbar a:hover {
@@ -4001,7 +3998,7 @@ body {
     height: 2em;
     width: 2em;
     margin-bottom: 2px;
-    box-sizing: content-box; }
+    box-sizing: border-box; }
   .topbar .username-gravatar > img {
     margin-left: 0.5em;
     margin-right: 0.5em;
@@ -4869,11 +4866,9 @@ body {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    justify-content: space-between;
-    position: relative; }
+    justify-content: space-between; }
     #repo-diff-viewer .workspace .commit-list {
       flex-grow: 1;
-      height: 100%;
       position: relative; }
       #repo-diff-viewer .workspace .commit-list .commit-summary-list {
         position: absolute;

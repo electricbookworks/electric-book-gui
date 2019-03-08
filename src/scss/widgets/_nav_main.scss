@@ -8,13 +8,13 @@
 
 	@include inverse;
 	background-color: black;
-	position: relative;
+	// position: relative;
 
 	img {
 		height: 2em;
 		width: 2em;
 		margin-bottom: 2px;
-		box-sizing: content-box;
+		box-sizing: border-box;
 	}
 
 	.username-gravatar {

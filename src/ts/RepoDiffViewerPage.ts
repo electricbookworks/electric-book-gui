@@ -5,6 +5,7 @@ import {CommitSummaryListView} from './CommitSummaryListView';
 
 class RepoDiffDatesForm {
 	constructor(protected context:Context) {
+		console.log(`RepoDiffDatesForm`);
 		this.fromDate = document.getElementById(`from-date`);
 		this.toDate = document.getElementById(`to-date`);
 		this.button = document.getElementById(`diff-dates-button`);
