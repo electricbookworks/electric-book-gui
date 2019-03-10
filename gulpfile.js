@@ -39,7 +39,7 @@ function errorAlert(task) {
 		this.emit('end');
 	};
 }
-gulp.task('scss', function() {
+gulp.task('scss', function(done) {
 	return gulp.src(paths.scss.src + '/main.scss')
 	.pipe(concat('main.css'))
 	.pipe(sass({includePaths:paths.scss.include}).on('error', sass.logError))
@@ -47,16 +47,25 @@ gulp.task('scss', function() {
 	.pipe(rename({suffix:".min"}))
 	.pipe(nano())
 	.pipe(gulp.dest('public/css'));
+	done();
 });
 
 
 
-gulp.task('svgmin', function () {
+gulp.task('svgmin', function (done) {
     return gulp.src(paths.svg.src + '/*.svg')
         .pipe(svgmin())
         .pipe(gulp.dest(paths.svg.dest));
+        done();
 });
 
-gulp.task('watch', function() {
-	gulp.watch(paths.scss.src + '/**/*.scss', ['scss']);
+gulp.task('watch', function(done) {
+	gulp.watch(paths.scss.src + '/**/*.scss', gulp.series('scss'));
+	done();
 });
+
+// when running `gulp`, do these tasks
+gulp.task('default', gulp.series(
+    'scss',
+    'svgmin'
+));
