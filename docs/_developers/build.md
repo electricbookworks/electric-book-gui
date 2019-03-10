@@ -18,7 +18,7 @@ Here are more detailed instructions.
 
    This will create a binary in `bin/electricbookworks`.
 
-2. Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the following parameters:
+2. Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the parameters as needed. You must set the Client ID and Client Secret of your own [GitHub OAuth application](https://github.com/settings/developers):
 
    ```
    github:
@@ -44,7 +44,7 @@ Here are more detailed instructions.
 
 5. Start the app with:
 
-       bin/electricbookworks -logtostderr web
+       bin/electricbook -logtostderr web
 
    This must be run from the repo directory, since it needs access to the `public` directory, to some other directories it will create on the fly, and to the `electricbook.yml` configuration file.
 
