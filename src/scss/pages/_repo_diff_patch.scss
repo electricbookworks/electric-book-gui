@@ -5,7 +5,8 @@
 #repo-diff-patch.wordwrap .d2h-code-line-ctn {
 	white-space: pre-wrap;
 }
-#wrap-button {
+#wrap-button,
+#diff-print-button {
 	position: fixed;
 	top: 1em;
 	right: 1em;
@@ -26,6 +27,9 @@
 	justify-content: center;
 	align-items: center;
 	visibility: hidden;
+}
+#diff-print-button {
+	right: 6em;
 }
 #wrap-button.wordwrap {
 	background-color: $color-primary;
