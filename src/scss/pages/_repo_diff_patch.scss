@@ -5,15 +5,22 @@
 #repo-diff-patch.wordwrap .d2h-code-line-ctn {
 	white-space: pre-wrap;
 }
-#wrap-button {
+#float-toolbar {
 	position: fixed;
 	top: 1em;
 	right: 1em;
+	z-index: 10000;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: stretch;
+}
+.float-button {
 	width: 4em;
 	height: 4em;
 	background-color: #999;
 	color: white;
-	z-index: 10000;
 	cursor: pointer;
 	font-size: 0.6em;
 	text-transform: uppercase;
@@ -26,8 +33,16 @@
 	justify-content: center;
 	align-items: center;
 	visibility: hidden;
+	margin-left: 1em;
+}
+.float-button:first-child {
+	margin-left: 0;
 }
 #wrap-button.wordwrap {
 	background-color: $color-primary;
 	border-color: #999;
+}
+
+@media print {
+	#float-toolbar { display: none; }
 }

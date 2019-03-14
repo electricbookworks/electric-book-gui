@@ -5412,6 +5412,19 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         return RepoDiffFileViewerPage;
     }());
 
+    var PrintButton = (function () {
+        function PrintButton(button) {
+            this.button = button;
+            this.button.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                evt.stopPropagation();
+                window.print();
+            });
+            this.button.style.visibility = 'visible';
+        }
+        return PrintButton;
+    }());
+
     var WordWrapButton = (function () {
         function WordWrapButton(button, container) {
             var _this = this;
@@ -5454,6 +5467,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
         function RepoDiffPatchPage(context) {
             this.context = context;
             new WordWrapButton(document.getElementById('wrap-button'), document.getElementById('repo-diff-patch'));
+            new PrintButton(document.getElementById('print-button'));
         }
         return RepoDiffPatchPage;
     }());
