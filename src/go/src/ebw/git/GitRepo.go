@@ -1,11 +1,13 @@
 package git
 
 import (
+	"reflect"
 	"sort"
 	"sync"
 
-	// "github.com/golang/glog"
+	"github.com/golang/glog"
 	"github.com/google/go-github/github"
+	"github.com/juju/errors"
 
 	"ebw/util"
 )
@@ -37,6 +39,7 @@ func (g *GitRepo) RepoOwnerNiceName() string {
 	}
 	return name
 }
+
 
 type gitRepoSlice []*GitRepo
 
@@ -93,10 +96,10 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	}
 
 	var reloadRepo sync.WaitGroup
-	var resultLock sync.Mutex
-	// Loading each repo in serial could take a while, so we launch multiple goroutines to do it in
+	// Loading each repo in serial could take a while, so we launch multiple goroutines to 
+	// do it in
 	// parallel
-	var err error = nil
+	var ERR = make(chan error, len(repos))
 	for i := 0; i < len(repos); i++ {
 		repo := repos[i]
 		if repo.GetFork() && nil == repo.Parent {
@@ -105,26 +108,48 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 				defer reloadRepo.Done()
 				repo, _, ierr := client.Repositories.GetByID(client.Context, ID)
 				if nil != ierr {
-					resultLock.Lock()
-					err = ierr
-					resultLock.Unlock()
+					githubE, ok := ierr.(*github.ErrorResponse)
+					if !ok {
+						glog.Errorf(`ENCOUNTERED ERROR %s: %s`, reflect.ValueOf(ierr).Elem().Type().String(), ierr.Error())
+						ERR <- errors.Annotatef(ierr, "FAILED to retrieve repo %d", ID)
+						return						
+					}
+					if 404==githubE.Response.StatusCode {
+						// THE REPO HAS DISAPPEARED, but we won't crash because
+						// it's not here
+						repos[i] = nil						
+						return
+					}
+					glog.Errorf(`githubE Response StatusCode = %d`, githubE.Response.StatusCode)
+					ERR <-errors.Annotatef(ierr, "FAILED to retrieve repo %d", ID)
+					return
 				}
-				resultLock.Lock()
 				repos[i] = repo
-				resultLock.Unlock()
 			}(repo.GetID(), i)
 		}
 	}
 	reloadRepo.Wait()
-	if nil != err {
-		return nil, util.Error(err)
+	close(ERR)
+	for err := range ERR {
+		if nil!=err {
+			return nil, util.Error(err)
+		}
 	}
+
+	// REMOVE all nil repos
+	tempRepos := make([]*github.Repository, 0, len(repos))
+	for _, r := range repos {
+		if nil!=r {
+			tempRepos = append(tempRepos, r)
+		}
+	}
+	repos = tempRepos
 
 	C := make(chan *GitRepo)
 	var waitForFileChecks sync.WaitGroup
 	waitForFileChecks.Add(len(repos))
 
-	ERR := make(chan error, len(repos))
+	ERR = make(chan error, len(repos))
 	go func() {
 		waitForFileChecks.Wait()
 		close(C)
@@ -142,7 +167,8 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 				return
 			}
 
-			//only add to list and fetch last commits and if the repo already contains the file
+			// only add to list and fetch last commits and if the repo
+			// already contains the file
 			if containsFile {
 				lc, err := LastCommit(client, gr.Owner.GetLogin(), gr.GetName())
 				if nil == err {
@@ -174,3 +200,4 @@ func FetchRepos(client *Client, page, perPage int) ([]*GitRepo, error) {
 	}
 	return books, nil
 }
+

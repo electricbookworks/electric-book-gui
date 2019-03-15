@@ -1,0 +1,84 @@
+#repo-diff-viewer {
+  flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+  position: relative;
+
+  .explain {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    padding: 1em;
+    margin: 0;
+    border-bottom: 1px solid $color-lightgray;
+  }
+  .top-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: baseline;
+    & > label {
+      margin-right: 1em;
+    }
+    &>input, &>button {
+      margin-bottom: 0;
+    }
+  }
+  .footer {
+    flex-grow: 0;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+  .workspace {
+    flex-grow: 1;
+
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+
+   .commit-list {
+      flex-grow: 1;
+      position: relative;
+
+      .commit-summary-list {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow: scroll;
+      }
+      .commit-summary {
+        padding: 0.6em 1em;
+        border-top: 1px solid $color-lightgray;
+        cursor: pointer;
+        .when {
+          font-weight: bold;
+        }
+        &:hover {
+          background-color: #cfc;
+        }
+        &.selected {
+          background-color: #8c8;
+        }
+      }
+      .commit-summary:first-child {
+        border-top: 0px;
+      }
+    }
+  }
+}
+
+ins.inserted {
+  background-color: #ccffcc;
+}
+del.deleted {
+  background-color: #fcc;
+}

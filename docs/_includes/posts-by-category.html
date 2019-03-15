@@ -1,0 +1,44 @@
+{% comment %}Set the 'More' text, then check if it's been set in the include parameter{% endcomment %}
+{% assign more-text = site.data.locales[site.data.settings.language].excerpt.more %}
+{% if include.more-text %}
+{% assign more-text = include.more-text %}
+{% endif %}
+
+<div class="posts-by-category">
+
+{% comment %}Create an array of the categories we need to include on this page.{% endcomment %}
+{% assign page-show-categories = page.show-categories | remove: " " | split: "," %}
+
+{% comment %}Look through the categories in _data/categories.yml.{% endcomment %}
+{% for category in site.data.categories %}
+
+    {% comment %}If a category is one of those assigned to this page,
+    we'll show the category details and post excerpts for it.{% endcomment %}
+    {% if page-show-categories contains category.slug %}
+
+        {% comment %}Check if we should hide the category title (e.g. on one-category pages){% endcomment %}
+        {% unless include.category-titles == "no" or include.category-titles == "false" or include.category-titles == "none" %}
+            <h2 id="{{ category.slug }}">{{ category.label }}</h2>
+        {% endunless %}
+
+        {% comment %}Similarly, check if we should hide the category descriptions{% endcomment %}
+        {% unless include.category-descriptions == "no" or include.category-descriptions == "false" or include.category-descriptions == "none" %}
+            {% if category.description %}
+                <p>{{ category.description | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+            {% endif %}
+        {% endunless %}
+
+        <div class="post-excerpts">
+
+            {% comment %}Loop through the posts in this category and output the excerpt{% endcomment %}
+            {% for post in site.categories.[category.slug] %}
+            {% include post-excerpt.html more-text=more-text %}
+            {% endfor %}
+
+        </div><!--.post-excerpts-->
+
+    {% endif %}
+
+{% endfor %}
+
+</div><!--.posts-by-category-->

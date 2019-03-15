@@ -11,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"strconv"
+	"time"
 	// "net/http"
 
 	"github.com/golang/glog"
@@ -34,6 +36,200 @@ func repoFileViewer(c *Context) error {
 	c.D[`RepoOwner`] = repoOwner
 	c.D[`RepoName`] = repoName
 	return c.Render(`repo_file_viewer.html`, nil)
+}
+
+func repoDiffFiles(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	diffs, err := r.Git.CommitDiffs(fromOID, toOID)
+	if nil!=err {
+		return err
+	}
+	c.D[`FromOID`], c.D[`ToOID`] = fromOID, toOID
+	c.D[`Diffs`] = diffs
+
+	toTree, err := r.Git.IdToTree(toOID)
+	if nil!=err {
+		return err
+	}
+	defer toTree.Free()
+	proseConfig, err := book.ReadProseTree(r.Repository, toTree, ``)
+	if nil != err {
+		return err
+	}
+	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
+
+	return c.Render(`repo_diff_file_viewer.html`, nil)
+}
+
+func repoDiffPatch(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	index, err := strconv.ParseInt(c.Vars[`index`], 10, 64)
+	if nil!=err {
+		return err
+	}
+	patch, err := r.Git.CommitDiffsPatch(fromOID, toOID, int(index))
+	if nil!=err {
+		return err
+	}
+	defer patch.Free()
+	c.D[`Patch`] = patch
+
+	pretty, err := r.Git.CommitDiffsPretty(fromOID, toOID, int(index))
+	if nil!=err {
+		return err
+	}
+	c.D[`Pretty`] = pretty
+
+	return c.Render(`repo_diff_patch.html`, nil)
+}
+
+func repoDiffDates(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	fromS, toS := c.R.FormValue(`from-date`), c.R.FormValue(`to-date`)
+	from, err := util.ParseTime(fromS)
+	if nil!=err {
+		return err
+	}
+	to, err := util.ParseTime(toS)
+	if nil!=err {
+		return err
+	}
+	r, err := c.Repo()
+	if nil!=err {
+		return err
+	}
+	sc, ec, err := r.Git.CommitsBetween(from, to)
+	if nil!=err {
+		return err
+	}
+
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+
+	glog.Infof(`Chose repos with dates %s and %s`, 
+		sc.Committer().When.Format(`20060102 15:04:05`),
+		ec.Committer().When.Format(`20060102 15:04:05`))
+
+	return c.Redirect(`/repo/%s/%s/diff/%s/%s`, 
+		repoOwner, repoName,
+		sc.TreeId().String(), ec.TreeId().String())
+
+}
+
+// repoDiffDiff serves the DIFF file that is generated between the two OID's.
+func repoDiffDiff(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`], c.D[`RepoName`]=repoOwner, repoName
+	r, err := c.Repo()
+	if nil!=err {
+		return err
+	}
+	fromOID, toOID := c.Vars[`fromOID`], c.Vars[`toOID`]
+	hunks, err := r.Git.DiffBlobs(fromOID, `from-name`, toOID, `to-name`)
+	if nil!=err {
+		return err
+	}
+	c.D[`Hunks`]=hunks
+	return c.Render(`repo_diff_file_diff.html`, nil)
+}
+
+func repoDiffFileServer(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+	OIDandExt := c.Vars[`OID`]
+	ext := filepath.Ext(OIDandExt)
+	OID := OIDandExt[0:len(OIDandExt)-len(ext)]
+	oid, err := git2go.NewOid(OID)
+	if nil!=err {
+		return err
+	}
+	mimeType := mime.TypeByExtension(ext)
+	blob, err := r.Git.Repository.LookupBlob(oid)
+	if nil!=err {
+		return err
+	}
+	defer blob.Free()
+	c.W.Header().Set(`Content-Type`, mimeType)
+	c.W.Write(blob.Contents())
+	return nil
+}
+
+func repoDiff(c *Context) error {
+	client := Client(c.W, c.R)
+	if nil==client {
+		return nil
+	}
+	repoOwner, repoName := c.Vars[`repoOwner`], c.Vars[`repoName`]
+	c.D[`RepoOwner`] = repoOwner
+	c.D[`RepoName`] = repoName
+
+	r, err := c.Repo()
+	if nil != err {
+		return err
+	}
+
+	commits, err := r.Git.ListCommits()
+	if nil!=err {
+		return err
+	}
+
+	var st, et time.Time
+	for i, c := range commits {
+		t := c.When
+		if 0==i {
+			st, et = t, t
+		} else {
+			if t.Before(st) {
+				st = t
+			}
+			if t.After(et) {
+				et = t
+			}
+		}
+	}
+	c.D[`FirstCommit`], c.D[`LastCommit`] = st, et
+	c.D[`CommitSummaries`] = commits
+	return c.Render(`repo_diff_viewer.html`, nil)
 }
 
 func repoCommit(c *Context) error {
@@ -127,6 +323,11 @@ func repoView(c *Context) error {
 		return err
 	}
 
+	filesAndHashes, err := r.Git.FilesAndHashes()
+	if nil!=err {
+		return err
+	}
+
 	proseConfig, err := book.ReadProse(repoDir)
 	if nil != err {
 		return err
@@ -134,6 +335,7 @@ func repoView(c *Context) error {
 	c.D[`ProseIgnoreFilter`] = proseConfig.IgnoreFilterJS()
 	repoFiles = repoFiles.Filter(``, proseConfig.IgnoreFilter())
 	c.D[`RepoFiles`] = repoFiles
+	c.D[`FilesAndHashes`] = filesAndHashes
 	return c.Render(`repo_view.html`, nil)
 }
 
@@ -252,6 +454,7 @@ func repoUpdate(c *Context) error {
 		return c.Redirect(`/repo/%s/%s/`, repoOwner, repoName)
 	case `detail`:
 	case ``:
+		glog.Infof(`Redirecting to /repo/%s/%s/details`, repoOwner, repoName)
 		return c.Redirect(`/repo/%s/%s/detail`, repoOwner, repoName)
 	default:
 		return c.Redirect(next)

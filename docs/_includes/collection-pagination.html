@@ -1,0 +1,118 @@
+{% comment %}
+This include adds pagination to a collection based on files.
+Users can override these links by adding filenames to page frontmatter
+as `parent-page`, `next-page` and `previous-page`.
+
+Thanks to https://gist.github.com/mmistakes/43a355923921d22cd993
+and https://gist.github.com/johnfmorton/6c395361d259b23409ee6559fd909d5c
+for useful inspiration for detecting prev and next.{% endcomment %}
+
+{% capture the_collection %}{{ page.collection }}{% endcapture %}
+
+{% if page.collection %}
+  {% assign document = site[the_collection] | sort: "order" %}
+{% endif %}
+
+{% comment %}Back to start after last link{% endcomment %}
+{% for links in document  %}
+    {% if forloop.first %}
+        {% assign first = links %}
+    {% endif %}
+    {% if forloop.last %}
+        {% assign last = links %}
+    {% endif %}
+{% endfor %}
+
+{% for links in document %}
+  {% if links.title == page.title %}
+    {% unless forloop.first %}
+      {% assign prevurl = prev.url %}
+      {% assign prevtitle = prev.title %}
+    {% endunless %}
+    {% unless forloop.last %}
+      {% assign next = document[forloop.index] %}
+      {% assign nexttitle = next.title %}
+      {% assign nexturl = next.url %}
+    {% endunless %}
+  {% endif %}
+  {% assign prev = links %}
+{% endfor %}
+
+{% assign firsturl = first.url %}
+{% assign lasturl = last.url %}
+{% assign firsttitle = first.title %}
+{% assign lasttitle = last.title %}
+
+{% comment %}Check for page links, which override automatic ones{% endcomment %}
+{% if page.previous-page or page.next-page or page.parent-page %}
+  {% comment %}Strip any file extensions{% endcomment %}
+  {% capture parent-page-override %}{{ page.parent-page | split: "." | first }}{% endcapture %}
+  {% capture next-page-override %}{{ page.next-page | split: "." | first }}{% endcapture %}
+  {% capture previous-page-override %}{{ page.previous-page | split: "." | first }}{% endcapture %}
+  {% assign collection-pages = site.[page.collection] %}
+  {% for item in collection-pages  %}
+    {% assign item-file = item.url | split: "." | first | split: "/" | last %}
+    {% if item-file == parent-page-override %}
+      {% capture parent-title %}{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}{% endcapture %}
+    {% endif %}
+  {% endfor %}
+  {% for item in collection-pages  %}
+    {% assign item-file = item.url | split: "." | first | split: "/" | last %}
+    {% if item-file == next-page-override %}
+      {% capture next-title %}{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}{% endcapture %}
+    {% endif %}
+  {% endfor %}
+  {% for item in collection-pages  %}
+    {% assign item-file = item.url | split: "." | first | split: "/" | last %}
+    {% if item-file == previous-page-override %}
+      {% capture previous-title %}{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}{% endcapture %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<div class="previous">
+    {% if previous-page-override and previous-page-override != "" and previous-page-override != page.url %}
+        <a href="../{{ previous-page-override }}">
+            <span class="previous-arrow">←</span>
+            <span class="previous-title">{{ previous-title | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+        </a>
+    {% elsif prevurl and prevurl != page.url %}
+        <a href="{{ site.baseurl}}{{ prevurl }}">
+            <span class="previous-arrow">←</span>
+            <span class="previous-title">{{ prevtitle | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+        </a>
+    {% elsif lasturl and lasturl != page.url %}
+        <a href="{{ site.baseurl}}{{ lasturl }}" class="prev">
+            <span class="previous-arrow">←</span>
+            <span class="previous-title">{{ lasttitle | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+        </a>
+    {% endif %}
+</div>
+
+{% if parent-page-override and parent-page-override != "" %}
+  <div class="parent">
+    <a href="../" class="prev" >
+      <span class="parent-arrow">↑</span>
+      <span class="parent-title">{{ parent-title | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+    </a>
+  </div>
+{% endif %}
+
+<div class="next">
+    {% if next-page-override and next-page-override != "" and next-page-override != page.url %}
+        <a href="../{{ next-page-override }}">
+            <span class="next-title">{{ next-title | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+            <span class="next-arrow">→</span>
+        </a>
+    {% elsif nexturl and nexturl != page.url %}
+        <a href="{{ site.baseurl}}{{ nexturl }}">
+            <span class="next-title">{{ nexttitle | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+            <span class="next-arrow">→</span>
+        </a>
+    {% elsif firsturl and firsturl != page.url %}
+        <a href="{{ site.baseurl}}{{ firsturl }}" class="prev">
+            <span class="next-title">{{ firsttitle | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}</span>
+            <span class="next-arrow">→</span>
+        </a>
+    {% endif %}
+</div>

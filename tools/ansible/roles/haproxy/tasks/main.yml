@@ -1,8 +1,7 @@
 - name: install-haproxy
-  apt: >
-    name={{item}}
-    state=present
-  with_items: [ haproxy ]
+  apt:
+    name: haproxy
+    state: present
   become: yes
   notify: "restart haproxy"
 
@@ -39,6 +38,7 @@
     repo: "https://github.com/janeczku/haproxy-acme-validation-plugin.git"
     clone: yes
     dest: "/etc/haproxy/plugins"
+    force: yes
 
 - name: copy-haproxy-lua-script
   become: yes
@@ -80,6 +80,14 @@
   become: yes
   become_method: sudo
   notify: "restart haproxy"
+
+- name: cert-renewal-script
+  become: yes
+  tags: certbot
+  template:
+    src: cert-renewal-haproxy.sh
+    dest: /etc/haproxy/plugins/cert-renewal-haproxy.sh
+    mode: 0755
 
 - name: cron-letsencrypt
   become: yes

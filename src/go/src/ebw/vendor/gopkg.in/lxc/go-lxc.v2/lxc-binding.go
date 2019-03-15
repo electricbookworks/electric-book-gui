@@ -19,6 +19,7 @@ import "C"
 import (
 	"fmt"
 	"runtime"
+	"strings"
 	"unsafe"
 )
 
@@ -64,9 +65,12 @@ func Release(c *Container) bool {
 // Version returns the LXC version.
 func Version() string {
 	version := C.GoString(C.lxc_get_version())
-	if C.LXC_DEVEL == 1 {
-		fmt.Sprintf("%s (devel)", version)
+
+	// New liblxc versions append "-devel" when LXC_DEVEL is set.
+	if strings.HasSuffix(version, "-devel") {
+		return fmt.Sprintf("%s (devel)", version[:(len(version)-len("-devel"))])
 	}
+
 	return version
 }
 
@@ -116,12 +120,12 @@ func ContainerNames(lxcpath ...string) []string {
 
 // Containers returns the defined and active containers on the system. Only
 // containers that could retrieved successfully are returned.
-func Containers(lxcpath ...string) []Container {
-	var containers []Container
+func Containers(lxcpath ...string) []*Container {
+	var containers []*Container
 
 	for _, v := range ContainerNames(lxcpath...) {
 		if container, err := NewContainer(v, lxcpath...); err == nil {
-			containers = append(containers, *container)
+			containers = append(containers, container)
 		}
 	}
 
@@ -151,12 +155,12 @@ func DefinedContainerNames(lxcpath ...string) []string {
 
 // DefinedContainers returns the defined containers on the system.  Only
 // containers that could retrieved successfully are returned.
-func DefinedContainers(lxcpath ...string) []Container {
-	var containers []Container
+func DefinedContainers(lxcpath ...string) []*Container {
+	var containers []*Container
 
 	for _, v := range DefinedContainerNames(lxcpath...) {
 		if container, err := NewContainer(v, lxcpath...); err == nil {
-			containers = append(containers, *container)
+			containers = append(containers, container)
 		}
 	}
 
@@ -186,18 +190,19 @@ func ActiveContainerNames(lxcpath ...string) []string {
 
 // ActiveContainers returns the active containers on the system. Only
 // containers that could retrieved successfully are returned.
-func ActiveContainers(lxcpath ...string) []Container {
-	var containers []Container
+func ActiveContainers(lxcpath ...string) []*Container {
+	var containers []*Container
 
 	for _, v := range ActiveContainerNames(lxcpath...) {
 		if container, err := NewContainer(v, lxcpath...); err == nil {
-			containers = append(containers, *container)
+			containers = append(containers, container)
 		}
 	}
 
 	return containers
 }
 
+// VersionNumber returns the LXC version.
 func VersionNumber() (major int, minor int) {
 	major = C.LXC_VERSION_MAJOR
 	minor = C.LXC_VERSION_MINOR
@@ -205,6 +210,7 @@ func VersionNumber() (major int, minor int) {
 	return
 }
 
+// VersionAtLeast returns true when the tested version >= current version.
 func VersionAtLeast(major int, minor int, micro int) bool {
 	if C.LXC_DEVEL == 1 {
 		return true
@@ -226,4 +232,11 @@ func VersionAtLeast(major int, minor int, micro int) bool {
 	}
 
 	return true
+}
+
+// IsSupportedConfigItem returns true if the key belongs to a supported config item.
+func IsSupportedConfigItem(key string) bool {
+	configItem := C.CString(key)
+	defer C.free(unsafe.Pointer(configItem))
+	return bool(C.go_lxc_config_item_is_supported(configItem))
 }

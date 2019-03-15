@@ -1,0 +1,40 @@
+{{template "_header.html" .}}
+<style type="text/css">
+</style>
+<div id="float-toolbar">
+	<div id="print-button" class="float-button"><span>Print</span></div>
+	<div id="wrap-button" class="float-button wordwrap"><span>Word</span><span>Wrap</span></div>
+</div>
+<main id="repo-diff-patch" class="wordwrap">
+</main>
+
+
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffPatchPage">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    //document.body.classList.add('repo-diff-file-viewer');
+	var patch = document.getElementById('patch').innerText;
+	if (false) {
+		var diffHtml = Diff2Html.getPrettyHtml(
+		  patch,
+		  {
+		  	inputFormat: 'diff', 
+		  	showFiles: true, 
+		  	matching: 'lines', 
+		  	outputFormat: 'side-by-side',
+		  	synchronisedScroll: true,
+		  }
+		);
+		document.getElementById("repo-diff-patch").innerHTML = diffHtml;
+	} else {
+		var diff2htmlUi = new Diff2HtmlUI({diff: patch});
+		diff2htmlUi.draw('#repo-diff-patch', {inputFormat: 'diff', showFiles: true, matching: 'lines'});
+		// diff2htmlUi.highlightCode('#repo-diff-patch');
+	}
+});
+</script>
+<script type="text/hidden" id="patch">
+	{{- .Patch.String | raw -}}
+</script>
+{{template "_footer.html" .}}

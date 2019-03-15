@@ -8,11 +8,12 @@ import (
 	"time"
 
 	// "github.com/google/go-github/github"
-	// "github.com/golang/glog"
+	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
+	"github.com/juju/errors"
 
 	"ebw/config"
 	"ebw/git"
@@ -36,13 +37,17 @@ type WebHandler func(c *Context) error
 
 func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer func() {
-		if config.Config.RecoverPanics {
-			if e := recover(); nil != e {
+		if e := recover(); nil != e {
+			if config.Config.RecoverPanics {
 				if err, ok := e.(error); ok {
 					WebError(w, r, err)
 					return
 				}
 				WebError(w, r, fmt.Errorf(`Panic encountered : %v`, e))
+			} else {
+				glog.Errorf(`PANIC w/out recovery: %v`, e)
+				glog.Error(errors.ErrorStack(e.(error)))
+				panic(e)
 			}
 		}
 	}()
@@ -53,13 +58,16 @@ func (f WebHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	flds := logrus.Fields{}
+	username := ``
 	if nil != client && `` != client.Username {
 		flds = logrus.Fields{`username`: client.Username}
+		username= client.Username
 	}
+
 	c := &Context{
 		R:       r,
 		W:       w,
-		D:       map[string]interface{}{},
+		D:       map[string]interface{}{`Username`:username},
 		Vars:    mux.Vars(r),
 		Client:  client,
 		Session: session,

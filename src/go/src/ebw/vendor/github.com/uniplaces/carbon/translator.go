@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/golang/glog"
 	"github.com/uniplaces/carbon/lang"
 )
 
@@ -64,7 +63,6 @@ func (t *Translator) AssertValidLocale(l string) error {
 func (t *Translator) loadResource(l string) error {
 	ltext, err := lang.LoadLocaleText(l)
 	if err != nil {
-		glog.Errorf(`Failed to LoadLocaleText(%s): %s`, l, err.Error())
 		return err
 	}
 

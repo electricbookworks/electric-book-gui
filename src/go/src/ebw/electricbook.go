@@ -14,6 +14,8 @@ import (
 	// "ebw/database"
 	"ebw/print"
 	"ebw/www"
+	"ebw/cli"
+	"ebw/util"
 )
 
 func VersionCommand() *commander.Command {
@@ -56,7 +58,7 @@ func main() {
 	// defer database.Close()
 
 	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand,
-		print.PrintCommand); nil != err {
+		print.PrintCommand, cli.ListWatchersCommand, util.DiffCommand); nil != err {
 		panic(err)
 	}
 }

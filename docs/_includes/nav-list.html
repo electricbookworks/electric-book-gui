@@ -1,0 +1,51 @@
+{% assign nav-tree = site.data.menu %}
+{% if include.nav-tree %}
+    {% assign nav-tree = include.nav-tree %}
+{% endif %}
+
+{% comment %} Get the page's file name. {% endcomment %}
+{% capture page-name %}{{ page.path | split: "/" | last | split: "." | first }}{% endcapture %}
+
+{% for item in nav-tree %}
+
+    {% comment %} Get the file-name only from the link. {% endcomment %}
+    {% capture link-file %}{{ item.link | split: "/" | last | split: "." | first | split: "#" | first }}{% endcapture %}
+
+    {% comment %} Check if any submenu items are the active page. {% endcomment %}
+    {% assign submenu-active = false %}
+    {% if item.submenu %}
+        {% for submenu-item in item.submenu  %}
+            {% capture submenu-item-link-file %}{{ submenu-item.link | split: "/" | last | split: "." | first | split: "#" | first }}{% endcapture %}
+            {% if submenu-item-link-file == page-name %}
+                {% assign submenu-active = true %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% comment %} Check if a page is part of a collection in the menu. {% endcomment %}
+    {% assign collection-active = false %}
+    {% if page.collection == item.link %}
+        {% assign collection-active = true %}
+    {% endif %}
+
+    <li class="{% if link-file == page-name or collection-active == true %}active{% else %}inactive{% endif %}{% if item.submenu and item.submenu != "" %} has-submenu{% endif %}{% if submenu-active == true %} submenu-active{% endif %}{% unless item.link %} no-link{% endunless %}{% if item.link == "" %} no-link{% endif %}">
+        {% if item.link %}<a href="{{ site.baseurl }}/{{ item.link }}">{% endif %}
+            {{ item.label }}
+        {% if item.link %}</a>{% endif %}
+
+    {% if item.submenu and item.submenu != "" %}
+        <label for="show-submenu-{{ item.link | slugify }}{% unless item.link %}{{ item.label | slugify }}{% endunless %}{% if item.link == "" %}{{ item.label | slugify }}{% endif %}" class="show-submenu">
+            <img src="{{ site.baseurl }}/images/nav-dropdown.svg">
+        </label>
+        <input type="checkbox" id="show-submenu-{{ item.link | slugify }}{% unless item.link %}{{ item.label | slugify }}{% endunless %}{% if item.link == "" %}{{ item.label | slugify }}{% endif %}" role="button"{% if submenu-active == true %} checked{% endif %}>    
+    {% endif %}
+
+        {% if item.submenu %}
+            <ul>
+                {% include nav-list.html nav-tree=item.submenu %}
+            </ul>
+        {% endif %}
+
+    </li>
+
+{% endfor %}

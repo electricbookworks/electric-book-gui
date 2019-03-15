@@ -9,6 +9,7 @@ import (
 
 	// "github.com/golang/glog"
 	"gopkg.in/yaml.v2"
+	git2go "gopkg.in/libgit2/git2go.v25"
 
 	"ebw/util"
 )
@@ -107,6 +108,24 @@ func ReadProse(dir string) (*Prose, error) {
 	}
 	p := &ProseFile{}
 	if err := yaml.Unmarshal(raw, p); nil != err {
+		return nil, util.Error(err)
+	}
+	return p.Prose, nil
+}
+
+func ReadProseTree(repo *git2go.Repository, tree *git2go.Tree, dir string) (*Prose, error) {
+	proseEntry, err := tree.EntryByPath(filepath.Join(dir, `_prose.yml`))
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	blob, err := repo.LookupBlob(proseEntry.Id)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	defer blob.Free()
+
+	p := &ProseFile{}
+	if err := yaml.Unmarshal(blob.Contents(), p); nil!=err {
 		return nil, util.Error(err)
 	}
 	return p.Prose, nil

@@ -164,6 +164,18 @@ export class APIWs {
 		return this.rpc("StageFileAndReturnMergingState",  [repoOwner,repoName,path] );
 	}
 	
+	ListWatchers (repoOwner:string,repoName:string) {
+		return this.rpc("ListWatchers",  [repoOwner,repoName] );
+	}
+	
+	ListCommits (repoOwner:string,repoName:string) {
+		return this.rpc("ListCommits",  [repoOwner,repoName] );
+	}
+	
+	ListWatched () {
+		return this.rpc("ListWatched",  [] );
+	}
+	
 	SaveWorkingFile (repoOwner:string,repoName:string,path:string,content:string) {
 		return this.rpc("SaveWorkingFile",  [repoOwner,repoName,path,content] );
 	}
@@ -206,6 +218,18 @@ export class APIWs {
 	
 	MergedFileGit (repoOwner:string,repoName:string,path:string) {
 		return this.rpc("MergedFileGit",  [repoOwner,repoName,path] );
+	}
+	
+	ReadFileData (repoOwner:string,repoName:string,version:string,path:string) {
+		return this.rpc("ReadFileData",  [repoOwner,repoName,version,path] );
+	}
+	
+	WriteAndStageFile (repoOwner:string,repoName:string,path:string,data:string) {
+		return this.rpc("WriteAndStageFile",  [repoOwner,repoName,path,data] );
+	}
+	
+	RemoveAndStageFile (repoOwner:string,repoName:string,path:string) {
+		return this.rpc("RemoveAndStageFile",  [repoOwner,repoName,path] );
 	}
 	
 	FileExistsOurHeadTheirHead (repoOwner:string,repoName:string,path:string) {

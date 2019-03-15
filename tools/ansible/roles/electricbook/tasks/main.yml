@@ -1,8 +1,7 @@
 - name: Install required packages git, vim, libgit2-dev
-  apt: >
-    name={{item}}
-    state=present
-  with_items: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
+  apt:
+    name: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
+    state: present
   become: yes
 
 - name: Create electricbook user
@@ -13,12 +12,14 @@
   become: yes
 
 - name: install
-  git: >
-    repo={{git_repo}}
-    dest=/opt/electricbook
+  tags: ['bin','public']
+  git: 
+    repo: "{{git_repo}}"
+    dest: /opt/electricbook
   become: yes
 
 - name: Set permissions on git_cache
+  tags: ['bin']
   file: >
     name="{{git_cache}}"
     owner=electricbook
@@ -35,6 +36,7 @@
   become: yes
 
 - name: install electricbook
+  tags: ['bin']
   copy: >
     dest=/opt/electricbook/bin/electricbook
     force=yes

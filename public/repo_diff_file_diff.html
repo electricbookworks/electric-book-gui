@@ -1,0 +1,58 @@
+{{template "_header.html" .}}
+
+<style type="text/css">
+.hunk .meta {
+	background-color: #e8e8e8;
+	padding: 0.4em;
+}
+.line {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-end;
+}
+.line > div:not(.content) {
+	padding: 0.2em;
+	font-size: 0.7em;
+	margin-right: 0.6em;
+	width: 2em;
+	text-align: right;
+}
+.line > div.content {
+	/*width: auto;*/
+}
+.line.origin-45 {	/* This ORIGIN is '-' */
+	background-color: #fcc;
+	font-weight: bold;
+}
+.line.origin-43 {	/* This ORIGIN is '+' */
+	background-color: #cfc;
+	font-style: italic;
+}
+</style>
+<main id="repo-diff-file-diff" class="workspace">
+	{{- range .Hunks -}}
+	<div class="hunk">
+		<div class="meta">
+			<div>Header: {{.Hunk.Header}}</div>
+		</div>
+		{{- range .Lines -}}
+		<div>
+			<div class="line origin-{{printf "%d" .Origin}}">
+				<!-- <div class="line-type">{{printf "%c" .Origin}}</div> -->
+				<div class="old-number">{{if eq -1 .OldLineno | not}}{{.OldLineno}}{{end}} </div>
+				<div class="new-number">{{if eq -1 .NewLineno | not}}{{.NewLineno}}{{end}} </div>
+				<!-- <div class="num-lines">({{.NumLines}} lines)</div> -->
+ 				<div class="content">{{.Content}}</div>
+			</div>
+		</div>
+		{{- end}}
+	</div>
+	{{- end}}
+</main>
+<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="">
+</script>
+<script type="text/hidden">
+</script>
+
+{{template "_footer.html" .}}

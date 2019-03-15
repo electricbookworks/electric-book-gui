@@ -3,7 +3,7 @@
  * in a given filesystem.
  */
 export enum FileStat {
-	/** The file exists an is unchanged */
+	/** The file exists and is unchanged */
 	Exists = 1,
 	/** The file exists, and has changed */
 	Changed = 2,
@@ -30,6 +30,15 @@ export function FileStatString(fs:FileStat) : string {
 	}
 	debugger;
 	return "-- ERROR : undefined FileStat ---";
+}
+
+export function SetFileStatCSS(el: HTMLElement, fs:FileStat) : void {
+	if (fs==undefined) {
+		debugger;
+	}
+	el.classList.remove(
+		"FileStat-Exists","FileStat-Changed","FileStat-New","FileStat-Deleted","FileStat-NotExist");
+	el.classList.add("FileStat-" + FileStatString(fs));
 }
 
 export class FileContent {

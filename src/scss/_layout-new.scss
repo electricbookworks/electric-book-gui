@@ -8,22 +8,27 @@ body {
 	align-items: stretch;
 	justify-content: space-between;
 	min-height: 100vh;
+	// max-height: 100vh;
+	position: relative;
 
+	&.noflex {
+		display: block;
+	}
+	
 	main {
 		flex-grow: 1;
+		// overflow-y: scroll;
 	}
 
 	footer {
+		flex-grow: 0;
+		padding: 1em;
+
 		display: flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
 		justify-content: space-between;
 		align-items: baseline;
-		padding-top: 1em;
-
-		div {
-			padding: 0 1em 1em 1em;
-		}
 
 		@include inverse;
 		border-top: 1px solid darken($color-inverse-bg, 10%);

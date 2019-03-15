@@ -25,6 +25,18 @@ const (
 	GFV_INDEX                     = 7
 )
 
+func (g GitFileVersion) String() string {
+	switch g {
+		case GFV_ANCESTOR: return "ancestor"
+		case GFV_OUR_HEAD: return "our-head"
+		case GFV_THEIR_HEAD: return "their-head"
+		case GFV_OUR_WD: return "our-wd"
+		case GFV_THEIR_WD: return "their-wd"
+		case GFV_GIT_MERGED: return "git"
+		case GFV_INDEX: return "index"
+	}
+	return "unknown-GitFileVersion"
+}
 // ParseGitFileVersion converts a string to a GitFileVersion
 func ParseGitFileVersion(in string) (GitFileVersion, error) {
 	in = strings.ToLower(in)
@@ -175,6 +187,12 @@ func (g *Git) WriteVersionToWd(path string, v GitFileVersion) error {
 		}
 	}
 	return nil
+}
+
+// Revert File writes the HEAD version of the file to our WD. It _does not_ unstage
+// the file.
+func (g *Git) RevertFile(path string) error {
+	return g.WriteVersionToWd(path, GFV_OUR_HEAD);
 }
 
 // CatFileVersion returns the contents of the path for the given
@@ -782,7 +800,7 @@ func (g *Git) PullAbort(closePullRequest bool) error {
 	return nil
 }
 
-// readDistFile reads a file from disk. If the file does not
+// readDiskFile reads a file from disk. If the file does not
 // exist, it returns os.IsNotExist error
 func (g *Git) readDiskFile(path string) ([]byte, error) {
 	raw, err := ioutil.ReadFile(path)
@@ -809,15 +827,22 @@ func (g *Git) existsPathForTreeObject(object *git2go.Object, path string) (bool,
 // The provided object could be a commit or a tree directly, so we peel away until
 // we find a tree, then we use that to read the object.
 func (g *Git) readPathForTreeObject(object *git2go.Object, path string) ([]byte, error) {
+	b, _, err := g.readPathForTreeObjectWithHash(object, path)
+	return b, err
+}
+
+// readPathForTreeObjectWithHash reads the given path from the provided tree, 
+// and returns the blob data and hash (as a git2go.Oid)
+func (g *Git) readPathForTreeObjectWithHash(object *git2go.Object, path string) ([]byte, *git2go.Oid, error) {
 	treeObject, err := object.Peel(git2go.ObjectTree)
 	if nil != err {
 		err := fmt.Errorf(`Object is of type %s`, treeObject.Type().String())
-		return nil, g.Error(err)
+		return nil, nil, g.Error(err)
 	}
 	tree, err := treeObject.AsTree()
 	if nil != err {
 		err := fmt.Errorf(`Object is of type %s`, treeObject.Type().String())
-		return nil, g.Error(err)
+		return nil, nil, g.Error(err)
 	}
 	defer tree.Free()
 	te, err := tree.EntryByPath(path)
@@ -826,17 +851,19 @@ func (g *Git) readPathForTreeObject(object *git2go.Object, path string) ([]byte,
 		// back
 		glog.Errorf(`tree.EntryByPath(%s) : Error %s`, path, err.Error())
 		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-			return nil, err
+			return nil, nil, err
 		}
-		return nil, g.Error(err)
+		return nil, nil, g.Error(err)
 	}
 	blob, err := g.Repository.LookupBlob(te.Id)
 	if nil != err {
-		return nil, g.Error(err)
+		return nil, nil, g.Error(err)
 	}
 	defer blob.Free()
-	return blob.Contents(), nil
+	return blob.Contents(), te.Id, nil
 }
+
+
 
 // readPathForHead reads the given path from the provided git tree reference
 func (g *Git) readPathForTreeReference(head *git2go.Reference, path string) ([]byte, error) {

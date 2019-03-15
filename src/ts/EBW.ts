@@ -5,17 +5,24 @@ import {Toast} from './Toast';
 import {AddNewBookDialog} from './AddNewBookDialog';
 import {LoginTokenList} from './LoginTokenList';
 import {RepoDetailPage} from './RepoDetailPage';
-import {RepoEditorPage} from './RepoEditorPage';
+import {RepoEditorPage} from './RepoEditorPage2';
 import {RepoConflictPage} from './RepoConflictPage';
 import {QuerySelectorAllIterate} from './querySelectorAll-extensions';
 import {PullRequestMergePage} from './PullRequestMergePage';
+import {RepoDiffViewerPage} from './RepoDiffViewerPage';
+import {RepoDiffFileViewerPage} from './RepoDiffFileViewerPage';
+import {RepoDiffPatchPage} from './RepoDiffPatchPage';
 import {RepoFileViewerPage} from './RepoFileViewerPage';
 
 export class EBW {
 	static instance : EBW;
 	protected api : API;
 	constructor() {
+		if (null!=EBW.instance) {
+			console.log(`EBW.instance already set`);
+		}
 		if (null==EBW.instance) {
+			console.log(`Creating EWB.instance`);
 			EBW.instance = this;
 			this.api = new APIWs();
 			jQuery(document).foundation();
@@ -24,7 +31,7 @@ export class EBW {
 			let el = document.getElementById(`ebw-context`);
 			let context : Context;
 			if (el) {
-				context = new Context(el, el.getAttribute(`data-repo-owner`),
+				context = new Context(el, el.getAttribute(`data-username`), el.getAttribute(`data-repo-owner`),
 					el.getAttribute(`data-repo-name`));
 				switch (el.getAttribute('data-page')) {
 					case 'RepoDetailPage':
@@ -33,16 +40,32 @@ export class EBW {
 					case 'RepoConflictPage':
 						new RepoConflictPage(context);
 						break;
+					case 'RepoDiffViewerPage':
+						new RepoDiffViewerPage(context);
+						break;
+					case 'RepoDiffFileViewerPage':
+						new RepoDiffFileViewerPage(context, document.getElementById(`all-files-editor`), window.pageData);
+						break;
 					case 'RepoFileViewerPage':
-						console.log(`Creating RepoFileViewerPage`); 
 						new RepoFileViewerPage(context, document.getElementById(`repo-file-viewer`) as HTMLElement);
+						break;
+					case 'RepoEditorPage':			
+						new RepoEditorPage(
+							context,
+							document.querySelector(`[data-instance='AllFilesList']`),
+							window.repoEditorData.files,
+							window.repoEditorData.ignoreFilter,
+							window.repoEditorData.filesAndHashes,
+						);
+						break;
+					case 'RepoDiffPatchPage':
+						new RepoDiffPatchPage(context);
 						break;
 				}
 			}
 			/* TODO: This should actually use a Router
 			   to determine what content we have. */
 			AddNewBookDialog.instantiate();
-			RepoEditorPage.instantiate();
 			PullRequestMergePage.instantiate();
 		}
 		return EBW.instance;

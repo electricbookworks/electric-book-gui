@@ -1,4 +1,4 @@
 git_cache: git_cache
-git_repo: https://github.com/craigmj/electric-book-gui.git
+git_repo: https://github.com/electricbookworks/electric-book-gui.git
 github_client: "SET github_client VAR FOR YOUR HOST"
 github_secret: "SET github_secret VAR FOR YOUR HOST"

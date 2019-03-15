@@ -21,6 +21,9 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "/electric-book-gui" # the subpath of your site, e.g. /blog
 url: "http://electricbook.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
+# Set pretty permalinks, not Jekyll default 'date'
+permalink: pretty
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
@@ -32,13 +35,29 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+  - README.md
+  - package.json
+  - package-lock.json
+  - gulpfile.js
+  - CNAME
 
-# Set default values here for all documents/pages.
-# For technical details, see
-# http://jekyllrb.com/docs/configuration/#front-matter-defaults
-defaults: 
+# kramdown options (see http://kramdown.gettalong.org/options.html)
+# auto_id_stripping remove formatting from headings before generating IDs
+# which keeps your IDs neat and tidy, and links persistent even if you format headings
+kramdown:
+  auto_id_stripping: true
+
+# Set default page layout for all pages
+defaults:
   -
-    scope: # Sets default page frontmatter for all files in this project (an empty string "" for path means all files).
-      path: ""
+    scope:
+      path: "" # an empty string here means all files in the project
     values:
       layout: "default"
+      excerpt: ""
+
+collections:
+  users:
+    output: true
+  developers:
+    output: true

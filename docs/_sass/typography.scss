@@ -1,0 +1,54 @@
+// Typography
+
+h1, h2, h3, h4, h5, h6 {
+	clear: both;
+	line-height: 110%;
+	margin: ($line-height * 2 * 1em) 0 ($line-height / 2 * 1em) 0;
+	&:first-child {
+		margin-top: 0;
+	}
+}
+p, ol, ul, dl {
+	margin-top: 0;
+	margin-bottom: 1em * $line-height;
+}
+ul, ol {
+	padding-left: 1em;
+	ol, ul {
+		margin-bottom: 0;
+	}
+}
+blockquote {
+	margin:  1em 1em 1em 0;
+	padding: 0 0 0 1em;
+}
+dl {
+	dd {
+		margin-bottom: 1em * $line-height;
+	}
+}
+a {
+	text-decoration: none;
+	color: $link-color;
+}
+hr {
+	border-top: 1px solid $text-color-mid;
+	border-bottom: 0; // override user-agent styles
+	margin: 2em auto;
+}
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 1em * $line-height;
+	tr {
+		border-top: 1px solid $text-color-mid;
+		border-bottom: 1px solid $text-color-mid;
+	}
+	th {
+		text-align: left;
+	}
+	td {
+		padding: 0.25em;
+		vertical-align: top;
+	}
+}

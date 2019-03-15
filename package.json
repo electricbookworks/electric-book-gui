@@ -1,77 +1,9 @@
 {
-  "name": "electric-book-gui",
-  "version": "1.0.0",
-  "description": "This is work in progress. The Electric Book Manager is a web-based interface for managing the [Electric Book workflow](http://electricbook.works/). It will enable non-technical publishing teams to edit book content, review contributions, and output PDF, web- and epub-ready files. See the features currently in development [here](https://github.com/electricbookworks/electric-book-gui/projects/1).",
-  "main": "gulpfile.js",
-  "directories": {
-    "doc": "doc"
-  },
-  "scripts": {
-    "test": "mocha -r ts-node/register src/ts/**/*_test.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/electricbookworks/electric-book-gui.git"
-  },
-  "keywords": [],
-  "author": "Craig Mason-Jones <craig@lateral.co.za>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/electricbookworks/electric-book-gui/issues"
-  },
-  "homepage": "https://github.com/electricbookworks/electric-book-gui#readme",
   "dependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/jquery": "^2.0.41",
-    "@types/mocha": "^2.2.41",
-    "@types/signals": "^0.0.17",
-    "babel-preset-es2015": "^6.24.1",
-    "chai": "^3.5.0",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-cli": "^1.3.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-cssnano": "^2.1.2",
-    "gulp-if": "^2.0.2",
-    "gulp-merge": "^0.1.1",
-    "gulp-notify": "^3.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-rollup": "^2.11.0",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.0",
-    "gulp-svgmin": "^1.2.3",
-    "gulp-uglify": "^2.1.2",
-    "gulp-util": "^3.0.8",
-    "gulp-watch": "^4.3.11",
-    "gulp-wrapper": "^1.0.0",
-    "node-sass": "^4.5.2",
-    "rollup": "^0.41.6",
-    "run-sequence": "^1.2.2",
-    "tslib": "^1.6.1"
-  },
-  "devDependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/codemirror": "0.0.40",
-    "@types/core-js": "^0.9.41",
-    "@types/foundation-sites": "^6.1.28",
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "gulp": "^3.9.1",
-    "gulp-better-rollup": "^1.1.1",
-    "gulp-file": "^0.3.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-rollup": "^2.11.0",
-    "gulp-sourcemaps": "^2.6.0",
-    "gulp-svgmin": "^1.2.3",
-    "gulp-typescript": "^3.1.6",
-    "rollup": "^0.41.6",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-gulp": "^1.0.0",
-    "rollup-plugin-typescript": "^0.8.1",
-    "rollup-stream": "^1.19.0",
-    "rollup-watch": "^3.2.2",
-    "run-sequence": "^1.2.2",
-    "typedoc": "https://github.com/DatenMetzgerX/typedoc/tarball/typescript-2-build",
-    "typescript": "^2.3.1"
+    "rollup": "^1.1.2",
+    "rollup-plugin-typescript": "^1.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.2.4",
+    "uglifycss": "^0.0.29"
   }
 }

@@ -12,7 +12,7 @@
             <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
             <div class="action-group">
                 <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" class="btn" target="github">Collaboration</a>
-                <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/commits/master" class="btn" target="github">View Edit History</a>
+                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/diff" class="btn">View Edit History</a>
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>
             </div>
@@ -145,5 +145,5 @@
 
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDetailPage">
 </script>
-
+{{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}

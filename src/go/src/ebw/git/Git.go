@@ -16,6 +16,8 @@ import (
 
 	"github.com/google/go-github/github"
 	git2go "gopkg.in/libgit2/git2go.v25"
+	"github.com/juju/errors"
+	"github.com/golang/glog"
 
 	"ebw/logger"
 	"ebw/util"
@@ -260,6 +262,79 @@ func (g *Git) Close() error {
 	return nil
 }
 
+// StageFile adds the named file to the index, or removes the file
+// from the index if it does not exist in the working dir. This is
+// intended as a functional equivalent of `git add [path]`
+func (g *Git) StageFile(path string) error {	
+	path = stripSeparatorPrefix(path)
+	index, err := g.Repository.Index()
+	if nil != err {
+		return g.Error(err)
+	}
+	defer index.Free()
+
+	fileExists, err := util.FileExists(g.Path(path))
+	if nil != err {
+		return err
+	}
+	if fileExists {
+		if err := index.AddByPath(path); nil != err {
+			return g.Error(fmt.Errorf(`Failed to AddByPath %s: %s`, path, err.Error()))
+		}
+	} else {
+		if err := index.RemoveByPath(path); nil != err {
+			if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+				glog.Infof(`ERR not found on RemoveByPath for %s`, path)
+			} else {
+				return g.Error(err)
+			}
+		}
+	}
+	if err := index.Write(); nil != err {
+		return g.Error(err)
+	}
+	return nil
+}
+
+
+func (g *Git) FilesAndHashes() ([][2]string, error) {
+	filesAndHashes := [][2]string{}
+	exclude := func(path string, info os.FileInfo) bool {
+		if info.IsDir() {
+			if filepath.Base(path)==`.git` {
+				return true
+			}
+		}
+		return false
+	}
+	if err := filepath.Walk(g.Path(), func(path string, info os.FileInfo, err error) error {
+		if nil!=err {
+			return err
+		}
+		excl := exclude(path,info)
+
+		if info.IsDir() {
+			if excl {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+
+		if !excl {
+			sha, err := util.CalcFileSHA(path)
+			if nil!=err {
+				return errors.Trace(err)
+			}
+			filesAndHashes = append(filesAndHashes, [2]string{ g.RelPath(path), *sha })
+		}
+		return nil
+		}); nil!=err {
+		return nil, g.Error(err)
+	}
+	return filesAndHashes, nil
+}
+
+
 // DefaultSignature guesses at a signature for the repo based on the
 // git username and config
 func (g *Git) DefaultSignature() (*git2go.Signature, error) {
@@ -285,6 +360,59 @@ func (g *Git) DefaultSignature() (*git2go.Signature, error) {
 	return sig, nil
 }
 
+type DiffHunk struct {
+	Hunk git2go.DiffHunk
+	Lines  []git2go.DiffLine
+}
+
+func (g *Git) DiffBlobs(fromOIDs, fromName, toOIDs, toName string) ([]*DiffHunk,error) {
+	fromOID, err := git2go.NewOid(fromOIDs)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	toOID, err := git2go.NewOid(toOIDs)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	fromB, err := g.Repository.LookupBlob(fromOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	toB, err := g.Repository.LookupBlob(toOID)
+	if nil!=err {
+		return nil, util.Error(err)
+	}
+	hunks := []*DiffHunk{}
+	var currentHunk *DiffHunk
+
+	lineCallback := func(line git2go.DiffLine) error {
+		if nil==currentHunk {
+			panic(`Need currentHunk`)
+		}
+		currentHunk.Lines = append(currentHunk.Lines, line)		
+		return nil
+	}
+	hunkCallback := func(hunk git2go.DiffHunk) (git2go.DiffForEachLineCallback, error) {
+		currentHunk = &DiffHunk{
+			Lines: []git2go.DiffLine{},
+			Hunk: hunk,
+		}
+		hunks = append(hunks, currentHunk)
+		return lineCallback, nil
+	}
+	fileCallback := func(delta git2go.DiffDelta, f float64) (git2go.DiffForEachHunkCallback, error) {
+		return hunkCallback, nil
+	}
+	if err := git2go.DiffBlobs(fromB, fromName, toB, toName, &git2go.DiffOptions{
+		Flags:git2go.DiffNormal|git2go.DiffForceText|git2go.DiffMinimal,
+		ContextLines: 2,
+		InterhunkLines: 3,
+		}, fileCallback, git2go.DiffDetailLines); nil!=err {
+		return nil, util.Error(err)
+	}
+	return hunks, nil
+}
+
 // Error logs an error and returns an error, or returns nil if err is nil.
 func (g *Git) Error(err error) error {
 	if nil == err {
@@ -293,6 +421,7 @@ func (g *Git) Error(err error) error {
 	g.Log.ErrorDepth(1, `%v`, err)
 	return err
 }
+
 
 // GetUpstreamRemoteActions indicates the possible actions we could perform
 // on upstream repo.
@@ -507,6 +636,40 @@ func (g *Git) Path(path ...string) string {
 	}
 	return filepath.Join(g.Repository.Workdir(), filepath.Join(path...))
 }
+// RelPath returns the given path relative to the Git working directory path
+func (g *Git) RelPath(path string) string {
+	p, err := filepath.Rel(g.Path(), path)
+	if nil!=err {
+		g.Error(err)
+		return err.Error()
+	}
+	return p
+}
+
+// WriteFileWD writes the given file contents to the Working Directory.
+// It does NOT stage the file
+func (g *Git) WriteFileWD(path string, content []byte) error {
+	path = g.Path(stripSeparatorPrefix(path))
+	os.MkdirAll(filepath.Dir(path), 0755)
+	if err := ioutil.WriteFile(path, content, 0644); nil!=err {
+		return g.Error(err)
+	}
+	return nil
+}
+
+// RemoveFileWD removes the named file from the working directory.
+func (g *Git) RemoveFileWD(path string) error {
+	path = g.Path(stripSeparatorPrefix(path))
+	err := os.Remove(path)
+	if nil!=err {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return g.Error(err)
+	}
+	return nil
+}
+
 
 // PathEBWConfig returns the path to the ebw config directory
 func (g *Git) PathEBWConfig(path ...string) string {
@@ -781,4 +944,89 @@ func (g *Git) WalkConflicts(f ConflictWalkFunc) error {
 		}
 	}
 	return nil
+}
+
+// TagDiff returns the difference between two tags / indexes that are given
+func (g *Git) TagDiff(t1id, t2id string) error {
+	t1oid, err := git2go.NewOid(t1id)
+	if nil!=err {
+		return g.Error(err)
+	}
+	t2oid, err := git2go.NewOid(t2id)
+	if nil!=err {
+		return g.Error(err)
+	}
+	t1, err := g.Repository.LookupTree(t1oid)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer t1.Free()
+	t2, err := g.Repository.LookupTree(t2oid)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer t2.Free()
+	diffOpts, err := git2go.DefaultDiffOptions()
+	if nil!=err {
+		return g.Error(err)
+	}
+	diff, err := g.Repository.DiffTreeToTree(t1, t2, &diffOpts)
+	if nil!=err {
+		return g.Error(err)
+	}
+	defer diff.Free()
+	fmt.Println("Ok 1")
+	return nil
+}
+
+// CommitsBetween returns the first commit after the start time, and the last
+// commit before the end time.
+func (g *Git) CommitsBetween(start, end time.Time) (*git2go.Commit, *git2go.Commit, error) {
+	var startCommit, endCommit *git2go.Commit
+	startChooser, endChooser := util.NewChooserAfter(start), util.NewChooserBefore(end)
+	rv, err := g.Repository.Walk()
+	if nil!=err {
+		return nil, nil, errors.Trace(err)
+	}
+	defer rv.Free()
+	rv.PushHead()	// initial position for rev walker
+	if err := rv.Iterate(func(c *git2go.Commit) bool {
+		// On first pass, just set both commits
+		if startChooser.Choose(c.Committer().When) {
+			startCommit = c
+		}
+		if endChooser.Choose(c.Committer().When) {
+			endCommit = c
+		}
+		return true
+		}); nil!=err {
+		return nil, nil, errors.Trace(err)
+	}
+	return startCommit, endCommit, nil
+}
+
+func (g *Git) ListCommits() ([]*CommitSummary, error) {
+	rv, err := g.Repository.Walk()
+	if nil!=err {
+		return nil, errors.Trace(err)
+	}
+	defer rv.Free()
+	// rv.Reset()
+	rv.PushHead()	// The the rev walker to have an initial position
+	list := []*CommitSummary{}
+	glog.Infof(`About to iterate through repository commits`)
+	if err := rv.Iterate(func(c *git2go.Commit) bool {
+		glog.Infof(`Commit : %s %10s %s`, 
+			c.Committer().When.Format(`20060102`),
+			c.TreeId().String(), c.Message())
+		list = append(list, &CommitSummary{
+			When: c.Committer().When,
+			OID: c.TreeId().String(),
+			Message: c.Message(),
+			})
+		return true
+		}); nil!=err {
+		return nil, errors.Trace(err)
+	}
+	return list, nil
 }

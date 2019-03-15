@@ -1,0 +1,53 @@
+
+#repo-diff-patch tbody td, #repo-diff-patch tbody th {
+	padding: 0;
+}
+#repo-diff-patch.wordwrap .d2h-code-line-ctn {
+	white-space: pre-wrap;
+}
+#float-toolbar {
+	position: fixed;
+	top: 1em;
+	right: 1em;
+	z-index: 10000;
+
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: stretch;
+}
+.float-button {
+	width: 4em;
+	height: 4em;
+	background-color: #999;
+	color: white;
+	cursor: pointer;
+	font-size: 0.6em;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: white;
+	border-radius: 0.4em;
+	border: 1px solid #333;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+	margin-left: 1em;
+}
+.float-button:first-child {
+	margin-left: 0;
+}
+#wrap-button.wordwrap {
+	background-color: $color-primary;
+	border-color: #999;
+}
+
+@media print {
+	body { 
+		-webkit-print-color-adjust: exact;
+		color-adjust: exact;
+	}
+    body.repo-diff-patch-page { display: block }
+	#float-toolbar { display: none; }
+}

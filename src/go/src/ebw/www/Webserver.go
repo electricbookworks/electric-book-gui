@@ -61,11 +61,17 @@ func RunWebServer(bind string) error {
 	r.Handle(`/github/invite/{id}`, WebHandler(githubInvitationAcceptOrDecline))
 	r.Handle(`/repo/{repoOwner}/{repoName}/update`, WebHandler(repoUpdate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/`, WebHandler(repoView))
+	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
+	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff`, WebHandler(repoDiff))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}/{index}`, WebHandler(repoDiffPatch))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff/{fromOID}/{toOID}`, WebHandler(repoDiffFiles))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff-serve/{OID}`, WebHandler(repoDiffFileServer))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff-dates`, WebHandler(repoDiffDates))
+	r.Handle(`/repo/{repoOwner}/{repoName}/diff-diff/{fromOID}/{toOID}`, WebHandler(repoDiffDiff))
+	r.Handle(`/repo/{repoOwner}/{repoName}/files`, WebHandler(repoFileViewer))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}`, WebHandler(repoMergeRemote))
 	r.Handle(`/repo/{repoOwner}/{repoName}/merge/{remote}/{branch}`, WebHandler(repoMergeRemoteBranch))
-	r.Handle(`/repo/{repoOwner}/{repoName}/files`, WebHandler(repoFileViewer))
-	r.Handle(`/repo/{repoOwner}/{repoName}/detail`, WebHandler(repoDetails))
-	r.Handle(`/repo/{repoOwner}/{repoName}/commit`, WebHandler(repoCommit))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/new`, WebHandler(pullRequestCreate))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}`, WebHandler(pullRequestMerge))
 	r.Handle(`/repo/{repoOwner}/{repoName}/pull/{number}/close`, WebHandler(pullRequestClose))
@@ -145,17 +151,18 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 		"IsSpecialUser": func(username string) bool {
 			return "craigmj" == username || "arthurattwell" == username
 		},
+
 	})
 	if err := filepath.Walk("public", func(name string, info os.FileInfo, err error) error {
 		// glog.Infof("walk: %s", name)
 		if nil != err {
 			return err
 		}
-		if !strings.HasSuffix(name, ".html") {
-			return nil
-		}
 		// We don't parse html in bower_components
-		if strings.Contains(name, `bower_components/`) {
+		if strings.Contains(name, `bower_components/`) || filepath.Base(name)==`bower_components` {
+			return filepath.SkipDir
+		}
+		if !strings.HasSuffix(name, ".html") {
 			return nil
 		}
 		// glog.Infof("Found template: %s", name)
@@ -164,6 +171,7 @@ func Render(w http.ResponseWriter, r *http.Request, tmpl string, data interface{
 			return err
 		}
 		if _, err := t.New(name[7:]).Parse(string(raw)); nil != err {
+			glog.Errorf(`ERROR PARSING TEMPLATE %s: %s`, name, err.Error())
 			return err
 		}
 		return nil

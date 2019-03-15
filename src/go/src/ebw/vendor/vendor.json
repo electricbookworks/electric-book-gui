@@ -103,6 +103,12 @@
 			"revisionTime": "2016-10-19T02:33:40Z"
 		},
 		{
+			"checksumSHA1": "ZGOsgr3QIbI+9qGJEpzXnlb/mM4=",
+			"path": "github.com/juju/errors",
+			"revision": "22422dad46e14561a0854ad42497a75af9b61909",
+			"revisionTime": "2018-08-06T07:45:54Z"
+		},
+		{
 			"checksumSHA1": "CcNzUdLUb1aq6X3HGZteAMgltxY=",
 			"path": "github.com/julienschmidt/sse",
 			"revision": "dedc8dfa3d5dbf90d2c4d70dfc25e7f8d657b424",
@@ -161,6 +167,18 @@
 			"path": "github.com/satori/go.uuid",
 			"revision": "5bf94b69c6b68ee1b541973bb8e1144db23a194b",
 			"revisionTime": "2017-03-21T23:07:31Z"
+		},
+		{
+			"checksumSHA1": "H2tsIY9G7HMo+vzrTaEb3Q5Kfjg=",
+			"path": "github.com/sergi/go-diff",
+			"revision": "da645544ed44df016359bd4c0e3dc60ee3a0da43",
+			"revisionTime": "2018-02-05T16:33:09Z"
+		},
+		{
+			"checksumSHA1": "QxBGuFiDP7AZx9/QOwJVVDlHjLM=",
+			"path": "github.com/sergi/go-diff/diffmatchpatch",
+			"revision": "da645544ed44df016359bd4c0e3dc60ee3a0da43",
+			"revisionTime": "2018-02-05T16:33:09Z"
 		},
 		{
 			"checksumSHA1": "O2d6k/wJgvPgEfYKO6VvL1zOCc4=",
@@ -253,10 +271,10 @@
 			"revisionTime": "2017-01-20T13:46:32Z"
 		},
 		{
-			"checksumSHA1": "uTrfNV/aZJscnyrIG2EwtNoL3P4=",
+			"checksumSHA1": "VBBLrc36Gy9/xkWNEBbixm1KMUM=",
 			"path": "gopkg.in/lxc/go-lxc.v2",
-			"revision": "8304875cc3423823032ec93556beee076c6ba687",
-			"revisionTime": "2017-03-11T17:55:44Z"
+			"revision": "1c13b43ccb43defbf04a8b4b931e4bb18fd481e6",
+			"revisionTime": "2018-06-07T15:04:27Z"
 		},
 		{
 			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",

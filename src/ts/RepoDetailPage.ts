@@ -20,6 +20,18 @@ export class RepoDetailPage {
 				});
 			});
 		};
+		EBW.API().ListWatchers(context.RepoOwner, context.RepoName).then(
+			([watchers]:[Array<string>])=> {
+				console.log(`watchers = `, watchers);
+			});
+		EBW.API().ListWatched().then(
+			([watched]:[Array<string>])=>{ 
+				console.log(`watched = `, watched);
+		});
+		EBW.API().ListCommits(context.RepoOwner, context.RepoName).then(
+			([commits]:[Array<string>])=> {
+				console.log(`commits = `, commits);
+			});
 		// let dialog = new RepoMergeDialog(context, undefined);
 		// RepoMergeButton.init(this.context, dialog);
 		// dialog.MergeEvent.add(this.mergeEvent, this);

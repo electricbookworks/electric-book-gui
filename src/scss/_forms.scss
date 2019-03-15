@@ -48,6 +48,23 @@ textarea {
     }
 }
 
+.btn.active,
+[type="submit"].active {
+    animation: active 1s infinite;
+}
+
+@keyframes active {
+    0% {
+        background-color: lighten($color-primary, 10%);
+    }
+    50% {
+        background-color: red;
+    }
+    100% {
+        background-color: lighten($color-primary, 10%);
+    }
+}
+
 
 
 .btn-wide,

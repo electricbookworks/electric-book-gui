@@ -1,0 +1,32 @@
+{% comment %} Set the 'More' text, then check if
+it's been set in the include parameter. {% endcomment %}
+{% assign more-text = site.data.locales[site.data.settings.language].excerpt.more %}
+{% if include.more-text %}
+{% assign more-text = include.more-text %}
+{% endif %}
+
+<div class="post-excerpt">
+
+    {% comment %} Unless we've explicitly set the page image to none,
+    include an image. {% endcomment %}
+    {% if post.image %}
+    <div class="post-excerpt-image">
+        <a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title }}">
+            <img src="{{ site.baseurl }}/images/{{ post.image }}" alt="{{ post.title }}" />
+        </a>
+    </div>
+    {% endif %}
+
+    <h3><a href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title }}">{{ post.title | markdownify | remove: '<p>' | remove: '</p>' }}</a></h3>
+
+    {% if post.author %}
+        <p class="post-excerpt-author">{{ post.author }}</p>
+    {% endif %}
+
+    <p class="post-excerpt-text">
+        {{ post.excerpt | markdownify | remove: '<p>' | remove: '</p>' }} <a class="post-excerpt-text-more" href="{{ site.baseurl }}{{ post.url }}" title="{{ post.title }}">{{ more-text }}</a>
+    </p>
+
+    <hr class="post-excerpt-divider">
+    
+</div><!--.portfolio-excerpt-->

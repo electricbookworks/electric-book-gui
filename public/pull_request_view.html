@@ -20,5 +20,6 @@
 <script id="pr-merge-page" type="text/hidden" repo-owner="{{.RepoOwner}}" repo-name="{{.RepoName}}" remote-url="{{.PullURL}}" remote-sha="{{.SHA}}">
 {{- .Diffs | json | raw -}}
 </script>
+{{template "_nav_footer.html" .}}
 
 {{template "_footer.html" .}}

@@ -4,16 +4,17 @@
 	justify-content: space-between;
 	align-items: baseline;
 	padding: 1em;
-	border-bottom: 1px solid darken($color-inverse-bg, 10%);
+	//border-bottom: 1px solid darken($color-inverse-bg, 10%);
 
 	@include inverse;
-	position: relative;
+	background-color: black;
+	// position: relative;
 
 	img {
 		height: 2em;
 		width: 2em;
 		margin-bottom: 2px;
-		box-sizing: content-box;
+		box-sizing: border-box;
 	}
 
 	.username-gravatar {
@@ -21,6 +22,7 @@
 		& > img {
 			margin-left: 0.5em;
 			margin-right: 0.5em;
+			border-radius: 10000px;
 		}
 	}
 

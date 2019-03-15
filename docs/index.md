@@ -13,3 +13,11 @@ These docs are about using the Electric Book Manager only. If you need to know h
 
 > This documentation is a work in progress. You can help by [logging issues on GitHub](http://github.com/electricbookworks/electric-book-gui/issues).
 {:.notice}
+
+## Users
+
+{% include child-pages-list.html collection="users" %}
+
+## Developers
+
+{% include child-pages-list.html collection="developers" %}

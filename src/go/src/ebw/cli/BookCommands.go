@@ -226,7 +226,7 @@ func BookClone(client *git.Client, repoName string) error {
 // BookNew creates a new book with the newRepoName for the current client,
 // based on the templateRepo given.
 func BookNew(client *git.Client, templateRepo, orgName, newRepoName string) error {
-	if err := git.DuplicateRepo(client, client.Token, templateRepo, orgName, newRepoName); nil != err {
+	if err := git.DuplicateRepo(client, client.Token, templateRepo, orgName, newRepoName, false); nil != err {
 		return err
 	}
 
