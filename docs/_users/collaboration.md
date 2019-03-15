@@ -83,8 +83,8 @@ To see the history of changes to your project:
 
 - First make sure your project is up to date: on the project detail page (which you reach by clicking on the project name from the dashboard), if you see a message which says 'Your copy of this project is behind the project you are contributing to' then click the 'Update my copy from the original' button. If you don't see this message, you are ready to view your project's history.
 - From the project detail page, click the 'View Edit History' button.
-- If you want to see all changes ever made to your project's files, click 'Choose commits between dates'; alternatively choose a particular date range to show changes made between specific dates, and then click 'Choose commits between dates'. You can also choose commits from the lists on the left and right for the start and end dates of the date range you'd like to see changes for, and then click 'View Diff'. Both of these actions take you to a diff page with your file list in the left pane.
-- You will need to open the file list by clicking on the '+' sign to see the files inside folders.
+- You could either 1) choose a particular date range to show changes made between specific dates, and then click 'Choose commits between dates', or 2) choose commits from the lists on the left and right for the start and end dates of the date range you'd like to see changes for, and then click 'View Diff'. Both of these actions take you to a diff page with your file list in the left pane.
+- You will need to open the file list by clicking on the '+' sign to see the files inside of folders.
 - Click on the file you want to see changes for. Files with changes are shown in green, while files which are completely new are shown in bold green. Files which have been deleted completely are shown as crossed-out in red.
 - Once the file you want to see changes for is open, you'll see changed lines in yellow, with deleted content in red (with a '-' beside the line number) and additions in green (with a '+' beside the line number). The line numbers on the left of the window show the content's old and new positions in the file.
 
