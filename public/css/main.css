@@ -4978,6 +4978,9 @@ del.deleted {
     -webkit-print-color-adjust: exact;
     color-adjust: exact; }
 
+  body.repo-diff-patch-page {
+    display: block; }
+
   #float-toolbar {
     display: none; } }
 #merge-image-editor {
