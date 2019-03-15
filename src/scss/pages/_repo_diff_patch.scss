@@ -44,5 +44,9 @@
 }
 
 @media print {
+	body { 
+		-webkit-print-color-adjust: exact;
+		color-adjust: exact;
+	}
 	#float-toolbar { display: none; }
 }
