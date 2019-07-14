@@ -1,0 +1,2 @@
+# Config for haproxy-certs
+db: "haproxy-certs:haproxy-certs@tcp(localhost:3306)/haproxy-certs?parseTime=true"

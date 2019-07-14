@@ -89,7 +89,15 @@
     dest: /etc/haproxy/plugins/cert-renewal-haproxy.sh
     mode: 0755
 
-- name: cron-letsencrypt
+- name: haproxy-certs
+  become: yes
+  tags: ['certbot','certbot-renew']
+  copy:
+    src: ../../../../haproxy-certs/bin/haproxy-certs
+    dest: /usr/bin/haproxy-certs
+    mode: 0755
+
+- name: cron-haproxy-certs
   become: yes
   cron:
     hour: 0
@@ -97,5 +105,7 @@
     month: "*"
     day: "*"
     weekday: 0
-    job: /etc/haproxy/plugins/cert-renewal-haproxy.sh
+    name: haproxy-certs
+    job: /usr/bin/haproxy-certs update
     state: present
+  tags: ['certbot', 'certbot-renew']
