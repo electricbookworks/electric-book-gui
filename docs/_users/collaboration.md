@@ -55,7 +55,7 @@ You will not be able to update from the parent version if you have made changes 
 
 Once you have committed your work, go to the project page (from the dashboard, click on the name of your project).
 
-If there is content in the parent version that is not yet in your copy, you will see an ‘Update my copy from the original’ button. 
+If there is content in the parent version that is not yet in your copy, you will see an ‘Update my copy from its parent’ button. 
 
 Click this button to merge changes from the parent into your version. If the parent version and your version include changes to the same lines of text or to images, you will be asked to resolve these conflicts in an editor. Manually edit your version, then click 'Mark resolved' and 'Accept update'.
 

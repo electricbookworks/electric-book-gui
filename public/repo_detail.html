@@ -34,7 +34,7 @@
                         <p>You are managing the original project. There is no parent project to contribute to.</p>
                     {{else}}
                         {{if .UpstreamActions.CanPull}}
-                        <p>Your copy of this project is behind the project you are contributing to. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update my copy from the original</a>
+                        <p>Your copy of this project is behind the project you are contributing to. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update my copy from its parent</a>
                         </p>
                         {{end}}
                         {{if .UpstreamActions.CanCreatePR}}
