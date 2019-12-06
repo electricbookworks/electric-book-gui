@@ -24,9 +24,9 @@ You can search for text in the file you are editing.
 
 1. From the editing page, open the file you would like to search in. 
 2. Click anywhere in the text of that file.
-3. Click Ctrl F on Windows or Linux, or Cmd F on Mac, to bring up a search bar within that file.
+3. Click Ctrl + F on Windows or Linux, or Cmd + F on Mac, to bring up a search bar within that file.
 4. Enter your search term and hit Enter.
-5. To do regular expression (regex) search, put your search between forward slashes. E.g. `/Americani[sz]e/` will find `Americanise` and `Americanize`.
+5. To do regular expression (regex) search, put your search between forward slashes. E.g. `/Americani[sz]e/` will find `Americanise` and `Americanize`. To search and replace use Ctrl + alt + F (or Cmd + alt + F if you're on Mac). [This page](https://codemirror.net/demo/search.html) explains a bit more.
 
 ## Adding new files
 
