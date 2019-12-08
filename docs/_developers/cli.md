@@ -3,6 +3,10 @@ title: CLI
 ---
 
 # The `ebw` CLI tool
+{:.no_toc}
+
+* TOC here
+{:toc}
 
 ## Basic Settings
 

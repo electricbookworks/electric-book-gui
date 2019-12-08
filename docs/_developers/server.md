@@ -3,6 +3,10 @@ title: Server setup
 ---
 
 # Server setup
+{:.no_toc}
+
+* TOC here
+{:toc}
 
 EBW serves the site through an HAProxy proxy server. This enables HAProxy metrics, the serving of other websites on the same server if desired, and the enabling of various http/s best-practices (timeouts, server and client limits) that can be implemented at the proxy layer, rather than being coded in the Go server.
 
