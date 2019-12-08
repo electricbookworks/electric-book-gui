@@ -2,6 +2,7 @@ github:
   client: 
   secret:
 server: "http://localhost:16101"
+bind: ":16101"
 # git_cache is the local directory under which git checkouts will be cached
 git_cache: "git_cache"
 print:
@@ -11,7 +12,6 @@ print_container: bookworks
 print_user: craig
 allowed_users:
           - ".*"
-bind: ":16101"
 rvm: "/usr/local/rvm/bin/rvm"
 ruby_version: "2.4.0"
 # 64 byte session_auth string

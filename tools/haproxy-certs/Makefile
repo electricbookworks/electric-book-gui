@@ -3,6 +3,8 @@ SHELL := /bin/bash
 
 SRC = $(shell find src/go/ -type f -name '*.go')
 
+# The paths in this makefile require Go v 11.4 or later
+
 bin/haproxy-certs: $(SRC)
 	pushd src/go; \
 	go build -tags=dev -o ../../bin/haproxy-certs main.go; \
