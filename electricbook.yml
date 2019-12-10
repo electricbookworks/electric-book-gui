@@ -7,8 +7,8 @@
 # - Homepage URL: http://localhost:16101
 # - Authorization callback URL: http://localhost:16101/github/auth
 github:
-  client: 
-  secret:
+  client: "your-client-id-string-here"
+  secret: "your-client-secret-string-here"
 server: "http://localhost:16101"
 bind: ":16101"
 # git_cache is the local directory under which git checkouts will be cached
