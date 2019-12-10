@@ -62,3 +62,5 @@ email_from=
 # as  # false, but you might need to set it to true
 # depending on your email configuration.
 email_insecure_skip_verify=false
+
+allowed_users=['craigmj','arthurattwell','jimcarey','robinwilliams','busterkeaton','grouchomarx']
