@@ -1,3 +1,11 @@
+# This file's config values will be overridden by the ones in your
+# Ansible hosts-* file when you deploy the application to a server.
+# Therefore, the values here only apply for local development.
+# To get the GitHub values for local development and testing,
+# set up an OAuth application on GitHub in your personal account.
+# Use these settings:
+# - Homepage URL: http://localhost:16101
+# - Authorization callback URL: http://localhost:16101/github/auth
 github:
   client: 
   secret:
