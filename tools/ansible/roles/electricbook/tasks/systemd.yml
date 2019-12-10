@@ -13,4 +13,4 @@
     enabled: yes
     state: started
     masked: no
-  notify: "restart electricbook"    
+  notify: 'restart electricbook'

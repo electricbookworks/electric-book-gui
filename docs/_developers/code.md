@@ -3,6 +3,10 @@ title: Understanding the code
 ---
 
 # Understanding the code
+{:.no_toc}
+
+* TOC here
+{:toc}
 
 ## `src`
 
@@ -11,6 +15,8 @@ The Golang source code.
 - `src/ts`: Typescript source code and HTML template files converted to Javascript for the front-end.
 - `src/go`: Golang server-side code.
 - `src/scss`: Sass stylesheets.
+
+Ensure you have Go version 11.4 or later. The `init.sh` script will attempt to download a suitable version, but you'll first need to remove any older version of Go from your machine.
 
 ## `public`
 

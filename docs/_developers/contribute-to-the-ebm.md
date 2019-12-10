@@ -1,11 +1,9 @@
 ---
 title: Contribute to the EBM project
-categories:
-  - Electric Book Manager
 order: 10
 ---
 
-## Contribute to the EBM project
+# Contribute to the EBM project
 
 The EBM is early, open-source software in development. It is maintained by [Electric Book Works](https://electricbookworks.com).
 

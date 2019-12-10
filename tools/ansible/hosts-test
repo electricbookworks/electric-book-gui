@@ -1,38 +1,64 @@
 [servers]
-ebw.lxc ansible_user=ubuntu ansible_password=ubuntu fqdn=ebw.lxc webserver=nginx
+# You should only have to set the URL of your EBM server here (i.e. change example.com)
+# If you don't have SSH key access, add ansible_password=yourpasswordhere
+example.com ansible_user=root fqdn=example.com webserver=haproxy
+
+[haproxy]
+# As above, add your EBM's URL as the name for the [haproxy] play
+example.com
 
 [servers:vars]
-# GET THESE VALUES FROM GITHUB:
-# https://github.com/settings/developers
+bind=8080
+
+# Get an OAuth client and secret from GitHub
+# ------------------------------------------
+# See https://github.com/settings/developers
 # When you register the application on Github, your homepage will
 # be:
-#    http://{{fqdn}}/
+#    http://example.com/
 # and your callback URL will be
-#    http://{{fqdn}}/github/auth
-#
-github_client=
-github_secret=
-# Configure these for each host
-# session_auth must be a 64 character ascii random string
-session_auth=
-# session_encrypt should be a 32 character ascii random string
-session_encrypt=
+#    http://example.com/github/auth
+# where example.com is your EBM's URL, of course.
+github_client=f8g9rg98rg98erg9erg9
+github_secret=87g87erg8rge787hegr87hgr8eg87egrev87vefn
 
-# EMAIL Error Report configuration
+# Configure these session values for each host
+# --------------------------------------------
+# session_auth must be a 64 character ascii random string.
+# Create your own. Do not use this sample.
+session_auth=hkjnfsp2odc83gf45gnieufgwedf349igngfiw7efyfonuvi7gw8rbc34fhhdg67
+# session_encrypt should be a 32 character ascii random string.
+# Create your own. Do not use this sample.
+session_encrypt=if9f02983ufnvjnv9e8rf9348jfjudf7
+
+# Default location for repos.
+# This will generally only change if you use a storage location
+# outside of your server's /opt/electricbook directory.
+git_cache=/git_cache/
+
+# Email error-report configuration
+# --------------------------------
 # The host server for sending emailed error reports
 email_host=
+
 # The port for the email error report host server
 email_port=587
+
 # Username for authenticaton on error report server
 email_auth_username=
+
 # Password for authentication
 email_auth_password=
+
 # Email address to received error reports
 email_to=
+
 # Email address from which error reports originate
 email_from=
-# If your email server cert isn't properly configured for your email host domain,
-# you might want to skip certificate verification. It is best to have this configured as 
-# false, but you might need to set it to true depending on your email configuration.
-email_insecure_skip_verify=false
 
+# If your email server cert isn't properly configured
+# for your email host domain, you might want to skip
+# certificate verification. It is best to have this configured
+# as  # false, but you might need to set it to true
+# depending on your email configuration.
+email_insecure_skip_verify=false

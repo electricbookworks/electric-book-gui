@@ -3,6 +3,10 @@ title: Adding storage
 ---
 
 # Adding storage to an EBM
+{:.no_toc}
+
+* TOC here
+{:toc}
 
 If your EBM handles many and/or large repos, you may need to move storage from the default location (in `/opt/electricbook/git_cache` on the same machine as your `electricbook` binary) to separate storage.
 

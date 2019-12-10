@@ -37,10 +37,18 @@ prepare:
 run: bin/electricbook
 	bin/electricbook -logtostderr web
 
+deploy-staging:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-staging playbook-bookserver.yml; \
+	popd
 
+deploy-production:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-production playbook-bookserver.yml; \
+	popd
 
 test:
 	GOPATH=`pwd`/src/go go test ebw/git -logtostderr 
 
-.PHONY: all clean css gen prepare test
+.PHONY: all clean css gen prepare test deploy-staging deploy-production
 

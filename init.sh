@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# This script checks for and, if necessary, installs
+# Ansible, Node, Yarn, Watchman, Go, libgit2, and some Go utilities
+# then runs an Ansible playbook to set up RUby and Jekyll as EBM dependencies
+
 set -e
 sudo apt-get update
 sudo apt-get install -y curl git vim
