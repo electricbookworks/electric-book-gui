@@ -22,9 +22,9 @@ The Ansible deployment needs a built `bin/electricbook` binary on your local mac
 
 Then go to the `tools/ansible` directory:
 
-1. Copy the `hosts-test` file to a file your own for deployment. E.g.
+1. Copy the `hosts-example` file to a file your own for deployment. E.g.
 
-       cp hosts-test hosts-staging
+       cp hosts-example hosts-staging
 
     Do not commit this file to version control, because it contains confidential information. (It should be ignored already by `.gitignore`.)
 
