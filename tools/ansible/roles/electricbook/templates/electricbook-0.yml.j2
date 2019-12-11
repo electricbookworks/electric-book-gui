@@ -14,3 +14,7 @@ error_mail:
   to: "{{email_to}}"
   from: "{{email_from}}"
   insecure_skip_verify: {{email_insecure_skip_verify}}
+allowed_users:
+{% for user in allowed_users %}
+  - {{ user }}
+{% endfor %}

@@ -35,5 +35,8 @@ recover_panics: true
 # Add at least your own GitHub username for logging into the EBM.
 # You can also include a list of allowed users per server
 # in your hosts-* files. They will be added to this list.
-allowed_users:
-  - ""
+# If this is uncommented and contains an empty value (""),
+# all users will be allowed (not recommended).
+#
+# allowed_users:
+#   - ""
