@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	`bufio`
+	`strings`
 	"io/ioutil"
 	"os"
 
@@ -101,6 +103,29 @@ func (c *config) Load(root string) error {
 			return err
 		}
 		i++
+	}
+	return c.loadAllowedUsers(root)
+}
+
+func (c *config) loadAllowedUsers(root string) error {
+	in, err := os.Open(root + "-users.txt")
+	if nil!=err {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	defer in.Close()
+	scan := bufio.NewScanner(in)
+	if c.AllowedUsers == nil {
+		c.AllowedUsers = []string{}
+	}
+	for scan.Scan() {
+		line := strings.TrimSpace(scan.Text())
+		if 0==len(line) || '#'==line[0] {
+			continue
+		}
+		c.AllowedUsers = append(c.AllowedUsers, line)
 	}
 	return nil
 }

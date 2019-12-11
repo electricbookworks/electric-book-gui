@@ -1,0 +1,5 @@
+# list of ansible users
+# Put one to a line, # at start of line for comments
+{% for u in allowed_users %}
+{{ u }}
+{% endfor %}
