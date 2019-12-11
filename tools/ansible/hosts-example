@@ -3,9 +3,13 @@
 # If you don't have SSH key access, add ansible_password=yourpasswordhere
 example.com ansible_user=root fqdn=example.com webserver=haproxy
 
-[haproxy]
-# As above, add your EBM's URL as the name for the [haproxy] play
-example.com
+# Below, add your EBM's URL as the name for the [haproxy] play.
+# Uncomment this group (the [haproxy] line and the name below it)
+# just to setup SSL. Then comment it out to avoid renewing
+# the certificate every time you deploy.
+#
+# [haproxy]
+# example.com
 
 [servers:vars]
 bind=8080
@@ -63,9 +67,10 @@ email_from=
 # depending on your email configuration.
 email_insecure_skip_verify=false
 
-# A list of GitHub usernames for allowed users
+# A list of GitHub usernames for allowed users.
 # E.g. this allows all users (not recommended):
 # allowed_users=['.*']
 # while this will allow only these specific users:
 # allowed_users=['craigmj','arthurattwell']
-allowed_users=['.*']
+
+allowed_users=[]
