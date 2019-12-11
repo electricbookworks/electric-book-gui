@@ -53,6 +53,15 @@
   become: yes
   notify: 'restart electricbook'
 
+- name: install-allowed-users
+  template: >
+    dest=/opt/electricbook/electricbook-users.txt
+    src=electricbook-users.txt.j2
+    mode=0755
+  become: yes
+  tags: ['allowed-users']
+  notify: 'restart electricbook'
+
 - name: configure upstart for electricbook
   when: >
     ansible_distribution_major_version|int < 16
