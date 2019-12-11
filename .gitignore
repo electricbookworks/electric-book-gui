@@ -4,6 +4,7 @@ package-lock.json
 yarn-error.log
 .git
 *.sublime-workspace
+.vscode
 tmp/
 .idea
 .hg
