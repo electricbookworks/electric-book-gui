@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gopkg.in/yaml.v2"
+	`github.com/golang/glog`
 )
 
 type database struct {
@@ -98,7 +99,7 @@ func (c *config) Load(root string) error {
 		err = c.load(fmt.Sprintf("%s-%d.yml", root, i))
 		if nil != err {
 			if os.IsNotExist(err) {
-				return nil
+				break
 			}
 			return err
 		}
@@ -108,9 +109,14 @@ func (c *config) Load(root string) error {
 }
 
 func (c *config) loadAllowedUsers(root string) error {
-	in, err := os.Open(root + "-users.txt")
+	allowedUsersFilename := root + `-users.txt`
+	defer func() {
+		glog.Infof(`Allowed users: %s`, strings.Join(c.AllowedUsers,`,`))
+	}()
+	in, err := os.Open(allowedUsersFilename)
 	if nil!=err {
 		if os.IsNotExist(err) {
+			glog.Infof(`%s does not exist`, allowedUsersFilename)
 			return nil
 		}
 		return err
