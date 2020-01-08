@@ -4,6 +4,7 @@ package-lock.json
 yarn-error.log
 .git
 *.sublime-workspace
+.vscode
 tmp/
 .idea
 .hg
@@ -13,9 +14,8 @@ electricbook.gz
 src/go/pkg
 test/
 tools/ansible/*.retry
-tools/ansible/hosts-lateral
-tools/ansible/hosts-ebw
 tools/ansible/hosts-*
+!tools/ansible/hosts-example
 electricbook-*.yml
 git_cache/pr_requests/*
 git_cache/repos/*

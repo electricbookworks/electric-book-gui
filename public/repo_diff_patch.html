@@ -1,8 +1,9 @@
 {{template "_header.html" .}}
 <style type="text/css">
 </style>
-<div id="wrap-button" class="wordwrap">
-<span>Word</span><span>Wrap</span>
+<div id="float-toolbar">
+	<div id="print-button" class="float-button"><span>Print</span></div>
+	<div id="wrap-button" class="float-button wordwrap"><span>Word</span><span>Wrap</span></div>
 </div>
 <main id="repo-diff-patch" class="wordwrap">
 </main>
@@ -12,7 +13,7 @@
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
+    //document.body.classList.add('repo-diff-file-viewer');
 	var patch = document.getElementById('patch').innerText;
 	if (false) {
 		var diffHtml = Diff2Html.getPrettyHtml(

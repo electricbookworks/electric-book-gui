@@ -178,30 +178,30 @@ export class AddNewBookDialog {
 		<h1>Add a project</h1>
 		<fieldset>
 			<label>
-				<input value="new" name="new-project-type" type="radio"/>
+				<input type="radio" value="new" name="new-project-type"/>
 				Start a new project.
 			</label>
 			<label>
-				<input value="collaborate" name="new-project-type" type="radio"/>
+				<input name="new-project-type" type="radio" value="collaborate"/>
 				Contribute to an existing project.
 			</label>
 			<label>
-				<input value="adaptation" name="new-project-type" type="radio"/>
+				<input type="radio" value="adaptation" name="new-project-type"/>
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
-		<button data-event="click:choseType" class="btn">Next</button>
+		<button class="btn" data-event="click:choseType">Next</button>
 	</div>
 	<div>
 		<h1>New project</h1>
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -212,20 +212,20 @@ export class AddNewBookDialog {
 	</div>
 	<div>
 		<h1>Adaptation</h1>
-		<form method="post" action="/github/create/new">
+		<form action="/github/create/new" method="post">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
 		</label>
 		<label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
 		</label>
 		<label>
-			<input name="private" value="private" type="checkbox"/>
+			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
 		<input type="submit" class="btn" value="New adaptation"/>
@@ -239,10 +239,10 @@ export class AddNewBookDialog {
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label>
 		<label style="display:none;">
-			<input value="private" type="checkbox" name="private"/>
+			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input class="btn" value="Copy project" type="submit"/>
+		<input type="submit" class="btn" value="Copy project"/>
 		</form>
 	</div>
 </div>
@@ -414,7 +414,7 @@ export class BoundFilename {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="bound-filename">
 	<span>Select a file to edit</span>
-	<a href="#" target="_github"><img src="/img/github-dark.svg"/></a>
+	<a target="_github" href="#"><img src="/img/github-dark.svg"/></a>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -797,7 +797,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button class="close-button" aria-label="Close popup" type="button" data-close="">
+	<button data-close="" class="close-button" aria-label="Close popup" type="button">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -833,7 +833,7 @@ export class LoginTokenDisplay {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
-	<li data-set="this" class="token-display">
+	<li class="token-display" data-set="this">
 		<a href="">LINK</a>
 		<a href="">X</a>
 	</li>
@@ -949,7 +949,7 @@ export class MergeEditor {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="merge-editor">
 	<div class="action-group">
-		<button data-event="click:save" class="btn">Save</button>
+		<button class="btn" data-event="click:save">Save</button>
 	</div>
 	<div class="merge-mergely">
 	</div>
@@ -1080,7 +1080,7 @@ export class RepoEditorPage_NewFileDialog {
 	<fieldset>
 		<label>
 			Enter the full path to your new file.
-			<input placeholder="book/text/chapter-7.md" data-event="change" type="text"/>
+			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Create File</button>
@@ -1123,7 +1123,7 @@ export class RepoEditorPage_RenameFileDialog {
 		<div>Renaming <span> </span></div>
 		<label>
 			Enter the full path to your new file.
-			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
+			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Rename</button>
@@ -1416,10 +1416,10 @@ export class Tree_NodeView {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="node">
-	<div class="name"><span class="closer"><svg height="1em" viewBox="0 0 100 100" width="1em">
+	<div class="name"><span class="closer"><svg width="1em" height="1em" viewBox="0 0 100 100">
 		<rect height="96" class="grect" rx="10" ry="10" x="2" y="2" width="96"/>
 		<g transform="translate(50 50)">
-			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg"/>
+			<rect width="60" height="8" class="plusvg" x="-30" y="-4" stroke="none"/>
 			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg plusvg2"/>
 		</g>
 		</svg></span><span>NAME</span></div>
@@ -1488,7 +1488,7 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		<input id="closePR-no" value="no" data-event="change" type="radio" name="closePR"/>No
 		</label>
 		<label for="closePR-yes">
 		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes

@@ -5,7 +5,7 @@
 /// If `true`, all elements will have transparent backgrounds when printed, to save on ink.
 /// @type Boolean
 /// @group global
-$print-transparent-backgrounds: true !default;
+$print-transparent-backgrounds: false !default;
 $print-hrefs: true !default;
 
 // sass-lint:disable-all

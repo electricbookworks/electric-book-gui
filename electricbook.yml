@@ -1,7 +1,16 @@
+# This file's config values will be overridden by the ones in your
+# Ansible hosts-* file when you deploy the application to a server.
+# Therefore, the values here only apply for local development.
+# To get the GitHub values for local development and testing,
+# set up an OAuth application on GitHub in your personal account.
+# Use these settings:
+# - Homepage URL: http://localhost:16101
+# - Authorization callback URL: http://localhost:16101/github/auth
 github:
-  client: 
-  secret:
+  client: "your-client-id-string-here"
+  secret: "your-client-secret-string-here"
 server: "http://localhost:16101"
+bind: ":16101"
 # git_cache is the local directory under which git checkouts will be cached
 git_cache: "git_cache"
 print:
@@ -9,9 +18,6 @@ print:
   token: "very-secret-print-token"
 print_container: bookworks
 print_user: craig
-allowed_users:
-          - ".*"
-bind: ":16101"
 rvm: "/usr/local/rvm/bin/rvm"
 ruby_version: "2.4.0"
 # 64 byte session_auth string
@@ -26,3 +32,11 @@ error_mail:
   username: ""
   password: ""
 recover_panics: true
+# Uncomment below, and add at least your own GitHub username
+# for logging into your EBM. For deployment to a remote server,
+# include a list of allowed users per server in your hosts-* files.
+# If this is uncommented and contains an empty value (""),
+# all users will be allowed (not recommended).
+#
+# allowed_users:
+#   - ""

@@ -55,7 +55,7 @@ You will not be able to update from the parent version if you have made changes 
 
 Once you have committed your work, go to the project page (from the dashboard, click on the name of your project).
 
-If there is content in the parent version that is not yet in your copy, you will see an ‘Update my copy from the original’ button. 
+If there is content in the parent version that is not yet in your copy, you will see an ‘Update my copy from its parent’ button. 
 
 Click this button to merge changes from the parent into your version. If the parent version and your version include changes to the same lines of text or to images, you will be asked to resolve these conflicts in an editor. Manually edit your version, then click 'Mark resolved' and 'Accept update'.
 
@@ -79,16 +79,22 @@ To send your work to the parent project:
 
 ## View change history
 
-To see the history of all the changes to your project:
+To see the history of changes to your project:
 
-- On the project detail page (which you reach by clicking on the project name from the dashboard), click the GitHub logo at the top of the page.
-- You can also click ‘View Edit History’ to see the changes which you’ve made and included in your version of the project.
-- You can also click the GitHub logo next to your project’s name on the editing page.
+1. First make sure your project is up to date: on the project detail page (which you reach by clicking on the project name from the dashboard), if you see a message that says 'Your copy of this project is behind the project you are contributing to' then click the 'Update my copy from the original' button. If you don't see this message, you are ready to view your project's history.
+2. From the project detail page, click the 'View Edit History' button.
+3. You can either:
 
-To see the history of a particular file:
+    - choose a particular date range to show changes made between specific dates, and then click 'Choose commits between dates', or
+    - choose commits from the lists on the left and right for the start and end of the changes you'd like to see, and then click 'View Diff'.
+    
+    Either of these actions take you to a diff page with your file list in the left pane.
 
-1. On the editing page, open the particular file that you’re interested in by clicking on its name in the sidebar.
-2. Click the GitHub logo next to that particular file’s name.
+4. In the left pane, open folders by clicking on the '+' sign to see the files inside them.
+5. Click on the file you want to see changes for. Files with changes are shown in green, and new files in bold green. Files that have been deleted are shown as crossed-out in red.
+6. Once the file you want to see changes for is open, you'll see changed lines in yellow. Deleted content is in red (with a '-' beside the line number) and additions are in green (with a '+' beside the line number).
+
+    The line numbers on the left of the window show the content's old and new positions in the file.
 
 ## Manage collaborators
 
