@@ -3,22 +3,22 @@ title: Build and run locally
 ---
 
 # Build and run locally
+{:.no_toc}
+
+* TOC here
+{:toc}
+
+## Build the app
 
 Once you're all set up, to build and run the app you will simply run:
 
-    ./build.sh
+    make all
 ^
-    bin/electricbook -logtostderr web      
+    make run
 
-Here are more detailed instructions.
+Here are more detailed instructions for first-time setup:
 
-1. To build, run:
-
-       ./build.sh
-
-   This will create a binary in `bin/electricbookworks`.
-
-2. Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the parameters as needed. You must set the Client ID and Client Secret of your own [GitHub OAuth application](https://github.com/settings/developers):
+1. Make a copy of `./electricbook.yml` to `./electricbook-0.yml` and configure the parameters as needed. You must set the Client ID and Client Secret of your own [GitHub OAuth application](https://github.com/settings/developers):
 
    ```
    github:
@@ -26,7 +26,9 @@ Here are more detailed instructions.
      secret: "-secret from github oauth application configuration-"
    ```
 
-3. Get a personal access token from GitHub (Settings > Developer Settings > [Personal access tokens](https://github.com/settings/tokens). At "Select scopes", you currently only need to select `repo`.
+   Do not commit this file to version control.
+
+1. Get a personal access token from GitHub (Settings > Developer Settings > [Personal access tokens](https://github.com/settings/tokens). At "Select scopes", you currently only need to select `repo`.
 
    Place the token and your GitHub username in `~/.ebw.yml`:
 
@@ -36,16 +38,24 @@ Here are more detailed instructions.
      - name:
    ```
 
-4. Run `npm install` to install the rest of the dependencies. Generate the production-ready CSS by running:
+1. Run `npm install` to install the rest of the dependencies. Generate the production-ready CSS by running:
 
        gulp scss
 
    If you're going to make changes to the SCSS or JS in the `src` directory, install [DTemplate](https://github.com/craigmj/dtemplate), then run `gulp watch` to watch for changes.
 
-5. Start the app with:
+1. To build, enter in the Terminal:
 
-       bin/electricbook -logtostderr web
+       make all
+
+   This will create two binaries in `bin`: `electricbook`, which is the EBM web app, and `ebw`, which is a CLI app.
+
+1. Start the app with:
+
+       make run
+
+   (This make command simply does `bin/electricbook -logtostderr web`.)
 
    This must be run from the repo directory, since it needs access to the `public` directory, to some other directories it will create on the fly, and to the `electricbook.yml` configuration file.
 
-   You should then have the UI running on [http://localhost:16101/](http://localhost:16101/).
+   You can then open the EBM in your browser at [http://localhost:16101/](http://localhost:16101/).
