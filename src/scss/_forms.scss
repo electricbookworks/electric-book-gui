@@ -1,8 +1,5 @@
 input,
-textarea,
-.btn {
-    padding: 0.25em 0.5em;
-    font-family: 'Source Sans Pro', sans-serif;
+textarea {
     border: solid 1px $color-offgray;
 }
 
@@ -20,19 +17,20 @@ textarea {
 .cta,
 .btn,
 [type="submit"] {
-    background-color: $color-primary;
-	color: $color-white;
+    // background-color: $color-primary;
+	color: $color-black;
 	display: inline-block;
     text-decoration: none;
-	padding: 0.5em 1em;
-	border-radius: 0.25em;
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
+	// padding: 0.5em 1em;
+	// border-radius: 0.25em;
+	// border-top: 0;
+	// border-right: 0;
+	// border-left: 0;
     // border-bottom: 0.15em solid darken($color-primary, 10%);
 	&:hover {
-		background-color: lighten($color-primary, 10%);
+		// background-color: lighten($color-primary, 10%);
         // border-bottom: 0.15em solid transparent;
+        color: $color-black;
 		cursor: pointer;
 	}
     &[disabled] {
@@ -100,16 +98,16 @@ textarea {
 }
 
 .btn-alt {
-	background-color: $color-white;
-	color: $color-primary;
+	// background-color: $color-white;
+	// color: $color-primary;
 	display: inline-block;
     text-decoration: none;
-	padding: 0.5em 1em;
-	border-radius: 0.25em;
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-    border-bottom: 0.15em solid darken($color-white, 20%);
+	// padding: 0.5em 1em;
+	// border-radius: 0.25em;
+	// border-top: 0;
+	// border-right: 0;
+	// border-left: 0;
+    // border-bottom: 0.15em solid darken($color-white, 20%);
 	&:hover {
 		background-color: darken($color-white, 10%);
         border-bottom: 0.15em solid transparent;

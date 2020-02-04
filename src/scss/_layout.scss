@@ -1,186 +1,74 @@
-[role="banner"],
-[role="contentinfo"] {
-    background: $primary;
-    color: $white;
-    padding: 1em;
-    a {
-        color: $white;
-    }
+section {
+	margin-top: 1em;
 }
 
-[role="banner"] {
-    @media (min-width: $bp-m) {
-        display: flex;
-        justify-content: space-between;
-    }
-    p {
-        margin-bottom: 0;
-    }
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: space-between;
+	min-height: 100vh;
+	// max-height: 100vh;
+	position: relative;
+
+	&.noflex {
+		display: block;
+	}
+	
+	main {
+		flex-grow: 1;
+		// overflow-y: scroll;
+	}
+
+	footer {
+		flex-grow: 0;
+		padding: 1em;
+
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: baseline;
+
+		@include inverse;
+		border-top: 1px solid darken($color-inverse-bg, 10%);
+
+		.freespace {
+			display: none;
+		}
+	}
 }
 
-.nav-main {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    margin-bottom: 1em;
-    @media (min-width: $bp-m) {
-        margin-bottom: 0;
-    }
-    li {
-        display: inline-block;
-    }
-}
+.constrain-page {
+  width: 90%;
+  margin: auto;
+  padding-top: 2em;
+  max-width: 60em;
 
-.logo {
-    margin-right: 1em;
-}
+  @media (min-width: $bp-m) {
+  	width: 70%;
+  }
 
-.gravatar {
-    width: 1.5em;
-    height: 1.5em;
-    display: inline-block;
-    margin: 0 0.5em;
-}
-
-main {
-    padding: 1em;
-}
-
-[role="contentinfo"] {
-    background: $primary;
-    color: $white;
-    text-align: center;
-    padding: 1em;
-}
-
-img {
-  border-width: 0;
-  vertical-align: middle;
-  -ms-interpolation-mode: bicubic;
-  max-width: 100%;
-  height: auto;
+  @media (min-width: $bp-l) {
+  	width: 70%;
+  }
 }
 
 .l-center {
-    text-align: center;
+	text-align: center;
 }
 
-section {
-    padding: 2em 0;
-    border-top: solid 3px $off-grey;
-    :last-child {
-        margin-bottom: 0;
-    }
+@mixin section-border() {
+	border-bottom: 3px solid $color-primary;
 }
 
-.pagination {
-    a {
-        padding: 0 0.25em;
-        margin: 0 0.25em;
-    }
-}
+.todo {
+	border: 3px solid #88f;
+	background-color: white;
+	padding: 2em;
 
-article {
-  @media (min-width: $bp-s) {
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-  @media (min-width: $bp-m) {
-    padding-left: 15%;
-    padding-right: 15%;
-  }
-  @media (min-width: $bp-l) {
-    padding-left: 20%;
-    padding-right: 20%;
-  }
-}
+	color: #333;
+	border-radius: 1em;
+	margin: 1em 0 2em 0;
 
-.section-editor {
-  @media (min-width: $bp-s) {
-    padding-left: 5%;
-    padding-right: 5%;
-  }
-  @media (min-width: $bp-m) {
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-  @media (min-width: $bp-l) {
-    padding-left: 15%;
-    padding-right: 15%;
-  }
-}
-
-
-.editor {
-    border: solid 1px $off-grey;
-    padding: 0.25em 0.5em;
-    margin: 1em 0;
-}
-
-.header-split {
-    @media (min-width: $bp-s) {
-        h2 {
-            margin-bottom: 0;
-        }
-        display: flex;
-        justify-content: space-between;
-    }
-}
-
-// notifications and modals
-
-.notification {
-    padding: 1em;
-    border-radius: 0.25em;
-    max-width: $bp-m;
-    margin: 0 auto 1em auto;
-}
-
-.notification-success {
-    border: 3px solid $primary;
-    background-color: $success-light;
-}
-
-.notification-information {
-    border: 3px solid $information;
-    background-color: $information-light;
-    a {
-        color: $bodytext;
-    }
-}
-
-.notification-error {
-    border: 3px solid $error;
-    background-color: $error-light;
-    a {
-        color: $bodytext;
-    }
-}
-
-.modal-content {
-    max-width: $bp-s;
-    margin: 0 auto;
-    background-color: $white;
-    padding: 2em;
-    border: 1px solid $off-grey;
-    border-radius: 0.25em;
-}
-
-.modal-open {
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-    .modal {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 2;
-        background-color: $dark-grey;
-        background-color: rgba($dark-grey, 0.5)
-    }
-    .modal-content {
-        margin-top: 25%;
-    }
 }

@@ -1,68 +1,58 @@
+// Hex values
 $black1: #000000;
 $black2: #262626;
 $black3: #D9D9D9;
 $black4: #E9E9E9;
 $black5: #F5F5F5;
-$yellow1: #FFCC34;
+$yellow1: #ffcc34;
 $yellow2: #FFF8E2;
 $green1: #009E7F;
+$orange1: #ffeae2;
+$white1: white;
+$white2: #f2f0f0;
 
+// Main colours
 $bodytext: $black2;
-$primary: $green1;
+$primary: $yellow1;
+
+// Black through white
+$color-black: $black2;
+$color-darkgray: $black3;
+$color-lightgray: $black5;
+$color-mediumgray: $black4;
+$color-offgray: $color-mediumgray;
+$color-primary: $primary;	//#1779ba in Foundation original
+$color-secondary: $black2;
+$color-verylightgray: $black5;
+$color-white: $white2;
+$dark-grey: $black3;
 $grey: $black4;
 $off-grey: $black5;
-$dark-grey: $black3;
-$white: white;
+$white: $white2;
 
-$success-light: rgb(184,213,202);
-$information: rgb(250,180,20);
-$information-light: rgb(254,228,183);
-$error: rgb(240,90,80);
-$error-light: rgb(253,217,202);
-
-$color-primary: $primary;	//#1779ba in Foundation original
-$color-secondary: $grey;
-$color-success: #3adb76;
-$color-warning: #ffae00;
-$color-alert: #cc4637;
-$color-info: #cc4637;
-$color-error: $color-warning;
-$color-lightgray: #e6e6e6;
-$color-mediumgray: #cacaca;
-$color-darkgray: #8a8a8a;
-$color-black: #0a0a0a;
-$color-white: #fefefe;
-$color-inverse-bg: #eee;
-$color-inverse-fg: $color-primary;
-
-
-$color-primary: $primary;
-$color-secondary: $black2;
-$color-success: #009e7f;	//rgb(184,213,202);
-$color-warning: rgb(250,180,20);
-$color-alert: rgb(240,90,80);
-$color-error: #f05a50;
-$color-info: #fab414;
-
-$color-verylightgray: #eee;
-$color-lightgray: #ddd;
-$color-mediumgray: $black4;
-$color-darkgray: #666;
-$color-black: #444;
-$color-white: white;
+// Inverse colours
 $color-inverse-bg: $color-primary;
-$color-inverse-fg: $color-white;
+$color-inverse-fg: $color-black;
 
+// Dialogs
+$color-alert: $orange1;
+$color-error-light: $orange1;
+$color-error: $orange1;
+$color-info-light: $yellow2;
+$color-info: $yellow2;
+$color-success-light: $yellow2;
+$color-success: $yellow2;
+$color-warning: $orange1;
+$error-light: $orange1;
+$error: $orange1;
+$information-light: $yellow2;
+$information: $yellow2;
+$success-light: $yellow2;
 
-$color-success-light: #b8d5ca;
-$color-info-light: #fee4b7;
-$color-error-light: #fdd9ca;
-
-$color-offgray: $color-mediumgray;
-
+// Status
 $color-status-new: $color-info;
 $color-status-deleted: $color-warning;
 $color-status-modified: $color-lightgray;
 $color-status-resolved: $color-success;
 $color-status-error: $color-error;
-$color-status-conflict: #f8e080;
+$color-status-conflict: $color-info;

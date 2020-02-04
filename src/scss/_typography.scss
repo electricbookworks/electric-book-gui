@@ -1,5 +1,5 @@
 body {
-	font-family: 'Source Sans Pro', sans-serif;
+	font-family: 'Karla', sans-serif;
 	color: $bodytext;
 }
 
@@ -16,76 +16,31 @@ p {
 	margin-top: 0;
 }
 
-// http://typecast.com/blog/a-more-modern-scale-for-web-typography
-
-
-@media (min-width: 43.75em) {
-  html {
-    line-height: 1.375;
-  }
-}
-
 h1 {
-  font-size: 2em;
+  font-size: 1.6em;
   font-weight: bold;
-  line-height: 1.25;
-  @media (min-width: 43.75em) {
-      font-size: 2.5em;
-      line-height: 1.125;
-  }
-  @media (min-width: 56.25em) {
-      font-size: 3em;
-      line-height: 1.05;
-  }
 }
 
 h2 {
-  font-size: 1.5em;
-  line-height: 1.15384615;
-  @media (min-width: 43.75em) {
-      // font-size: 2em;
-      // line-height: 1.25;
-  }
-  @media (min-width: 56.25em) {
-      // font-size: 2.25em;
-      // line-height: 1.25;
-  }
+  font-size: 1.4em;
 }
 
 h3 {
-  font-size: 1.375em;
-  line-height: 1.13636364;
-  @media (min-width: 43.75em) {
-      font-size: 1.5em;
-      line-height: 1.25;
-  }
-  @media (min-width: 56.25em) {
-      font-size: 1.75em;
-      line-height: 1.25;
-  }
+  font-size: 1.2em;
 }
 
 h4,
 .repo-details h3 {
-  font-size: 1.125em;
-  line-height: 1.11111111;
+  font-size: 1.1em;
   @media (min-width: 43.75em) {
       line-height: 1.22222222;
   }
 }
 
-blockquote {
-  font-size: 1.25em;
-  line-height: 1.25;
-  @media (min-width: 43.75em) {
-      font-size: 1.5em;
-      line-height: 1.45833333;
-  }
-}
-
 a {
-	color: $color-primary;
+	color: inherit;
 	&:hover {
+    color: inherit;
 		text-decoration: none;
 	}
 }
@@ -100,7 +55,13 @@ a {
 	}
 }
 
-// :focus {
-// 	outline: 0.15em dashed $color-darkgray;
-// 	outline-offset: 0.1em;
-// }
+@mixin inverse {
+	background-color: $color-inverse-bg;
+	color: $color-inverse-fg;
+	a {
+		color: $color-inverse-fg;
+		&:hover {
+			color: darken($color-inverse-fg, 10%);
+		}
+	}
+}

@@ -4,11 +4,8 @@
 	justify-content: space-between;
 	align-items: baseline;
 	padding: 1em;
-	//border-bottom: 1px solid darken($color-inverse-bg, 10%);
-
-	@include inverse;
-	background-color: black;
-	// position: relative;
+	background-color: $color-black;
+	color: $color-white;
 
 	img {
 		height: 2em;

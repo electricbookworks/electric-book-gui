@@ -9,15 +9,9 @@ $bp-xl: 80em;
 @import 'foundation';
 @include foundation-everything(true);
 
-// @import 'style-guide';
-//@import 'normalize';
-//@import 'h5bp';
-// @import 'forms';
-// @import 'layout';
-@import 'typography-new';
 @import 'typography';
 
-@import 'layout-new';
+@import 'layout';
 
 @import 'widgets/buttons';
 
