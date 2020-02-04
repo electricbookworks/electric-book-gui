@@ -85,7 +85,7 @@ $global-weight-bold: bold !default;
 
 /// Global value used for all elements that have a border radius.
 /// @type Number
-$global-radius: 0 !default;
+$global-radius: 0.1em !default;
 
 /// Sets the text direction of the CSS. Can be either `ltr` or `rtl`.
 /// @type Keyword

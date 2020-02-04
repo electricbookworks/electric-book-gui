@@ -455,12 +455,12 @@ img {
 textarea {
   height: auto;
   min-height: 50px;
-  border-radius: 0; }
+  border-radius: 0.1em; }
 
 select {
   box-sizing: border-box;
   width: 100%;
-  border-radius: 0; }
+  border-radius: 0.1em; }
 
 .map_canvas img,
 .map_canvas embed,
@@ -474,7 +474,7 @@ button {
   padding: 0;
   appearance: none;
   border: 0;
-  border-radius: 0;
+  border-radius: 0.1em;
   background: transparent;
   line-height: 1; }
   [data-whatinput='mouse'] button {
@@ -1232,7 +1232,8 @@ kbd {
   padding: 0.125rem 0.25rem 0;
   background-color: #F5F5F5;
   font-family: Consolas, "Liberation Mono", Courier, monospace;
-  color: #262626; }
+  color: #262626;
+  border-radius: 0.1em; }
 
 .subheader {
   margin-top: 0.2rem;
@@ -1355,7 +1356,7 @@ textarea {
   margin: 0 0 1rem;
   padding: 0.5rem;
   border: 1px solid #E9E9E9;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #f2f0f0;
   box-shadow: inset 0 1px 2px rgba(38, 38, 38, 0.1);
   font-family: inherit;
@@ -1390,7 +1391,7 @@ textarea[readonly] {
 [type='submit'],
 [type='button'] {
   appearance: none;
-  border-radius: 0; }
+  border-radius: 0.1em; }
 
 input[type='search'] {
   box-sizing: border-box; }
@@ -1441,9 +1442,9 @@ label {
   margin-bottom: 1rem;
   align-items: stretch; }
   .input-group > :first-child {
-    border-radius: 0 0 0 0; }
+    border-radius: 0.1em 0 0 0.1em; }
   .input-group > :last-child > * {
-    border-radius: 0 0 0 0; }
+    border-radius: 0 0.1em 0.1em 0; }
 
 .input-group-label, .input-group-field, .input-group-button, .input-group-button a,
 .input-group-button input,
@@ -1512,7 +1513,7 @@ select {
   padding: 0.5rem;
   appearance: none;
   border: 1px solid #E9E9E9;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #f2f0f0;
   font-family: inherit;
   font-size: 1rem;
@@ -1569,7 +1570,7 @@ select {
   padding: 0.85em 1em;
   -webkit-appearance: none;
   border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 0.1em;
   transition: background-color 0.25s ease-out, color 0.25s ease-out;
   font-size: 0.9rem;
   line-height: 1;
@@ -1734,10 +1735,10 @@ select {
   list-style-type: none; }
 
 .accordion-item:first-child > :first-child {
-  border-radius: 0 0 0 0; }
+  border-radius: 0.1em 0.1em 0 0; }
 
 .accordion-item:last-child > :last-child {
-  border-radius: 0 0 0 0; }
+  border-radius: 0 0 0.1em 0.1em; }
 
 .accordion-title {
   position: relative;
@@ -1750,7 +1751,7 @@ select {
   color: #ffcc34; }
   :last-child:not(.is-active) > .accordion-title {
     border-bottom: 1px solid #F5F5F5;
-    border-radius: 0 0 0 0; }
+    border-radius: 0 0 0.1em 0.1em; }
   .accordion-title:hover, .accordion-title:focus {
     background-color: #F5F5F5; }
   .accordion-title::before {
@@ -1932,7 +1933,7 @@ select {
   margin: 0 0 1rem 0;
   padding: 1rem;
   border: 1px solid rgba(38, 38, 38, 0.25);
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #fdfdfd;
   color: #262626; }
   .callout > :first-child {
@@ -1970,7 +1971,7 @@ select {
   flex-direction: column;
   margin-bottom: 1rem;
   border: 1px solid #F5F5F5;
-  border-radius: 0;
+  border-radius: 0.1em;
   background: #f2f0f0;
   box-shadow: none;
   overflow: hidden;
@@ -2248,7 +2249,7 @@ select {
   padding: 1rem;
   visibility: hidden;
   border: 1px solid #E9E9E9;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #f2f0f0;
   font-size: 1rem; }
   .dropdown-pane.is-open {
@@ -2523,7 +2524,7 @@ select {
 .label {
   display: inline-block;
   padding: 0.33333rem 0.5rem;
-  border-radius: 0;
+  border-radius: 0.1em;
   font-size: 0.8rem;
   line-height: 1;
   white-space: nowrap;
@@ -2843,7 +2844,7 @@ select {
     clear: both; }
   .pagination li {
     margin-right: 0.0625rem;
-    border-radius: 0;
+    border-radius: 0.1em;
     font-size: 0.875rem;
     display: none; }
     .pagination li:last-child, .pagination li:first-child {
@@ -2855,7 +2856,7 @@ select {
   .pagination button {
     display: block;
     padding: 0.1875rem 0.625rem;
-    border-radius: 0;
+    border-radius: 0.1em;
     color: #262626; }
     .pagination a:hover,
     .pagination button:hover {
@@ -2891,7 +2892,7 @@ select {
 .progress {
   height: 1rem;
   margin-bottom: 1rem;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #E9E9E9; }
   .progress.primary .progress-meter {
     background-color: #ffcc34; }
@@ -2909,7 +2910,8 @@ select {
   display: block;
   width: 0%;
   height: 100%;
-  background-color: #ffcc34; }
+  background-color: #ffcc34;
+  border-radius: 0.1em; }
 
 .progress-meter-text {
   position: absolute;
@@ -2921,7 +2923,8 @@ select {
   font-size: 0.75rem;
   font-weight: bold;
   color: #f2f0f0;
-  white-space: nowrap; }
+  white-space: nowrap;
+  border-radius: 0.1em; }
 
 .slider {
   position: relative;
@@ -2955,7 +2958,7 @@ select {
   display: inline-block;
   width: 1.4rem;
   height: 1.4rem;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #ffcc34;
   transition: all 0.2s ease-in-out;
   touch-action: manipulation; }
@@ -3039,7 +3042,7 @@ html.is-reveal-open body {
   display: none;
   padding: 1rem;
   border: 1px solid #E9E9E9;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #f2f0f0;
   position: relative;
   top: 100px;
@@ -3124,7 +3127,7 @@ html.is-reveal-open body {
   display: block;
   width: 4rem;
   height: 2rem;
-  border-radius: 0;
+  border-radius: 0.1em;
   background: #E9E9E9;
   transition: all 0.25s ease-out;
   font-weight: inherit;
@@ -3140,7 +3143,7 @@ html.is-reveal-open body {
     width: 1.5rem;
     height: 1.5rem;
     transform: translate3d(0, 0, 0);
-    border-radius: 0;
+    border-radius: 0.1em;
     background: #f2f0f0;
     transition: all 0.25s ease-out;
     content: ''; }
@@ -3212,7 +3215,7 @@ html.is-reveal-open body {
 table {
   width: 100%;
   margin-bottom: 1rem;
-  border-radius: 0; }
+  border-radius: 0.1em; }
   thead,
   tbody,
   tfoot {
@@ -3351,7 +3354,7 @@ table.hover:not(.unstriped) tr:nth-of-type(even):hover {
   max-width: 100%;
   margin-bottom: 1rem;
   border: solid 4px #f2f0f0;
-  border-radius: 0;
+  border-radius: 0.1em;
   box-shadow: 0 0 0 1px rgba(38, 38, 38, 0.2);
   line-height: 0; }
 
@@ -3398,7 +3401,7 @@ a.thumbnail {
   z-index: 1200;
   max-width: 10rem;
   padding: 0.75rem;
-  border-radius: 0;
+  border-radius: 0.1em;
   background-color: #262626;
   font-size: 80%;
   color: #f2f0f0; }
@@ -4903,7 +4906,8 @@ textarea {
 [type="submit"] {
   color: #262626;
   display: inline-block;
-  text-decoration: none; }
+  text-decoration: none;
+  border-radius: 0.1em; }
   .cta:hover,
   .btn:hover,
   [type="submit"]:hover {
