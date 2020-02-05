@@ -9,7 +9,7 @@ $yellow2: #FFF8E2;
 $green1: #009E7F;
 $orange1: #ffeae2;
 $white1: white;
-$white2: #f2f0f0;
+$white2: #fdfdfd;
 
 // Main colours
 $bodytext: $black2;
@@ -33,6 +33,12 @@ $white: $white2;
 // Inverse colours
 $color-inverse-bg: $color-primary;
 $color-inverse-fg: $color-black;
+
+// Buttons
+$button-color: $black2;
+$button-background: $color-primary;
+$button-color-inverse: $white2;
+$button-background-inverse: $black2;
 
 // Dialogs
 $color-alert: $orange1;

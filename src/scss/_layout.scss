@@ -3,12 +3,11 @@ section {
 }
 
 body {
+	align-items: stretch;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
 	justify-content: space-between;
 	min-height: 100vh;
-	// max-height: 100vh;
 	position: relative;
 
 	&.noflex {
@@ -21,21 +20,22 @@ body {
 	}
 
 	footer {
-		flex-grow: 0;
-		padding: 1em;
-
+		@include inverse;
+		align-items: baseline;
+		border-top: 1px solid darken($color-inverse-bg, 10%);
 		display: flex;
 		flex-direction: row;
+		flex-grow: 0;
 		flex-wrap: nowrap;
-		justify-content: space-between;
-		align-items: baseline;
+		justify-content: center;
+		padding: 1em;
 
-		@include inverse;
-		border-top: 1px solid darken($color-inverse-bg, 10%);
-
-		.freespace {
+		// Admin purposes only, hide from users
+		.freespace,
+		.admin-userlogin-token {
 			display: none;
 		}
+
 	}
 }
 

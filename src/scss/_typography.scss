@@ -43,6 +43,10 @@ a {
     color: inherit;
 		text-decoration: none;
 	}
+	&[disabled='disabled'] {
+		color: $color-darkgray;
+		cursor: default;
+	}
 }
 
 .logo {

@@ -17,7 +17,7 @@ textarea {
 .cta,
 .btn,
 [type="submit"] {
-    // background-color: $color-primary;
+    background-color: $color-primary;
 	color: $color-black;
 	display: inline-block;
     text-decoration: none;
@@ -98,8 +98,8 @@ textarea {
 }
 
 .btn-alt {
-	// background-color: $color-white;
-	// color: $color-primary;
+	background-color: $color-black;
+	color: $color-white;
 	display: inline-block;
     text-decoration: none;
 	// padding: 0.5em 1em;

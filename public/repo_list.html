@@ -56,17 +56,15 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage</a>
+              <a class="btn repo-list-edit" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Edit this project</a>
               {{if .GetTotalPRs}}
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
+              <a class="btn repo-list-review-submissions" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
               {{end}}
             </div>
         </li>
         {{- end}}{{end}}
-        <li class="repo">
-            <div class="repo-add-repo">
-                <a data-open="repo-new-modal" class="btn">Add a project</a>
-            </div>
+        <li class="repo repo-add-repo">
+            <a data-open="repo-new-modal" class="btn">Add a project</a>
         </li>
     </ul>
 

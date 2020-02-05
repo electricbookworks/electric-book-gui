@@ -1,25 +1,30 @@
 // main.scss
 
+// Breakpoints
 $bp-s: 38em;
 $bp-m: 50em;
 $bp-l: 64em;
 $bp-xl: 80em;
 
+// Colours
 @import 'colors';
+
+// Foundation variables and partials
 @import 'foundation';
 @include foundation-everything(true);
 
+// Custom typography and layout
 @import 'typography';
-
+@import 'forms';
 @import 'layout';
 
+// Custom widgets
 @import 'widgets/buttons';
-
 @import 'widgets/Toast';
 @import 'widgets/nav_main';
 @import 'widgets/flashes';
 @import 'widgets/files_show_tag';
-@import 'widgets/toolbar_menu.scss';
+@import 'widgets/toolbar_menu';
 @import 'widgets/header-bar';
 @import 'widgets/printlistener_filelistdialog';
 @import 'widgets/printlistener-terminal';
@@ -28,9 +33,7 @@ $bp-xl: 80em;
 @import 'widgets/bound-filename';
 @import 'widgets/file_tree';
 
-// @import 'repositories';
-// @import 'html-checker';
-
+// Page-specific styles
 @import 'pages/landing';
 @import 'pages/new-editor';
 @import 'pages/pull_new';
@@ -44,13 +47,6 @@ $bp-xl: 80em;
 @import 'pages/repo_diff_file_viewer';
 @import 'pages/repo_diff_patch';
 
-// Order is important here, this must come after pages/repo_conflict
+// Order is important here,
+// this must come after pages/repo_conflict
 @import 'widgets/merge-image-editor';
-
-//@import 'typography';
-@import 'forms';
-
-a[disabled='disabled'] {
-	color: $color-darkgray;
-	cursor: default;
-}
