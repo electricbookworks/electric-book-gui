@@ -40,18 +40,9 @@ body {
 }
 
 .constrain-page {
-//   width: 90%;
-  margin: 2em auto;
-  max-width: 50em;
-  padding: 1em;
-
-//   @media (min-width: $bp-m) {
-//   	width: 70%;
-//   }
-
-//   @media (min-width: $bp-l) {
-//   	width: 70%;
-//   }
+	margin: 2em auto;
+	max-width: 50em;
+	padding: 1em;
 }
 
 .l-center {
@@ -63,12 +54,10 @@ body {
 }
 
 .todo {
-	border: 3px solid #88f;
 	background-color: white;
-	padding: 2em;
-
-	color: #333;
 	border-radius: 1em;
+	border: 3px solid #88f;
+	color: #333;
 	margin: 1em 0 2em 0;
-
+	padding: 2em;
 }

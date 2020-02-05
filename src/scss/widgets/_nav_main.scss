@@ -1,24 +1,24 @@
 .topbar {
+	align-items: baseline;
+	background-color: $color-black;
+	color: $color-white;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	align-items: baseline;
 	padding: 0.75em;
-	background-color: $color-black;
-	color: $color-white;
 
 	img {
-		height: 2em;
-		width: 2em;
-		margin-bottom: 2px;
 		box-sizing: border-box;
+		height: 2em;
+		margin-bottom: 2px;
+		width: 2em;
 	}
 
 	.username-gravatar {
 		& > img {
+			border-radius: 1em;
 			margin-left: 0.5em;
 			margin-right: 0.5em;
-			border-radius: 1em;
 		}
 	}
 

@@ -3927,12 +3927,12 @@ body {
   text-align: center; }
 
 .todo {
-  border: 3px solid #88f;
   background-color: white;
-  padding: 2em;
-  color: #333;
   border-radius: 1em;
-  margin: 1em 0 2em 0; }
+  border: 3px solid #88f;
+  color: #333;
+  margin: 1em 0 2em 0;
+  padding: 2em; }
 
 .btn {
   background-color: #ffcc34;
@@ -3987,22 +3987,22 @@ body {
     text-alignment: center; }
 
 .topbar {
+  align-items: baseline;
+  background-color: #262626;
+  color: #fdfdfd;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: baseline;
-  padding: 0.75em;
-  background-color: #262626;
-  color: #fdfdfd; }
+  padding: 0.75em; }
   .topbar img {
+    box-sizing: border-box;
     height: 2em;
-    width: 2em;
     margin-bottom: 2px;
-    box-sizing: border-box; }
+    width: 2em; }
   .topbar .username-gravatar > img {
+    border-radius: 1em;
     margin-left: 0.5em;
-    margin-right: 0.5em;
-    border-radius: 1em; }
+    margin-right: 0.5em; }
   .topbar .topbar-center {
     font-weight: bold; }
 
@@ -4188,21 +4188,29 @@ body {
       font-weight: bold;
       background-color: darkgreen; }
 
-.invitations .invite {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 1em; }
-  .invitations .invite .text {
-    flex-grow: 1; }
-  .invitations .invite .actions {
-    align-self: flex-end;
-    flex-grow: 0;
+.invitations {
+  background-color: #FFF8E2;
+  margin-bottom: 3em;
+  padding: 1em; }
+  .invitations .invite {
+    align-items: flex-start;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-end; }
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1em; }
+    .invitations .invite:last-child {
+      margin-bottom: 0; }
+    .invitations .invite .text {
+      font-size: 0.9em; }
+      .invitations .invite .text .invitations-invite-repo-link {
+        font-weight: bold; }
+    .invitations .invite .actions {
+      font-size: 0.9em;
+      margin-left: 1em; }
+      .invitations .invite .actions a {
+        text-decoration: underline; }
+        .invitations .invite .actions a.invitations-accept {
+          font-weight: bold; }
 
 .login-token-list .token-input {
   display: grid;

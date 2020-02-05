@@ -4,28 +4,31 @@
 {{$userLogin := .UserName}}
 <main>
 <section class="constrain-page center repo-list-page">
+
+    {{- if .Invites}}
+    <div class="invitations">
+        {{range .Invites}}
+        <div class="invite">
+            <div class="text">
+                You have been invited by
+                {{if .Inviter.Name}}{{.Inviter.Name}}{{else}}{{.Inviter.Login}}{{end}}
+                to contribute to the <a class="invitations-invite-repo-link" href="https://github.com/{{.Repo.FullName}}" target="_blank">{{.Repo.Name}}</a> project.
+            </div>
+            <div class="actions">
+                <a href="/github/invite/{{.ID}}?accept=yes" class="invitations-accept">Accept</a>
+                or
+                <a href="/github/invite/{{.ID}}?accept=no" class="invitations-decline">Decline</a>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    {{end}}
+
     <div class="header-bar">
         <h1>Dashboard</h1>
         <div class="action-group">
             <a data-open="repo-new-modal" class="btn">Add a project</a>
         </div>
-    </div>
-
-    <div class="invitations">
-    <p>You have {{.Invites | len}} invitations.</p>
-    {{range .Invites}}
-    <div class="invite">
-        <div class="text">
-            <p>You have been invited by {{if .Inviter.Name}}{{.Inviter.Name}}{{else}}{{.Inviter.Login}}{{end}} to 
-               contribute to the <a href="https://github.com/{{.Repo.FullName}}">{{.Repo.Name}}</a> project.
-            </p>
-        </div>
-        <div class="actions">
-           <a href="/github/invite/{{.ID}}?accept=yes" class="btn">Accept</a>
-           <a href="/github/invite/{{.ID}}?accept=no" class="btn">Decline</a>
-        </div>
-    </div>
-    {{end}}
     </div>
 
     <ul class="repo-list">

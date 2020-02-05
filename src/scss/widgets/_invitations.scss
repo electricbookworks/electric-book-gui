@@ -1,22 +1,31 @@
 .invitations {
+	background-color: $color-info;
+	margin-bottom: 3em;
+	padding: 1em;
 	.invite {
+		align-items: flex-start;
 		display: flex;
 		flex-direction: row;
-		align-items: flex-start;
 		justify-content: space-between;
+		margin-bottom: 1em;
+		&:last-child {
+			margin-bottom: 0;
+		}
 		.text {
-			flex-grow: 1;
+			font-size: 0.9em;
+			.invitations-invite-repo-link {
+				font-weight: bold;
+			}
 		}
 		.actions {
-			align-self: flex-end;
-
-			flex-grow: 0;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-			justify-content: flex-end;
+			font-size: 0.9em;
+			margin-left: 1em;
+			a {
+				text-decoration: underline;
+				&.invitations-accept {
+					font-weight: bold;
+				}
+			}
 		}
-		margin-bottom: 1em;
-		
 	}
 }
