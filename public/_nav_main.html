@@ -5,14 +5,6 @@
 		<!-- <a href="/">Review submissions (1)</a> -->
 		<!-- end -->
 	</div>
-	{{if .RepoOwner}}
-	<div class="topbar-center">
-		<a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_blank"><img src="/img/github.svg" /></a>
-		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
-			{{- .RepoOwner}}/{{.RepoName -}}
-		</a>
-	</div>
-	{{end}}
 	{{if .User}}
 	<div class="topbar-right">
 		<div>

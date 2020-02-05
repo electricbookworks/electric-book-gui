@@ -5,8 +5,7 @@
 	appearance: button;
 	&.disabled {
 		background-color: lighten($color-primary, 20%);
-		border-bottom-width: 0px;
-		// top: 0.15em;
+		border-bottom-width: 0;
 		&:hover {
 			background-color: inherit;
 			color: inherit;
@@ -28,23 +27,15 @@
     max-width: 40em;
 }
 
-
 .action-group {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: baseline;
-	padding: 0.4em;
 	&>* {
 		margin-left: 1em;
 		&:first-child {
 			margin-left: 0;
 		}
-	}
-	&.primary {
-
-	}
-	&.secondary {
-
 	}
 }

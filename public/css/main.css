@@ -3945,7 +3945,7 @@ body {
     color: #262626; }
   .btn.disabled {
     background-color: #ffe69a;
-    border-bottom-width: 0px; }
+    border-bottom-width: 0; }
     .btn.disabled:hover {
       background-color: inherit;
       color: inherit; }
@@ -3962,8 +3962,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  align-items: baseline;
-  padding: 0.4em; }
+  align-items: baseline; }
   .action-group > * {
     margin-left: 1em; }
     .action-group > *:first-child {
@@ -4822,7 +4821,8 @@ body {
           background-color: #595959; }
     .repo-list .repo.repo-add-repo {
       background-color: transparent;
-      justify-content: flex-end; }
+      justify-content: flex-end;
+      padding: 0; }
 
 .repo-file-viewer {
   display: flex;

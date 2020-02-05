@@ -7,21 +7,41 @@
 
 
 <main id="repo-detail" class="constrain-page">
+
     <section class="repo-detail-section">
+
         <div class="header-bar">
             <h1><a class="repo-title" href="/">{{.Repo.Name}}</a></h1>
-            <div class="action-group">
-                <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" class="btn" target="github">Collaboration</a>
-                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/diff" class="btn">View Edit History</a>
-                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/" class="btn">Edit</a>
-                <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files" class="btn">Image Files</a>
-            </div>
         </div>
 
         {{if .Repo.Description}}
         <p>{{.Repo.Description}}</p>
         {{end}}
+
         <div class="detail-container">
+
+            <ul class="repo-detail-controls">
+                <li>
+                    <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" target="github">
+                        Add or remove collaborators
+                    </a>
+                </li>
+                <li>
+                    <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/diff">
+                        View project history
+                    </a>
+                </li>
+                <li>
+                    <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files">
+                        Manage image files
+                    </a>
+                </li>
+                <li>
+                    <a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail" target="_blank">
+                        See project on GitHub
+                    </a>
+                </li>
+            </ul>
 
             {{if $state.LocalConflicted}}
                 <p>Your project is in a conflicted state because a merge didn't complete. <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/conflict">Complete the merge</a></p>
@@ -46,7 +66,7 @@
                     {{end}}
 
                     {{if .PullRequests}}
-                        <p>There are {{.PullRequests | len}} submissions to review. <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/detail#review" class="btn">Review submissions below</a></p>
+                        <p>You have {{.PullRequests | len}} submission{{if gt (len .PullRequests) 1}}s{{end}} to review.</p>
                     {{end}}
 
 
@@ -83,67 +103,70 @@
 
     {{if .PullRequests}}
     <section class="repo-detail-section">
+
         <div class="title-links">
-            <div><h3 id="review">Submissions to review</h3></div>
-<!-- THIS LINK HAS BEEN DEPRECATED - ALL SUBMISSIONS APPEAR BELOW
-             <div class="edit-links action-group" >
-                <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull"{{end}} class="btn">Review submissions</a>
-            </div>
- -->
-         </div>
+            <h3 id="review">Submissions to review</h3>
+        </div>
+
         {{if $state.LocalChanges}}
-            <div><p>You cannot review submissions until you have committed your changes.</p></div>
-        {{end}}
-        <div class="edits">
-            {{range .PullRequests}}
-            <div class="pull-request-item">
-                <div class="row">
-                    <div class="large-10 small-10 columns">
-                        <h4><a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="pull/{{.GetNumber}}"{{end}}>{{.GetTitle}}</a> {{if .User}} by {{.User.GetLogin}} ({{.User.GetLogin}}){{end}}</h4>
-                    </div>
-                    <div class="large-2 small-2 columns right">
-                        {{.GetCreatedAt | humantime}}
-                    </div>
-                </div>
-                <div class="row edit-links">
-                    <div class="large-10 small-10 columns">
-                    </div>
-                    <div class="large-2 small-2 columns right">
-                        <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="pull/{{.GetNumber}}"{{end}}>Review submission</a>
-                    </div>
-                </div>
+            <div class="pull-requests-warning">
+                <p>You cannot review submissions until you have committed your own changes.</p>
             </div>
         {{end}}
-        </div>        
+
+        <ul class="pull-requests">
+        {{range .PullRequests}}
+            <li class="pull-request-item">
+                <div class="pull-request-item-title">
+                    <a {{if $state.LocalChanges}}disabled="disabled"{{else}}href="pull/{{.GetNumber}}"{{end}}>{{.GetTitle}}</a>
+                </div>
+                <div class="pull-request-item-user">
+                    {{if .User}}
+                        <img src="{{.User.AvatarURL}}" alt="{{.User.GetLogin}}" class="pull-request-item-user-avatar"> {{.User.GetLogin}}
+                    {{end}}
+                </div>
+                <div class="pull-request-item-date">
+                        {{.GetCreatedAt | humantime}}
+                </div>
+                <a class="btn pull-request-item-review" {{if $state.LocalChanges}}disabled="disabled"{{else}}href="pull/{{.GetNumber}}"{{end}}>Review submission</a>
+            </li>
+        {{end}}
+        </ul>        
+
     </section>
     {{end}}
 
 
     {{if .StagedFiles}}
     <section class="repo-detail-section">
+
         <div class="title-links">
             <h3>Changes to commit</h3>
+
             <div class="action-group">
                 <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/commit" class="btn">Commit these changes</a>
                 {{if $state.LocalChanges -}}
                 <a href="#" class="btn" id="cancelAllChanges">Discard these changes</a>
                 {{- end}}
             </div>
+
         </div>
+
         <ol type="1">
         {{range .StagedFiles}}
-            <li class="staged-{{.StatusString}}">{{.Path}}</li>
+            <li class="staged-{{.StatusString}}">
+                {{.Path}}
+            </li>
         {{end}}
-        </ol><!-- 
-        <div class="todo">
-        These are the files that are changed on the EBW server, but haven't yet been committed to the repo. <i>Commit these changes</i> will allow entry of a Commit Message, and will commit the changes to the GitHub repo.
-        </div> -->
+        </ol>
+
     </section>
     {{end}}
 {{end}}
- </main>
+</main>
 
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDetailPage">
 </script>
+
 {{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}
