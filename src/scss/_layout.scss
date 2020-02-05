@@ -40,18 +40,18 @@ body {
 }
 
 .constrain-page {
-  width: 90%;
-  margin: auto;
-  padding-top: 2em;
-  max-width: 60em;
+//   width: 90%;
+  margin: 2em auto;
+  max-width: 50em;
+  padding: 1em;
 
-  @media (min-width: $bp-m) {
-  	width: 70%;
-  }
+//   @media (min-width: $bp-m) {
+//   	width: 70%;
+//   }
 
-  @media (min-width: $bp-l) {
-  	width: 70%;
-  }
+//   @media (min-width: $bp-l) {
+//   	width: 70%;
+//   }
 }
 
 .l-center {

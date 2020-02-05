@@ -1,9 +1,10 @@
 // Hex values
 $black1: #000000;
 $black2: #262626;
-$black3: #D9D9D9;
-$black4: #E9E9E9;
-$black5: #F5F5F5;
+$black3: #818181;
+$black4: #D9D9D9;
+$black5: #E9E9E9;
+$black6: #F5F5F5;
 $yellow1: #ffcc34;
 $yellow2: #FFF8E2;
 $green1: #009E7F;
@@ -18,16 +19,16 @@ $primary: $yellow1;
 // Black through white
 $color-black: $black2;
 $color-darkgray: $black3;
-$color-lightgray: $black5;
-$color-mediumgray: $black4;
+$color-mediumgray: $black6;
 $color-offgray: $color-mediumgray;
+$color-lightgray: $black6;
 $color-primary: $primary;	//#1779ba in Foundation original
 $color-secondary: $black2;
-$color-verylightgray: $black5;
+$color-verylightgray: $black6;
 $color-white: $white2;
 $dark-grey: $black3;
-$grey: $black4;
-$off-grey: $black5;
+$grey: $black5;
+$off-grey: $black6;
 $white: $white2;
 
 // Inverse colours

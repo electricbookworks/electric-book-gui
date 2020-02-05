@@ -2,34 +2,29 @@
 
 }
 .repo-list {
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
     list-style: none;
     margin: 1em 0 3em 0;
-    // padding: 0 1em;
+    position:relative;
 
     a.repo-title {
         display: block;
         font-weight: bold;
         margin-bottom: 0;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-        word-break: break-all;
-        text-overflow: fade;
-
         max-width: 100%;
+        overflow-wrap: break-word;
         text-decoration: none;
+        text-overflow: fade;
+        word-wrap: break-word;
     }
-
-    position:relative;
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: stretch;
 
     .repo {
         align-items: stretch;
-        background-color: $black5;
+        background-color: $black6;
         box-sizing: border-box;
         display: flex;
         flex-direction: row;
@@ -42,6 +37,22 @@
             p:last-child {
                 margin-bottom: 0;
             }
+            .repo-list-repo-details-ownership {
+                // If no description, add space for visual consistency
+                & + .repo-list-repo-details-last-update {
+                    margin-top: 1em;
+                }
+            }
+            .repo-list-repo-details-link {
+                font-weight: bold;
+            }
+            .repo-list-repo-details-description {
+                font-size: 0.9em;
+            }
+            .repo-list-repo-details-last-update {
+                font-size: 0.8em;
+                color: $black3;
+            }
         }
 
         .repo-manage {
@@ -49,7 +60,9 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            margin-left: 1em;
             text-align: right;
+
             & a {
                 background-color: $button-background-inverse;
                 color: $button-color-inverse;
@@ -57,6 +70,7 @@
                 margin-top: 1em;
                 text-align: center;
                 width: 100%;
+
                 &:first-child {
                     margin-top: 0;
                 }
@@ -75,5 +89,4 @@
             justify-content: flex-end;
         }
     }
-
 }

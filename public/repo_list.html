@@ -35,23 +35,25 @@
             <div class="repo-details">
                 <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
 
-                <div>
+                <div class="repo-list-repo-details-ownership">
                 {{- if eq .Owner.GetLogin $userLogin}}My
                 {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} 
-                {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" target="_blank">{{.Parent.FullName}}</a>
+                {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" class="repo-list-repo-details-link" target="_blank">{{.Parent.FullName}}</a>
                 {{else}}original
                 {{- end}}
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
-                {{- end}}</div>
+                {{- end}}
+                </div c>
+
                 {{if .Description}}
-                <p>{{.Description}}</p>
+                <p class="repo-list-repo-details-description">{{.Description}}</p>
                 {{end}}
 
                 <!-- Grab latest commit -->
                 {{with .GetLastCommit}}
                 {{if .Committer}}
-                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
+                <p class="repo-list-repo-details-last-update">Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
                 {{end}}
                 {{end}}
             </div>

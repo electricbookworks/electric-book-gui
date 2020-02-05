@@ -3,7 +3,7 @@
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: baseline;
-	padding: 1em;
+	padding: 0.75em;
 	background-color: $color-black;
 	color: $color-white;
 
@@ -15,11 +15,10 @@
 	}
 
 	.username-gravatar {
-		// padding-left: 0.5em;
 		& > img {
 			margin-left: 0.5em;
 			margin-right: 0.5em;
-			border-radius: 10000px;
+			border-radius: 1em;
 		}
 	}
 
