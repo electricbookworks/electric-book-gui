@@ -61,7 +61,7 @@
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn repo-list-edit" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Edit this project</a>
+              <a class="btn repo-list-edit" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage project</a>
               {{if .GetTotalPRs}}
               <a class="btn repo-list-review-submissions" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
               {{end}}

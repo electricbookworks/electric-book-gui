@@ -3713,9 +3713,6 @@ h5,
 h6 {
   margin-top: 0; }
 
-p {
-  margin-top: 0; }
-
 h1 {
   font-size: 1.6em;
   font-weight: bold; }
@@ -3729,6 +3726,13 @@ h3 {
 h4,
 .repo-details h3 {
   font-size: 1.1em; }
+
+p {
+  margin-top: 0;
+  margin-bottom: 0.5em; }
+
+ol, ul {
+  line-height: 1.4; }
 
 a {
   color: inherit; }
@@ -3784,7 +3788,7 @@ textarea {
     .btn[disabled]:hover,
     [type="submit"][disabled]:hover {
       background-color: #F5F5F5;
-      color: inherit; }
+      color: #818181; }
 
 .btn.active,
 [type="submit"].active {
@@ -3885,6 +3889,12 @@ legend {
 .form-fork [type="text"] {
   width: 30em; }
 
+.constrain-page {
+  margin: 1em auto;
+  padding: 1em;
+  max-width: 100%;
+  width: 50em; }
+
 section {
   margin-top: 1em; }
 
@@ -3917,11 +3927,6 @@ body {
     body footer .freespace,
     body footer .admin-userlogin-token {
       display: none; }
-
-.constrain-page {
-  margin: 2em auto;
-  max-width: 50em;
-  padding: 1em; }
 
 .l-center {
   text-align: center; }
@@ -4127,10 +4132,12 @@ body {
     display: flex; }
 
 .header-bar {
+  align-items: flex-start;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: flex-start;
+  margin: 0 0 2em 0;
   width: 100%; }
 
 .file-list-dialog-list {
@@ -4189,8 +4196,14 @@ body {
 
 .invitations {
   background-color: #FFF8E2;
-  margin-bottom: 3em;
-  padding: 1em; }
+  padding: 1em;
+  margin-bottom: 3em; }
+  .invitations > * {
+    font-size: 0.9em; }
+    .invitations > *:last-child {
+      margin-bottom: 0; }
+  .invitations a {
+    text-decoration: underline; }
   .invitations .invite {
     align-items: flex-start;
     display: flex;
@@ -4199,17 +4212,12 @@ body {
     margin-bottom: 1em; }
     .invitations .invite:last-child {
       margin-bottom: 0; }
-    .invitations .invite .text {
-      font-size: 0.9em; }
-      .invitations .invite .text .invitations-invite-repo-link {
-        font-weight: bold; }
+    .invitations .invite .text .invitations-invite-repo-link {
+      font-weight: bold; }
     .invitations .invite .actions {
-      font-size: 0.9em;
       margin-left: 1em; }
-      .invitations .invite .actions a {
-        text-decoration: underline; }
-        .invitations .invite .actions a.invitations-accept {
-          font-weight: bold; }
+      .invitations .invite .actions a.invitations-accept {
+        font-weight: bold; }
 
 .login-token-list .token-input {
   display: grid;
@@ -4714,51 +4722,6 @@ body {
   .merge-instructions.showing .instructions-text {
     display: inline-block; }
 
-#repo-detail .title-links {
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 1em; }
-
-#repo-detail .repo-detail-section {
-  margin-bottom: 1em; }
-  #repo-detail .repo-detail-section .edits {
-    margin-bottom: 2em;
-    padding-top: 1em;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch; }
-    #repo-detail .repo-detail-section .edits .right {
-      text-align: right;
-      float: right; }
-  #repo-detail .repo-detail-section .detail-container {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: #eee;
-    border: 1px solid #fdfdfd;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05); }
-    #repo-detail .repo-detail-section .detail-container .row {
-      margin-left: 0em;
-      margin-right: 0em; }
-    #repo-detail .repo-detail-section .detail-container .pull-request-title {
-      margin-left: 1em; }
-  #repo-detail .repo-detail-section .file-list {
-    max-height: 20em;
-    overflow-y: scroll; }
-  #repo-detail .repo-detail-section .file-item {
-    text-decoration: underline; }
-  #repo-detail .repo-detail-section .pull-request-item {
-    padding: 1em 0;
-    border-bottom: 1px solid #F5F5F5; }
-    #repo-detail .repo-detail-section .pull-request-item:first-child {
-      border-top: 1px solid #F5F5F5; }
-    #repo-detail .repo-detail-section .pull-request-item .row {
-      margin-left: 0em;
-      margin-right: 0em; }
-
 .repo-list {
   align-items: stretch;
   display: flex;
@@ -4766,27 +4729,27 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
   list-style: none;
-  margin: 1em 0 3em 0;
+  margin: 0 0 2em 0;
   position: relative; }
-  .repo-list a.repo-title {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    text-decoration: none;
-    text-overflow: fade;
-    word-wrap: break-word; }
   .repo-list .repo {
-    align-items: stretch;
     background-color: #F5F5F5;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     margin-bottom: 3em;
     padding: 1em;
-    width: 100%; }
+    width: 100%;
+    align-items: stretch;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; }
+    .repo-list .repo .repo-details a.repo-title {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      text-decoration: none;
+      text-overflow: fade;
+      word-wrap: break-word; }
     .repo-list .repo .repo-details p:last-child {
       margin-bottom: 0; }
     .repo-list .repo .repo-details .repo-list-repo-details-ownership + .repo-list-repo-details-last-update {
@@ -4809,20 +4772,137 @@ body {
         background-color: #262626;
         color: #fdfdfd;
         font-size: 0.9em;
-        margin-top: 1em;
         text-align: center;
+        margin-top: 1em;
         width: 100%; }
-        .repo-list .repo .repo-manage a:first-child {
-          margin-top: 0; }
         .repo-list .repo .repo-manage a:hover {
           background-color: #404040;
           color: white; }
+        .repo-list .repo .repo-manage a:first-child {
+          margin-top: 0; }
         .repo-list .repo .repo-manage a.repo-list-review-submissions {
           background-color: #595959; }
     .repo-list .repo.repo-add-repo {
       background-color: transparent;
       justify-content: flex-end;
       padding: 0; }
+
+#repo-detail .repo-detail-section {
+  margin-bottom: 3em; }
+  #repo-detail .repo-detail-section h2 {
+    margin-bottom: 1em; }
+
+#repo-detail .header-bar + .repo-detail-repo-description {
+  margin-top: -2rem;
+  margin-bottom: 2rem; }
+
+#repo-detail .header-bar h1 {
+  margin-right: 1em; }
+
+#repo-detail .header-bar .action-group {
+  margin-bottom: 1em; }
+
+#repo-detail .repo-detail-repo-description {
+  font-size: 1.1em; }
+
+#repo-detail .repo-detail-settings {
+  position: relative;
+  text-align: right; }
+  #repo-detail .repo-detail-settings ul {
+    box-shadow: 3px 3px 7px -7px #262626;
+    background-color: #fdfdfd;
+    border-radius: 0.15em;
+    font-size: 0.9em;
+    list-style-type: none;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    visibility: hidden;
+    width: 12em; }
+    #repo-detail .repo-detail-settings ul li {
+      border-bottom: 1px solid #F5F5F5;
+      border-left: 1px solid #F5F5F5;
+      border-right: 1px solid #F5F5F5;
+      line-height: 1.4; }
+      #repo-detail .repo-detail-settings ul li:hover {
+        background-color: #F5F5F5; }
+      #repo-detail .repo-detail-settings ul li a {
+        display: block; }
+      #repo-detail .repo-detail-settings ul li:first-child {
+        border-radius: 0.15em 0.15em 0 0;
+        border-top: 1px solid #F5F5F5; }
+      #repo-detail .repo-detail-settings ul li:last-child {
+        border-radius: 0 0 0.15em 0.15em; }
+  #repo-detail .repo-detail-settings:hover ul {
+    visibility: visible; }
+
+#repo-detail .repo-detail-container {
+  background-color: #F5F5F5;
+  box-sizing: border-box;
+  margin-bottom: 3em;
+  padding: 1em;
+  width: 100%; }
+  #repo-detail .repo-detail-container .repo-status:last-child {
+    margin-bottom: 0; }
+  #repo-detail .repo-detail-container .repo-status-action {
+    font-weight: bold;
+    text-decoration: underline; }
+
+#repo-detail .repo-status {
+  margin-bottom: 1em; }
+
+#repo-detail .repo-detail-changes-to-commit-action-commit,
+#repo-detail .repo-detail-changes-to-commit-action-discard {
+  text-decoration: underline; }
+
+#repo-detail .repo-detail-changes-to-commit-action-commit {
+  font-weight: bold; }
+
+#repo-detail .repo-status-changed-files-list {
+  color: #818181;
+  font-size: 0.9em;
+  list-style-type: none;
+  margin-left: 0;
+  margin-bottom: 0; }
+
+#repo-detail .pull-request-item {
+  align-items: end;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 2em; }
+  #repo-detail .pull-request-item .pull-request-item-user {
+    color: #818181;
+    display: inline;
+    font-size: 0.8em; }
+    #repo-detail .pull-request-item .pull-request-item-user::after {
+      content: "\2022"; }
+    #repo-detail .pull-request-item .pull-request-item-user img {
+      border-radius: 2em;
+      height: 2em;
+      margin-right: 0.5em;
+      width: 2em; }
+      @media only screen and (min-width: 64em) {
+        #repo-detail .pull-request-item .pull-request-item-user img {
+          margin-left: -2.75em; } }
+  #repo-detail .pull-request-item .pull-request-item-date {
+    color: #818181;
+    display: inline;
+    font-size: 0.8em; }
+  #repo-detail .pull-request-item .pull-request-item-title {
+    font-size: 1.1em; }
+
+#repo-detail .pull-requests-warning {
+  background-color: #FFF8E2;
+  padding: 1em;
+  margin-bottom: 2em; }
+  #repo-detail .pull-requests-warning > * {
+    font-size: 0.9em; }
+    #repo-detail .pull-requests-warning > *:last-child {
+      margin-bottom: 0; }
+  #repo-detail .pull-requests-warning a {
+    text-decoration: underline; }
 
 .repo-file-viewer {
   display: flex;

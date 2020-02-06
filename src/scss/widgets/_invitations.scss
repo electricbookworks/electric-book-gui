@@ -1,7 +1,6 @@
 .invitations {
-	background-color: $color-info;
+	@include notification-dialog();
 	margin-bottom: 3em;
-	padding: 1em;
 	.invite {
 		align-items: flex-start;
 		display: flex;
@@ -12,16 +11,13 @@
 			margin-bottom: 0;
 		}
 		.text {
-			font-size: 0.9em;
 			.invitations-invite-repo-link {
 				font-weight: bold;
 			}
 		}
 		.actions {
-			font-size: 0.9em;
 			margin-left: 1em;
 			a {
-				text-decoration: underline;
 				&.invitations-accept {
 					font-weight: bold;
 				}

@@ -1,3 +1,22 @@
+@mixin repo-box() {
+    background-color: $black6;
+    box-sizing: border-box;
+    margin-bottom: 3em;
+    padding: 1em;
+    width: 100%;
+}
+
+@mixin repo-box-button() {
+    background-color: $button-background-inverse;
+    color: $button-color-inverse;
+    font-size: 0.9em;
+    text-align: center;
+    &:hover {
+        background-color: lighten($button-background-inverse, 10%);
+        color: $white1;
+    }
+}
+
 .repo-list {
     align-items: stretch;
     display: flex;
@@ -5,47 +24,50 @@
     flex-wrap: wrap;
     justify-content: space-between;
     list-style: none;
-    margin: 1em 0 3em 0;
+    margin: 0 0 2em 0;
     position:relative;
 
-    a.repo-title {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 0;
-        max-width: 100%;
-        overflow-wrap: break-word;
-        text-decoration: none;
-        text-overflow: fade;
-        word-wrap: break-word;
-    }
-
     .repo {
+        @include repo-box();
+
+        // Flex
         align-items: stretch;
-        background-color: $black6;
-        box-sizing: border-box;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin-bottom: 3em;
-        padding: 1em;
-        width: 100%;
 
         .repo-details {
+
+            a.repo-title {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 0;
+                max-width: 100%;
+                overflow-wrap: break-word;
+                text-decoration: none;
+                text-overflow: fade;
+                word-wrap: break-word;
+            }
+
             p:last-child {
                 margin-bottom: 0;
             }
+
             .repo-list-repo-details-ownership {
                 // If no description, add space for visual consistency
                 & + .repo-list-repo-details-last-update {
                     margin-top: 1em;
                 }
             }
+
             .repo-list-repo-details-link {
                 font-weight: bold;
             }
+
             .repo-list-repo-details-description {
                 font-size: 0.9em;
             }
+
             .repo-list-repo-details-last-update {
                 font-size: 0.8em;
                 color: $black3;
@@ -61,19 +83,12 @@
             text-align: right;
 
             & a {
-                background-color: $button-background-inverse;
-                color: $button-color-inverse;
-                font-size: 0.9em;
+                @include repo-box-button();
                 margin-top: 1em;
-                text-align: center;
                 width: 100%;
 
                 &:first-child {
                     margin-top: 0;
-                }
-                &:hover {
-                    background-color: lighten($button-background-inverse, 10%);
-                    color: $white1;
                 }
                 &.repo-list-review-submissions {
                     background-color: lighten($button-background-inverse, 20%);

@@ -1,3 +1,10 @@
+.constrain-page {
+	margin: 1em auto;
+	padding: 1em;
+	max-width: 100%;
+	width: 50em;
+}
+
 section {
 	margin-top: 1em;
 }
@@ -37,12 +44,6 @@ body {
 		}
 
 	}
-}
-
-.constrain-page {
-	margin: 2em auto;
-	max-width: 50em;
-	padding: 1em;
 }
 
 .l-center {

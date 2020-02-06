@@ -12,10 +12,6 @@ h6 {
 	margin-top: 0;
 }
 
-p {
-	margin-top: 0;
-}
-
 h1 {
   font-size: 1.6em;
   font-weight: bold;
@@ -32,6 +28,15 @@ h3 {
 h4,
 .repo-details h3 {
   font-size: 1.1em;
+}
+
+p {
+	margin-top: 0;
+	margin-bottom: 0.5em;
+}
+
+ol, ul {
+	line-height: $global-lineheight;
 }
 
 a {
@@ -64,5 +69,23 @@ a {
 		&:hover {
 			color: darken($color-inverse-fg, 10%);
 		}
+	}
+}
+
+@mixin box-shadow() {
+	box-shadow: 3px 3px 7px -7px $black2;
+}
+
+@mixin notification-dialog() {
+	background-color: $color-info;
+	padding: 1em;
+	& > * {
+		font-size: 0.9em;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+	a {
+		text-decoration: underline;
 	}
 }
