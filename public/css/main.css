@@ -4851,6 +4851,8 @@ body {
 
 #repo-detail .repo-status {
   margin-bottom: 1em; }
+  #repo-detail .repo-status > *:last-child {
+    margin-bottom: 0; }
 
 #repo-detail .repo-detail-changes-to-commit-action-commit,
 #repo-detail .repo-detail-changes-to-commit-action-discard {

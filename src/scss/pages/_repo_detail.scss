@@ -93,6 +93,9 @@
 
     .repo-status {
         margin-bottom: 1em;
+        & > *:last-child {
+            margin-bottom: 0;
+        }
     }
 
     .repo-detail-changes-to-commit-action-commit,
