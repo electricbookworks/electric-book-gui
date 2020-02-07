@@ -17,26 +17,22 @@ $bodytext: $black2;
 $primary: $yellow1;
 
 // Black through white
+$color-primary: $primary;
+$color-secondary: $black2;
 $color-black: $black2;
 $color-darkgray: $black3;
-$color-mediumgray: $black6;
-$color-offgray: $color-mediumgray;
+$color-mediumgray: $black4;
+$color-gray: $black5;
 $color-lightgray: $black6;
-$color-primary: $primary;	//#1779ba in Foundation original
-$color-secondary: $black2;
-$color-verylightgray: $black6;
 $color-white: $white2;
-$dark-grey: $black3;
-$grey: $black5;
-$off-grey: $black6;
-$white: $white2;
 
 // Inverse colours
 $color-inverse-bg: $color-primary;
 $color-inverse-fg: $color-black;
 
 // Buttons
-$button-color: $black2;
+$button-color: $color-black;
+$button-color-alt: $color-darkgray;
 $button-background: $color-primary;
 $button-color-inverse: $white2;
 $button-background-inverse: $black2;
@@ -50,11 +46,6 @@ $color-info: $yellow2;
 $color-success-light: $yellow2;
 $color-success: $yellow2;
 $color-warning: $orange1;
-$error-light: $orange1;
-$error: $orange1;
-$information-light: $yellow2;
-$information: $yellow2;
-$success-light: $yellow2;
 
 // Status
 $color-status-new: $color-info;
@@ -63,3 +54,18 @@ $color-status-modified: $color-lightgray;
 $color-status-resolved: $color-success;
 $color-status-error: $color-error;
 $color-status-conflict: $color-info;
+
+
+// Redundant, to clean up
+// ----------------------
+// $error: $color-error;
+// $error-light: $color-error-light;
+// $information-light: $yellow2;
+// $information: $yellow2;
+$success-light: $color-success-light;
+$dark-grey: $color-darkgray;
+$grey: $color-gray;
+$white: $color-white;
+$color-offgray: $color-mediumgray;
+$off-grey: $color-offgray;
+$color-verylightgray: $color-lightgray;

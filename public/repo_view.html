@@ -1,53 +1,85 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
-<main id="new-editor">
-	<nav id="new-editor-files-nav">
-		<div id="files-show-tag" class="showing"><img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" /></div>
-		<div class="file-actions action-group toolbar-menu" id="repo-file-actions">
-			<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
-			<div class="drop-down">
-				<button class="btn">Output</button>
-				<div class="hover">
-				   <button href="#" id="repo-jekyll" class="btn">Web version</button>
-				   <button id="repo-print-screen" class="btn">Screen PDF</button>
-				   <button id="repo-print-printer" class="btn">Print PDF</button>
-				   <button disabled class="btn">Epub</button>
-				</div>
-			</div>
-			<button id="repo-new-file" class="btn">New file</button>
-			<button id="repo-save-all" class="btn">Save All</button>
+<div class="repo-flow">
+	<div class="repo-flow-repo-name">
+		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
+			<span class="repo-flow-repo-name-owner">
+				{{.RepoOwner}}/
+			</span>
+			<span class="repo-flow-repo-name-reponame">
+				{{.RepoName}}
+			</span>
+		</a>
+	</div>
+	<div class="repo-flow-steps">
+		<ol>
+			<li>
+				Edit
+			</li>
+			<li>
+				<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
+			</li>
+			<li>
+				Submit for review
+			</li>
+		</ol>
+	</div>
+</div>
 
-		</div>
+<main id="new-editor">
+
+	<nav id="new-editor-files-nav">
+
+		<!-- <div id="files-show-tag" class="showing">
+			<img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" />
+		</div> -->
+
 		<div class="file-container" id="all-files-editor-container">
 			<div id="all-files-editor" data-instance="AllFilesList"> </div>
 		</div>
 	</nav>
 
 	<section class="section-editor" id="file-editors">
-		<header class="header-split">
-			<div class="file-title">
-				Editing <span ebw-bind="current-filename"></span>
+
+		<div class="editor-actions" id="editor-actions">
+			<button id="repo-new-file" class="btn">New file</button>
+
+			{{/* The text for the delete button is set by JS in RepoFileEditorCM[2].ts */}}
+			<button id="editor-delete-button" title="Delete file" class="btn">Delete file</button>
+
+			<button id="editor-rename-button" class="btn">Rename file</button>
+			<button class="btn" id="editor-save-button">Save file</button>
+			<button id="repo-save-all" class="btn">Save all files</button>
+			<button id="editor-undo-button" class="btn">Undo edit</button>
+			<button class="btn">Output</button>
+			<div class="hover">
+				<button href="#" id="repo-jekyll" class="btn">Web version</button>
+				<button id="repo-print-screen" class="btn">Screen PDF</button>
+				<button id="repo-print-printer" class="btn">Print PDF</button>
+				<button disabled class="btn">Epub</button>
 			</div>
-			<div class="action-group primary" id="editor-actions">
-				<button class="btn" id="editor-save-button">Save</button>
-				<button id="editor-undo-button" class="btn">Undo</button>
-				<button id="editor-rename-button" class="btn">Rename</button>
-				<button id="editor-delete-button" title="Delete" class="btn">Delete</button>
-			</div>
-		</header>
-		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor">
 		</div>
+
+		<div class="file-title">
+			<span ebw-bind="current-filename"></span>
+		</div>
+
+		<div class="editor" id="editor" ebw-repo="{{.RepoName}}" data-instance="RepoFileEditor"></div>
+
 	</section>
-<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}"  data-username="{{.Username}}" data-page="RepoEditorPage">
-</script>	
-<script type="text/javascript">
-window.repoEditorData = {
-	"files": {{.RepoFiles}},
-	"ignoreFilter": {{.ProseIgnoreFilter}},
-	"filesAndHashes": {{.FilesAndHashes}}
-};
-</script>
+
+	<script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}"  data-username="{{.Username}}" data-page="RepoEditorPage"></script>
+
+	<script type="text/javascript">
+	window.repoEditorData = {
+		"files": {{.RepoFiles}},
+		"ignoreFilter": {{.ProseIgnoreFilter}},
+		"filesAndHashes": {{.FilesAndHashes}}
+	};
+	</script>
+
 </main>
+
 {{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}

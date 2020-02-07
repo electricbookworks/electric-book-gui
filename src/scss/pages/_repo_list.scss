@@ -1,5 +1,5 @@
 @mixin repo-box() {
-    background-color: $black6;
+    background-color: $color-lightgray;
     box-sizing: border-box;
     margin-bottom: 3em;
     padding: 1em;
@@ -13,7 +13,7 @@
     text-align: center;
     &:hover {
         background-color: lighten($button-background-inverse, 10%);
-        color: $white1;
+        color: $button-color-inverse;
     }
 }
 
@@ -70,7 +70,7 @@
 
             .repo-list-repo-details-last-update {
                 font-size: 0.8em;
-                color: $black3;
+                color: $color-darkgray;
             }
         }
 

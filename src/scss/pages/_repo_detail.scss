@@ -107,7 +107,7 @@
     }
 
     .repo-status-changed-files-list {
-        color: $black3;
+        color: $color-darkgray;
         font-size: 0.9em;
         list-style-type: none;
         margin-left: 0;
@@ -122,7 +122,7 @@
         margin-bottom: 2em;
 
         .pull-request-item-user {
-            color: $black3;
+            color: $color-darkgray;
             display: inline;
             font-size: 0.8em;
 
@@ -142,7 +142,7 @@
         }
 
         .pull-request-item-date {
-            color: $black3;
+            color: $color-darkgray;
             display: inline;
             font-size: 0.8em;
         }

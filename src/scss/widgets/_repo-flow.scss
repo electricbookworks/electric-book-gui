@@ -1,0 +1,44 @@
+.repo-flow {
+    align-items: stretch;
+    display: flex;
+
+    .repo-flow-repo-name {
+        align-items: center;
+        border-bottom: 1px solid $color-darkgray;
+        color: $color-black;
+        display: flex;
+        font-size: 0.9em;
+        font-weight: bold;
+        max-width: 20%;
+        padding: 0.5em 0.5em 0.5em 1.5em;
+        width: 20%;
+
+        .repo-flow-repo-name-owner {
+            color: $color-darkgray;
+            display: block;
+        }
+        .repo-flow-repo-name-reponame {
+            display: block;
+        }
+    }
+
+    .repo-flow-steps {
+        border-bottom: 1px solid $color-darkgray;
+        min-width: 80%;
+        display: flex;
+        align-items: center;
+
+        ol {
+            align-items: center;
+            display: flex;
+            justify-content: space-evenly;
+            list-style-type: none;
+            margin-bottom: 0;
+            width: 100%;
+
+            li {
+                
+            }
+        }
+    }
+}

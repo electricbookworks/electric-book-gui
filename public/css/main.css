@@ -1097,7 +1097,7 @@ h6 {
   h5 small,
   h6 small {
     line-height: 0;
-    color: #F5F5F5; }
+    color: #D9D9D9; }
 
 h1 {
   font-size: 1.5rem;
@@ -1166,7 +1166,7 @@ hr {
   margin: 1.25rem auto;
   border-top: 0;
   border-right: 0;
-  border-bottom: 1px solid #F5F5F5;
+  border-bottom: 1px solid #D9D9D9;
   border-left: 0; }
 
 ul,
@@ -1199,7 +1199,7 @@ dl {
 blockquote {
   margin: 0 0 1rem;
   padding: 0.5625rem 1.25rem 0 1.1875rem;
-  border-left: 1px solid #F5F5F5; }
+  border-left: 1px solid #D9D9D9; }
   blockquote, blockquote p {
     line-height: 1.6;
     color: #818181; }
@@ -1221,7 +1221,7 @@ figure {
 
 code {
   padding: 0.125rem 0.3125rem 0.0625rem;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   background-color: #F5F5F5;
   font-family: Consolas, "Liberation Mono", Courier, monospace;
   font-weight: normal;
@@ -1355,7 +1355,7 @@ textarea {
   height: 2.4375rem;
   margin: 0 0 1rem;
   padding: 0.5rem;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   border-radius: 0.15em;
   background-color: #fdfdfd;
   box-shadow: inset 0 1px 2px rgba(38, 38, 38, 0.1);
@@ -1370,7 +1370,7 @@ textarea {
     outline: none;
     border: 1px solid #818181;
     background-color: #fdfdfd;
-    box-shadow: 0 0 5px #F5F5F5;
+    box-shadow: 0 0 5px #D9D9D9;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out; }
 
 textarea {
@@ -1380,7 +1380,7 @@ textarea {
 
 input::placeholder,
 textarea::placeholder {
-  color: #F5F5F5; }
+  color: #D9D9D9; }
 
 input:disabled, input[readonly],
 textarea:disabled,
@@ -1455,7 +1455,7 @@ label {
 
 .input-group-label {
   padding: 0 1rem;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   background: #F5F5F5;
   color: #262626;
   text-align: center;
@@ -1500,7 +1500,7 @@ legend {
 .fieldset {
   margin: 1.125rem 0;
   padding: 1.25rem;
-  border: 1px solid #F5F5F5; }
+  border: 1px solid #D9D9D9; }
   .fieldset legend {
     margin: 0;
     margin-left: -0.1875rem;
@@ -1512,7 +1512,7 @@ select {
   margin: 0 0 1rem;
   padding: 0.5rem;
   appearance: none;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   border-radius: 0.15em;
   background-color: #fdfdfd;
   font-family: inherit;
@@ -1533,7 +1533,7 @@ select {
     outline: none;
     border: 1px solid #818181;
     background-color: #fdfdfd;
-    box-shadow: 0 0 5px #F5F5F5;
+    box-shadow: 0 0 5px #D9D9D9;
     transition: box-shadow 0.5s, border-color 0.25s ease-in-out; }
   select:disabled {
     background-color: #F5F5F5;
@@ -1602,10 +1602,10 @@ select {
       color: #262626; }
   .button.secondary {
     background-color: #262626;
-    color: #262626; }
+    color: #818181; }
     .button.secondary:hover, .button.secondary:focus {
       background-color: #1e1e1e;
-      color: #262626; }
+      color: #818181; }
   .button.success {
     background-color: #FFF8E2;
     color: #262626; }
@@ -1679,7 +1679,7 @@ select {
       cursor: not-allowed; }
       .button.disabled.secondary, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
         background-color: #262626;
-        color: #262626; }
+        color: #818181; }
     .button.disabled.success, .button[disabled].success {
       opacity: 0.25;
       cursor: not-allowed; }
@@ -1840,13 +1840,13 @@ select {
       margin: 0 0.75rem;
       opacity: 1;
       content: "/";
-      color: #F5F5F5; }
+      color: #D9D9D9; }
   .breadcrumbs a {
     color: #ffcc34; }
     .breadcrumbs a:hover {
       text-decoration: underline; }
   .breadcrumbs .disabled {
-    color: #F5F5F5;
+    color: #D9D9D9;
     cursor: not-allowed; }
 
 .button-group {
@@ -1885,10 +1885,10 @@ select {
       color: #262626; }
   .button-group.secondary .button {
     background-color: #262626;
-    color: #262626; }
+    color: #818181; }
     .button-group.secondary .button:hover, .button-group.secondary .button:focus {
       background-color: #1e1e1e;
-      color: #262626; }
+      color: #818181; }
   .button-group.success .button {
     background-color: #FFF8E2;
     color: #262626; }
@@ -2160,8 +2160,8 @@ select {
     box-shadow: 0 7px 0 #fdfdfd, 0 14px 0 #fdfdfd;
     content: ''; }
   .menu-icon:hover::after {
-    background: #F5F5F5;
-    box-shadow: 0 7px 0 #F5F5F5, 0 14px 0 #F5F5F5; }
+    background: #D9D9D9;
+    box-shadow: 0 7px 0 #D9D9D9, 0 14px 0 #D9D9D9; }
 
 .menu-icon.dark {
   position: relative;
@@ -2248,7 +2248,7 @@ select {
   width: 300px;
   padding: 1rem;
   visibility: hidden;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   border-radius: 0.15em;
   background-color: #fdfdfd;
   font-size: 1rem; }
@@ -2468,7 +2468,7 @@ select {
   z-index: 1;
   display: none;
   min-width: 200px;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   background: #fdfdfd; }
   .is-dropdown-submenu .is-dropdown-submenu-parent > a::after {
     right: 14px; }
@@ -2826,7 +2826,7 @@ select {
     height: 1.2rem;
     margin: 0.1rem;
     border-radius: 50%;
-    background-color: #F5F5F5; }
+    background-color: #D9D9D9; }
     .orbit-bullets button:hover {
       background-color: #818181; }
     .orbit-bullets button.is-active {
@@ -2868,7 +2868,7 @@ select {
     cursor: default; }
   .pagination .disabled {
     padding: 0.1875rem 0.625rem;
-    color: #F5F5F5;
+    color: #D9D9D9;
     cursor: not-allowed; }
     .pagination .disabled:hover {
       background: transparent; }
@@ -2893,7 +2893,7 @@ select {
   height: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.15em;
-  background-color: #F5F5F5; }
+  background-color: #D9D9D9; }
   .progress.primary .progress-meter {
     background-color: #ffcc34; }
   .progress.secondary .progress-meter {
@@ -2943,7 +2943,7 @@ select {
   display: inline-block;
   max-width: 100%;
   height: 0.5rem;
-  background-color: #F5F5F5;
+  background-color: #D9D9D9;
   transition: all 0.2s ease-in-out; }
   .slider-fill.is-dragging {
     transition: all 0s linear; }
@@ -3041,7 +3041,7 @@ html.is-reveal-open body {
   backface-visibility: hidden;
   display: none;
   padding: 1rem;
-  border: 1px solid #F5F5F5;
+  border: 1px solid #D9D9D9;
   border-radius: 0.15em;
   background-color: #fdfdfd;
   position: relative;
@@ -3128,7 +3128,7 @@ html.is-reveal-open body {
   width: 4rem;
   height: 2rem;
   border-radius: 0.15em;
-  background: #F5F5F5;
+  background: #D9D9D9;
   transition: all 0.25s ease-out;
   font-weight: inherit;
   color: inherit;
@@ -3753,7 +3753,7 @@ a {
 
 input,
 textarea {
-  border: solid 1px #F5F5F5; }
+  border: solid 1px #D9D9D9; }
 
 [type="checkbox"],
 [type="radio"] {
@@ -3781,13 +3781,13 @@ textarea {
   .btn[disabled],
   [type="submit"][disabled] {
     border: none;
-    background-color: #F5F5F5;
+    background-color: #D9D9D9;
     cursor: default;
     position: relative; }
     .cta[disabled]:hover,
     .btn[disabled]:hover,
     [type="submit"][disabled]:hover {
-      background-color: #F5F5F5;
+      background-color: #D9D9D9;
       color: #818181; }
 
 .btn.active,
@@ -4246,22 +4246,25 @@ body {
     width: 1.4em;
     margin-left: 0.6em; }
 
-#all-files-editor .node.node-file {
-  border-bottom: 1px solid #f8f8f8; }
-  #all-files-editor .node.node-file .closer {
-    visibility: hidden; }
-  #all-files-editor .node.node-file .name {
-    cursor: pointer; }
+#all-files-editor .node {
+  font-size: 0.9rem; }
+
+#all-files-editor .node.node-file .closer {
+  visibility: hidden; }
+
+#all-files-editor .node.node-file .name {
+  cursor: pointer; }
 
 #all-files-editor .node.editing-in-progress .name::after {
-  content: "editing";
-  margin-left: 1em;
-  color: white;
   background-color: #FFF8E2;
-  border-radius: 10000px;
+  border-radius: 1em;
+  color: #262626;
+  content: "Editing";
   font-size: 0.7em;
-  text-transform: uppercase;
-  padding: 0 1em; }
+  letter-spacing: 0.05em;
+  margin-left: 1em;
+  padding: 0 1em;
+  text-transform: uppercase; }
 
 #all-files-editor .node.state-changed {
   background-color: #F5F5F5; }
@@ -4294,30 +4297,51 @@ body {
   display: none; }
 
 #all-files-editor .node .closer {
+  color: #818181;
   cursor: pointer;
-  margin-right: 0.3em; }
+  margin-right: 0.5em; }
+  #all-files-editor .node .closer::after {
+    content: "−"; }
 
-#all-files-editor .node svg {
-  padding: 2px; }
-  #all-files-editor .node svg .grect {
-    fill: #f8f8f8;
-    stroke: #999;
-    stroke-width: 4; }
-  #all-files-editor .node svg:hover .grect {
-    stroke: red; }
-
-#all-files-editor .node .plusvg {
-  fill: #666;
-  transition: fill 0.3s, transform 0.3s; }
-
-#all-files-editor .node .plusvg2 {
-  transform: rotate(0deg); }
-
-#all-files-editor .node.closed .plusvg2 {
-  transform: rotate(90deg); }
+#all-files-editor .node.closed .closer::after {
+  content: "+"; }
 
 #all-files-editor .node.ignore {
   display: none; }
+
+#all-files-editor .node-dir > .name > span:nth-child(2) {
+  color: #818181; }
+
+.repo-flow {
+  align-items: stretch;
+  display: flex; }
+  .repo-flow .repo-flow-repo-name {
+    align-items: center;
+    border-bottom: 1px solid #818181;
+    color: #262626;
+    display: flex;
+    font-size: 0.9em;
+    font-weight: bold;
+    max-width: 20%;
+    padding: 0.5em 0.5em 0.5em 1.5em;
+    width: 20%; }
+    .repo-flow .repo-flow-repo-name .repo-flow-repo-name-owner {
+      color: #818181;
+      display: block; }
+    .repo-flow .repo-flow-repo-name .repo-flow-repo-name-reponame {
+      display: block; }
+  .repo-flow .repo-flow-steps {
+    border-bottom: 1px solid #818181;
+    min-width: 80%;
+    display: flex;
+    align-items: center; }
+    .repo-flow .repo-flow-steps ol {
+      align-items: center;
+      display: flex;
+      justify-content: space-evenly;
+      list-style-type: none;
+      margin-bottom: 0;
+      width: 100%; }
 
 .landing-page {
   max-width: 40em; }
@@ -4382,15 +4406,16 @@ body {
       flex-grow: 1;
       position: relative; }
       #new-editor #new-editor-files-nav .file-container #all-files-editor {
-        position: absolute;
-        top: 0;
         bottom: 0;
+        box-sizing: border-box;
         left: 0;
-        width: 100%;
+        margin: 0;
         max-width: 100%;
         overflow: scroll;
-        box-sizing: border-box;
-        margin: 0; }
+        padding: 0.5em;
+        position: absolute;
+        top: 0;
+        width: 100%; }
         #new-editor #new-editor-files-nav .file-container #all-files-editor .allfiles-file {
           list-style: none;
           margin: 0;
@@ -4777,7 +4802,7 @@ body {
         width: 100%; }
         .repo-list .repo .repo-manage a:hover {
           background-color: #404040;
-          color: white; }
+          color: #fdfdfd; }
         .repo-list .repo .repo-manage a:first-child {
           margin-top: 0; }
         .repo-list .repo .repo-manage a.repo-list-review-submissions {

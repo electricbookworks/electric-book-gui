@@ -81,19 +81,17 @@
 			flex-grow: 1;
 			position:relative;
 			#all-files-editor {
+				// Also see _file_tree.scss for the files themselves
+				bottom: 0;
+				box-sizing: border-box;
+				left: 0;
+				margin: 0;
+				max-width: 100%;
+				overflow: scroll;
+				padding: 0.5em;
 				position: absolute;
 				top: 0;
-				bottom: 0;
-				left: 0;
-
 				width: 100%;
-				max-width: 100%;
-				// max-height: 100%;		
-				// border: 2px solid red;
-				overflow: scroll;
-				// padding: 1em;
-				box-sizing: border-box;
-				margin: 0;
 
 				.allfiles-file {			
 					list-style: none;
