@@ -44,6 +44,8 @@ DTemplates are compiled to Typescript with
 
     dtemplate -dir src/ts -lang ts -logtostderr -out src/ts/Templates.ts -watch
 
+This compiles the HTML templates into a single Typescript file, `Templates.ts`, which you must not edit.
+
 ## Configuration
 
 To configure, copy `electricbook.yml` to `electricbook-0.yml`. Then you will need to configure a Github OAuth application with the appropriate return address, and set the Github client and secret provided by Github.

@@ -50,5 +50,11 @@ deploy-production:
 test:
 	GOPATH=`pwd`/src/go go test ebw/git -logtostderr 
 
+dev:
+	bin/electricbook -logtostderr web & \
+	gulp watch & \
+	rollup -c --watch & \
+	dtemplate -dir src/ts -lang ts -logtostderr -out src/ts/Templates.ts -watch
+
 .PHONY: all clean css gen prepare test deploy-staging deploy-production
 

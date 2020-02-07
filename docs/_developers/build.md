@@ -59,3 +59,5 @@ Here are more detailed instructions for first-time setup:
    This must be run from the repo directory, since it needs access to the `public` directory, to some other directories it will create on the fly, and to the `electricbook.yml` configuration file.
 
    You can then open the EBM in your browser at [http://localhost:16101/](http://localhost:16101/).
+
+1. Alternatively, run `make dev` to start the app and watch the Sass, Typescript and dTemplates all at once.
