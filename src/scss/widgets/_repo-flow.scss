@@ -1,17 +1,16 @@
 .repo-flow {
-    align-items: stretch;
-    border-bottom: 1px solid $color-mediumgray;
     display: flex;
-    padding: 0.5em 0;
+    padding: 1.5em 0 0.5em 0;
 
     .repo-flow-repo-name {
         align-items: center;
+        align-self: flex-start;
         color: $color-black;
         display: flex;
         font-size: 0.9em;
         font-weight: bold;
         max-width: 20%;
-        padding: 0.5em 0.5em 0.5em 1.5em;
+        padding: 0 0.5em 0.5em 1.5em;
         width: 20%;
 
         .repo-flow-repo-name-owner {
@@ -24,9 +23,9 @@
     }
 
     .repo-flow-steps {
-        min-width: 80%;
-        display: flex;
         align-items: center;
+        display: flex;
+        min-width: 80%;
 
         ol {
             align-items: center;
@@ -37,18 +36,86 @@
             width: 100%;
 
             li {
-                // Create arrow beneath buttons
-                &::after {
-                    border-left: 0.5em solid transparent;
-                    border-right: 0.5em solid transparent;
-                    border-top: 0.5em solid $button-background;
+                position: relative;
+                // Line
+                &::before {
+                    border-bottom: 2px solid $color-mediumgray;
+                    bottom: 2.05em; // magic number works with dot size and height
                     content: "";
                     display: block;
-                    height: 0;
-                    margin: auto;
-                    width: 0;
+                    left: 50%;
+                    position: absolute;
+                    width: 100vw; // each line overlaps the next
+                    z-index: -1; // dot must appear on top of line
+                }
+                // Last step has no visible line
+                &:last-child {
+                    &::before {
+                        border-bottom-color: $color-white;
+                    }
+                }
+                // Dot
+                &::after {
+                    color: $color-mediumgray;
+                    content: "\2022";
+                    display: block;
+                    font-size: 2.5em;
+                    height: 1.5em;
+                    text-align: center;
+                }
+                // Create arrow/triangle beneath buttons
+                a {
+                    position: relative;
+                    &::after {
+                        border-left: 0.5em solid transparent;
+                        border-right: 0.5em solid transparent;
+                        border-top: 0.5em solid $button-background;
+                        bottom: -0.5em;
+                        content: "";
+                        left: 50%;
+                        position: absolute;
+                        transform: translateX(-50%);
+                    }
+                    &.disabled::after {
+                        border-top-color: $button-background-disabled;
+                    }
+                    &:hover::after {
+                        border-top-color:$button-background-hover;
+                    }
                 }
             }
         }
     }
+
+}
+
+@mixin repo-flow-step-indicator($step-number) {
+    & + .repo-flow {
+        // Make the right lines yellow
+        .repo-flow-steps ol li:nth-child(-n+#{$step-number}) {
+            &::before {
+                border-bottom-color: $color-primary;
+            }
+        }
+        // Make the right dots yellow
+        .repo-flow-steps ol li:nth-child(-n+#{$step-number + 1}) {
+            &::after {
+                color: $color-primary;
+            }
+        }
+    }
+}
+
+// Style changes per repo-flow step
+[data-repo-flow-step="manage"] {
+    @include repo-flow-step-indicator(0);
+}
+[data-repo-flow-step="edit"] {
+    @include repo-flow-step-indicator(1);
+}
+[data-repo-flow-step="commit"] {
+    @include repo-flow-step-indicator(2);
+}
+[data-repo-flow-step="submit"] {
+    @include repo-flow-step-indicator(3);
 }

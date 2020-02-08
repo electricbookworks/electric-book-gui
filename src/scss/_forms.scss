@@ -1,3 +1,13 @@
+// Override Foundation's normalize, which
+// sets sans-serif for buttons etc.
+button,
+input,
+optgroup,
+select,
+textarea {
+    font-family: $body-font-family;
+}
+
 input,
 textarea {
     border: solid 1px $color-offgray;
@@ -35,11 +45,11 @@ textarea {
 	}
     &[disabled] {
         border: none;
-        background-color: $color-offgray;
+        background-color: $button-background-disabled;
         cursor: default;
         position: relative;
         &:hover {
-            background-color: $color-offgray;
+            background-color: $button-background-disabled;
             color: $color-darkgray;
         }
         // top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
@@ -53,13 +63,13 @@ textarea {
 
 @keyframes active {
     0% {
-        background-color: lighten($color-primary, 10%);
+        background-color: $button-background-hover;
     }
     50% {
         background-color: red;
     }
     100% {
-        background-color: lighten($color-primary, 10%);
+        background-color: $button-background-hover;
     }
 }
 

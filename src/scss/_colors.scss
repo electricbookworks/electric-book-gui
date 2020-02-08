@@ -36,6 +36,9 @@ $button-color-alt: $color-darkgray;
 $button-background: $color-primary;
 $button-color-inverse: $white2;
 $button-background-inverse: $black2;
+$button-color-disabled: $color-darkgray;
+$button-background-disabled: $color-gray;
+$button-background-hover: lighten($color-primary, 10%);
 
 // Dialogs
 $color-alert: $orange1;

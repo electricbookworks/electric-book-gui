@@ -1,0 +1,28 @@
+<div class="repo-flow">
+	<div class="repo-flow-repo-name">
+		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
+			<span class="repo-flow-repo-name-owner">
+				{{.RepoOwner}}/
+			</span>
+			<span class="repo-flow-repo-name-reponame">
+				{{.RepoName}}
+			</span>
+		</a>
+	</div>
+	<div class="repo-flow-steps">
+		<ol>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">Manage</a>
+			</li>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit</a>
+			</li>
+			<li>
+				<a class="btn" data-set="commit" id="repo-commit" href="commit">Commit</a>
+			</li>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
+			</li>
+		</ol>
+	</div>
+</div>

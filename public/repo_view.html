@@ -1,34 +1,9 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
-<div class="repo-flow">
-	<div class="repo-flow-repo-name">
-		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
-			<span class="repo-flow-repo-name-owner">
-				{{.RepoOwner}}/
-			</span>
-			<span class="repo-flow-repo-name-reponame">
-				{{.RepoName}}
-			</span>
-		</a>
-	</div>
-	<div class="repo-flow-steps">
-		<ol>
-			<li>
-				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/details">Manage</a>
-			</li>
-			<li>
-				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit</a>
-			</li>
-			<li>
-				<a class="btn" {{if not .LocalChangesStaged}}disabled{{end}}data-set="commit" id="repo-commit" href="commit">Commit</a>
-			</li>
-			<li>
-				<a class="btn" {{if not .UpstreamActions.CanCreatePR}}disabled{{end}}href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
-			</li>
-		</ol>
-	</div>
-</div>
+<!-- Rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="edit"></div>
+{{template "_repo-flow.html" .}}
 
 <main id="new-editor">
 
