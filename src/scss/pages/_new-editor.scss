@@ -10,6 +10,7 @@
 	#new-editor-files-nav {
 		position: relative;
 		flex-grow: 0;
+		flex-shrink: 0; // maintains same width as .repo-flow-repo-name
 		width: 20%;
 		max-width: 20%;
 

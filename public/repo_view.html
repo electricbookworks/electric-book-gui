@@ -15,13 +15,16 @@
 	<div class="repo-flow-steps">
 		<ol>
 			<li>
-				Edit
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/details">Manage</a>
 			</li>
 			<li>
-				<a data-set="commit" id="repo-commit" class="btn" href="commit">Commit</a>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit</a>
 			</li>
 			<li>
-				Submit for review
+				<a class="btn" {{if not .LocalChangesStaged}}disabled{{end}}data-set="commit" id="repo-commit" href="commit">Commit</a>
+			</li>
+			<li>
+				<a class="btn" {{if not .UpstreamActions.CanCreatePR}}disabled{{end}}href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
 			</li>
 		</ol>
 	</div>
