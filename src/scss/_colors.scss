@@ -7,7 +7,8 @@ $black5: #E9E9E9;
 $black6: #F5F5F5;
 $yellow1: #ffcc34;
 $yellow2: #FFF8E2;
-$green1: #009E7F;
+$green1: #34ffcc;
+$green2: #e2fff8;
 $orange1: #ffeae2;
 $white1: white;
 $white2: #fdfdfd;
@@ -32,7 +33,8 @@ $color-inverse-fg: $color-black;
 
 // Buttons
 $button-color: $color-black;
-$button-color-alt: $color-darkgray;
+$button-color-alt: $color-white;
+$button-background-alt: lighten($black2, 20%);
 $button-background: $color-primary;
 $button-color-inverse: $white2;
 $button-background-inverse: $black2;
@@ -46,8 +48,8 @@ $color-error-light: $orange1;
 $color-error: $orange1;
 $color-info-light: $yellow2;
 $color-info: $yellow2;
-$color-success-light: $yellow2;
-$color-success: $yellow2;
+$color-success-light: $green2;
+$color-success: $green1;
 $color-warning: $orange1;
 
 // Status

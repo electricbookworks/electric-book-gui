@@ -1,73 +1,23 @@
 #new-editor {
-	flex-grow: 1;
-	position: relative;
-
+	align-items: stretch;
 	display: flex;
 	flex-direction: row;
-	align-items: stretch;
+	flex-grow: 1;
 	justify-content: space-between;
+	position: relative;
 
 	#new-editor-files-nav {
-		position: relative;
-		flex-grow: 0;
-		flex-shrink: 0; // maintains same width as .repo-flow-repo-name
-		width: 20%;
-		max-width: 20%;
-
-		border-right: 1px solid $color-primary;
-
-		transition: width 0.3s;
-
-		#files-show-tag {
-			display: block;
-			position: absolute;
-			right: -2.5em;
-			top: 0.5em;
-
-			width: 2.5em;
-			height: 2.5em;
-			z-index: 100;
-
-			border: 2px solid $color-primary;
-			border-left: 0px;
-			border-top-right-radius: 1em;
-			border-bottom-right-radius: 1em;
-
-			display: flex;
-			flex-direction: row;
-			justify-content: center;
-			align-items: center;
-
-			cursor: pointer;
-			background-color: white;
-			color: $color-darkgray;
-			&:hover {
-				background-color: $color-primary;
-				color: $color-primary;
-			}
-			& > img {
-				width: 1.4em;
-				&.showing {
-					display: none;
-				}
-				&.hidden {
-					display: block;
-				}
-			}
-			&.showing > img {
-				&.showing {
-					display: block;
-				}
-				&.hidden {
-					display: none;
-				}
-			}
-		}
-
+		align-items: stretch;
 		display: flex;
 		flex-direction: column;
-		align-items: stretch;
+		flex-grow: 0;
+		flex-shrink: 0; // maintains same width as .repo-flow-repo-name
 		justify-content: space-between;
+		max-width: 20%;
+		position: relative;
+		transition: width 0.3s;
+		width: 20%;
+
 		.file-actions {
 			flex-grow: 0;
 		}
@@ -78,9 +28,11 @@
 				margin-left: 0;
 			}
 		}
+
 		.file-container {
 			flex-grow: 1;
 			position:relative;
+
 			#all-files-editor {
 				// Also see _file_tree.scss for the files themselves
 				bottom: 0;
@@ -89,27 +41,27 @@
 				margin: 0;
 				max-width: 100%;
 				overflow: scroll;
-				padding: 0.5em;
+				padding: 1.5em 0.5em 0.5em 0.5em; // top makes space for 'show-hide'
 				position: absolute;
 				top: 0;
 				width: 100%;
 
-				.allfiles-file {			
-					list-style: none;
-					margin: 0;
-					padding: 0;
-					padding-left: 1em;
+				.allfiles-file {
 					box-sizing: border-box;
 					cursor: pointer;
+					list-style: none;
+					margin: 0;
+					padding-left: 1em;
+					padding: 0;
+
 					&:hover {
 						background-color: $color-primary;
 					}
-					// max-height: 80vh;
 					&.changed {
-						color: green;
+						color: $color-success-light;
 					}
 					&.removed {
-						color: red;
+						color: $color-warning;
 						text-decoration: line-through;
 					}
 					&.ignore {
@@ -121,28 +73,69 @@
 	}
 
 	#file-editors {
-		flex-grow: 1;
-		position: relative;
-
-
+		align-items: stretch;
 		display: flex;
 		flex-direction: column;
+		flex-grow: 1;
 		justify-content: space-between;
-		align-items: stretch;
-
+		margin: 0;
 		max-height: 100% !important;
-		.header-split {
-			display: flex;
-			flex-direction: row;
-			align-items: baseline;
-			justify-content: space-between;
-			.file-title {
-				padding-left: 3em;
-				span[ebw-bind="current-filename"] {
-					font-weight: bold;
+		position: relative;
+
+		.editor-actions {
+			background-color: $color-black;
+			height: 2em;
+			padding: 0.25em 0.25em 0.25em 0;
+
+			.btn {
+				background-color: $button-background-alt;
+				color: $button-color-alt;
+				font-size: 0.8rem;
+				padding: 0.3em 0.5em;
+
+				&:hover {
+					background-color: $button-background;
+					color: $button-color;
+					cursor: pointer;
+				}
+
+				// Show submenu at output button
+				&#editor-output-button {
+					position: relative;
+
+					& .editor-output-buttons {
+						display: none;
+	
+						// Appearance
+						flex-direction: column;
+						flex-wrap: wrap;
+						left: 0;
+						position: absolute;
+						top: 2em;
+						width: 10em;
+						z-index: 1;
+					}
+					&:hover .editor-output-buttons {
+						display: flex;
+					}
 				}
 			}
 		}
+
+		.file-title {
+
+			span[ebw-bind="current-filename"] {
+				font-size: 0.8em;
+			}
+
+			.bound-filename {
+				display: inline-flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-content: flex-start;
+			}
+		}
+
 		.editor {
 			flex-grow: 1;
 			position: relative;
@@ -154,10 +147,6 @@
 					.CodeMirror {
 						font-size: 1em;
 						font-family: 'Inconsolata',monospace;
-						// // height: 5em !important;
-						// height: 30em !important;
-						// max-height: 100%;
-						// min-height: 100%;
 						position: absolute;
 						top: 0;
 						bottom: 0;
@@ -167,7 +156,6 @@
 					}
 				}
 				.repo-image-editor {
-					// border: 3px solid red;
 					background-color: #f8f8f8;
 					padding: 1em;
 					position: absolute;
@@ -175,7 +163,7 @@
 					bottom: 0;
 					left: 0;
 					right: 0;
-					height: 100%;					
+					height: 100%;
 					& > div {
 						width: 100%;
 						height: 100%;
@@ -190,10 +178,4 @@
 			}
 		}
 	}
-}
-
-#editor {
-	border-style: solid;
-	border-color: $color-primary;
-	border-width: 1px 0 1px 0;
 }

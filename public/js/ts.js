@@ -227,6 +227,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return APIWs;
 	}());
+	//# sourceMappingURL=APIWs.js.map
 
 	// Context is a general class passed through to most sub-classes that allows
 	// us to track the repo- and user-specific things that are common to pretty
@@ -274,6 +275,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return Context;
 	}());
+	//# sourceMappingURL=Context.js.map
 
 	var Toast = /** @class */ (function () {
 	    function Toast(el) {
@@ -300,13 +302,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return Toast;
 	}());
+	//# sourceMappingURL=Toast.js.map
 
 	var AddNewBookDialog = /** @class */ (function () {
 	    function AddNewBookDialog() {
 	        var t = AddNewBookDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"adaptation\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input value=\"fork\" type=\"hidden\" name=\"action\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input placeholder=\"e.g. electricbooks/core\" type=\"text\" name=\"collaborate_repo\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input value=\"new\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input value=\"private\" type=\"checkbox\" name=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form action=\"/github/create/fork\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            AddNewBookDialog._template = t;
 	        }
@@ -497,7 +500,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = CommitMessageDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input name=\"commitMessage\" id=\"commitMessage\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            CommitMessageDialog._template = t;
 	        }
@@ -702,7 +705,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = FoundationRevealDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div data-reveal=\"\" class=\"reveal\" id=\"new-file-dialog\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
+	            d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            FoundationRevealDialog._template = t;
 	        }
@@ -769,7 +772,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = LoginTokenList._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input type=\"text\" placeholder=\"token\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
+	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input placeholder=\"token\" type=\"text\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
 	            t = d.firstElementChild;
 	            LoginTokenList._template = t;
 	        }
@@ -953,7 +956,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = RepoEditorPage_RenameFileDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input data-event=\"change\" type=\"text\" placeholder=\"/book/text/chapter-7.md\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button data-event=\"click\" class=\"btn\">Rename</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            RepoEditorPage_RenameFileDialog._template = t;
 	        }
@@ -1156,7 +1159,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = conflict_ClosePRDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input data-event=\"change\" type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            conflict_ClosePRDialog._template = t;
 	        }
@@ -1362,6 +1365,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return conflict_MergeInstructions;
 	}());
+	//# sourceMappingURL=Templates.js.map
 
 	function QuerySelectorAllIterate(el, query) {
 	    var els = [];
@@ -1381,6 +1385,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return els;
 	}
+	//# sourceMappingURL=querySelectorAll-extensions.js.map
 
 	/**
 	 * Eventify adds eventListeners to the given object
@@ -1413,6 +1418,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	    }
 	}
+	//# sourceMappingURL=Eventify.js.map
 
 	// AddNewBookDialog steps the user through two pages
 	// determining what sort of new book they want to create,
@@ -1475,6 +1481,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return AddNewBookDialog;
 	}(AddNewBookDialog));
+	//# sourceMappingURL=AddNewBookDialog.js.map
 
 	var TokenDisplay = /** @class */ (function (_super) {
 	    tslib_1.__extends(TokenDisplay, _super);
@@ -1561,6 +1568,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return LoginTokenList;
 	}(LoginTokenList));
+	//# sourceMappingURL=LoginTokenList.js.map
 
 	var RepoMergeDirectButton = /** @class */ (function () {
 	    function RepoMergeDirectButton(context, el) {
@@ -1587,6 +1595,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoMergeDirectButton;
 	}());
+	//# sourceMappingURL=RepoMergeDirectButton.js.map
 
 	var RepoDetailPage = /** @class */ (function () {
 	    function RepoDetailPage(context) {
@@ -1624,6 +1633,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoDetailPage;
 	}());
+	//# sourceMappingURL=RepoDetailPage.js.map
 
 	// A ControlTag controls the appearance of another div, most likely changing
 	// it's width or making it appear / disappear
@@ -1641,6 +1651,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return ControlTag;
 	}());
+	//# sourceMappingURL=ControlTag.js.map
 
 	var DialogEvents;
 	(function (DialogEvents) {
@@ -1697,6 +1708,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FoundationRevealDialog;
 	}(FoundationRevealDialog));
+	//# sourceMappingURL=FoundationRevealDialog.js.map
 
 	var FileListDialogItem = /** @class */ (function (_super) {
 	    tslib_1.__extends(FileListDialogItem, _super);
@@ -1717,6 +1729,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileListDialogItem;
 	}(FileListDialog_Item));
+	//# sourceMappingURL=FileListDialog_Item.js.map
 
 	var FileListDialog$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(FileListDialog, _super);
@@ -1766,6 +1779,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileListDialog;
 	}(FileListDialog));
+	//# sourceMappingURL=FileListDialog.js.map
 
 	var PrintListenerTerminal$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(PrintListenerTerminal, _super);
@@ -1812,6 +1826,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return PrintListenerTerminal;
 	}(PrintListenerTerminal));
+	//# sourceMappingURL=PrintListenerTerminal.js.map
 
 	var PrintListener = /** @class */ (function () {
 	    function PrintListener(repoOwner, repoName, book, format) {
@@ -1910,6 +1925,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return PrintListener;
 	}());
+	//# sourceMappingURL=PrintListener.js.map
 
 	var BoundFilename$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(BoundFilename, _super);
@@ -1923,7 +1939,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        editorElement.addEventListener('BoundFileChanged', function (evt) {
 	            _this.$.filename.innerText = evt.detail;
-	            _this.$.a.href = "https://github.com/" + _this.repoOwner + "/" + _this.repoName + "/commits/master/" + evt.detail;
+	            // Not currently used. Adds a link to GitHub.
+	            // this.$.a.href = `https://github.com/${this.repoOwner}/${this.repoName}/commits/master/${evt.detail}`;
 	        });
 	        _this.parent.appendChild(_this.el);
 	        console.log("BoundFilename: ", _this, _this.el);
@@ -1941,6 +1958,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return BoundFilename;
 	}(BoundFilename));
+	//# sourceMappingURL=BoundFilename.js.map
 
 	var EditorCodeMirror = /** @class */ (function () {
 	    function EditorCodeMirror(parent) {
@@ -2003,6 +2021,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return EditorCodeMirror;
 	}());
+	//# sourceMappingURL=EditorCodeMirror.js.map
 
 	function AddToParent(parent, el) {
 	    if (!parent) {
@@ -2014,6 +2033,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    parent.appendChild(el);
 	}
+	//# sourceMappingURL=DOM.js.map
 
 	var EditorImage$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(EditorImage, _super);
@@ -2033,6 +2053,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return EditorImage;
 	}(EditorImage));
+	//# sourceMappingURL=EditorImage.js.map
 
 	/**
 	 * FileState provides information on the status of a file
@@ -2073,6 +2094,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return "UNKNOWN STATE: fs = ${fs}";
 	}
+	//# sourceMappingURL=FileState.js.map
 
 	var ImageIdentify = /** @class */ (function () {
 	    function ImageIdentify() {
@@ -2083,6 +2105,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return ImageIdentify;
 	}());
+	//# sourceMappingURL=ImageIdentify.js.map
 
 	var EditorEvents;
 	(function (EditorEvents) {
@@ -2406,6 +2429,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoFileEditorCM;
 	}(RepoFileEditorCM));
+	//# sourceMappingURL=RepoFileEditorCM2.js.map
 
 	/**
 	 * RepoEditorPage_NewFileDialog displays a new file
@@ -2463,6 +2487,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoEditorPage_NewFileDialog;
 	}(RepoEditorPage_NewFileDialog));
+	//# sourceMappingURL=RepoEditorPage_NewFileDialog2.js.map
 
 	/**
 	 * RepoEditorPage_RenameFileDialog displays a Rename file
@@ -2503,12 +2528,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoEditorPage_RenameFileDialog;
 	}(RepoEditorPage_RenameFileDialog));
+	//# sourceMappingURL=RepoEditorPage_RenameFileDialog2.js.map
 
 	function SHA1(input) {
 	    var sha = new jsSHA("SHA-1", "TEXT");
 	    sha.update(input);
 	    return sha.getHash("HEX");
 	}
+	//# sourceMappingURL=SHA1.js.map
 
 	var File = /** @class */ (function () {
 	    function File(name, exists, hash, data) {
@@ -2593,6 +2620,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return File;
 	}());
+	//# sourceMappingURL=File.js.map
 
 	var FSStateAndPath = /** @class */ (function () {
 	    function FSStateAndPath(path, state) {
@@ -2719,6 +2747,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FSImpl;
 	}());
+	//# sourceMappingURL=FS.js.map
 
 	/**
 	 * The Memory-based filesystem on this browser right now.
@@ -2816,6 +2845,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return MemFS;
 	}(FSImpl));
+	//# sourceMappingURL=MemFS.js.map
 
 	var WorkingDirFS = /** @class */ (function (_super) {
 	    tslib_1.__extends(WorkingDirFS, _super);
@@ -2866,6 +2896,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return WorkingDirFS;
 	}(FSImpl));
+	//# sourceMappingURL=WorkingDirFS.js.map
 
 	/**
 	 * NotifyFS is transparent, but notifies listeners of any changes to
@@ -2917,6 +2948,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return NotifyFS;
 	}(FSImpl));
+	//# sourceMappingURL=NotifyFS.js.map
 
 	// ReadCacheFS is a read-only cache between an underlying FS and a session based
 	// cache. All Writes, Syncs, etc are passed transparently through. For all intents and
@@ -2983,6 +3015,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return ReadCacheFS;
 	}(FSImpl));
+	//# sourceMappingURL=ReadCacheFS.js.map
 
 	/// <reference path="Signal.ts" />
 	/*
@@ -3099,6 +3132,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return SignalBinding;
 	}());
+	//# sourceMappingURL=SignalBinding.js.map
 
 	/**
 	*	@desc       A TypeScript conversion of JS Signals by Miller Medeiros
@@ -3355,6 +3389,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    Signal.VERSION = '1.0.0';
 	    return Signal;
 	}());
+	//# sourceMappingURL=Signal.js.map
 
 	var NodeType;
 	(function (NodeType) {
@@ -3490,6 +3525,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return Node;
 	}());
+	//# sourceMappingURL=Node.js.map
 
 	function addChildNode(parent, el) {
 	    if (0 == parent.children.length) {
@@ -3638,6 +3674,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return NodeView;
 	}(Tree_NodeView));
+	//# sourceMappingURL=FileSystemView2.js.map
 
 	// import {Directory} from './Directory';
 	/**
@@ -3723,6 +3760,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileSystemConnector;
 	}());
+	//# sourceMappingURL=FileSystemConnector.js.map
 
 	/**
 	 * RepoEditorPage is the JS controller for the page that allows
@@ -3753,12 +3791,23 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        new RepoEditorPage_NewFileDialog$1(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
 	        new RepoEditorPage_RenameFileDialog$1(this.context, document.getElementById("editor-rename-button"), this.editor);
 	        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
+	            // Set width of nav
 	            document.getElementById("new-editor-files-nav")
 	                .style.width = showing ? "20%" : "0px";
+	            // Show/hide container (avoids leaving scrollbar visible)
+	            document.getElementById("all-files-editor-container").style.display = showing ? "block" : "none";
+	            // Hide repo actions
 	            document.getElementById("repo-file-actions")
 	                .style.visibility = showing ? "visible" : "hidden";
-	            var f = document.getElementById("page-footer");
-	            f.style.display = showing ? 'flex' : 'none';
+	            // Hide file-editor actions
+	            document.getElementById("editor-actions")
+	                .style.visibility = showing ? "visible" : "hidden";
+	            // Hide filename
+	            document.querySelector(".file-title")
+	                .style.visibility = showing ? "visible" : "hidden";
+	            // Hide footer
+	            document.getElementById("page-footer")
+	                .style.display = showing ? 'flex' : 'none';
 	        });
 	        document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
 	            evt.preventDefault();
@@ -3817,6 +3866,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return RepoEditorPage;
 	}());
 	window.RepoEditorPage = RepoEditorPage;
+	//# sourceMappingURL=RepoEditorPage2.js.map
 
 	var FileStatus = /** @class */ (function () {
 	    function FileStatus(status) {
@@ -3833,6 +3883,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileStatus;
 	}());
+	//# sourceMappingURL=FileStatus.js.map
 
 	var FileContent = /** @class */ (function () {
 	    function FileContent(exists, raw) {
@@ -4037,6 +4088,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return File;
 	}());
+	//# sourceMappingURL=File.js.map
 
 	var FileListEvent;
 	(function (FileListEvent) {
@@ -4060,6 +4112,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileList;
 	}());
+	//# sourceMappingURL=FileList.js.map
 
 	var FileDisplayEvent;
 	(function (FileDisplayEvent) {
@@ -4111,6 +4164,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileDisplay;
 	}(conflict_FileDisplay));
+	//# sourceMappingURL=FileDisplay.js.map
 
 	var FileListDisplayEvent;
 	(function (FileListDisplayEvent) {
@@ -4145,6 +4199,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return FileListDisplay;
 	}(conflict_FileListDisplay));
+	//# sourceMappingURL=FileListDisplay.js.map
 
 	var MergeEditorAction;
 	(function (MergeEditorAction) {
@@ -4257,6 +4312,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return MergeEditorControlBar;
 	}());
+	//# sourceMappingURL=MergeEditorControlBar.js.map
 
 	var VERSION_OUR = "our-head";
 	var VERSION_THEIR = "their-head";
@@ -4352,6 +4408,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return MergeImageEditor;
 	}(conflict_MergeImageEditor));
+	//# sourceMappingURL=MergeImageEditor.js.map
 
 	// MergeEditor controls a Mergely class
 	var MergeEditor$1 = /** @class */ (function () {
@@ -4634,6 +4691,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return MergeEditor;
 	}());
+	//# sourceMappingURL=MergeEditor.js.map
 
 	var MergeInstructions = /** @class */ (function (_super) {
 	    tslib_1.__extends(MergeInstructions, _super);
@@ -4654,6 +4712,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return MergeInstructions;
 	}(conflict_MergeInstructions));
+	//# sourceMappingURL=MergeInstructions.js.map
 
 	var CommitMessageDialog$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(CommitMessageDialog, _super);
@@ -4704,6 +4763,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return CommitMessageDialog;
 	}(CommitMessageDialog));
+	//# sourceMappingURL=CommitMessageDialog.js.map
 
 	var ClosePRDialog = /** @class */ (function (_super) {
 	    tslib_1.__extends(ClosePRDialog, _super);
@@ -4787,6 +4847,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return ClosePRDialog;
 	}(conflict_ClosePRDialog));
+	//# sourceMappingURL=ClosePRDialog.js.map
 
 	// MergingInfo is the typescript equivalent of the EBWRepoStatus which provides
 	// some information on how the repo came to be in a conflict state.
@@ -4804,6 +4865,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return MergingInfo;
 	}());
+	//# sourceMappingURL=MergingInfo.js.map
 
 	var SingleEditor = /** @class */ (function () {
 	    function SingleEditor(context, parent) {
@@ -4951,6 +5013,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return SingleEditor;
 	}());
+	//# sourceMappingURL=SingleEditor.js.map
 
 	// RepoConflictPage handles conflict-merging for the repo.
 	// It's main data is generated in public/repo_conflict.html
@@ -5042,6 +5105,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoConflictPage;
 	}());
+	//# sourceMappingURL=RepoConflictPage.js.map
 
 	var MergeEditor$2 = /** @class */ (function (_super) {
 	    tslib_1.__extends(MergeEditor, _super);
@@ -5108,6 +5172,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return MergeEditor;
 	}(MergeEditor));
+	//# sourceMappingURL=MergeEditor.js.map
 
 	var PRDiffModel = /** @class */ (function () {
 	    function PRDiffModel(diff, prArgs) {
@@ -5134,6 +5199,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return PRDiffModel;
 	}());
+	//# sourceMappingURL=PRDiffModel.js.map
 
 	var PullRequestDiffList_File$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(PullRequestDiffList_File, _super);
@@ -5151,6 +5217,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return PullRequestDiffList_File;
 	}(PullRequestDiffList_File));
+	//# sourceMappingURL=PullRequestDiffList_File.js.map
 
 	var PullRequestMergePage = /** @class */ (function () {
 	    function PullRequestMergePage(diffs, prArgs, filesParent, mergelyParent) {
@@ -5189,6 +5256,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return PullRequestMergePage;
 	}());
+	//# sourceMappingURL=PullRequestMergePage.js.map
 
 	var CommitSummary = /** @class */ (function () {
 	    function CommitSummary(when, oid, message) {
@@ -5207,6 +5275,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return CommitSummary;
 	}());
+	//# sourceMappingURL=CommitSummary.js.map
 
 	var CommitSummaryList = /** @class */ (function () {
 	    function CommitSummaryList() {
@@ -5223,6 +5292,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return CommitSummaryList;
 	}());
+	//# sourceMappingURL=CommitSummaryList.js.map
 
 	var CommitSummaryView$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(CommitSummaryView, _super);
@@ -5254,6 +5324,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return CommitSummaryView;
 	}(CommitSummaryView));
+	//# sourceMappingURL=CommitSummaryView.js.map
 
 	var CommitSummaryListView$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(CommitSummaryListView, _super);
@@ -5278,6 +5349,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return CommitSummaryListView;
 	}(CommitSummaryListView));
+	//# sourceMappingURL=CommitSummaryListView.js.map
 
 	var RepoDiffDatesForm = /** @class */ (function () {
 	    function RepoDiffDatesForm(context) {
@@ -5356,6 +5428,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoDiffViewerPage;
 	}());
+	//# sourceMappingURL=RepoDiffViewerPage.js.map
 
 	var RepoDiffFileViewerPage = /** @class */ (function () {
 	    function RepoDiffFileViewerPage(context, parent, data) {
@@ -5390,6 +5463,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoDiffFileViewerPage;
 	}());
+	//# sourceMappingURL=RepoDiffFileViewerPage.js.map
 
 	var PrintButton = /** @class */ (function () {
 	    function PrintButton(button) {
@@ -5403,6 +5477,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return PrintButton;
 	}());
+	//# sourceMappingURL=PrintButton.js.map
 
 	var WordWrapButton = /** @class */ (function () {
 	    function WordWrapButton(button, container) {
@@ -5441,6 +5516,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return WordWrapButton;
 	}());
+	//# sourceMappingURL=WordWrapButton.js.map
 
 	var RepoDiffPatchPage = /** @class */ (function () {
 	    function RepoDiffPatchPage(context) {
@@ -5452,6 +5528,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoDiffPatchPage;
 	}());
+	//# sourceMappingURL=RepoDiffPatchPage.js.map
 
 	var DOMInsert = /** @class */ (function () {
 	    function DOMInsert(parent) {
@@ -5467,6 +5544,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return DOMInsert;
 	}());
+	//# sourceMappingURL=DOMInsert.js.map
 
 	var RepoFileViewerFile$1 = /** @class */ (function (_super) {
 	    tslib_1.__extends(RepoFileViewerFile, _super);
@@ -5522,6 +5600,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoFileViewerFile;
 	}(RepoFileViewerFile));
+	//# sourceMappingURL=RepoFileViewerFile.js.map
 
 	var EditField = /** @class */ (function () {
 	    function EditField(el, page) {
@@ -5664,6 +5743,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return RepoFileViewerPage;
 	}(RepoFileViewerPage));
+	//# sourceMappingURL=RepoFileViewerPage.js.map
 
 	var EBW = /** @class */ (function () {
 	    function EBW() {
@@ -5752,6 +5832,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    console.log("DOMContentLoaded - EBW");
 	    new EBW();
 	});
+	//# sourceMappingURL=EBW.js.map
 
 	exports.EBW = EBW;
 

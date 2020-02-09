@@ -46,7 +46,7 @@ a {
 		text-decoration: none;
 	}
 	&[disabled='disabled'] {
-		color: $button-background-disabled;
+		color: $button-color-disabled;
 		cursor: default;
 	}
 }

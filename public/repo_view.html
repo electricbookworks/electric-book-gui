@@ -9,9 +9,11 @@
 
 	<nav id="new-editor-files-nav">
 
-		<!-- <div id="files-show-tag" class="showing">
-			<img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" />
-		</div> -->
+		<div id="files-show-tag" class="showing">
+			<span class="hidden" title="Show files">￫</span>
+			<span class="showing" title="Hide files">￩</span>
+			<!-- <img class="hidden" src="/img/file-folder-open.svg" alt="Show files"/><img class="showing" src="/img/file-folder-closed.svg" alt="Close files" /> -->
+		</div>
 
 		<div class="file-container" id="all-files-editor-container">
 			<div id="all-files-editor" data-instance="AllFilesList"> </div>
@@ -30,12 +32,13 @@
 			<button class="btn" id="editor-save-button">Save file</button>
 			<button id="repo-save-all" class="btn">Save all files</button>
 			<button id="editor-undo-button" class="btn">Undo edit</button>
-			<button class="btn">Output</button>
-			<div class="hover">
-				<button href="#" id="repo-jekyll" class="btn">Web version</button>
-				<button id="repo-print-screen" class="btn">Screen PDF</button>
-				<button id="repo-print-printer" class="btn">Print PDF</button>
-				<button disabled class="btn">Epub</button>
+			<div id="editor-output-button" class="btn">Output
+				<div class="editor-output-buttons">
+					<button href="#" id="repo-jekyll" class="btn">Web version</button>
+					<button id="repo-print-screen" class="btn">Screen PDF</button>
+					<button id="repo-print-printer" class="btn">Print PDF</button>
+					<button disabled class="btn">Epub</button>
+				</div>
 			</div>
 		</div>
 

@@ -40,7 +40,7 @@
                 // Line
                 &::before {
                     border-bottom: 2px solid $color-mediumgray;
-                    bottom: 2.05em; // magic number works with dot size and height
+                    bottom: 2em; // works with dot size and height in Chrome, Firefox needs 2.05em
                     content: "";
                     display: block;
                     left: 50%;
