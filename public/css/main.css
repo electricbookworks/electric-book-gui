@@ -4475,16 +4475,41 @@ body {
         #new-editor #file-editors .editor-actions .btn#editor-output-button {
           position: relative; }
           #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons {
-            display: none;
+            box-shadow: 3px 3px 7px -7px #262626;
+            background-color: #fdfdfd;
+            border-radius: 0.15em;
+            display: flex;
             flex-direction: column;
-            flex-wrap: wrap;
-            left: 0;
+            font-size: 0.9rem;
+            list-style-type: none;
+            margin: 0;
             position: absolute;
-            top: 2em;
-            width: 10em;
-            z-index: 1; }
+            right: 0;
+            text-align: left;
+            top: 100%;
+            visibility: hidden;
+            width: 12em;
+            z-index: 1;
+            font-size: 0.8rem;
+            left: 0;
+            width: 8em; }
+            #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li {
+              border-bottom: 1px solid #F5F5F5;
+              border-left: 1px solid #F5F5F5;
+              border-right: 1px solid #F5F5F5;
+              line-height: 1.4;
+              padding: 0.25em 0.4em; }
+              #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li:hover {
+                background-color: #F5F5F5; }
+              #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li a {
+                display: block; }
+              #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li:first-child {
+                border-radius: 0.15em 0.15em 0 0;
+                border-top: 1px solid #F5F5F5; }
+              #new-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li:last-child {
+                border-radius: 0 0 0.15em 0.15em; }
           #new-editor #file-editors .editor-actions .btn#editor-output-button:hover .editor-output-buttons {
-            display: flex; }
+            visibility: visible; }
     #new-editor #file-editors .file-title span[ebw-bind="current-filename"] {
       font-size: 0.8em; }
     #new-editor #file-editors .file-title .bound-filename {
@@ -4875,19 +4900,24 @@ body {
     box-shadow: 3px 3px 7px -7px #262626;
     background-color: #fdfdfd;
     border-radius: 0.15em;
-    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
     list-style-type: none;
     margin: 0;
     position: absolute;
     right: 0;
     text-align: left;
+    top: 100%;
     visibility: hidden;
-    width: 12em; }
+    width: 12em;
+    z-index: 1; }
     #repo-detail .repo-detail-settings ul li {
       border-bottom: 1px solid #F5F5F5;
       border-left: 1px solid #F5F5F5;
       border-right: 1px solid #F5F5F5;
-      line-height: 1.4; }
+      line-height: 1.4;
+      padding: 0.25em 0.4em; }
       #repo-detail .repo-detail-settings ul li:hover {
         background-color: #F5F5F5; }
       #repo-detail .repo-detail-settings ul li a {

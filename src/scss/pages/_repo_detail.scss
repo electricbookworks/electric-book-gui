@@ -38,36 +38,7 @@
         position: relative;
         text-align: right;
         ul {
-            @include box-shadow();
-            background-color: $color-white;
-            border-radius: $global-radius;
-            font-size: 0.9em;
-            list-style-type: none;
-            margin: 0;
-            position: absolute;
-            right: 0;
-            text-align: left;
-            visibility: hidden;
-            width: 12em;
-            li {
-                border-bottom: 1px solid $color-lightgray;
-                border-left: 1px solid $color-lightgray;
-                border-right: 1px solid $color-lightgray;
-                line-height: $global-lineheight;
-                &:hover {
-                    background-color: $color-lightgray;
-                }
-                a {
-                    display: block;
-                }
-                &:first-child {
-                    border-radius: $global-radius $global-radius 0 0;
-                    border-top: 1px solid $color-lightgray;
-                }
-                &:last-child {
-                    border-radius: 0 0 $global-radius $global-radius;
-                }
-            }
+            @include dropdown-list();
         }
         &:hover {
             ul {

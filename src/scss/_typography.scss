@@ -89,3 +89,42 @@ a {
 		text-decoration: underline;
 	}
 }
+
+// Apply to lists (ol, ul) as dropdowns
+@mixin dropdown-list() {
+	@include box-shadow();
+	background-color: $color-white;
+	border-radius: $global-radius;
+	display: flex;
+	flex-direction: column;
+	font-size: 0.9rem;
+	list-style-type: none;
+	margin: 0;
+	position: absolute;
+	right: 0;
+	text-align: left;
+	top: 100%;
+	visibility: hidden; // show with CSS or JS
+	width: 12em;
+	z-index: 1;
+	li {
+		border-bottom: 1px solid $color-lightgray;
+		border-left: 1px solid $color-lightgray;
+		border-right: 1px solid $color-lightgray;
+		line-height: $global-lineheight;
+		padding: 0.25em 0.4em;
+		&:hover {
+			background-color: $color-lightgray;
+		}
+		a {
+			display: block;
+		}
+		&:first-child {
+			border-radius: $global-radius $global-radius 0 0;
+			border-top: 1px solid $color-lightgray;
+		}
+		&:last-child {
+			border-radius: 0 0 $global-radius $global-radius;
+		}
+	}
+}

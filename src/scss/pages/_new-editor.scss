@@ -103,20 +103,14 @@
 				&#editor-output-button {
 					position: relative;
 
-					& .editor-output-buttons {
-						display: none;
-	
-						// Appearance
-						flex-direction: column;
-						flex-wrap: wrap;
+					.editor-output-buttons {
+						@include dropdown-list();
+						font-size: 0.8rem;
 						left: 0;
-						position: absolute;
-						top: 2em;
-						width: 10em;
-						z-index: 1;
+						width: 8em;
 					}
 					&:hover .editor-output-buttons {
-						display: flex;
+						visibility: visible;
 					}
 				}
 			}
