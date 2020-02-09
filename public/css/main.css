@@ -3702,7 +3702,7 @@ a.thumbnail {
     order: 6; } }
 
 body {
-  font-family: 'Karla', sans-serif;
+  font-family: "Karla", sans-serif;
   color: #262626; }
 
 h1,
@@ -3945,6 +3945,93 @@ body {
   color: #333;
   margin: 1em 0 2em 0;
   padding: 2em; }
+
+main .CodeMirror {
+  background-color: #fdfdfd;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  height: 100%;
+  min-height: 100%;
+  width: 100%; }
+  main .CodeMirror pre {
+    font-family: "IBM Plex Mono", monospace; }
+  main .CodeMirror .CodeMirror-sizer {
+    max-width: 55em; }
+  main .CodeMirror .CodeMirror-line {
+    padding: 0 1em; }
+  main .CodeMirror .CodeMirror-gutters {
+    background-color: #fdfdfd;
+    border-right-color: #fdfdfd; }
+  main .CodeMirror .CodeMirror-linenumber {
+    font-size: 0.7em;
+    line-height: 2.2em; }
+  main .CodeMirror.cm-s-default .cm-keyword {
+    color: #708; }
+  main .CodeMirror.cm-s-default .cm-atom {
+    color: #219; }
+  main .CodeMirror.cm-s-default .cm-number {
+    color: #164; }
+  main .CodeMirror.cm-s-default .cm-def {
+    color: #00f; }
+  main .CodeMirror.cm-s-default .cm-variable {
+    color: black; }
+  main .CodeMirror.cm-s-default .cm-variable-2 {
+    color: #05a; }
+  main .CodeMirror.cm-s-default .cm-variable-3 {
+    color: #085; }
+  main .CodeMirror.cm-s-default .cm-property {
+    color: black; }
+  main .CodeMirror.cm-s-default .cm-operator {
+    color: black; }
+  main .CodeMirror.cm-s-default .cm-comment {
+    color: #a50; }
+  main .CodeMirror.cm-s-default .cm-string {
+    color: #a11; }
+  main .CodeMirror.cm-s-default .cm-string-2 {
+    color: #f50; }
+  main .CodeMirror.cm-s-default .cm-meta {
+    color: #555; }
+  main .CodeMirror.cm-s-default .cm-qualifier {
+    color: #555; }
+  main .CodeMirror.cm-s-default .cm-builtin {
+    color: #30a; }
+  main .CodeMirror.cm-s-default .cm-bracket {
+    color: #997; }
+  main .CodeMirror.cm-s-default .cm-tag {
+    color: #170; }
+  main .CodeMirror.cm-s-default .cm-attribute {
+    color: #00c; }
+  main .CodeMirror.cm-s-default .cm-header {
+    color: #262626; }
+  main .CodeMirror.cm-s-default .cm-quote {
+    color: #090; }
+  main .CodeMirror.cm-s-default .cm-hr {
+    color: #999; }
+  main .CodeMirror.cm-s-default .cm-link {
+    color: cornflowerblue; }
+  main .CodeMirror .cm-negative {
+    color: #d44; }
+  main .CodeMirror .cm-positive {
+    color: #292; }
+  main .CodeMirror .cm-header, main .CodeMirror .cm-strong {
+    font-weight: bold; }
+  main .CodeMirror .cm-em {
+    font-style: italic; }
+  main .CodeMirror .cm-link {
+    text-decoration: underline; }
+  main .CodeMirror.cm-s-default .cm-error {
+    color: #f00; }
+  main .CodeMirror .cm-invalidchar {
+    color: #f00; }
+  main .CodeMirror div.CodeMirror span.CodeMirror-matchingbracket {
+    color: #0f0; }
+  main .CodeMirror div.CodeMirror span.CodeMirror-nonmatchingbracket {
+    color: #f22; }
+  main .CodeMirror .CodeMirror-activeline-background {
+    background: #e8f2ff; }
+
+main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
+  transform: translateX(calc((100vw - 55em) / 2)); }
 
 .btn {
   background-color: #ffcc34;
@@ -4247,16 +4334,18 @@ body {
 #all-files-editor .node.node-file .name {
   cursor: pointer; }
 
-#all-files-editor .node.editing-in-progress .name::after {
-  background-color: #FFF8E2;
-  border-radius: 1em;
-  color: #262626;
-  content: "Editing";
-  font-size: 0.7em;
-  letter-spacing: 0.05em;
-  margin-left: 1em;
-  padding: 0 1em;
-  text-transform: uppercase; }
+#all-files-editor .node.editing-in-progress .name {
+  font-weight: bold; }
+  #all-files-editor .node.editing-in-progress .name::after {
+    background-color: #FFF8E2;
+    border-radius: 1em;
+    color: #262626;
+    content: "Editing";
+    font-size: 0.7em;
+    letter-spacing: 0.05em;
+    margin-left: 1em;
+    padding: 0 1em;
+    text-transform: uppercase; }
 
 #all-files-editor .node.state-changed {
   background-color: #F5F5F5; }
@@ -4511,6 +4600,7 @@ body {
           #new-editor #file-editors .editor-actions .btn#editor-output-button:hover .editor-output-buttons {
             visibility: visible; }
     #new-editor #file-editors .file-title span[ebw-bind="current-filename"] {
+      display: none;
       font-size: 0.8em; }
     #new-editor #file-editors .file-title .bound-filename {
       display: inline-flex;
@@ -4524,14 +4614,11 @@ body {
         width: 100%;
         height: 100%; }
         #new-editor #file-editors .editor .repo-file-editor-workspace .repo-file-editor .CodeMirror {
-          font-size: 1em;
-          font-family: 'Inconsolata',monospace;
           position: absolute;
           top: 0;
           bottom: 0;
           left: 0;
-          right: 0;
-          height: 100%; }
+          right: 0; }
         #new-editor #file-editors .editor .repo-file-editor-workspace .repo-image-editor {
           background-color: #f8f8f8;
           padding: 1em;

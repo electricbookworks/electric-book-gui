@@ -119,6 +119,7 @@
 		.file-title {
 
 			span[ebw-bind="current-filename"] {
+				display: none; // hiding for now
 				font-size: 0.8em;
 			}
 
@@ -139,14 +140,11 @@
 				height: 100%;
 				.repo-file-editor {
 					.CodeMirror {
-						font-size: 1em;
-						font-family: 'Inconsolata',monospace;
 						position: absolute;
 						top: 0;
 						bottom: 0;
 						left: 0;
 						right: 0;
-						height: 100%;
 					}
 				}
 				.repo-image-editor {

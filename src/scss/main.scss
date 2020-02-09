@@ -6,6 +6,10 @@ $bp-m: 50em;
 $bp-l: 64em;
 $bp-xl: 80em;
 
+// Fonts
+$body-font-family: 'Karla', sans-serif;
+$body-font-family-code: 'IBM Plex Mono', monospace;
+
 // Colours
 @import 'colors';
 
@@ -17,6 +21,7 @@ $bp-xl: 80em;
 @import 'typography';
 @import 'forms';
 @import 'layout';
+@import 'codemirror';
 
 // Custom widgets
 @import 'widgets/buttons';

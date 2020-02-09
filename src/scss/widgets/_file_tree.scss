@@ -10,16 +10,19 @@
 			cursor: pointer;
 		}
 	}
-	.node.editing-in-progress .name::after {
-		background-color: $color-status-new;
-		border-radius: 1em;
-		color: $button-color;
-		content: "Editing";
-		font-size: 0.7em;
-		letter-spacing: 0.05em;
-		margin-left: 1em;
-		padding: 0 1em;
-		text-transform: uppercase;
+	.node.editing-in-progress .name {
+		font-weight: bold;
+		&::after {
+			background-color: $color-status-new;
+			border-radius: 1em;
+			color: $button-color;
+			content: "Editing";
+			font-size: 0.7em;
+			letter-spacing: 0.05em;
+			margin-left: 1em;
+			padding: 0 1em;
+			text-transform: uppercase;
+		}
 	}
 	.node.state-unchanged {
 	}
