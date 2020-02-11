@@ -114,6 +114,55 @@
 					}
 				}
 			}
+
+			// Icons
+			[id*="repo-"],
+			[id*="editor-"] {
+				&::before {
+					display: inline-block;
+					font-family: "FontAwesome";
+					font-style: normal;
+					font-variant: normal;
+					margin-right: 0.25em;
+					text-rendering: auto;
+					-webkit-font-smoothing: antialiased;
+				}
+			}
+			#repo-new-file {
+				&::before {
+					content: "\f016";
+				}
+			}
+			#editor-delete-button {
+				&::before {
+					content: "\f014";
+				}
+			}
+			#editor-rename-button {
+				&::before {
+					content: "\f040";
+				}
+			}
+			#editor-save-button {
+				&::before {
+					content: "\f0c7";
+				}
+			}
+			#repo-save-all {
+				&::before {
+					content: "\f0a0";
+				}
+			}
+			#editor-undo-button {
+				&::before {
+					content: "\f0e2";
+				}
+			}
+			#editor-output-button {
+				&::before {
+					content: "\f02d";
+				}
+			}
 		}
 
 		.file-title {
