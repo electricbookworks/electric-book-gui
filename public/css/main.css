@@ -4394,13 +4394,16 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   color: #818181; }
 
 .repo-flow {
+  align-items: flex-start;
+  background-color: #F5F5F5;
   display: flex;
+  min-height: 7em;
   padding: 1.5em 0 0.5em 0; }
   .repo-flow .repo-flow-repo-name {
-    align-items: center;
     align-self: flex-start;
     color: #262626;
     display: flex;
+    flex-direction: column;
     font-size: 0.9em;
     font-weight: bold;
     max-width: 20%;
@@ -4411,6 +4414,16 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       display: block; }
     .repo-flow .repo-flow-repo-name .repo-flow-repo-name-reponame {
       display: block; }
+    .repo-flow .repo-flow-repo-name .file-title {
+      color: #818181;
+      display: inline-block;
+      font-weight: normal; }
+      .repo-flow .repo-flow-repo-name .file-title .bound-filename {
+        display: inline; }
+      .repo-flow .repo-flow-repo-name .file-title::before {
+        content: "—"; }
+  body:not(.editorMaximised) .repo-flow .file-title {
+    display: none; }
   .repo-flow .repo-flow-steps {
     align-items: center;
     display: flex;
@@ -4425,23 +4438,29 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       .repo-flow .repo-flow-steps ol li {
         position: relative; }
         .repo-flow .repo-flow-steps ol li::before {
-          border-bottom: 2px solid #D9D9D9;
-          bottom: 2em;
-          content: "";
-          display: block;
-          left: 50%;
-          position: absolute;
-          width: 100vw;
-          z-index: -1; }
-        .repo-flow .repo-flow-steps ol li:last-child::before {
-          border-bottom-color: #fdfdfd; }
-        .repo-flow .repo-flow-steps ol li::after {
           color: #D9D9D9;
           content: "\2022";
           display: block;
           font-size: 2.5em;
           height: 1.5em;
-          text-align: center; }
+          position: absolute;
+          text-align: center;
+          top: 0.73em;
+          z-index: 3;
+          left: 50%;
+          transform: translateX(-50%); }
+        .repo-flow .repo-flow-steps ol li::after {
+          border-bottom: 2px solid #D9D9D9;
+          bottom: -1.8em;
+          content: "";
+          display: block;
+          left: 50%;
+          position: absolute;
+          width: 100vw;
+          z-index: 1; }
+        .repo-flow .repo-flow-steps ol li:last-child::after {
+          border-bottom-color: #F5F5F5;
+          z-index: 2; }
         .repo-flow .repo-flow-steps ol li a {
           position: relative; }
           .repo-flow .repo-flow-steps ol li a::after {
@@ -4455,32 +4474,32 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
             transform: translateX(-50%); }
           .repo-flow .repo-flow-steps ol li a.disabled::after {
             border-top-color: #E9E9E9; }
-          .repo-flow .repo-flow-steps ol li a:hover::after {
+          .repo-flow .repo-flow-steps ol li a:hover::after, .repo-flow .repo-flow-steps ol li a:active::after, .repo-flow .repo-flow-steps ol li a:focus::after {
             border-top-color: #ffd967; }
 
-[data-repo-flow-step="manage"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+0)::before {
-  border-bottom-color: #ffcc34; }
-
-[data-repo-flow-step="manage"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+1)::after {
+[data-repo-flow-step="manage"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+1)::before {
   color: #ffcc34; }
 
-[data-repo-flow-step="edit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+1)::before {
+[data-repo-flow-step="manage"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+0)::after {
   border-bottom-color: #ffcc34; }
 
-[data-repo-flow-step="edit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+2)::after {
+[data-repo-flow-step="edit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+2)::before {
   color: #ffcc34; }
 
-[data-repo-flow-step="commit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+2)::before {
+[data-repo-flow-step="edit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+1)::after {
   border-bottom-color: #ffcc34; }
 
-[data-repo-flow-step="commit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+3)::after {
+[data-repo-flow-step="commit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+3)::before {
   color: #ffcc34; }
 
-[data-repo-flow-step="submit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+3)::before {
+[data-repo-flow-step="commit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+2)::after {
   border-bottom-color: #ffcc34; }
 
-[data-repo-flow-step="submit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+4)::after {
+[data-repo-flow-step="submit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+4)::before {
   color: #ffcc34; }
+
+[data-repo-flow-step="submit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+3)::after {
+  border-bottom-color: #ffcc34; }
 
 .landing-page {
   max-width: 40em; }

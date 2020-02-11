@@ -309,7 +309,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = AddNewBookDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input value=\"collaborate\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"adaptation\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input placeholder=\"e.g. MobyDick\" type=\"text\" name=\"repo_new\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button class=\"btn\" data-event=\"click:choseType\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input value=\"new\" type=\"hidden\" name=\"action\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input name=\"repo_new\" placeholder=\"e.g. MobyDick\" type=\"text\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub owner and repo for the project you will contribute to.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbooks/core\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            AddNewBookDialog._template = t;
 	        }
@@ -472,7 +472,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = BoundFilename._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"bound-filename\">\n\t<span>Select a file to edit</span>\n\t<!-- <a href=\"#\" data-set=\"a\" target=\"_github\"><img src=\"/img/github-dark.svg\" /></a> -->\n</div>\n";
+	            d.innerHTML = "<div class=\"bound-filename\">\n\t<span class=\"bound-filename-text\">Select a file to edit</span>\n\t<!-- <a href=\"#\" data-set=\"a\" target=\"_github\"><img src=\"/img/github-dark.svg\" /></a> -->\n</div>\n";
 	            t = d.firstElementChild;
 	            BoundFilename._template = t;
 	        }
@@ -733,7 +733,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = LoginTokenDisplay._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<ul>\n\t<li class=\"token-display\" data-set=\"this\">\n\t\t<a href=\"\">LINK</a>\n\t\t<a href=\"\">X</a>\n\t</li>\n</ul>\n";
+	            d.innerHTML = "<ul>\n\t<li data-set=\"this\" class=\"token-display\">\n\t\t<a href=\"\">LINK</a>\n\t\t<a href=\"\">X</a>\n\t</li>\n</ul>\n";
 	            t = d.firstElementChild.childNodes[1];
 	            LoginTokenDisplay._template = t;
 	        }
@@ -827,7 +827,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = MergeEditor._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button data-event=\"click:save\" class=\"btn\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\">\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div class=\"merge-editor\">\n\t<div class=\"action-group\">\n\t\t<button class=\"btn\" data-event=\"click:save\">Save</button>\n\t</div>\n\t<div class=\"merge-mergely\">\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            MergeEditor._template = t;
 	        }
@@ -1159,7 +1159,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = conflict_ClosePRDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input id=\"closePR-no\" value=\"no\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            conflict_ClosePRDialog._template = t;
 	        }
@@ -3791,6 +3791,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        new RepoEditorPage_NewFileDialog$1(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
 	        new RepoEditorPage_RenameFileDialog$1(this.context, document.getElementById("editor-rename-button"), this.editor);
 	        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
+	            // Toggle body class
+	            document.body.classList.toggle('editorMaximised');
 	            // Set width of nav
 	            document.getElementById("new-editor-files-nav")
 	                .style.width = showing ? "20%" : "0px";
@@ -3805,9 +3807,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            // Hide file-editor actions
 	            document.getElementById("editor-actions")
 	                .style.visibility = showing ? "visible" : "hidden";
-	            // Hide filename
-	            document.querySelector(".file-title")
-	                .style.visibility = showing ? "visible" : "hidden";
+	            // Move filename to repo flow
+	            var filename = document.querySelector(".file-title");
+	            var filenameParent = document.querySelector(".repo-flow-repo-name");
+	            filenameParent.appendChild(filename);
+	            // Remove slashes from start and end of filename
+	            var filenameText = filename.querySelector('.bound-filename-text');
+	            var newFilenameText = filenameText.innerHTML.replace(/^\/|\/$/g, '');
+	            filenameText.innerHTML = newFilenameText;
 	            // Hide footer
 	            document.getElementById("page-footer")
 	                .style.display = showing ? 'flex' : 'none';

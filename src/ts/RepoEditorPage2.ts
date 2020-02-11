@@ -89,6 +89,9 @@ export class RepoEditorPage {
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
 
+				// Toggle body class
+				document.body.classList.toggle('editorMaximised');
+
 				// Set width of nav
 				document.getElementById(`new-editor-files-nav`)
 					.style.width = showing ? "20%":"0px";
@@ -107,9 +110,15 @@ export class RepoEditorPage {
 				document.getElementById(`editor-actions`)
 					.style.visibility = showing ? `visible` : `hidden`;
 
-				// Hide filename
-				document.querySelector(`.file-title`)
-					.style.visibility = showing ? `visible` : `hidden`;
+				// Move filename to repo flow
+				let filename = document.querySelector(`.file-title`);
+				let filenameParent = document.querySelector(`.repo-flow-repo-name`);
+				filenameParent.appendChild(filename);
+
+				// Remove slashes from start and end of filename
+				let filenameText = filename.querySelector('.bound-filename-text');
+				let newFilenameText = filenameText.innerHTML.replace(/^\/|\/$/g, '');
+				filenameText.innerHTML = newFilenameText;
 
 				// Hide footer
 				document.getElementById(`page-footer`)
