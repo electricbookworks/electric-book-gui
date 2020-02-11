@@ -26,13 +26,19 @@
 			</label>
 			<div class="repo-commit-actions">
 				<a href="." class="btn btn-cancel">Cancel</a>
-				<input type="submit" name="action" value="Commit" class="btn" />
+				<button class="btn" id="repo-commit-action-commit" type="submit" name="action">
+					Commit
+				</button>
 			</div>
 		</form>
 	{{else}}
-		<p>You haven't saved any changes yet, so you have nothing to commit.</p>
-		<p><a href="." class="btn">Back to {{.RepoName}}</a></p>
-
+		<div class="repo-commit-nothing-to-commit">
+			<p>
+				You haven't saved any changes yet, so you have nothing to commit.
+				<br />
+				<a href=".">Back to editing {{.RepoName}}.</a>
+			</p>
+		</div>
 	{{end}}
 </main>
 {{template "_nav_footer.html" .}}

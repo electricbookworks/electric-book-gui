@@ -1,22 +1,19 @@
 .Toast {
+	bottom: 0;
+	left: 0;
 	position: fixed;
 	width: 100%;
-	left: 0;
-	bottom: 0;
 
-	&>div {
-		background-color: rgba(0,0,0,0.8);
+	& > div {
+		@include box-shadow();
+		background-color: rgba($color-black, 0.8);
+		border-radius: $global-radius;
+		color: $color-white;
 		font-weight: bold;
-		color: white;
-		border-radius: 0.6em;
-		border: 1px solid black;
 		margin: 1em auto;
-
 		padding: 1em;
-		box-shadow: 5px 5px 5px black;
-
+		text-align: center;
 		width: 20em;
-		text-alignment: center;
-		
+	
 	}
 }

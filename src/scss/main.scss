@@ -53,6 +53,7 @@ $body-font-family-code: 'IBM Plex Mono', monospace;
 @import 'pages/repo_diff';
 @import 'pages/repo_diff_file_viewer';
 @import 'pages/repo_diff_patch';
+@import 'pages/error';
 
 // Order is important here,
 // this must come after pages/repo_conflict

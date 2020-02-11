@@ -256,7 +256,7 @@ func repoCommit(c *Context) error {
 		if nil != err {
 			return err
 		}
-		c.FlashSuccess(`Commit Succeeded`, `Your commit succeeded with ID {{.Oid}}`, map[string]interface{}{`Oid`: oid.String()})
+		c.FlashSuccess(`Committed!`, `Your changes have been committed (ID {{.Oid}})`, map[string]interface{}{`Oid`: oid.String()})
 		return c.Redirect(pathRepoDetail(r))
 	}
 

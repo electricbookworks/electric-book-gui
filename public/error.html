@@ -1,13 +1,12 @@
 {{template "_header.html" .}}
-
 {{template "_nav_main.html" .}}
 
 <main>
     <article class="constrain-page center error-page">
 
-        <h1>Error Encountered</h1>
+        <h1>Oh no, an error</h1>
 
-        <p>I'm afraid we've run into an error. The full description is:</p>
+        <p>Sorry, we've run into a problem. The technical description is:</p>
 
         <p>
             <code>
@@ -15,14 +14,17 @@
             </code>
         </p>
 
-        <p>If you cannot resolve this, please send an error report describing what you were doing when the error occurred.</p>
+        <p>If you can't resolve this, please let us know what you were doing when the error occurred. That will help us figure out what went wrong.</p>
 
         <form method="post" action="/error/report">
         <input type="hidden" name="when" value="{{.When}}" />
         <input type="hidden" name="user" value="{{.User}}" />
         <input type="hidden" name="error" value="{{.Err}}" />
         <textarea name="description" rows="5" wordwrap="true"></textarea>
-        <input type="submit" name="Send error report" class="btn"/>
+        <div class="error-page-actions">
+            <a href="/" class="btn btn-cancel error-page-action-cancel">Cancel</a>
+            <input type="submit" name="error" value="Send error report" class="btn"/>
+        </div>
         </form>
     </article>
 </main>

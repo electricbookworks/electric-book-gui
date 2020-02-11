@@ -11,10 +11,10 @@
 	{{end}}
 </nav>
 {{if .Flashes -}}
-<div id="flashes" class="constrain-page flashes">
+<div id="flashes" class="flashes">
 {{range .Flashes}}
-	<div class="callout flash {{.CSS}}" data-closable>
-		{{- if .Title}}<h1>{{.Title}}</h1>{{end -}}
+	<div class="flash {{.CSS}}" data-closable>
+		{{- if .Title}}<h2>{{.Title}}</h2>{{end -}}
 		<div class="content">{{.Content}}</div>
 		<button class="close-button" aria-label="Dismiss alert" type="button" data-close>
 			<span aria-hidden="true">&times;</span>

@@ -7,27 +7,37 @@
 
 <main id="pull-request-new" class="pull-request-workspace constrain-page">
 
-<h1>Submit changes for review</h1>
+	<h1>Submit changes for review</h1>
 
-<div>
-	<a href="https://github.com/{{.UpstreamOwner}}/{{.UpstreamName}}/compare/master...{{.UserName}}:master#diff" target="github">See the changes you are submitting</a>
-</div>
-<form method="post" action="./new">
-<div>
-<label for="title">Title
-<input type="text" name="title" />
-</label>
-<!-- <textarea name="notes" placeholder="About the changes made.">
-</textarea>
- --></div>
+	{{if .UpstreamOwner}}
+		<div class="pull-request-new-see-changes">
+			<a href="https://github.com/{{.UpstreamOwner}}/{{.UpstreamName}}/compare/master...{{.UserName}}:master#diff" target="_blank" >See the changes you are submitting.</a>
+		</div>
 
-<div>
-<input type="submit" value="Submit Changes" />
-</div>
 
-</form>
+		<form method="post" action="./new">
+		<div>
+			<label for="description">Description
+				<span class="pull-request-new-description-note">Provide a clear, specific note about the changes you're submitting.</span>
+			<input type="text" name="description" />
+			</label>
+		</div>
+
+		<div class="pull-request-new-actions">
+			<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/" class="btn btn-cancel error-page-action-cancel">Cancel</a>
+			<input class="btn" type="submit" value="Submit" />
+		</div>
+
+		</form>
+	{{else}}
+		<p class="pull-request-new-no-upstream">
+			You're editing the original project. There isn't a parent project to submit to.
+			<br>
+			<a onclick="window.history.go(-1); return false;">Go back.</a>
+		</p>
+	{{end}}
 
 </main>
-{{template "_nav_footer.html" .}}
 
+{{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}

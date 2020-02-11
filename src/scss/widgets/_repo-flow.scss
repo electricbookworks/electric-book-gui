@@ -121,8 +121,16 @@
                         position: absolute;
                         transform: translateX(-50%);
                     }
-                    &.disabled::after {
-                        border-top-color: $button-background-disabled;
+                    &.disabled,
+                    &[disabled] {
+                        &::after {
+                            border-top-color: $button-background-disabled;
+                        }
+                        &:hover::after,
+                        &:active::after,
+                        &:focus::after {
+                            border-top-color: $button-background-disabled;
+                        }
                     }
                     &:hover::after,
                     &:active::after,
