@@ -13,6 +13,10 @@ textarea {
     border: solid 1px $color-offgray;
 }
 
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+    box-shadow: none;
+}
+
 [type="checkbox"],
 [type="radio"] {
 	margin-right: 0.5em;
@@ -21,22 +25,23 @@ textarea {
 select,
 input,
 textarea {
-    margin-left: 0.5em;
+    // margin-left: 0.5em;
+}
+
+label {
+    font-size: 1rem;
 }
 
 .cta,
 .btn,
 [type="submit"] {
     background-color: $color-primary;
+    border-width: 0;
 	color: $color-black;
 	display: inline-block;
     text-decoration: none;
 	// padding: 0.5em 1em;
 	border-radius: $global-radius;
-	// border-top: 0;
-	// border-right: 0;
-	// border-left: 0;
-    // border-bottom: 0.15em solid darken($color-primary, 10%);
 	&:hover {
 		// background-color: lighten($color-primary, 10%);
         // border-bottom: 0.15em solid transparent;
@@ -73,8 +78,6 @@ textarea {
     }
 }
 
-
-
 .btn-wide,
 .input-wide,
 .label-wide {
@@ -105,6 +108,11 @@ textarea {
 	&:hover {
 		background: lighten($color-darkgray, 20%);
 	}
+}
+
+.btn-cancel,
+.btn.btn-cancel {
+    background-color: $color-mediumgray;
 }
 
 .btn-alt {

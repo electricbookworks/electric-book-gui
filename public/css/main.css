@@ -6091,19 +6091,22 @@ input,
 textarea {
   border: solid 1px #D9D9D9; }
 
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
+textarea {
+  box-shadow: none; }
+
 [type="checkbox"],
 [type="radio"] {
   margin-right: 0.5em; }
 
-select,
-input,
-textarea {
-  margin-left: 0.5em; }
+label {
+  font-size: 1rem; }
 
 .cta,
 .btn,
 [type="submit"] {
   background-color: #ffcc34;
+  border-width: 0;
   color: #262626;
   display: inline-block;
   text-decoration: none;
@@ -6162,6 +6165,10 @@ textarea {
   border-bottom: 0.15em solid #686868; }
   .btn-secondary:hover {
     background: #b4b4b4; }
+
+.btn-cancel,
+.btn.btn-cancel {
+  background-color: #D9D9D9; }
 
 .btn-alt {
   background-color: #262626;
@@ -7342,6 +7349,29 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       background-color: transparent;
       justify-content: flex-end;
       padding: 0; }
+
+.repo-commit-number-of-changes {
+  font-weight: bold; }
+
+.repo-commit-file-list {
+  background-color: #F5F5F5;
+  box-sizing: border-box;
+  margin-bottom: 3em;
+  padding: 1em;
+  width: 100%;
+  list-style-type: none;
+  margin-left: 0; }
+  .repo-commit-file-list .repo-commit-change-type {
+    color: #818181;
+    font-size: 0.8em; }
+
+.commit-message-label-note {
+  color: #818181;
+  font-size: 0.8rem;
+  margin: 0 0 0.5em 0; }
+
+.repo-commit-actions {
+  text-align: right; }
 
 #repo-detail .repo-detail-section {
   margin-bottom: 3em; }
