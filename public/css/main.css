@@ -6728,6 +6728,16 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   display: flex;
   min-height: 7em;
   padding: 1.5em 0 0.5em 0; }
+  .repo-flow .repo-flow-home {
+    color: #D9D9D9;
+    padding: 0 1em; }
+    .repo-flow .repo-flow-home .repo-flow-home-link::before {
+      content: "\f015";
+      content: "\f060";
+      content: "\f0c9";
+      font-family: "FontAwesome"; }
+    .repo-flow .repo-flow-home .repo-flow-home-link:hover, .repo-flow .repo-flow-home .repo-flow-home-link:active, .repo-flow .repo-flow-home .repo-flow-home-link:focus {
+      color: #ffcc34; }
   .repo-flow .repo-flow-repo-name {
     align-self: flex-start;
     color: #262626;
@@ -6736,7 +6746,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     font-size: 0.9em;
     font-weight: bold;
     max-width: 20%;
-    padding: 0 0.5em 0.5em 1.5em;
+    padding: 0 0 0.5em 0;
     width: 20%; }
     .repo-flow .repo-flow-repo-name .repo-flow-repo-name-owner {
       color: #818181;
