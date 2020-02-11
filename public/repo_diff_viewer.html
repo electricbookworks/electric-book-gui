@@ -1,6 +1,10 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="manage"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-diff-viewer">
 	<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates" class="top-bar">
 		<label>From</label>

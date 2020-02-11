@@ -7401,6 +7401,8 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
 #repo-detail .repo-detail-settings {
   position: relative;
   text-align: right; }
+  #repo-detail .repo-detail-settings .repo-detail-settings-action {
+    letter-spacing: 0.1em; }
   #repo-detail .repo-detail-settings ul {
     box-shadow: 3px 3px 7px -7px #262626;
     background-color: #fdfdfd;
