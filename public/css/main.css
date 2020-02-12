@@ -6784,16 +6784,20 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
           content: "\2022";
           display: block;
           font-size: 2.5em;
-          height: 1.5em;
+          height: 1.4em;
+          line-height: 1.37;
           position: absolute;
           text-align: center;
-          top: 0.73em;
+          bottom: -200%;
           z-index: 3;
           left: 50%;
           transform: translateX(-50%); }
+          @supports (-moz-appearance: none) {
+            .repo-flow .repo-flow-steps ol li::before {
+              line-height: 1.425; } }
         .repo-flow .repo-flow-steps ol li::after {
           border-bottom: 2px solid #D9D9D9;
-          bottom: -1.8em;
+          bottom: -100%;
           content: "";
           display: block;
           left: 50%;
