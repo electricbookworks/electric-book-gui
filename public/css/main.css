@@ -7562,13 +7562,8 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     font-weight: bold; }
 
 #repo-diff-viewer {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: space-between;
   position: relative; }
-  #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-option-bar {
+  #repo-diff-viewer .repo-diff-viewer-option-bar {
     background-color: #262626;
     height: 2em;
     padding: 0.25em 0.25em 0.25em 0;
@@ -7577,9 +7572,9 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     left: 0;
     right: 0;
     z-index: -1; }
-  #repo-diff-viewer .repo-diff-viewer-tabs input[type="radio"] {
+  #repo-diff-viewer input[type="radio"] {
     display: none; }
-  #repo-diff-viewer .repo-diff-viewer-tabs label.btn {
+  #repo-diff-viewer label.btn {
     background-color: #595959;
     color: #fdfdfd;
     cursor: pointer;
@@ -7587,51 +7582,50 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     margin-bottom: 0.65em;
     margin-top: 0.35rem;
     padding: 0.3em 0.5em; }
-    #repo-diff-viewer .repo-diff-viewer-tabs label.btn[for="changes-by-date"] {
+    #repo-diff-viewer label.btn[for="changes-by-date"] {
       margin-left: 3rem; }
-    #repo-diff-viewer .repo-diff-viewer-tabs label.btn:hover {
+    #repo-diff-viewer label.btn:hover {
       background-color: #ffcc34;
       color: #262626; }
-    #repo-diff-viewer .repo-diff-viewer-tabs label.btn::after {
-      border-bottom: 1px solid #D9D9D9;
-      bottom: 0;
-      content: "";
-      left: -100vw;
-      position: absolute;
-      width: 200vw; }
-  #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates,
-  #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-commits {
+  #repo-diff-viewer .repo-diff-viewer-tab-dates,
+  #repo-diff-viewer .repo-diff-viewer-tab-commits {
     display: none;
     visibility: hidden; }
-  #repo-diff-viewer .repo-diff-viewer-tabs #changes-by-date:checked ~ label[for="changes-by-date"] {
+  #repo-diff-viewer #changes-by-date:checked ~ label[for="changes-by-date"] {
     background-color: #ffcc34;
     color: #262626; }
-  #repo-diff-viewer .repo-diff-viewer-tabs #changes-by-date:checked ~ #repo-diff-viewer-tab-dates {
+  #repo-diff-viewer #changes-by-date:checked ~ #repo-diff-viewer-tab-dates {
     display: block;
     visibility: visible; }
-  #repo-diff-viewer .repo-diff-viewer-tabs #changes-by-commit:checked ~ label[for="changes-by-commit"] {
+  #repo-diff-viewer #changes-by-commit:checked ~ label[for="changes-by-commit"] {
     background-color: #ffcc34;
     color: #262626; }
-  #repo-diff-viewer .repo-diff-viewer-tabs #changes-by-commit:checked ~ #repo-diff-viewer-tab-commits {
+  #repo-diff-viewer #changes-by-commit:checked ~ #repo-diff-viewer-tab-commits {
     display: flex;
     visibility: visible; }
-  #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 3rem; }
-    #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form > label {
-      margin-right: 1em; }
-    #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form > input {
-      margin-right: 1em;
-      width: 10em; }
-    #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form > input, #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form > button {
-      margin-bottom: 0; }
-    #repo-diff-viewer .repo-diff-viewer-tabs .repo-diff-viewer-tab-dates form .btn {
-      padding: 0.72em 0.5em; }
+  #repo-diff-viewer .repo-diff-viewer-tab-dates {
+    margin: 2em 0 0 3em; }
+    #repo-diff-viewer .repo-diff-viewer-tab-dates form {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center; }
+      #repo-diff-viewer .repo-diff-viewer-tab-dates form > label {
+        color: #818181;
+        font-weight: bold;
+        margin-right: 1em; }
+      #repo-diff-viewer .repo-diff-viewer-tab-dates form > input {
+        margin-right: 1em;
+        width: 10em; }
+      #repo-diff-viewer .repo-diff-viewer-tab-dates form > input, #repo-diff-viewer .repo-diff-viewer-tab-dates form > button {
+        margin-bottom: 0; }
   #repo-diff-viewer .repo-diff-viewer-tab-commits {
-    display: flex; }
+    bottom: 3em;
+    display: flex;
+    left: 2em;
+    position: absolute;
+    right: 0;
+    top: 3.5em; }
     #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists {
       flex-grow: 1;
       display: flex;
@@ -7640,28 +7634,45 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       justify-content: space-between; }
       #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list {
         flex-grow: 1;
-        position: relative; }
+        position: relative;
+        width: 100%; }
+        #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list#commit-from::after {
+          color: #818181;
+          content: "\f054";
+          font-family: "FontAwesome";
+          position: absolute;
+          top: 50%;
+          right: 0em; }
+        #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .repo-diff-viewer-commit-list-label {
+          color: #818181;
+          font-weight: bold;
+          padding: 1em;
+          width: 100%; }
         #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary-list {
           position: absolute;
           left: 0;
           right: 0;
-          top: 0;
-          bottom: 0;
+          top: 3em;
+          bottom: -3em;
           overflow: scroll; }
         #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary {
+          background-color: #F5F5F5;
+          border-radius: 0.15em;
+          margin: 0.5em;
           padding: 0.6em 1em;
-          border-top: 1px solid #F5F5F5;
           cursor: pointer; }
           #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary .when {
-            font-weight: bold; }
+            color: #818181;
+            font-size: 0.7em; }
           #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary:hover {
-            background-color: #cfc; }
+            background-color: #ffcc34; }
           #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary.selected {
-            background-color: #8c8; }
+            background-color: #ffcc34; }
         #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-tab-commit-lists .commit-list .commit-summary:first-child {
           border-top: 0px; }
     #repo-diff-viewer .repo-diff-viewer-tab-commits .repo-diff-viewer-actions {
-      margin: 2rem;
+      align-self: center;
+      margin: 2rem 1rem 0 1rem;
       text-align: right; }
 
 ins.inserted {

@@ -1,110 +1,103 @@
 #repo-diff-viewer {
-    flex-grow: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	justify-content: space-between;
+    // flex-grow: 1;
+	// display: flex;
+	// flex-direction: column;
+	// align-items: stretch;
+	// justify-content: space-between;
     position: relative;
 
-    .repo-diff-viewer-tabs {
-        // position: relative;
+    .repo-diff-viewer-option-bar {
+        background-color: $color-black;
+        height: 2em;
+        padding: 0.25em 0.25em 0.25em 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+    }
 
-        .repo-diff-viewer-option-bar {
-			background-color: $color-black;
-			height: 2em;
-			padding: 0.25em 0.25em 0.25em 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: -1;
+    input[type="radio"] {
+        display: none;
+    }
+
+    label.btn {
+        background-color: $button-background-alt;
+        color: $button-color-alt;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-bottom: 0.65em;
+        margin-top: 0.35rem;
+        padding: 0.3em 0.5em;
+
+        &[for="changes-by-date"] {
+            margin-left: 3rem;
         }
 
-        input[type="radio"] {
-            display: none;
+        &:hover {
+            background-color: $button-background;
+            color: $button-color;
         }
-
-        label.btn {
-            background-color: $button-background-alt;
-            color: $button-color-alt;
-            cursor: pointer;
-            font-size: 0.8rem;
-            margin-bottom: 0.65em;
-            margin-top: 0.35rem;
-            padding: 0.3em 0.5em;
-
-            &[for="changes-by-date"] {
-                margin-left: 3rem;
-            }
-
-            &:hover {
-                background-color: $button-background;
-                color: $button-color;
-            }
-
-            &::after {
-                border-bottom: 1px solid $color-mediumgray;
-                bottom: 0;
-                content: "";
-                left: -100vw;
-                position: absolute;
-                width: 200vw;
-            }
+    }
+    .repo-diff-viewer-tab-dates,
+    .repo-diff-viewer-tab-commits {
+        display: none;
+        visibility: hidden;
+    }
+    #changes-by-date:checked {
+        & ~ label[for="changes-by-date"] {
+            background-color: $color-primary;
+            color: $color-black;
         }
-        .repo-diff-viewer-tab-dates,
-        .repo-diff-viewer-tab-commits {
-            display: none;
-            visibility: hidden;
+        & ~ #repo-diff-viewer-tab-dates {
+            display: block;
+            visibility: visible;
         }
-        #changes-by-date:checked {
-            & ~ label[for="changes-by-date"] {
-                background-color: $color-primary;
-                color: $color-black;
-            }
-            & ~ #repo-diff-viewer-tab-dates {
-                display: block;
-                visibility: visible;
-            }
+    }
+    #changes-by-commit:checked {
+        & ~ label[for="changes-by-commit"] {
+            background-color: $color-primary;
+            color: $color-black;
         }
-        #changes-by-commit:checked {
-            & ~ label[for="changes-by-commit"] {
-                background-color: $color-primary;
-                color: $color-black;
-            }
-            & ~ #repo-diff-viewer-tab-commits {
-                display: flex;
-                visibility: visible;
-            }
+        & ~ #repo-diff-viewer-tab-commits {
+            display: flex;
+            visibility: visible;
         }
+    }
 
-        .repo-diff-viewer-tab-dates form {
+    .repo-diff-viewer-tab-dates {
+        margin: 2em 0 0 3em;
+        
+        form {
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
-            padding: 3rem;
-
+            
             & > label {
+                color: $color-darkgray;
+                font-weight: bold;
                 margin-right: 1em;
             }
-
+    
             & > input {
                 margin-right: 1em;
                 width: 10em;
             }
-
+    
             & > input, & > button {
                 margin-bottom: 0;
-            }
-
-            .btn {
-                padding: 0.72em 0.5em;
             }
         }
     }
 
     .repo-diff-viewer-tab-commits {
+        bottom: 3em;
         display: flex;
+        left: 2em;
+        position: absolute;
+        right: 0;
+        top: 3.5em;
 
         .repo-diff-viewer-tab-commit-lists {
             flex-grow: 1;
@@ -116,29 +109,53 @@
             .commit-list {
                 flex-grow: 1;
                 position: relative;
+                width: 100%; // keeps list columns equal widths
+
+                // Arrow between lists
+                &#commit-from {
+                    &::after {
+                        color: $color-darkgray;
+                        content: "\f054";
+                        font-family: "FontAwesome";
+                        position: absolute;
+                        top: 50%;
+                        right: 0em;
+                    }
+                }
+
+                .repo-diff-viewer-commit-list-label {
+                    color: $color-darkgray;
+                    font-weight: bold;
+                    padding: 1em;
+                    width: 100%;
+                }
 
                 .commit-summary-list {
                     position: absolute;
                     left: 0;
                     right: 0;
-                    top: 0;
-                    bottom: 0;
+                    top: 3em; // space for list labels
+                    bottom: -3em; // align to bottom of page
                     overflow: scroll;
                 }
 
                 .commit-summary {
+                    background-color: $color-lightgray;
+                    border-radius: $global-radius;
+                    margin: 0.5em;
                     padding: 0.6em 1em;
-                    border-top: 1px solid $color-lightgray;
+                    // border-top: 1px solid $color-lightgray;
                     cursor: pointer;
 
                     .when {
-                        font-weight: bold;
+                        color: $color-darkgray;
+                        font-size: 0.7em;
                     }
                     &:hover {
-                        background-color: #cfc;
+                        background-color: $button-background;
                     }
                     &.selected {
-                        background-color: #8c8;
+                        background-color: $button-background;
                     }
                 }
                 .commit-summary:first-child {
@@ -148,7 +165,8 @@
         }
 
         .repo-diff-viewer-actions {
-            margin: 2rem;
+            align-self: center;
+            margin: 2rem 1rem 0 1rem; // align with arrow between lists
             text-align: right;
         }
     }

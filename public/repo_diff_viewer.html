@@ -7,36 +7,39 @@
 
 <main id="repo-diff-viewer">
 
-	<div class="repo-diff-viewer-tabs">
+	<div class="repo-diff-viewer-option-bar"></div>
+	<input type="radio" id="changes-by-date" name="changes-by-date-or-commit" checked>
+	<input type="radio" id="changes-by-commit" name="changes-by-date-or-commit">
+	<label class="btn" for="changes-by-date">Changes by date</label>
+	<label class="btn" for="changes-by-commit">Changes by version history</label>
 
-		<div class="repo-diff-viewer-option-bar"></div>
-		<input type="radio" id="changes-by-date" name="changes-by-date-or-commit" checked>
-		<input type="radio" id="changes-by-commit" name="changes-by-date-or-commit">
-		<label class="btn" for="changes-by-date">Changes by date</label>
-		<label class="btn" for="changes-by-commit">Changes by version history</label>
-
-		<div class="repo-diff-viewer-tab-dates" id="repo-diff-viewer-tab-dates">
-			<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates">
-				<label>From</label>
-				<input type="date" id="from-date" name="from-date" value="{{.FirstCommit.Format "2006-01-02"}}"/>
-				<label>to</label>
-				<input type="date" id="to-date" name="to-date" value="{{.LastCommit.Format "2006-01-02"}}"/>
-				<button type="submit" id="diff-dates-button" class="btn">See changes</button>
-			</form>
-		</div>
-	
-		<div class="repo-diff-viewer-tab-commits" id="repo-diff-viewer-tab-commits">
-			<div class="repo-diff-viewer-tab-commit-lists">
-				<div id="commit-from" class="commit-list"> </div>
-				<div id="commit-to" class="commit-list"> </div>
-			</div>
-			<div class="repo-diff-viewer-actions">
-				<button id="diff-view" class="btn" >See changes</button>
-			</div>
-		</div>
-
+	<div class="repo-diff-viewer-tab-dates" id="repo-diff-viewer-tab-dates">
+		<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates">
+			<label>See changes made between</label>
+			<input type="date" id="from-date" name="from-date" value="{{.FirstCommit.Format "2006-01-02"}}"/>
+			<label>and</label>
+			<input type="date" id="to-date" name="to-date" value="{{.LastCommit.Format "2006-01-02"}}"/>
+			<button type="submit" id="diff-dates-button" class="btn">See changes</button>
+		</form>
 	</div>
 
+	<div class="repo-diff-viewer-tab-commits" id="repo-diff-viewer-tab-commits">
+		<div class="repo-diff-viewer-tab-commit-lists">
+			<div id="commit-from" class="commit-list">
+				<div class="repo-diff-viewer-commit-list-label">
+					See changes between this commit …
+				</div>
+			</div>
+			<div id="commit-to" class="commit-list">
+				<div class="repo-diff-viewer-commit-list-label">
+					… and this commit
+				</div>
+			</div>
+		</div>
+		<div class="repo-diff-viewer-actions">
+			<button id="diff-view" class="btn" >See changes</button>
+		</div>
+	</div>
 
 </main>
 
