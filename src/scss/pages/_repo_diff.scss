@@ -1,9 +1,4 @@
 #repo-diff-viewer {
-    // flex-grow: 1;
-	// display: flex;
-	// flex-direction: column;
-	// align-items: stretch;
-	// justify-content: space-between;
     position: relative;
 
     .repo-diff-viewer-option-bar {
@@ -144,7 +139,6 @@
                     border-radius: $global-radius;
                     margin: 0.5em;
                     padding: 0.6em 1em;
-                    // border-top: 1px solid $color-lightgray;
                     cursor: pointer;
 
                     .when {
@@ -166,7 +160,7 @@
 
         .repo-diff-viewer-actions {
             align-self: center;
-            margin: 2rem 1rem 0 1rem; // align with arrow between lists
+            margin: 1rem 1rem 0 1rem; // align with arrow between lists
             text-align: right;
         }
     }

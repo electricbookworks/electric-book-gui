@@ -1,4 +1,4 @@
-#new-editor {
+#repo-editor {
 	align-items: stretch;
 	display: flex;
 	flex-direction: row;
@@ -6,7 +6,7 @@
 	justify-content: space-between;
 	position: relative;
 
-	#new-editor-files-nav {
+	#repo-editor-files-nav {
 		align-items: stretch;
 		display: flex;
 		flex-direction: column;
@@ -29,47 +29,7 @@
 			}
 		}
 
-		.file-container {
-			flex-grow: 1;
-			position:relative;
-
-			#all-files-editor {
-				// Also see _file_tree.scss for the files themselves
-				bottom: 0;
-				box-sizing: border-box;
-				left: 0;
-				margin: 0;
-				max-width: 100%;
-				overflow: scroll;
-				padding: 1.5em 0.5em 0.5em 0.5em; // top makes space for 'show-hide'
-				position: absolute;
-				top: 0;
-				width: 100%;
-
-				.allfiles-file {
-					box-sizing: border-box;
-					cursor: pointer;
-					list-style: none;
-					margin: 0;
-					padding-left: 1em;
-					padding: 0;
-
-					&:hover {
-						background-color: $color-primary;
-					}
-					&.changed {
-						color: $color-success-light;
-					}
-					&.removed {
-						color: $color-warning;
-						text-decoration: line-through;
-					}
-					&.ignore {
-						display: none;
-					}
-				}
-			}
-		}
+		// See _file_tree.scss
 	}
 
 	#file-editors {
@@ -197,7 +157,6 @@
 					}
 				}
 				.repo-image-editor {
-					background-color: #f8f8f8;
 					padding: 1em;
 					position: absolute;
 					top: 0;

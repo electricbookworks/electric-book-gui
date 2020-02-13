@@ -1,16 +1,19 @@
 {{template "_header.html" .}}
+
 <style type="text/css">
 </style>
+
 <div id="float-toolbar">
-	<div id="print-button" class="float-button"><span>Print</span></div>
-	<div id="wrap-button" class="float-button wordwrap"><span>Word</span><span>Wrap</span></div>
+	<div id="wrap-button" class="btn wordwrap">Wrap lines</div>
+	<div id="print-button" class="btn">Save PDF</div>
 </div>
+
 <main id="repo-diff-patch" class="wordwrap">
 </main>
 
-
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffPatchPage">
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     //document.body.classList.add('repo-diff-file-viewer');
@@ -34,7 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 });
 </script>
+
 <script type="text/hidden" id="patch">
 	{{- .Patch.String | raw -}}
 </script>
+
 {{template "_footer.html" .}}

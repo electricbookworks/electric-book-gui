@@ -1,50 +1,105 @@
 
-#repo-diff-patch tbody td, #repo-diff-patch tbody th {
-	padding: 0;
+// Override default diff styles
+
+#repo-diff-patch {
+	padding: 1em;
+
+	.d2h-file-list-wrapper {
+		display: none;
+		margin: 0;
+		padding: 1em;
+
+		.d2h-file-name-wrapper {
+			font-family: $body-font-family;
+		}
+	}
+
+	.d2h-file-header {
+		display: none;
+	}
+
+	.d2h-info {
+		display: none;
+	}
+
+	.d2h-file-wrapper {
+		border: 0;
+
+		.d2h-diff-table {
+			font-family: $body-font-family-code;
+
+			.d2h-diff-tbody {
+				border: 0;
+			}
+
+			td {
+				background-color: $white2;
+				padding: 0.2em 0;
+			}
+		}
+
+		.d2h-code-linenumber {
+			border: 0;
+			font-size: 0.7em;
+			width: 5em;
+			.line-num1 {
+				width: auto;
+			}
+			.line-num2 {
+				width: auto;
+			}
+		}
+	}
+
+	tbody td,
+	#repo-diff-patch tbody th {
+		padding: 0;
+	}
+
+	&.wordwrap {
+		.d2h-code-line-ctn {
+			white-space: pre-wrap;
+		}
+	}
 }
-#repo-diff-patch.wordwrap .d2h-code-line-ctn {
-	white-space: pre-wrap;
-}
+
+// Display controls
 #float-toolbar {
 	position: fixed;
 	top: 1em;
 	right: 1em;
-	z-index: 10000;
+	z-index: 10;
 
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: stretch;
-}
-.float-button {
-	width: 4em;
-	height: 4em;
-	background-color: #999;
-	color: white;
-	cursor: pointer;
-	font-size: 0.6em;
-	text-transform: uppercase;
-	font-weight: bold;
-	color: white;
-	border-radius: 0.4em;
-	border: 1px solid #333;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-	margin-left: 1em;
-}
-.float-button:first-child {
-	margin-left: 0;
-}
-#wrap-button.wordwrap {
-	background-color: $color-primary;
-	border-color: #999;
+
+	.btn {
+		background-color: $button-background-alt;
+		color: $button-color-alt;
+		font-size: 0.8rem;
+		padding: 0.3em 0.5em;
+
+		&:first-child {
+			margin-right: 0.5em;
+		}
+
+		// Word-wrap button is coloured when active
+		&.wordwrap {
+			background-color: $button-background;
+			color: $button-color;
+		}
+	}
 }
 
+// Note:
+// When the file is new, its contents are served as plain text in an iframe.
+// There is not currently a way to target that with CSS.
+
+// Print styles
 @media print {
-	body { 
+	body {
 		-webkit-print-color-adjust: exact;
 		color-adjust: exact;
 	}

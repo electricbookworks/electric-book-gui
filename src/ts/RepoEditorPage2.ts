@@ -93,10 +93,10 @@ export class RepoEditorPage {
 				document.body.classList.toggle('editorMaximised');
 
 				// Set width of nav
-				document.getElementById(`new-editor-files-nav`)
+				document.getElementById(`repo-editor-files-nav`)
 					.style.width = showing ? "20%":"0px";
 				let newEditorFilesNavClasses = document
-					.getElementById(`new-editor-files-nav`).classList;
+					.getElementById(`repo-editor-files-nav`).classList;
 				newEditorFilesNavClasses.toggle('files-nav-hidden');
 
 				// Show/hide container (avoids leaving scrollbar visible)

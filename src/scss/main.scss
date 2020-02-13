@@ -41,10 +41,10 @@ $body-font-family-code: 'IBM Plex Mono', monospace;
 
 // Page-specific styles
 @import 'pages/landing';
-@import 'pages/new-editor';
 @import 'pages/pull_new';
 @import 'pages/pull_request_list';
 @import 'pages/pull_request_view';
+@import 'pages/repo_editor';
 @import 'pages/repo_conflict';
 @import 'pages/repo_list';
 @import 'pages/repo_commit';

@@ -9,10 +9,19 @@ main {
         font-size: 0.8rem;
         height: 100%;
         min-height: 100%;
+        padding: 1em 0;
         width: 100%;
     
         pre {
             font-family: $body-font-family-code;
+        }
+
+        // Search box
+        .CodeMirror-dialog-top {
+            padding: 1em;
+            input {
+                box-shadow: none;
+            }
         }
 
         .CodeMirror-sizer {
@@ -20,7 +29,8 @@ main {
         }
     
         .CodeMirror-line {
-            padding: 0 1em;
+            line-height: 1.6em;
+            padding: 0.1em 1em;
         }
 
         .CodeMirror-gutters {
