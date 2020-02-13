@@ -13,6 +13,29 @@
 
 	.repo-diff-file-viewer-tools {
 		position: absolute;
+		top: -1.75em;
+		left: 3em;
+
+		.btn {
+			background-color: $button-background-alt;
+			color: $button-color-alt;
+			font-size: 0.8rem;
+			padding: 0.3em 0.5em;
+
+			&::before {
+				// content: "\f053"; // chevron
+				content: "\f060"; // arrow
+				font-family: "FontAwesome";	
+				margin-right: 0.35em;
+			}
+
+			&:hover,
+			&:active,
+			&:focus {
+				background-color: $button-background;
+				color: $button-color;
+			}
+		}
 	}
 
 	#diff-view {

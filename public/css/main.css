@@ -7723,7 +7723,21 @@ del.deleted {
   height: 100%;
   width: 100%; }
   #repo-diff-file-viewer .repo-diff-file-viewer-tools {
-    position: absolute; }
+    position: absolute;
+    top: -1.75em;
+    left: 3em; }
+    #repo-diff-file-viewer .repo-diff-file-viewer-tools .btn {
+      background-color: #595959;
+      color: #fdfdfd;
+      font-size: 0.8rem;
+      padding: 0.3em 0.5em; }
+      #repo-diff-file-viewer .repo-diff-file-viewer-tools .btn::before {
+        content: "\f060";
+        font-family: "FontAwesome";
+        margin-right: 0.35em; }
+      #repo-diff-file-viewer .repo-diff-file-viewer-tools .btn:hover, #repo-diff-file-viewer .repo-diff-file-viewer-tools .btn:active, #repo-diff-file-viewer .repo-diff-file-viewer-tools .btn:focus {
+        background-color: #ffcc34;
+        color: #262626; }
   #repo-diff-file-viewer #diff-view {
     background-color: #fdfdfd;
     border: none;
