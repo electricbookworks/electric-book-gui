@@ -1,3 +1,7 @@
+{{$repoOwner := .RepoOwner}}
+{{$repoName := .RepoName}}
+{{$state := .ERepo.MustRepoState}}
+
 <div class="repo-flow">
 	<div class="repo-flow-home"><a href="/" class="repo-flow-home-link"></a></div>
 	<div class="repo-flow-repo-name">
@@ -14,6 +18,9 @@
 		<ol>
 			<li>
 				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">Manage</a>
+
+				{{template "_repo_detail_settings.html" .}}
+
 			</li>
 			<li>
 				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit</a>

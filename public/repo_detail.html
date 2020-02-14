@@ -22,31 +22,8 @@
                         Edit text
                     </a>
 
-                <div class="repo-detail-settings">
-                    <a title="More actions" class="repo-detail-settings-action">•••</a>
-                    <ul>
-                        <li>
-                            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/files">
-                                Manage images
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/{{.RepoOwner}}/{{.Repo.Name}}/settings/collaboration" target="_blank" rel="noreferrer noopener">
-                                Manage collaborators
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/diff">
-                                View project history
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/{{.RepoOwner}}/{{.RepoName}}" target="_blank" rel="noreferrer noopener">
-                                See project on GitHub
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                    {{template "_repo_detail_settings.html" .}}
+
             </div>
 
         </div>

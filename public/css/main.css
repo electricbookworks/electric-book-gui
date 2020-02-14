@@ -6886,6 +6886,23 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
             border-top-color: #E9E9E9; }
           .repo-flow .repo-flow-steps ol li a:hover::after, .repo-flow .repo-flow-steps ol li a:active::after, .repo-flow .repo-flow-steps ol li a:focus::after {
             border-top-color: #ffd967; }
+        .repo-flow .repo-flow-steps ol li .repo-detail-settings {
+          position: absolute;
+          right: -2.5em;
+          top: 0.33em;
+          z-index: 3;
+          display: none; }
+          .repo-flow .repo-flow-steps ol li .repo-detail-settings .repo-detail-settings-action {
+            color: #D9D9D9; }
+            .repo-flow .repo-flow-steps ol li .repo-detail-settings .repo-detail-settings-action:hover {
+              color: #818181; }
+          .repo-flow .repo-flow-steps ol li .repo-detail-settings li::before,
+          .repo-flow .repo-flow-steps ol li .repo-detail-settings li::after,
+          .repo-flow .repo-flow-steps ol li .repo-detail-settings a::after {
+            content: normal; }
+          @media only screen and (min-width: 50em) {
+            .repo-flow .repo-flow-steps ol li .repo-detail-settings {
+              display: block; } }
 
 [data-repo-flow-step="manage"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+1)::before {
   color: #ffcc34; }
@@ -6910,6 +6927,45 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
 
 [data-repo-flow-step="submit"] + .repo-flow .repo-flow-steps ol li:nth-child(-n+3)::after {
   border-bottom-color: #ffcc34; }
+
+.repo-detail-settings {
+  position: relative;
+  text-align: right; }
+  .repo-detail-settings .repo-detail-settings-action {
+    letter-spacing: 0.1em; }
+  .repo-detail-settings ul {
+    box-shadow: 3px 3px 7px -7px #262626;
+    background-color: #fdfdfd;
+    border-radius: 0.15em;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    list-style-type: none;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    top: 100%;
+    visibility: hidden;
+    width: 12em;
+    z-index: 1; }
+    .repo-detail-settings ul li {
+      border-bottom: 1px solid #F5F5F5;
+      border-left: 1px solid #F5F5F5;
+      border-right: 1px solid #F5F5F5;
+      line-height: 1.4;
+      padding: 0.25em 0.4em; }
+      .repo-detail-settings ul li:hover {
+        background-color: #F5F5F5; }
+      .repo-detail-settings ul li a {
+        display: block; }
+      .repo-detail-settings ul li:first-child {
+        border-radius: 0.15em 0.15em 0 0;
+        border-top: 1px solid #F5F5F5; }
+      .repo-detail-settings ul li:last-child {
+        border-radius: 0 0 0.15em 0.15em; }
+  .repo-detail-settings:hover ul {
+    visibility: visible; }
 
 .landing-page {
   max-width: 40em; }
@@ -7432,45 +7488,6 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
 
 #repo-detail .repo-detail-repo-description {
   font-size: 1.1em; }
-
-#repo-detail .repo-detail-settings {
-  position: relative;
-  text-align: right; }
-  #repo-detail .repo-detail-settings .repo-detail-settings-action {
-    letter-spacing: 0.1em; }
-  #repo-detail .repo-detail-settings ul {
-    box-shadow: 3px 3px 7px -7px #262626;
-    background-color: #fdfdfd;
-    border-radius: 0.15em;
-    display: flex;
-    flex-direction: column;
-    font-size: 0.9rem;
-    list-style-type: none;
-    margin: 0;
-    position: absolute;
-    right: 0;
-    text-align: left;
-    top: 100%;
-    visibility: hidden;
-    width: 12em;
-    z-index: 1; }
-    #repo-detail .repo-detail-settings ul li {
-      border-bottom: 1px solid #F5F5F5;
-      border-left: 1px solid #F5F5F5;
-      border-right: 1px solid #F5F5F5;
-      line-height: 1.4;
-      padding: 0.25em 0.4em; }
-      #repo-detail .repo-detail-settings ul li:hover {
-        background-color: #F5F5F5; }
-      #repo-detail .repo-detail-settings ul li a {
-        display: block; }
-      #repo-detail .repo-detail-settings ul li:first-child {
-        border-radius: 0.15em 0.15em 0 0;
-        border-top: 1px solid #F5F5F5; }
-      #repo-detail .repo-detail-settings ul li:last-child {
-        border-radius: 0 0 0.15em 0.15em; }
-  #repo-detail .repo-detail-settings:hover ul {
-    visibility: visible; }
 
 #repo-detail .repo-detail-container {
   background-color: #F5F5F5;

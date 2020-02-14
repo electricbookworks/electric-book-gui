@@ -142,6 +142,31 @@
                         border-top-color:$button-background-hover;
                     }
                 }
+
+                .repo-detail-settings {
+                    position: absolute;
+                    right: -2.5em;
+                    top: 0.33em;
+                    z-index: 3;
+                    .repo-detail-settings-action {
+                        color: $color-mediumgray;
+                        &:hover {
+                            color: $color-darkgray;
+                        }
+                    }
+                    // Avoid inheriting arrows, dots and lines
+                    // from repo-flow.scss
+                    li::before,
+                    li::after,
+                    a::after {
+                        content: normal;
+                    }
+                    // Hide unless screen is large
+                    display: none;
+                    @media only screen and (min-width: $bp-m) {
+                        display: block;
+                    }
+                }
             }
         }
     }

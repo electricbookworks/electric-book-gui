@@ -1,0 +1,15 @@
+.repo-detail-settings {
+    position: relative;
+    text-align: right;
+    .repo-detail-settings-action {
+        letter-spacing: 0.1em;
+    }
+    ul {
+        @include dropdown-list();
+    }
+    &:hover {
+        ul {
+            visibility: visible;
+        }
+    }
+}
