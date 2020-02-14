@@ -13,12 +13,12 @@
 	</div>
 	<div id="work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
 		<div id="files" class="showing">
+
 			<div id="files-show-tag" class="showing">
-				<object class="hidden" type="image/svg+xml" data="/img/file-folder-open.svg">
-					Show
-				</object>
-				<object class="showing" type="image/svg+xml" data="/img/file-folder-closed.svg">Close</object>
+				<span class="hidden" title="Show files">￫</span>
+				<span class="showing" title="Hide files">￩</span>
 			</div>
+
 			<div>These files are changing</div>
 			<div>
 				<div id="staged-files-list">
