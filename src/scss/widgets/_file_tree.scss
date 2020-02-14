@@ -105,12 +105,16 @@
 			cursor: pointer;
 			margin-right: 0.5em;
 			&::after {
-				content: "−";
+				content: "\25e6"; // ◦
+				display: block;
+				font-size: 1.3em;
+				line-height: 0;
 			}
 		}
 		.node.closed .closer {
 			&::after {
-				content: "+";
+				color: $button-background;
+				content: "\2022";
 			}
 		}
 		.node.ignore {

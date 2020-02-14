@@ -23,7 +23,6 @@
 			padding: 0.3em 0.5em;
 
 			&::before {
-				// content: "\f053"; // chevron
 				content: "\f060"; // arrow
 				font-family: "FontAwesome";	
 				margin-right: 0.35em;
@@ -38,9 +37,26 @@
 		}
 	}
 
+	// Here we hack teh iframe layout to creat the illusion
+	// that the toolbar (word wrap, PDF) is part of the parent document,
+	// when it fact it's part of the iframe.
 	#diff-view {
 		background-color: $color-white;
 		border: none;
 		flex-grow: 3;
+		margin-top: -1.9em; // magic number, aligns toolbar
+        @supports (-moz-appearance: none) {
+			margin-top: -1.96em; // magic number for Firefox, aligns toolbar
+		}
+		// Add the black toolbar by default
+		border-top: 1.9em solid $color-black;
+		@supports (-moz-appearance: none) {
+			border-top-width: 1.96em; // magic number for Firefox, aligns toolbar
+		}
+		// And hide it if a file with a diff loads
+		&[src*="/diff/"],
+		&:not([src]) {
+			border-top: none;
+		}
 	}
 }
