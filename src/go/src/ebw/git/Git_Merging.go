@@ -594,7 +594,7 @@ func (g *Git) MergePullRequest(pullRequestNumber int, remoteName, pullRequestSHA
 
 	if err = g.transformEBWRepoStatus(func(rs *EBWRepoStatus) error {
 		rs.MergingPRNumber = pullRequestNumber
-		rs.MergingDescription = fmt.Sprintf(`with PR number %d`, pullRequestNumber)
+		rs.MergingDescription = fmt.Sprintf(`with #%d`, pullRequestNumber)
 		return nil
 	}); nil != err {
 		return g.Error(err)

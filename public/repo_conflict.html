@@ -7,13 +7,15 @@
 
 <main id="repo-conflict">
 	<div class="repo-conflict-actions">
-		<div><span class="merging-description">You are merging {{.Merging.MergingDescription}}.</span>
-		Changes there conflict with your recent changes. Edit your version below to include the changes you want from {{.Merging.MergingDescription}}. When you're done, click 'Okay, accept update'.
-		{{ .Merging }}
+		<div class="repo-conflict-actions-guidance">
+			<p>
+				You are merging someone else's changes (#{{.Merging.MergingPRNumber}}) with yours, and they conflict.
+				Edit your version below to include the changes you want to keep. Then click 'Accept'.
+			</p>
 		</div>
 		<div class="toolbar-menu">
-		    <button class="btn" id="action-abort">Cancel this update</button>
-		    <button class="btn" id="action-commit">Okay, accept update</button>
+		    <button class="btn" id="action-abort">Cancel</button>
+		    <button class="btn" id="action-commit">Accept</button>
 		</div>
 	</div>
 	<div id="work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
@@ -33,6 +35,7 @@
 		<div id="editor">
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
+
 					<div class="drop-down pr-merge hide-for-image">
 						<button class="btn">Copy</button>
 						<div class="hover">
@@ -56,8 +59,10 @@
 					</div>
 
 					<a class="btn hide-for-image" id="merge-editor-control-save">Save</a>
+
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
-					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
+					<!-- <a class="btn" id="merge-editor-control-resolve">Mark resolved</a> -->
+
 					<a class="btn" id="merge-editor-control-delete" class="hide-for-image" disabled style="display: none;">Delete this file</a>
 					
 				</div>

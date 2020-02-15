@@ -95,9 +95,9 @@ export class RepoConflictPage {
 		document.getElementById(`action-abort`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
 			if (this.mergingInfo.IsPRMerge()) {
-				this.closePRDialog.Open(`Close PR`,
-					`You have been merging PR ${this.mergingInfo.PRNumber}.
-					Do you want to close the PR?`, 
+				this.closePRDialog.Open(`Close submission`,
+					`You have been merging submission ${this.mergingInfo.PRNumber}.
+					Do you want to reject the submission permanently?`, 
 					{Close: false, CloseMessage:"", Cancelled: false})
 				.then(
 					(r:ClosePRDialogResult)=>{

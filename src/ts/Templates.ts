@@ -176,7 +176,7 @@ export class AddNewBookDialog {
 		<h1>Add a project</h1>
 		<fieldset>
 			<label>
-				<input type="radio" value="new" name="new-project-type"/>
+				<input value="new" name="new-project-type" type="radio"/>
 				Start a new project.
 			</label>
 			<label>
@@ -195,11 +195,11 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -211,16 +211,16 @@ export class AddNewBookDialog {
 	<div>
 		<h1>Adaptation</h1>
 		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
+		<input name="action" value="new" type="hidden"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
 		</label>
 		<label>Enter the series that you will be adapting.
-		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
+		<input placeholder="e.g. electricbookworks/electric-book" type="text" name="template"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -234,13 +234,13 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork"/>
 		<label>Enter the GitHub owner and repo for the project you will contribute to.
-		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
+		<input placeholder="e.g. electricbooks/core" type="text" name="collaborate_repo"/>
 		</label>
 		<label style="display:none;">
-			<input value="private" type="checkbox" name="private"/>
+			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="Copy project"/>
+		<input value="Copy project" type="submit" class="btn"/>
 		</form>
 	</div>
 </div>
@@ -938,7 +938,7 @@ export class MergeEditor {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="merge-editor">
 	<div class="action-group">
-		<button class="btn" data-event="click:save">Save</button>
+		<button data-event="click:save" class="btn">Save</button>
 	</div>
 	<div class="merge-mergely">
 	</div>
@@ -1115,7 +1115,7 @@ export class RepoEditorPage_RenameFileDialog {
 			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button data-event="click" class="btn">Rename</button>
+	<button class="btn" data-event="click">Rename</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1310,11 +1310,11 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input name="resolve" value="our" id="resolveOur" type="radio"/>
+			<input type="radio" name="resolve" value="our" id="resolveOur"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input value="git" id="resolveGit" type="radio" name="resolve"/>
+			<input type="radio" name="resolve" value="git" id="resolveGit"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
@@ -1323,10 +1323,10 @@ export class RepoMergeDialog {
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
-	<button class="btn" data-event="click:">Do the Merge</button>
+	<button data-event="click:" class="btn">Do the Merge</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1462,10 +1462,10 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input id="closePR-no" value="no" data-event="change" type="radio" name="closePR"/>No
+		<input data-event="change" type="radio" name="closePR" id="closePR-no" value="no"/>No
 		</label>
 		<label for="closePR-yes">
-		<input name="closePR" id="closePR-yes" value="yes" data-event="change" type="radio"/>Yes
+		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>
@@ -1608,7 +1608,7 @@ export class conflict_MergeImageEditor {
 		let t = conflict_MergeImageEditor._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor">
+			d.innerHTML = `<div class="merge-image-editor" id="merge-image-editor">
 	<div>
 	</div>
 	<div>
@@ -1655,14 +1655,14 @@ export class conflict_MergeInstructions {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="merge-instructions">
-	<div class="instructions-button">?</div>
+	<div class="instructions-button"> </div>
 	<div class="instructions-text">
-		<h1>Working with the merge editor</h1>
-		<p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p>
-		<p>The final file you will save is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p>
+		<h2>Working with the merge editor</h2>
+		<p>The file being submitted is on the <span class="editor-side">THEIRSIDE</span>.</p>
+		<p>The final file you will save is on the <span class="editor-side">OURSIDE</span>.</p>
 		<p>Use the small buttons to the left of lines to transfer changes between sides.</p>
-		<p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p>
-		<p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p>
+		<p>When you are satisfied with your changes, press 'Save' to save your changes.</p>
+		<p>When you have resolved all the issues between all the files, press 'Accept'.</p>
 	</div>
 </div>
 `;

@@ -9,8 +9,13 @@
 		flex-grow: 0;
 		padding: 1em;
 		display: flex;
-		flex: row nowrap;
+		// flex: row nowrap;
 		justify-content: space-between;
+		align-items: flex-end;
+
+		.repo-conflict-actions-guidance {
+			@include notification-dialog();
+		}
 	}
 	#work {
 		flex-grow: 1;
@@ -77,15 +82,31 @@
 			align-items: stretch;
 
 			#editor-topbar {
-				flex-grow: 0;
-				// height: 3.3em;
-				padding: 0.6em 1em 0.6em 3em;
-
+				background-color: $color-black;
+				min-height: 2em;
+				padding: 0.25em 0.25em 0.25em 0;
+				
+				// Flex
+				align-items: flex-start;
 				display: flex;
 				flex-direction: row;
+				flex-grow: 0;
 				justify-content: space-between;
-				align-items: flex-start;
+
+				.btn, button {
+					background-color: $button-background-alt;
+					color: $button-color-alt;
+					font-size: 0.8rem;
+					padding: 0.3em 0.5em;
+
+					&:hover {
+						background-color: $button-background;
+						color: $button-color;
+						cursor: pointer;
+					}
+				}
 			}
+
 			#editor-label-panes {
 				display: flex;
 				flex-direction: row;
@@ -144,13 +165,14 @@
 }
 
 .repo-conflict-files-list-message {
+	display: none; // not using this message;
+
 	@include notification-dialog();
-	display: none; // unless 'showing', see below
-	border-radius: $global-radius;
+	font-size: 0.9rem;
 	margin: 0.5em;
-	.showing & {
-		display: block;
-	}
+	// .showing & {
+	// 	display: block;
+	// }
 }
 
 // This list should be designed to look the same as
@@ -163,6 +185,7 @@
 	width: 100%;
 	height: 100%;
 	font-size: 0.9rem; // rem to avoid nested files getting smaller
+	padding: 1.5em 0.5em 0.5em 0.5em;
 
 	& > ul {
 		&.pr-merge {
@@ -186,11 +209,12 @@
 
 			}
 			& > .status {
-				font-size: 0.7em;
-				background-color: $color-lightgray;
-				border-radius: 0.2em;
-				margin-left: 1em;
-				padding: 0 0.4em;
+				// font-size: 0.7em;
+				// background-color: $color-lightgray;
+				// border-radius: 0.2em;
+				// margin-left: 1em;
+				// padding: 0 0.4em;
+				@include file-tip();
 			}
 			&.status-new {
 				&>.status {
@@ -232,34 +256,46 @@
 
 .merge-instructions {
 	position: relative;
+
 	.instructions-button {
-		background-color: transparent;
-		color: $color-primary;
-		border: 1px solid $color-primary;
-		padding: 0.4em 1em;
+		background-color: $button-background;
+		border-radius: 1em;
+		color: $button-color;
 		cursor: pointer;
-		display: inline-block;
+		display: block;
+		height: 1.5em;
+		margin: 0.15em 0.25em 0 0;
+		padding: 0.25em;
+		text-align: center;
+		width: 1.5em;
+
+		&::after {
+			content: "?";
+			display: block;
+			margin-top: -0.15em;
+		}
 	}
 	.instructions-text {
-		display: none;
+		display: none; // .showing will show, see below
 
-		overflow-y: auto;
-		padding: 2em;
-		border: 2px solid $color-primary;
-		z-index: 100;
-		background-color: rgba(255,255,255,0.95);
-
-		position: absolute;
+		// Appearance
+		@include notification-dialog();
+		@include box-shadow();
 		
-		top: 0em;
+		// Position
+		max-width: 20em;
+		position: absolute;
 		right: 3em;
+		top: 0em;
+		width: 80vw;
+		z-index: 100;
 
-		width: 50em;
-		max-width: 70vw;
+		h2 {
+			font-weight: bold;
+		}
 
 		.editor-side {
 			font-weight: bold;
-			color: $color-primary;
 		}
 			
 	}
@@ -267,6 +303,10 @@
 		.instructions-button {
 			background-color: $color-inverse-bg;
 			color: $color-inverse-fg;
+
+			&::after {
+				content: "×";
+			}
 		}
 		.instructions-text {
 			display: inline-block;

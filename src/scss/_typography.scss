@@ -80,6 +80,7 @@ a {
 
 @mixin notification-dialog() {
 	background-color: $color-info;
+	border-radius: $global-radius;
 	padding: 1em;
 	& > * {
 		font-size: 0.9em;

@@ -206,3 +206,24 @@
 [data-repo-flow-step="submit"] {
     @include repo-flow-step-indicator(3);
 }
+
+// Hide and adjust elements when .editorMaximised
+body.editorMaximised {
+    & > .topbar {
+        display: none;
+    }
+    .repo-flow {
+        min-height: auto;
+        padding: 0.75em 0 0.25em 0;
+        .repo-flow-repo-name-owner,
+        .repo-flow-repo-name-reponame {
+            display: none;
+        }
+        .file-title {
+            margin-top: 0.15em; // align with bars button
+            &::before {
+                content: normal;
+            }
+        }
+    }
+}
