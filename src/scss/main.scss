@@ -11,6 +11,9 @@ $body-font-family: 'Karla', sans-serif;
 $body-font-family-code: 'IBM Plex Mono', monospace;
 @import 'font-awesome/scss/font-awesome';
 
+// Transitions
+$transition-slide-duration: 0.1s;
+
 // Colours
 @import 'colors';
 

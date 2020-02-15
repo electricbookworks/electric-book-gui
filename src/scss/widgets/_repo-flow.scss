@@ -101,7 +101,8 @@
                     display: block;
                     left: 50%;
                     position: absolute; // necessary for z-index stacking context
-                    width: 100vw; // each line overlaps the next
+                    width: 25vw; // each line overlaps the next, and should never 
+                                 // need to be more than 25vw if there are four steps.
                     z-index: 1; // below dot and final-step invisible line
                 }
                 // Last step has no visible line
@@ -110,6 +111,8 @@
                         // Same as repo-flow background, to obscure 100vw width line
                         border-bottom-color: $color-lightgray;
                         z-index: 2;
+                        width: 60%; // Hopefully 60% goes to end of box, but not
+                                    // enough to cause horiz scroll on page
                     }
                 }
                 // Create arrow/triangle beneath buttons

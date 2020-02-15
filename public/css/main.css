@@ -6514,7 +6514,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       width: 1em;
       height: 1em;
       content: url("/img/arrow-right.svg");
-      transition: transform 0.2s; }
+      transition: transform 0.1s; }
     .toolbar-menu .drop-down:hover > .btn:after {
       transform: rotate(-90deg); }
     .toolbar-menu .drop-down:hover > .hover {
@@ -6590,7 +6590,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     text-align: center;
     text-transform: uppercase;
     padding: 0.3em 1em;
-    transition: background-color 1s, color 1s;
+    transition: background-color 0.1s, color 0.1s;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -6727,7 +6727,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     .file-container #all-files-editor div.children {
       margin-left: 1em;
       overflow: hidden;
-      transition: height 0.3s; }
+      transition: height 0.1s; }
     .file-container #all-files-editor .node .name {
       display: flex;
       flex-direction: row;
@@ -6868,11 +6868,12 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
           display: block;
           left: 50%;
           position: absolute;
-          width: 100vw;
+          width: 25vw;
           z-index: 1; }
         .repo-flow .repo-flow-steps ol li:last-child::after {
           border-bottom-color: #F5F5F5;
-          z-index: 2; }
+          z-index: 2;
+          width: 60%; }
         .repo-flow .repo-flow-steps ol li a {
           position: relative; }
           .repo-flow .repo-flow-steps ol li a::after {
@@ -7087,7 +7088,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     justify-content: space-between;
     max-width: 20%;
     position: relative;
-    transition: width 0.3s;
+    transition: width 0.1s;
     width: 20%; }
     #repo-editor #repo-editor-files-nav .file-actions {
       flex-grow: 0; }
@@ -7221,13 +7222,12 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch; }
-  #repo-conflict #topbar {
+  #repo-conflict .repo-conflict-actions {
     flex-grow: 0;
-    padding: 0.6em 1em 1em 1em;
+    padding: 1em;
     display: flex;
     flex: row nowrap;
-    justify-content: space-between;
-    align-items: baseline; }
+    justify-content: space-between; }
   #repo-conflict #work {
     flex-grow: 1;
     display: flex;
@@ -7246,24 +7246,17 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       flex-direction: column;
       justify-content: space-between;
       align-items: stretch;
-      transition: width 0.3s;
+      transition: width 0.1s;
       width: 0px; }
       #repo-conflict #work #files.showing {
         width: 20%; }
-      #repo-conflict #work #files > div:nth-child(2) {
-        flex-grow: 0;
-        border-bottom: 1px solid #ffcc34;
-        background-color: #ffcc34;
-        color: #262626;
-        padding-left: 1em; }
-      #repo-conflict #work #files > div:nth-child(3) {
+      #repo-conflict #work #files .staged-files-list-container {
         flex-grow: 1;
         position: relative;
         padding: 0 0 0 0; }
     #repo-conflict #work #editor {
       flex-grow: 1;
       position: relative;
-      background-color: lightgray;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -7281,7 +7274,6 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
         align-items: flex-start;
         justify-content: space-around; }
         #repo-conflict #work #editor #editor-label-panes > div {
-          color: white;
           font-weight: bold;
           text-align: center; }
       #repo-conflict #work #editor #editor-work {
@@ -7314,20 +7306,35 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
           font-family: 'Inconsolata',monospace;
           height: 100%; }
 
+.repo-conflict-files-list-message {
+  background-color: #FFF8E2;
+  padding: 1em;
+  display: none;
+  border-radius: 0.15em;
+  margin: 0.5em; }
+  .repo-conflict-files-list-message > * {
+    font-size: 0.9em; }
+    .repo-conflict-files-list-message > *:last-child {
+      margin-bottom: 0; }
+  .repo-conflict-files-list-message a {
+    text-decoration: underline; }
+  .showing .repo-conflict-files-list-message {
+    display: block; }
+
 #staged-files-list {
   overflow-y: scroll;
   position: absolute;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  font-size: 0.9rem; }
   #staged-files-list > ul {
     list-style: none;
     margin: 0; }
     #staged-files-list > ul > li {
+      line-height: 1.5;
       padding-left: 1em;
       cursor: pointer;
-      transition: background-color 0.3s; }
-      #staged-files-list > ul > li:hover > .path {
-        color: #ffcc34; }
+      transition: background-color 0.1s; }
       #staged-files-list > ul > li > .status {
         font-size: 0.7em;
         background-color: #F5F5F5;

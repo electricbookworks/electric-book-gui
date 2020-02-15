@@ -89,7 +89,7 @@
 		div.children {
 			margin-left: 1em;
 			overflow:hidden;			
-			transition: height 0.3s;
+			transition: height $transition-slide-duration;
 		}
 		.node .name {
 			display: flex;

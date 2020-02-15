@@ -36,7 +36,7 @@
 				height: 1em;
 				content: url('/img/arrow-right.svg');
 				// transform: scale(0.1);
-				transition: transform 0.2s;
+				transition: transform $transition-slide-duration;
 			}
 		}
 		@include hoverEtAl() {

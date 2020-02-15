@@ -1,10 +1,15 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="edit"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-conflict">
-	<div id="topbar">
+	<div class="repo-conflict-actions">
 		<div><span class="merging-description">You are merging {{.Merging.MergingDescription}}.</span>
-		Changes in this update conflict with your recent edits. Balance each conflicted file, and click Okay.
+		Changes there conflict with your recent changes. Edit your version below to include the changes you want from {{.Merging.MergingDescription}}. When you're done, click 'Okay, accept update'.
+		{{ .Merging }}
 		</div>
 		<div class="toolbar-menu">
 		    <button class="btn" id="action-abort">Cancel this update</button>
@@ -19,8 +24,8 @@
 				<span class="showing" title="Hide files">￩</span>
 			</div>
 
-			<div>These files are changing</div>
-			<div>
+			<div class="repo-conflict-files-list-message">These files are changing</div>
+			<div class="staged-files-list-container">
 				<div id="staged-files-list">
 				</div>
 			</div>

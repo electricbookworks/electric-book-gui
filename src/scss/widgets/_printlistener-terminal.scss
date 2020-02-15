@@ -32,7 +32,7 @@
 			transition: background-color color 0.3s;
 		}
 
-		transition: background-color 1s, color 1s;
+		transition: background-color $transition-slide-duration, color $transition-slide-duration;
 
 		display: flex;
 		flex-direction: row;

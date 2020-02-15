@@ -5,16 +5,12 @@
 	justify-content: space-between;
 	align-items: stretch;
 	
-	#topbar {
+	.repo-conflict-actions {
 		flex-grow: 0;
-		// height: 3em;
-
-		padding: 0.6em 1em 1em 1em;
-
+		padding: 1em;
 		display: flex;
 		flex: row nowrap;
 		justify-content: space-between;
-		align-items: baseline;
 	}
 	#work {
 		flex-grow: 1;
@@ -47,21 +43,21 @@
 			justify-content: space-between;
 			align-items: stretch;
 
-			transition: width 0.3s;
+			transition: width $transition-slide-duration;
 
 			width: 0px;
 			&.showing {
 				width: 20%;
 			}
 
-			&>div:nth-child(2) {	// titlebar
-				flex-grow: 0;
-				border-bottom: 1px solid $color-primary;
-				background-color: $color-inverse-bg;
-				color: $color-inverse-fg;
-				padding-left: 1em;
-			}
-			&>div:nth-child(3) {	
+			// &>div:nth-child(2) {	// titlebar
+			// 	flex-grow: 0;
+			// 	border-bottom: 1px solid $color-primary;
+			// 	background-color: $color-inverse-bg;
+			// 	color: $color-inverse-fg;
+			// 	padding-left: 1em;
+			// }
+			.staged-files-list-container {	
 				// container for #staged-files-list, required to 
 				// allow position:relative;
 				// see #staged-files-list definitions belog
@@ -73,7 +69,7 @@
 		#editor {
 			flex-grow: 1;
 			position: relative;
-			background-color: lightgray;
+			// background-color: lightgray;
 
 			display: flex;
 			flex-direction: column;
@@ -96,7 +92,7 @@
 				align-items: flex-start;
 				justify-content: space-around;
 				& > div {
-					color: white;
+					// color: white;
 					font-weight: bold;
 					text-align: center;
 				}
@@ -147,11 +143,26 @@
 	}
 }
 
+.repo-conflict-files-list-message {
+	@include notification-dialog();
+	display: none; // unless 'showing', see below
+	border-radius: $global-radius;
+	margin: 0.5em;
+	.showing & {
+		display: block;
+	}
+}
+
+// This list should be designed to look the same as
+// the file tree in _file_tree.scss. They have a
+// different HTML structure, so it's not currently
+// feasible to use the same Sass for both.
 #staged-files-list {
 	overflow-y: scroll;
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	font-size: 0.9rem; // rem to avoid nested files getting smaller
 
 	& > ul {
 		&.pr-merge {
@@ -163,13 +174,14 @@
 		list-style: none;
 		margin: 0;
 		& > li {
+			line-height: 1.5;
 			padding-left: 1em;
 			cursor: pointer;
-			&:hover {
-				&>.path {
-					color: $color-primary;
-				}
-			}
+			// &:hover {
+			// 	&>.path {
+			// 		color: $color-primary;
+			// 	}
+			// }
 			& > .path {
 
 			}
@@ -213,7 +225,7 @@
 			&.rpc {
 				background-color: yellow;
 			}
-			transition: background-color 0.3s;
+			transition: background-color $transition-slide-duration;
 		}
 	}
 }

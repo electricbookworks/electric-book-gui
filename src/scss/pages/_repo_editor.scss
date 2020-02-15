@@ -15,7 +15,7 @@
 		justify-content: space-between;
 		max-width: 20%;
 		position: relative;
-		transition: width 0.3s;
+		transition: width $transition-slide-duration;
 		width: 20%;
 
 		.file-actions {
