@@ -1,5 +1,6 @@
 ---
 title: CLI
+description: "The EBM project includes a CLI for certain Electric Book operations."
 ---
 
 # The `ebw` CLI tool

@@ -59,9 +59,9 @@ and children in the collection will be two levels deeper.{% endcomment %}
 						{% include image file=item.image %}
 					</a>
 				{% endif %}
-				<p class="child-pages-preview-title">
+				<div class="child-pages-preview-title">
 					<a href="{{ site.baseurl }}{{ item.url }}">{{ item.title | markdownify | replace: "<p>", "" | replace: "</p>", "" | strip_newlines }}</a>
-				</p>
+				</div>
 				<p class="child-pages-preview-excerpt">
 
 					{% if item.description %}

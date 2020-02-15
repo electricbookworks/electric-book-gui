@@ -3,6 +3,7 @@ title: Collaborate
 categories:
   - Electric Book Manager
 order: 6
+description: "When you work with others on a project, you each work in your own copy of the project. One (or more) of your team manage the original version of the project."
 ---
 
 # Collaborating

@@ -1,5 +1,6 @@
 ---
 title: Server setup
+description: "EBW serves the site through an HAProxy proxy server."
 ---
 
 # Server setup

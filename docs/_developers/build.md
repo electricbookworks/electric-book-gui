@@ -1,5 +1,6 @@
 ---
 title: Build and run locally
+description: "How to build and run the EBM app locally."
 ---
 
 # Build and run locally

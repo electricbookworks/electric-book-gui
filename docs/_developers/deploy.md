@@ -1,5 +1,6 @@
 ---
 title: Deploying the EBM
+description: "You deploy the EBM with Make and Ansible."
 ---
 
 # Deploying the EBM

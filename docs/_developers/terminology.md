@@ -1,6 +1,7 @@
 ---
 title: Terminology
 order: 9
+description: "On the EBM we want to avoid using technical Git terms in favour of common editorial, publishing terms."
 ---
 
 # Terminology

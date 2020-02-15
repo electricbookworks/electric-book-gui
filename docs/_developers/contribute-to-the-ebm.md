@@ -1,6 +1,7 @@
 ---
 title: Contribute to the EBM project
 order: 10
+description: "How to conttribute to the EBM project."
 ---
 
 # Contribute to the EBM project

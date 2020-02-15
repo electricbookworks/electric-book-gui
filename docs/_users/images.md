@@ -3,6 +3,7 @@ title: Add and replace images
 categories:
   - Electric Book Manager
 order: 5
+description: How to add and replace images in your books.
 ---
 
 # Adding and replacing images

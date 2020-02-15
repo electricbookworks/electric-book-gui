@@ -3,6 +3,7 @@ title: Edit, add, and save files
 categories:
   - Electric Book Manager
 order: 4
+description: "How to edit, add and save files."
 ---
 
 # Editing, adding, and saving files

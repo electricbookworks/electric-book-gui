@@ -3,6 +3,7 @@ title: Contribute to an existing project
 categories:
   - Electric Book Manager
 order: 4
+description: "How to contribute to someone else's Electric Book-based project."
 ---
 
 # Contribute to an existing project

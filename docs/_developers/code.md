@@ -1,5 +1,6 @@
 ---
 title: Understanding the code
+description: "How the EBM code is structured: src and public, HTML templates, Go, Sass, Typescript, DTemplate."
 ---
 
 # Understanding the code

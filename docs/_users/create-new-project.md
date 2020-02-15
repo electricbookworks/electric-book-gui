@@ -3,6 +3,7 @@ title: Create a new project
 categories:
   - Electric Book Manager
 order: 3
+description: "A project can contain one or more books, such as a series or collection. It will be stored on GitHub as a single repository. You create a new project from a template."
 ---
 
 # Create a new project

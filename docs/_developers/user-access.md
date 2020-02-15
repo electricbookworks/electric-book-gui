@@ -1,5 +1,6 @@
 ---
 title: User access
+description: "You can restrict who can log into your Electric Book Manager, for only your specified users."
 ---
 
 # User access

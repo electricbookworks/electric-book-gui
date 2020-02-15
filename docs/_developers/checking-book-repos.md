@@ -1,5 +1,6 @@
 ---
 title: Checking book repos
+description: "If a user's Git repo gets mixed up, you may need to resolve it manually, in their clone of the repo on the EBM server."
 ---
 
 # Checking book repos

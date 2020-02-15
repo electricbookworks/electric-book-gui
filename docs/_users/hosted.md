@@ -1,6 +1,7 @@
 ---
 title: Hosted service
 order: 20
+description: "You can have a developer set up your own EBM server, or you can pay for access to Electric Book Works' hosted service."
 ---
 
 ## Hosted service
