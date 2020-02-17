@@ -106,10 +106,6 @@ export class RepoEditorPage {
 				document.getElementById(`repo-file-actions`)
 					.style.visibility = showing ? `visible` : `hidden`;
 
-				// Hide file-editor actions
-				document.getElementById(`editor-actions`)
-					.style.visibility = showing ? `visible` : `hidden`;
-
 				// Move filename to repo flow
 				let filename = document.querySelector(`.file-title`);
 				let filenameParent = document.querySelector(`.repo-flow-repo-name`);

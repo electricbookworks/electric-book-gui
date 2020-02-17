@@ -6304,9 +6304,11 @@ main .CodeMirror {
   main .CodeMirror .CodeMirror-gutters {
     background-color: #fdfdfd;
     border-right-color: #fdfdfd; }
+  main .CodeMirror .CodeMirror-gutter-elt {
+    line-height: 2.75em; }
   main .CodeMirror .CodeMirror-linenumber {
     font-size: 0.7em;
-    line-height: 2.2em; }
+    line-height: 2.75em; }
   main .CodeMirror.cm-s-default .cm-keyword {
     color: #708; }
   main .CodeMirror.cm-s-default .cm-atom {
@@ -6374,6 +6376,24 @@ main .CodeMirror {
 
 main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   transform: translateX(calc((100vw - 55em) / 2)); }
+
+#editor .mergely-column {
+  border: 0; }
+
+#editor .mergely-margin {
+  display: none; }
+
+#editor .merge-button {
+  border-radius: 0.15em;
+  height: 2em !important;
+  opacity: 1 !important;
+  width: 1em !important;
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  #editor .merge-button:hover {
+    background-color: #ffcc34 !important;
+    color: #262626 !important; }
 
 .btn {
   background-color: #ffcc34;
@@ -6473,7 +6493,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   justify-content: center;
   text-align: center;
   width: 100%;
-  z-index: 1; }
+  z-index: 5; }
   #files-show-tag span {
     border-radius: 1em;
     height: 1.5em;
@@ -6797,6 +6817,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   background-color: #F5F5F5;
   display: flex;
   min-height: 7em;
+  overflow: hidden;
   padding: 1.5em 0 0.5em 0; }
   .repo-flow .repo-flow-home {
     color: #D9D9D9;
@@ -6869,12 +6890,12 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
           display: block;
           left: 50%;
           position: absolute;
-          width: 25vw;
+          width: 100vw;
           z-index: 1; }
         .repo-flow .repo-flow-steps ol li:last-child::after {
           border-bottom-color: #F5F5F5;
           z-index: 2;
-          width: 60%; }
+          width: 100vw; }
         .repo-flow .repo-flow-steps ol li a {
           position: relative; }
           .repo-flow .repo-flow-steps ol li a::after {
@@ -6956,7 +6977,6 @@ body.editorMaximised .repo-flow {
   .repo-detail-settings ul {
     box-shadow: 3px 3px 7px -7px #262626;
     background-color: #fdfdfd;
-    border-radius: 0.15em;
     display: flex;
     flex-direction: column;
     font-size: 0.9rem;
@@ -6966,9 +6986,11 @@ body.editorMaximised .repo-flow {
     right: 0;
     text-align: left;
     top: 100%;
-    visibility: hidden;
     width: 12em;
-    z-index: 1; }
+    z-index: 5;
+    visibility: hidden; }
+    .repo-detail-settings ul:hover {
+      visibility: visible; }
     .repo-detail-settings ul li {
       border-bottom: 1px solid #F5F5F5;
       border-left: 1px solid #F5F5F5;
@@ -6978,6 +7000,7 @@ body.editorMaximised .repo-flow {
       .repo-detail-settings ul li:hover {
         background-color: #F5F5F5; }
       .repo-detail-settings ul li a {
+        color: #262626;
         display: block; }
       .repo-detail-settings ul li:first-child {
         border-radius: 0.15em 0.15em 0 0;
@@ -7111,6 +7134,8 @@ body.editorMaximised .repo-flow {
       flex-direction: column; }
       #repo-editor #repo-editor-files-nav #repo-file-actions > div, #repo-editor #repo-editor-files-nav #repo-file-actions > a, #repo-editor #repo-editor-files-nav #repo-file-actions > button {
         margin-left: 0; }
+    #repo-editor #repo-editor-files-nav.files-nav-hidden + #file-editors .editor-actions {
+      padding-left: 2.25em; }
   #repo-editor #file-editors {
     align-items: stretch;
     display: flex;
@@ -7138,7 +7163,6 @@ body.editorMaximised .repo-flow {
           #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons {
             box-shadow: 3px 3px 7px -7px #262626;
             background-color: #fdfdfd;
-            border-radius: 0.15em;
             display: flex;
             flex-direction: column;
             font-size: 0.9rem;
@@ -7148,12 +7172,14 @@ body.editorMaximised .repo-flow {
             right: 0;
             text-align: left;
             top: 100%;
-            visibility: hidden;
             width: 12em;
-            z-index: 1;
+            z-index: 5;
+            visibility: hidden;
             font-size: 0.8rem;
             left: 0;
             width: 8em; }
+            #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons:hover {
+              visibility: visible; }
             #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li {
               border-bottom: 1px solid #F5F5F5;
               border-left: 1px solid #F5F5F5;
@@ -7163,6 +7189,7 @@ body.editorMaximised .repo-flow {
               #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li:hover {
                 background-color: #F5F5F5; }
               #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li a {
+                color: #262626;
                 display: block; }
               #repo-editor #file-editors .editor-actions .btn#editor-output-button .editor-output-buttons li:first-child {
                 border-radius: 0.15em 0.15em 0 0;
@@ -7246,7 +7273,8 @@ body.editorMaximised .repo-flow {
     #repo-conflict .repo-conflict-actions .repo-conflict-actions-guidance {
       background-color: #FFF8E2;
       border-radius: 0.15em;
-      padding: 1em; }
+      padding: 1em;
+      margin: 0 1em 0 0; }
       #repo-conflict .repo-conflict-actions .repo-conflict-actions-guidance > * {
         font-size: 0.9em; }
         #repo-conflict .repo-conflict-actions .repo-conflict-actions-guidance > *:last-child {
@@ -7290,11 +7318,14 @@ body.editorMaximised .repo-flow {
         background-color: #262626;
         min-height: 2em;
         padding: 0.25em 0.25em 0.25em 0;
-        align-items: flex-start;
+        z-index: 4;
+        align-items: center;
         display: flex;
         flex-direction: row;
         flex-grow: 0;
         justify-content: space-between; }
+        .editorMaximised #repo-conflict #work #editor #editor-topbar {
+          padding-left: 2.25em; }
         #repo-conflict #work #editor #editor-topbar .btn, #repo-conflict #work #editor #editor-topbar button {
           background-color: #595959;
           color: #fdfdfd;
@@ -7304,17 +7335,70 @@ body.editorMaximised .repo-flow {
             background-color: #ffcc34;
             color: #262626;
             cursor: pointer; }
+        #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options,
+        #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options {
+          position: relative; }
+          #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul,
+          #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul {
+            box-shadow: 3px 3px 7px -7px #262626;
+            background-color: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.9rem;
+            list-style-type: none;
+            margin: 0;
+            position: absolute;
+            right: 0;
+            text-align: left;
+            top: 100%;
+            width: 12em;
+            z-index: 5;
+            visibility: hidden;
+            left: 0; }
+            #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul:hover,
+            #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul:hover {
+              visibility: visible; }
+            #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul li,
+            #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul li {
+              border-bottom: 1px solid #F5F5F5;
+              border-left: 1px solid #F5F5F5;
+              border-right: 1px solid #F5F5F5;
+              line-height: 1.4;
+              padding: 0.25em 0.4em; }
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul li:hover,
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul li:hover {
+                background-color: #F5F5F5; }
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul li a,
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul li a {
+                color: #262626;
+                display: block; }
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul li:first-child,
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul li:first-child {
+                border-radius: 0.15em 0.15em 0 0;
+                border-top: 1px solid #F5F5F5; }
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul li:last-child,
+              #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul li:last-child {
+                border-radius: 0 0 0.15em 0.15em; }
+          #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options:hover ul,
+          #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options:hover ul {
+            visibility: visible; }
       #repo-conflict #work #editor #editor-label-panes {
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-around; }
+        align-items: flex-end;
+        height: 2.5em;
+        justify-content: space-around;
+        visibility: hidden; }
         #repo-conflict #work #editor #editor-label-panes > div {
           font-weight: bold;
           text-align: center; }
+      #repo-conflict #work #editor[data-file-in-editor] #editor-label-panes {
+        visibility: visible; }
       #repo-conflict #work #editor #editor-work {
         flex-grow: 1;
-        position: relative; }
+        margin: 0 1em;
+        position: relative;
+        z-index: 0; }
         #repo-conflict #work #editor #editor-work.pr-merge > div:not(.merge-image-editor) {
           display: flex;
           flex-direction: row;
@@ -7338,8 +7422,6 @@ body.editorMaximised .repo-flow {
           left: 0;
           right: 0; }
         #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor) .CodeMirror, #repo-conflict #work #editor #editor-work > div:not(.merge-image-editor).CodeMirror {
-          font-size: 1em;
-          font-family: 'Inconsolata',monospace;
           height: 100%; }
 
 .repo-conflict-files-list-message {
@@ -7393,55 +7475,66 @@ body.editorMaximised .repo-flow {
         background-color: #ffeae2; }
       #staged-files-list > ul > li.status-conflict > .status {
         background-color: #FFF8E2; }
-      #staged-files-list > ul > li.rpc {
-        background-color: yellow; }
+      #staged-files-list > ul > li.rpc > .status {
+        background-color: #ffeae2;
+        animation: blinker 1s linear infinite; }
 
-.merge-instructions {
-  position: relative; }
-  .merge-instructions .instructions-button {
-    background-color: #ffcc34;
-    border-radius: 1em;
-    color: #262626;
-    cursor: pointer;
-    display: block;
-    height: 1.5em;
-    margin: 0.15em 0.25em 0 0;
-    padding: 0.25em;
-    text-align: center;
-    width: 1.5em; }
-    .merge-instructions .instructions-button::after {
-      content: "?";
-      display: block;
-      margin-top: -0.15em; }
-  .merge-instructions .instructions-text {
-    display: none;
-    background-color: #FFF8E2;
-    border-radius: 0.15em;
-    padding: 1em;
-    box-shadow: 3px 3px 7px -7px #262626;
-    max-width: 20em;
-    position: absolute;
-    right: 3em;
-    top: 0em;
-    width: 80vw;
-    z-index: 100; }
-    .merge-instructions .instructions-text > * {
-      font-size: 0.9em; }
-      .merge-instructions .instructions-text > *:last-child {
-        margin-bottom: 0; }
-    .merge-instructions .instructions-text a {
-      text-decoration: underline; }
-    .merge-instructions .instructions-text h2 {
-      font-weight: bold; }
-    .merge-instructions .instructions-text .editor-side {
-      font-weight: bold; }
-  .merge-instructions.showing .instructions-button {
-    background-color: #ffcc34;
-    color: #262626; }
-    .merge-instructions.showing .instructions-button::after {
-      content: "×"; }
-  .merge-instructions.showing .instructions-text {
-    display: inline-block; }
+@keyframes blinker {
+  50% {
+    background-color: #fdfdfd; } }
+
+#merge-instructions {
+  display: flex;
+  align-items: center; }
+  #merge-instructions .merge-instructions {
+    align-items: center;
+    display: flex;
+    height: 1em;
+    position: relative; }
+    #merge-instructions .merge-instructions .instructions-button {
+      align-items: center;
+      background-color: #ffcc34;
+      border-radius: 1em;
+      color: #262626;
+      cursor: pointer;
+      display: flex;
+      height: 1.5em;
+      justify-content: center;
+      margin: 0 0.25em 0 0;
+      padding: 0.25em;
+      width: 1.5em; }
+      #merge-instructions .merge-instructions .instructions-button::after {
+        content: "?";
+        display: block; }
+    #merge-instructions .merge-instructions .instructions-text {
+      display: none;
+      background-color: #FFF8E2;
+      border-radius: 0.15em;
+      padding: 1em;
+      box-shadow: 3px 3px 7px -7px #262626;
+      max-width: 20em;
+      position: absolute;
+      right: 3em;
+      top: 0em;
+      width: 80vw;
+      z-index: 100; }
+      #merge-instructions .merge-instructions .instructions-text > * {
+        font-size: 0.9em; }
+        #merge-instructions .merge-instructions .instructions-text > *:last-child {
+          margin-bottom: 0; }
+      #merge-instructions .merge-instructions .instructions-text a {
+        text-decoration: underline; }
+      #merge-instructions .merge-instructions .instructions-text h2 {
+        font-weight: bold; }
+      #merge-instructions .merge-instructions .instructions-text .editor-side {
+        font-weight: bold; }
+    #merge-instructions .merge-instructions.showing .instructions-button {
+      background-color: #ffcc34;
+      color: #262626; }
+      #merge-instructions .merge-instructions.showing .instructions-button::after {
+        content: "×"; }
+    #merge-instructions .merge-instructions.showing .instructions-text {
+      display: inline-block; }
 
 .repo-list {
   align-items: stretch;

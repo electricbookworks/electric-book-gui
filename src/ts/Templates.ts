@@ -176,7 +176,7 @@ export class AddNewBookDialog {
 		<h1>Add a project</h1>
 		<fieldset>
 			<label>
-				<input value="new" name="new-project-type" type="radio"/>
+				<input type="radio" value="new" name="new-project-type"/>
 				Start a new project.
 			</label>
 			<label>
@@ -184,7 +184,7 @@ export class AddNewBookDialog {
 				Contribute to an existing project.
 			</label>
 			<label>
-				<input name="new-project-type" type="radio" value="adaptation"/>
+				<input type="radio" value="adaptation" name="new-project-type"/>
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
@@ -195,7 +195,7 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
@@ -211,22 +211,22 @@ export class AddNewBookDialog {
 	<div>
 		<h1>Adaptation</h1>
 		<form method="post" action="/github/create/new">
-		<input name="action" value="new" type="hidden"/>
+		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
-		<input placeholder="e.g. electricbookworks/electric-book" type="text" name="template"/>
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
 		</label>
 		<label>
-			<input type="checkbox" name="private" value="private"/>
+			<input value="private" type="checkbox" name="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="New adaptation"/>
+		<input value="New adaptation" type="submit" class="btn"/>
 		</form>
 	</div>
 	<div>
@@ -234,13 +234,13 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork"/>
 		<label>Enter the GitHub owner and repo for the project you will contribute to.
-		<input placeholder="e.g. electricbooks/core" type="text" name="collaborate_repo"/>
+		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
 		</label>
 		<label style="display:none;">
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="Copy project" type="submit" class="btn"/>
+		<input type="submit" class="btn" value="Copy project"/>
 		</form>
 	</div>
 </div>
@@ -822,7 +822,7 @@ export class LoginTokenDisplay {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
-	<li data-set="this" class="token-display">
+	<li class="token-display" data-set="this">
 		<a href="">LINK</a>
 		<a href="">X</a>
 	</li>
@@ -871,7 +871,7 @@ export class LoginTokenList {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
-		<input type="text" placeholder="name"/>
+		<input placeholder="name" type="text"/>
 		<input type="text" placeholder="token"/>
 		<button class="btn">Add</button>
 	</div>
@@ -1069,10 +1069,10 @@ export class RepoEditorPage_NewFileDialog {
 	<fieldset>
 		<label>
 			Enter the full path to your new file.
-			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
+			<input placeholder="book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
-	<button class="btn" data-event="click">Create File</button>
+	<button data-event="click" class="btn">Create File</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1112,7 +1112,7 @@ export class RepoEditorPage_RenameFileDialog {
 		<div>Renaming <span> </span></div>
 		<label>
 			Enter the full path to your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Rename</button>
@@ -1260,7 +1260,7 @@ export class RepoFileViewerPage {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="repo-file-viewer">
 	<div class="searchbar">
-		<input type="text" placeholder="Enter search text to find images."/>
+		<input placeholder="Enter search text to find images." type="text"/>
 	</div>
 	<div class="data">
 	</div>
@@ -1314,11 +1314,11 @@ export class RepoMergeDialog {
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			<input value="git" id="resolveGit" type="radio" name="resolve"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
+			<input value="their" id="resolveTheir" type="radio" name="resolve"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
@@ -1326,7 +1326,7 @@ export class RepoMergeDialog {
 		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
-	<button data-event="click:" class="btn">Do the Merge</button>
+	<button class="btn" data-event="click:">Do the Merge</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1465,7 +1465,7 @@ export class conflict_ClosePRDialog {
 		<input data-event="change" type="radio" name="closePR" id="closePR-no" value="no"/>No
 		</label>
 		<label for="closePR-yes">
-		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes
+		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>

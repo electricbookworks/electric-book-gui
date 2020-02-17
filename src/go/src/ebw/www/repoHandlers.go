@@ -336,7 +336,7 @@ func repoView(c *Context) error {
 	repoFiles = repoFiles.Filter(``, proseConfig.IgnoreFilter())
 	c.D[`RepoFiles`] = repoFiles
 	c.D[`FilesAndHashes`] = filesAndHashes
-	return c.Render(`repo_view.html`, nil)
+	return c.Render(`repo_editor.html`, nil)
 }
 
 func repoDetails(c *Context) error {

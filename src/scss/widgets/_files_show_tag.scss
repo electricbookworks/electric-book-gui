@@ -10,7 +10,7 @@
 	justify-content: center;
 	text-align: center;
 	width: 100%;
-	z-index: 1;
+	z-index: 5; // stays above editor bar on repo_conflict page
 	
 	span {
 		border-radius: 1em;

@@ -3,6 +3,7 @@
     background-color: $color-lightgray;
     display: flex;
     min-height: 7em; // children are position absolute
+    overflow: hidden; // hide line below flow steps that extends outside viewport
     padding: 1.5em 0 0.5em 0;
 
     .repo-flow-home {
@@ -101,8 +102,8 @@
                     display: block;
                     left: 50%;
                     position: absolute; // necessary for z-index stacking context
-                    width: 25vw; // each line overlaps the next, and should never 
-                                 // need to be more than 25vw if there are four steps.
+                    width: 100vw; // each line overlaps the next, and overflow hidden
+                                 // on .repo-flow should prevent horizontal scroll
                     z-index: 1; // below dot and final-step invisible line
                 }
                 // Last step has no visible line
@@ -111,8 +112,8 @@
                         // Same as repo-flow background, to obscure 100vw width line
                         border-bottom-color: $color-lightgray;
                         z-index: 2;
-                        width: 60%; // Hopefully 60% goes to end of box, but not
-                                    // enough to cause horiz scroll on page
+                        width: 100vw // overflow hidden on .repo-flow above
+                                    // should prevent cause horiz scroll on page
                     }
                 }
                 // Create arrow/triangle beneath buttons

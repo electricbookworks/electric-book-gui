@@ -29,6 +29,13 @@
 			}
 		}
 
+		// When hidden, push editor-actions aside
+		// to make space for this button.
+		// See also _repo_conflict.scss
+		&.files-nav-hidden + #file-editors .editor-actions {
+			padding-left: 2.25em;
+		}
+
 		// See _file_tree.scss
 	}
 

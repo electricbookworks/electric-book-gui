@@ -97,7 +97,6 @@ a {
 @mixin dropdown-list() {
 	@include box-shadow();
 	background-color: $color-white;
-	border-radius: $global-radius;
 	display: flex;
 	flex-direction: column;
 	font-size: 0.9rem;
@@ -107,9 +106,14 @@ a {
 	right: 0;
 	text-align: left;
 	top: 100%;
-	visibility: hidden; // show with CSS or JS
 	width: 12em;
-	z-index: 1;
+	z-index: 5; // stay visible above editor
+
+	// Visible/invisible
+	visibility: hidden; // show with CSS or JS
+	&:hover {
+		visibility: visible;
+	}
 	li {
 		border-bottom: 1px solid $color-lightgray;
 		border-left: 1px solid $color-lightgray;
@@ -120,6 +124,7 @@ a {
 			background-color: $color-lightgray;
 		}
 		a {
+			color: $bodytext;
 			display: block;
 		}
 		&:first-child {

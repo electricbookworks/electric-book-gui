@@ -38,9 +38,13 @@ main {
             border-right-color: $color-white;
         }
 
+        .CodeMirror-gutter-elt {
+            line-height: 2.75em; // mergely .merge-button lives here;
+        }
+
         .CodeMirror-linenumber {
             font-size: 0.7em;
-            line-height: 2.2em; // align with text
+            line-height: 2.75em; // align with text
         }
 
         // Theme

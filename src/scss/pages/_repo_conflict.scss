@@ -4,7 +4,7 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: stretch;
-	
+
 	.repo-conflict-actions {
 		flex-grow: 0;
 		padding: 1em;
@@ -15,6 +15,7 @@
 
 		.repo-conflict-actions-guidance {
 			@include notification-dialog();
+			margin: 0 1em 0 0;
 		}
 	}
 	#work {
@@ -42,7 +43,7 @@
 			// border: 1px solid $color-primary;
 
 			position: relative;
-			
+
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
@@ -62,11 +63,11 @@
 			// 	color: $color-inverse-fg;
 			// 	padding-left: 1em;
 			// }
-			.staged-files-list-container {	
-				// container for #staged-files-list, required to 
+			.staged-files-list-container {
+				// container for #staged-files-list, required to
 				// allow position:relative;
 				// see #staged-files-list definitions belog
-				flex-grow: 1;				
+				flex-grow: 1;
 				position: relative;
 				padding: 0 0 0 0;
 			}
@@ -85,13 +86,21 @@
 				background-color: $color-black;
 				min-height: 2em;
 				padding: 0.25em 0.25em 0.25em 0;
-				
+				z-index: 4; // avoid being obscured by editing panel
+
 				// Flex
-				align-items: flex-start;
+				align-items: center;
 				display: flex;
 				flex-direction: row;
 				flex-grow: 0;
 				justify-content: space-between;
+
+				// Leave space for close button when maximised.
+				// See also _repo_editor.scss.
+				.editorMaximised & {
+					padding-left: 2.25em;
+				}
+
 
 				.btn, button {
 					background-color: $button-background-alt;
@@ -105,29 +114,56 @@
 						cursor: pointer;
 					}
 				}
+
+				.repo-conflict-copy-options,
+				.repo-conflict-revert-options {
+					position: relative;
+					ul {
+						@include dropdown-list();
+						left: 0;
+					}
+					&:hover {
+						ul {
+							visibility: visible;
+						}
+					}
+				}
 			}
 
 			#editor-label-panes {
 				display: flex;
 				flex-direction: row;
-				align-items: flex-start;
+				align-items: flex-end;
+				height: 2.5em;
 				justify-content: space-around;
+
+				// Hide until show, see below
+				visibility: hidden;
+
 				& > div {
 					// color: white;
 					font-weight: bold;
 					text-align: center;
 				}
 			}
+
+			// Hide unless a file is showing
+			&[data-file-in-editor] #editor-label-panes {
+				visibility: visible;
+			}
+
 			#editor-work {
 				flex-grow: 1;
+				margin: 0 1em; // create space between mergely buttons and edges
 				position: relative;
+				z-index: 0; // place in stacking context
 
 				// display: flex;
 				// flex-direction: row;
 				// justify-content: space-between;
 				// align-items: stretch;
 
-				&.pr-merge>div:not(.merge-image-editor) {					
+				&.pr-merge>div:not(.merge-image-editor) {
 					display: flex;
 					flex-direction: row;
 					align-items: stretch;
@@ -152,12 +188,10 @@
 						bottom: 0;
 						left: 0;
 						right: 0;
-					} 
+					}
 					.CodeMirror, &.CodeMirror {
-						font-size: 1em;
-						font-family: 'Inconsolata',monospace;
 						height: 100%;
-					} 
+					}
 				}
 			}
 		}
@@ -247,69 +281,89 @@
 				}
 			}
 			&.rpc {
-				background-color: yellow;
+				& > .status {
+					background-color: $color-warning;
+
+					// Blink this since it's a temporary loading state
+					animation: blinker 1s linear infinite;
+
+					@keyframes blinker {
+						50% {
+							// opacity: 0;
+							background-color: $color-white;
+						}
+					}
+				}
 			}
 			transition: background-color $transition-slide-duration;
 		}
 	}
 }
 
-.merge-instructions {
-	position: relative;
+#merge-instructions {
+	display: flex;
+	align-items: center;
 
-	.instructions-button {
-		background-color: $button-background;
-		border-radius: 1em;
-		color: $button-color;
-		cursor: pointer;
-		display: block;
-		height: 1.5em;
-		margin: 0.15em 0.25em 0 0;
-		padding: 0.25em;
-		text-align: center;
-		width: 1.5em;
-
-		&::after {
-			content: "?";
-			display: block;
-			margin-top: -0.15em;
-		}
-	}
-	.instructions-text {
-		display: none; // .showing will show, see below
-
-		// Appearance
-		@include notification-dialog();
-		@include box-shadow();
-		
-		// Position
-		max-width: 20em;
-		position: absolute;
-		right: 3em;
-		top: 0em;
-		width: 80vw;
-		z-index: 100;
-
-		h2 {
-			font-weight: bold;
-		}
-
-		.editor-side {
-			font-weight: bold;
-		}
-			
-	}
-	&.showing {
+	.merge-instructions {
+		align-items: center;
+		display: flex;
+		height: 1em;
+		position: relative;
+	
 		.instructions-button {
-			background-color: $color-inverse-bg;
-			color: $color-inverse-fg;
-
+			align-items: center;
+			background-color: $button-background;
+			border-radius: 1em;
+			color: $button-color;
+			cursor: pointer;
+			display: flex;
+			height: 1.5em;
+			justify-content: center;
+			margin: 0 0.25em 0 0;
+			padding: 0.25em;
+			width: 1.5em;
+	
 			&::after {
-				content: "×";
+				content: "?";
+				display: block;
 			}
 		}
 		.instructions-text {
-			display: inline-block;
+			display: none; // .showing will show, see below
+	
+			// Appearance
+			@include notification-dialog();
+			@include box-shadow();
+	
+			// Position
+			max-width: 20em;
+			position: absolute;
+			right: 3em;
+			top: 0em;
+			width: 80vw;
+			z-index: 100;
+	
+			h2 {
+				font-weight: bold;
+			}
+	
+			.editor-side {
+				font-weight: bold;
+			}
+	
+		}
+		&.showing {
+			.instructions-button {
+				background-color: $color-inverse-bg;
+				color: $color-inverse-fg;
+	
+				&::after {
+					content: "×";
+				}
+			}
+			.instructions-text {
+				display: inline-block;
+			}
 		}
 	}
 }
