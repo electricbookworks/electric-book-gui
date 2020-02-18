@@ -8,6 +8,13 @@
 			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank">{{.UserName}}<img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar"/></a> <a href="/logoff" class="btn">Sign out</a>
 		</div>
 	</div>
+	{{else}}
+	<div class="topbar-right">
+		<div class="landing-page-topbar-links">
+			<a href="https://electricbookworks.com/book-hosting/">Pricing</a>
+			<a href="https://electricbookworks.com/contact/">Contact</a>
+		</div>
+	</div>
 	{{end}}
 </nav>
 {{if .Flashes -}}

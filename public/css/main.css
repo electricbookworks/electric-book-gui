@@ -7005,6 +7005,9 @@ body.editorMaximised .repo-flow {
   .repo-detail-settings:hover ul {
     visibility: visible; }
 
+.landing-page-topbar-links a {
+  margin-right: 1em; }
+
 .landing-page {
   margin: 3em auto auto auto;
   max-width: 40em;
