@@ -105,16 +105,19 @@
 			cursor: pointer;
 			margin-right: 0.5em;
 			&::after {
-				content: "\25e6"; // ◦
+				// content: "\25e6"; // ◦
+				content: "\25a0"; // ■
 				display: block;
-				font-size: 1.3em;
+				font-size: 0.7em;
 				line-height: 0;
+				color: $wetcement;
 			}
 		}
 		.node.closed .closer {
 			&::after {
-				color: $button-background;
-				content: "\2022";
+				color: $color-darkgray;
+				// content: "\2022"; // bullet
+				content: "\25a1"; // □
 			}
 		}
 		.node.ignore {

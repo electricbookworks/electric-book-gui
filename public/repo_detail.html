@@ -79,7 +79,7 @@
 
                             <div class="repo-status">
                                 <p>
-                                    You've made changes you have not shared with the project you are contributing to.
+                                    You've made changes you have not shared with the project you are contributing to (<a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>).
                                     <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new">Submit these changes for review.</a>
                                 </p>
                             </div>
@@ -90,7 +90,7 @@
 
                             <div class="repo-status">
                                 <p>
-                                    Your copy and the project you are contributing to are in sync. Good work.
+                                    Your copy and the project you are contributing to (<a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>) are in sync. Good work.
                                 </p>
                             </div>
  

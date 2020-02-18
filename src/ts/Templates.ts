@@ -180,11 +180,11 @@ export class AddNewBookDialog {
 				Start a new project.
 			</label>
 			<label>
-				<input type="radio" value="collaborate" name="new-project-type"/>
+				<input value="collaborate" name="new-project-type" type="radio"/>
 				Contribute to an existing project.
 			</label>
 			<label>
-				<input type="radio" value="adaptation" name="new-project-type"/>
+				<input name="new-project-type" type="radio" value="adaptation"/>
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
@@ -195,11 +195,11 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
+		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
@@ -211,22 +211,22 @@ export class AddNewBookDialog {
 	<div>
 		<h1>Adaptation</h1>
 		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
+		<input name="action" value="new" type="hidden"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
-		<input placeholder="e.g. electricbookworks/electric-book" type="text" name="template"/>
+		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="New adaptation"/>
+		<input value="New adaptation" type="submit" class="btn"/>
 		</form>
 	</div>
 	<div>
@@ -240,7 +240,7 @@ export class AddNewBookDialog {
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="Copy project" type="submit" class="btn"/>
+		<input class="btn" value="Copy project" type="submit"/>
 		</form>
 	</div>
 </div>
@@ -691,7 +691,7 @@ export class FileListDialog_Item {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
 	<li data-set="this">
-		<input name="file-list" type="radio"/>
+		<input type="radio" name="file-list"/>
 		<span/>
 	</li>
 </ul>
@@ -786,7 +786,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button class="close-button" aria-label="Close popup" type="button" data-close="">
+	<button aria-label="Close popup" type="button" data-close="" class="close-button">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -976,9 +976,9 @@ export class PrintListenerTerminal {
 			let d = document.createElement('div');
 			d.innerHTML = `<div id="print-listener">
 	<div class="header">
-		<div class="title">Printing in progress...
+		<div class="title">Printing in progress …
 		</div>
-		<div class="close">X</div>
+		<div class="close">×</div>
 	</div>
 	<div class="terminal">
 	</div>
@@ -1072,7 +1072,7 @@ export class RepoEditorPage_NewFileDialog {
 			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button data-event="click" class="btn">Create File</button>
+	<button class="btn" data-event="click">Create File</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1310,23 +1310,23 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input type="radio" name="resolve" value="our" id="resolveOur"/>
+			<input id="resolveOur" type="radio" name="resolve" value="our"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input id="resolveGit" type="radio" name="resolve" value="git"/>
+			<input type="radio" name="resolve" value="git" id="resolveGit"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input id="resolveTheir" type="radio" name="resolve" value="their"/>
+			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input name="conflicted" value="only" id="conflicted" type="checkbox"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
-	<button class="btn" data-event="click:">Do the Merge</button>
+	<button data-event="click:" class="btn">Do the Merge</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1462,16 +1462,16 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input value="no" data-event="change" type="radio" name="closePR" id="closePR-no"/>No
+		<input data-event="change" type="radio" name="closePR" id="closePR-no" value="no"/>No
 		</label>
 		<label for="closePR-yes">
-		<input name="closePR" id="closePR-yes" value="yes" data-event="change" type="radio"/>Yes
+		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
 		</label>
 		<label for="closeMessage">Close message
-		<input name="closeMessage" id="closeMessage" type="text"/>
+		<input type="text" name="closeMessage" id="closeMessage"/>
 		</label>
 	</fieldset> 
-	<button data-event="click:done" class="btn">Done</button>
+	<button class="btn" data-event="click:done">Done</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;

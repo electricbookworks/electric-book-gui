@@ -12,9 +12,10 @@
 
         .repo-flow-home-link {
             &::before {
-                content: "\f015";
-                content: "\f060";
-                content: "\f0c9";
+                // content: "\f015"; // home
+                // content: "\f060"; // arrow-left
+                // content: "\f0c9"; // bars
+                content: "\f053"; // chevron
                 font-family: "FontAwesome";
             }
             &:hover,

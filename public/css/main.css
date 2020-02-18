@@ -6436,7 +6436,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     border-radius: 0.15em;
     color: #fdfdfd;
     font-weight: bold;
-    margin: 1em auto;
+    margin: 5em auto;
     padding: 1em;
     text-align: center;
     width: 20em; }
@@ -6586,55 +6586,44 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   list-style: none; }
 
 #print-listener {
+  background-color: #262626;
+  color: #FFF8E2;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
   position: fixed;
-  bottom: 1em;
-  right: 1em;
-  max-width: 50em;
-  max-height: 12em;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 20%;
+  padding: 1em;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: stretch;
-  font-size: 0.8em;
-  font-family: monospace;
-  border: 1px solid #333; }
+  align-items: stretch; }
   #print-listener .header {
     flex-grow: 0;
-    background-color: #eee;
-    color: black;
-    text-align: center;
-    text-transform: uppercase;
-    padding: 0.3em 1em;
-    transition: background-color 0.1s, color 0.1s;
+    padding: 0 0 0.5em 0;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: baseline; }
-    #print-listener .header.tick {
-      background-color: #999;
-      color: #eee; }
+    justify-content: space-between; }
     #print-listener .header.done {
-      background-color: #34ffcc;
-      color: white;
-      transition: background-color color 0.3s; }
+      color: #34ffcc; }
     #print-listener .header .title {
       font-weight: bold; }
     #print-listener .header .close {
-      text-align: right;
-      cursor: pointer; }
+      cursor: pointer;
+      font-size: 2em;
+      line-height: 1;
+      margin-top: -0.2em;
+      text-align: right; }
   #print-listener .terminal {
     flex-grow: 1;
-    overflow-y: auto;
-    padding: 0.4em 1em;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white; }
+    overflow-y: auto; }
     #print-listener .terminal .error-line {
-      color: red;
+      color: #ffeae2;
       font-weight: bold; }
     #print-listener .terminal .done {
-      color: white;
-      font-weight: bold;
-      background-color: darkgreen; }
+      color: #34ffcc;
+      font-weight: bold; }
 
 .invitations {
   background-color: #FFF8E2;
@@ -6756,13 +6745,14 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       cursor: pointer;
       margin-right: 0.5em; }
       .file-container #all-files-editor .node .closer::after {
-        content: "\25e6";
+        content: "\25a0";
         display: block;
-        font-size: 1.3em;
-        line-height: 0; }
+        font-size: 0.7em;
+        line-height: 0;
+        color: #AEAEAE; }
     .file-container #all-files-editor .node.closed .closer::after {
-      color: #ffcc34;
-      content: "\2022"; }
+      color: #818181;
+      content: "\25a1"; }
     .file-container #all-files-editor .node.ignore {
       display: none; }
     .file-container #all-files-editor .node-dir > .name > span:nth-child(2) {
@@ -6818,9 +6808,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     color: #D9D9D9;
     padding: 0 1em; }
     .repo-flow .repo-flow-home .repo-flow-home-link::before {
-      content: "\f015";
-      content: "\f060";
-      content: "\f0c9";
+      content: "\f053";
       font-family: "FontAwesome"; }
     .repo-flow .repo-flow-home .repo-flow-home-link:hover, .repo-flow .repo-flow-home .repo-flow-home-link:active, .repo-flow .repo-flow-home .repo-flow-home-link:focus {
       color: #ffcc34; }
@@ -7004,6 +6992,36 @@ body.editorMaximised .repo-flow {
         border-radius: 0 0 0.15em 0.15em; }
   .repo-detail-settings:hover ul {
     visibility: visible; }
+
+.jekyll-progress {
+  background-color: #262626;
+  color: #FFF8E2;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  margin: 2em auto;
+  max-width: 60em;
+  padding: 1em; }
+
+.terminal {
+  background-color: #262626;
+  color: #FFF8E2;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem; }
+  .terminal h1, .terminal p, .terminal ul, .terminal ol {
+    background-color: #262626;
+    color: #FFF8E2;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem; }
+  .terminal .err {
+    background-color: #ffeae2;
+    font-weight: bold; }
+
+.error {
+  background-color: #ffeae2;
+  font-weight: bold; }
+
+.restart {
+  margin: 1em 0; }
 
 .landing-page-topbar-links a {
   margin-right: 1em; }
@@ -7730,16 +7748,16 @@ body.editorMaximised .repo-flow {
   margin-bottom: 3em;
   padding: 1em;
   width: 100%; }
-  #repo-detail .repo-detail-container .repo-status:last-child {
-    margin-bottom: 0; }
-  #repo-detail .repo-detail-container .repo-status-action {
-    font-weight: bold;
-    text-decoration: underline; }
-
-#repo-detail .repo-status {
-  margin-bottom: 1em; }
-  #repo-detail .repo-status > *:last-child {
-    margin-bottom: 0; }
+  #repo-detail .repo-detail-container .repo-status {
+    margin-bottom: 1em; }
+    #repo-detail .repo-detail-container .repo-status a {
+      text-decoration: underline; }
+    #repo-detail .repo-detail-container .repo-status > *:last-child {
+      margin-bottom: 0; }
+    #repo-detail .repo-detail-container .repo-status:last-child {
+      margin-bottom: 0; }
+    #repo-detail .repo-detail-container .repo-status .repo-status-action {
+      font-weight: bold; }
 
 #repo-detail .repo-detail-changes-to-commit-action-commit,
 #repo-detail .repo-detail-changes-to-commit-action-discard {

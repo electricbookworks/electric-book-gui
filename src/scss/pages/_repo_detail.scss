@@ -42,23 +42,27 @@
         @include repo-box();
 
         .repo-status {
+            margin-bottom: 1em;
+
+            a {
+                text-decoration: underline;
+            }
+
+            & > *:last-child {
+                margin-bottom: 0;
+            }
+
             &:last-child {
                 margin-bottom: 0;
             }
+
+            .repo-status-action {
+                font-weight: bold;
+            }
         }
 
-        .repo-status-action {
-            font-weight: bold;
-            text-decoration: underline;
-        }
     }
 
-    .repo-status {
-        margin-bottom: 1em;
-        & > *:last-child {
-            margin-bottom: 0;
-        }
-    }
 
     .repo-detail-changes-to-commit-action-commit,
     .repo-detail-changes-to-commit-action-discard {

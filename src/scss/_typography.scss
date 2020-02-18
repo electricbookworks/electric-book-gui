@@ -136,3 +136,10 @@ a {
 		}
 	}
 }
+
+@mixin terminal-typography() {
+    background-color: $black;
+	color: $cornsilk;
+	font-family: $body-font-family-code;
+	font-size: 0.8rem;
+}
