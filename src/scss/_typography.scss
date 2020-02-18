@@ -75,7 +75,7 @@ a {
 }
 
 @mixin box-shadow() {
-	box-shadow: 3px 3px 7px -7px $black2;
+	box-shadow: 3px 3px 7px -7px $black;
 }
 
 @mixin notification-dialog() {

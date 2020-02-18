@@ -6415,11 +6415,6 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     color: #ffcc34;
     background-color: white; }
 
-.button-smallprint {
-  margin-top: 0.6em;
-  font-size: 0.8em;
-  max-width: 40em; }
-
 .action-group {
   display: flex;
   flex-direction: row;
@@ -7011,7 +7006,84 @@ body.editorMaximised .repo-flow {
     visibility: visible; }
 
 .landing-page {
-  max-width: 40em; }
+  margin: 3em auto auto auto;
+  max-width: 40em;
+  padding: 0.5em; }
+  @media only screen and (min-width: 64em) {
+    .landing-page {
+      max-width: 60em; } }
+  .landing-page .login-actions {
+    display: inline-block;
+    float: right;
+    padding: 1em;
+    max-width: 50%;
+    position: relative; }
+    .landing-page .login-actions details {
+      font-size: 0.8em;
+      padding: 0.5em;
+      position: absolute; }
+      .landing-page .login-actions details[open] {
+        box-shadow: 3px 3px 7px -7px #262626;
+        background-color: #FFF8E2;
+        border-radius: 0.15em; }
+        .landing-page .login-actions details[open] summary {
+          margin-bottom: 0.5em; }
+      .landing-page .login-actions details summary {
+        color: #818181;
+        text-decoration: underline; }
+        .landing-page .login-actions details summary::marker {
+          color: #D9D9D9; }
+  .landing-page h1 {
+    line-height: 1.1;
+    justify-self: start;
+    margin: 0 0 1em 0;
+    max-width: 50%; }
+    @media only screen and (min-width: 64em) {
+      .landing-page h1 {
+        font-size: 2.6em; } }
+  .landing-page ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style-type: none;
+    margin: 0 0 2em 0;
+    width: 100%; }
+    .landing-page ul li {
+      margin: 0 1em 1em 0;
+      position: relative;
+      width: calc(50% - 1.5em); }
+      .landing-page ul li strong {
+        display: inline-block;
+        margin: 0 0 0.25em 0; }
+      .landing-page ul li[class^="landing-page-feature-"]::before {
+        color: #595959;
+        display: block;
+        font-family: "FontAwesome";
+        font-size: 2em; }
+      .landing-page ul li.landing-page-feature-create::before {
+        content: "\f02d"; }
+      .landing-page ul li.landing-page-feature-edit::before {
+        content: "\f14b"; }
+      .landing-page ul li.landing-page-feature-collaborate::before {
+        content: "\f126"; }
+      .landing-page ul li.landing-page-feature-github::before {
+        content: "\f09b"; }
+      @media only screen and (min-width: 64em) {
+        .landing-page ul li {
+          margin-bottom: 2em;
+          padding-right: 2em; }
+          .landing-page ul li::before {
+            position: absolute;
+            left: -1.4em;
+            top: -0.2em; } }
+  .landing-page .btn.landing-page-request-demo {
+    background-color: #595959;
+    color: #fdfdfd;
+    margin: 0 0 1em 0; }
+    .landing-page .btn.landing-page-request-demo:hover {
+      background-color: #262626; }
+  .landing-page p a, .landing-page ul a, .landing-page ol a {
+    text-decoration: underline; }
 
 #pull-request-new label[for="description"] {
   margin: 1em 0; }

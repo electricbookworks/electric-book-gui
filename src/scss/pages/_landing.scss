@@ -1,3 +1,127 @@
 .landing-page {
+	margin: 3em auto auto auto;
 	max-width: 40em;
+	padding: 0.5em;
+	@media only screen and (min-width: $bp-l) {
+		max-width: 60em;
+	}
+
+	.login-actions {
+		display: inline-block;
+		float: right;
+		padding: 1em;
+		max-width: 50%;
+		position: relative;
+
+		details {
+			font-size: 0.8em;
+			padding: 0.5em;
+			position: absolute;
+
+			&[open] {
+				@include box-shadow();
+				background-color: $cornsilk;
+				border-radius: $global-radius;
+
+				summary {
+					margin-bottom: 0.5em;
+				}
+			}
+
+			summary {
+				color: $grey;
+				text-decoration: underline;
+
+				&::marker {
+					color: $cement;
+				}
+			}
+		}
+	}
+
+	h1 {
+		line-height: 1.1;
+		justify-self: start;
+		margin: 0 0 1em 0;
+		max-width: 50%;
+		@media only screen and (min-width: $bp-l) {
+			font-size: 2.6em;
+		}
+	}
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		list-style-type: none;
+		margin: 0 0 2em 0;
+		width: 100%;
+
+		li {
+			margin: 0 1em 1em 0;
+			position: relative;
+			width: calc(50% - 1.5em);
+
+			strong {
+				display: inline-block;
+				margin: 0 0 0.25em 0;
+			}
+
+			&[class^="landing-page-feature-"] {
+				&::before {
+					color: $charcoal;
+					display: block;
+					font-family: "FontAwesome";
+					font-size: 2em;
+				}
+			}
+			&.landing-page-feature-create {
+				&::before {
+					content: "\f02d";
+				}
+			}
+			&.landing-page-feature-edit {
+				&::before {
+					content: "\f14b";
+				}
+			}
+			&.landing-page-feature-collaborate {
+				&::before {
+					content: "\f126";
+				}
+			}
+			&.landing-page-feature-github {
+				&::before {
+					content: "\f09b";
+				}
+			}
+
+			@media only screen and (min-width: $bp-l) {
+				margin-bottom: 2em;
+				padding-right: 2em;
+
+				&::before {
+					position: absolute;
+					left: -1.4em;
+					top: -0.2em;
+				}
+			}
+		}
+	}
+
+	.btn.landing-page-request-demo {
+		background-color: $charcoal;
+		color: $white;
+		margin: 0 0 1em 0;
+
+		&:hover {
+			background-color: $black;
+		}
+	}
+
+	p, ul, ol {
+		a {
+			text-decoration: underline;
+		}
+	}
 }

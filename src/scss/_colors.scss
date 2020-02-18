@@ -1,76 +1,72 @@
 // Hex values
-$black1: #000000;
-$black2: #262626;
-$black3: #818181;
-$black4: #D9D9D9;
-$black5: #E9E9E9;
-$black6: #F5F5F5;
-$yellow1: #ffcc34;
-$yellow2: #FFF8E2;
-$green1: #34ffcc;
-$green2: #e2fff8;
-$orange1: #ffeae2;
-$white1: white;
-$white2: #fdfdfd;
 
-// Main colours
-$bodytext: $black2;
-$primary: $yellow1;
+$trueblack: #000000;
+$offblack: #262626;
+$black: $offblack;
 
-// Black through white
+$charcoal: #595959;
+$grey: #818181;
+$cement: #D9D9D9;
+$overcast: #E9E9E9;
+$smoke: #F5F5F5;
+
+$yellow: #ffcc34;
+$loquat: #ffd967;
+$cornsilk: #FFF8E2;
+
+$fakelime: #34ffcc;
+$seafoam: #e2fff8;
+
+$peach: #ffeae2;
+
+$truewhite: white;
+$offwhite: #fdfdfd;
+$white: $offwhite;
+
+// Main accent colours
+$bodytext: $offblack;
+$primary: $yellow;
+
+// Black through white used in Foundation
+// TODO: replace when removing Foundation
 $color-primary: $primary;
-$color-secondary: $black2;
-$color-black: $black2;
-$color-darkgray: $black3;
-$color-mediumgray: $black4;
-$color-gray: $black5;
-$color-lightgray: $black6;
-$color-white: $white2;
+$color-secondary: $offblack;
+$color-black: $offblack;
+$color-darkgray: $grey;
+$color-mediumgray: $cement;
+$color-gray: $overcast;
+$color-lightgray: $smoke;
+$color-white: $offwhite;
 
 // Inverse colours
-$color-inverse-bg: $color-primary;
-$color-inverse-fg: $color-black;
+$color-inverse-bg: $yellow;
+$color-inverse-fg: $offblack;
 
 // Buttons
-$button-color: $color-black;
-$button-color-alt: $color-white;
-$button-background-alt: lighten($black2, 20%);
-$button-background: $color-primary;
-$button-color-inverse: $white2;
-$button-background-inverse: $black2;
-$button-color-disabled: $color-darkgray;
-$button-background-disabled: $color-gray;
-$button-background-hover: lighten($color-primary, 10%);
+$button-color: $offblack;
+$button-color-alt: $offwhite;
+$button-background-alt: $charcoal;
+$button-background: $yellow;
+$button-color-inverse: $offwhite;
+$button-background-inverse: $offblack;
+$button-color-disabled: $grey;
+$button-background-disabled: $overcast;
+$button-background-hover: $loquat;
 
 // Dialogs
-$color-alert: $orange1;
-$color-error-light: $orange1;
-$color-error: $orange1;
-$color-info-light: $yellow2;
-$color-info: $yellow2;
-$color-success-light: $green2;
-$color-success: $green1;
-$color-warning: $orange1;
+$color-alert: $peach;
+$color-error-light: $peach;
+$color-error: $peach;
+$color-info-light: $cornsilk;
+$color-info: $cornsilk;
+$color-success-light: $seafoam;
+$color-success: $fakelime;
+$color-warning: $peach;
 
 // Status
-$color-status-new: $color-info;
-$color-status-deleted: $color-warning;
-$color-status-modified: $color-lightgray;
-$color-status-resolved: $color-success;
-$color-status-error: $color-error;
-$color-status-conflict: $color-info;
-
-
-// Redundant, to clean up
-// ----------------------
-// $error: $color-error;
-// $error-light: $color-error-light;
-// $information-light: $yellow2;
-// $information: $yellow2;
-$success-light: $color-success-light;
-$dark-grey: $color-darkgray;
-$grey: $color-gray;
-$white: $color-white;
-$color-offgray: $color-mediumgray;
-$off-grey: $color-offgray;
-$color-verylightgray: $color-lightgray;
+$color-status-new: $cornsilk;
+$color-status-deleted: $peach;
+$color-status-modified: $smoke;
+$color-status-resolved: $fakelime;
+$color-status-error: $peach;
+$color-status-conflict: $cornsilk;
