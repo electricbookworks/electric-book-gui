@@ -180,7 +180,7 @@ export class AddNewBookDialog {
 				Start a new project.
 			</label>
 			<label>
-				<input value="collaborate" name="new-project-type" type="radio"/>
+				<input name="new-project-type" type="radio" value="collaborate"/>
 				Contribute to an existing project.
 			</label>
 			<label>
@@ -195,25 +195,25 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="New project" type="submit" class="btn"/>
+		<input type="submit" class="btn" value="New project"/>
 		</form>
 	</div>
 	<div>
 		<h1>Adaptation</h1>
 		<form method="post" action="/github/create/new">
-		<input name="action" value="new" type="hidden"/>
+		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
@@ -226,7 +226,7 @@ export class AddNewBookDialog {
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="New adaptation" type="submit" class="btn"/>
+		<input type="submit" class="btn" value="Create adaptation"/>
 		</form>
 	</div>
 	<div>
@@ -234,13 +234,13 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork"/>
 		<label>Enter the GitHub owner and repo for the project you will contribute to.
-		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
+		<input placeholder="e.g. electricbooks/core" type="text" name="collaborate_repo"/>
 		</label>
 		<label style="display:none;">
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input class="btn" value="Copy project" type="submit"/>
+		<input type="submit" class="btn" value="Copy project"/>
 		</form>
 	</div>
 </div>
@@ -786,7 +786,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button aria-label="Close popup" type="button" data-close="" class="close-button">
+	<button data-close="" class="close-button" aria-label="Close popup" type="button">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -872,7 +872,7 @@ export class LoginTokenList {
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
 		<input type="text" placeholder="name"/>
-		<input type="text" placeholder="token"/>
+		<input placeholder="token" type="text"/>
 		<button class="btn">Add</button>
 	</div>
 	<ul class="token-list">
@@ -1112,10 +1112,10 @@ export class RepoEditorPage_RenameFileDialog {
 		<div>Renaming <span> </span></div>
 		<label>
 			Enter the full path to your new file.
-			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
+			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button class="btn" data-event="click">Rename</button>
+	<button data-event="click" class="btn">Rename</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1310,11 +1310,11 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input id="resolveOur" type="radio" name="resolve" value="our"/>
+			<input type="radio" name="resolve" value="our" id="resolveOur"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			<input id="resolveGit" type="radio" name="resolve" value="git"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
@@ -1323,10 +1323,10 @@ export class RepoMergeDialog {
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
+		<input name="conflicted" value="only" id="conflicted" type="checkbox"/>
 			Only apply above resolution to conflicted files.
 	</label>
-	<button data-event="click:" class="btn">Do the Merge</button>
+	<button class="btn" data-event="click:">Do the Merge</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1462,16 +1462,16 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input data-event="change" type="radio" name="closePR" id="closePR-no" value="no"/>No
+		<input name="closePR" id="closePR-no" value="no" data-event="change" type="radio"/>No
 		</label>
 		<label for="closePR-yes">
-		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
+		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>
 		</label>
 	</fieldset> 
-	<button class="btn" data-event="click:done">Done</button>
+	<button data-event="click:done" class="btn">Done</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;

@@ -7023,6 +7023,12 @@ body.editorMaximised .repo-flow {
 .restart {
   margin: 1em 0; }
 
+.reveal {
+  box-shadow: 3px 3px 10px 0 #262626;
+  border: 0; }
+  .reveal .btn {
+    float: right; }
+
 .landing-page-topbar-links a {
   margin-right: 1em; }
 

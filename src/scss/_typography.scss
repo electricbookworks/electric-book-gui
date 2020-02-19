@@ -74,8 +74,8 @@ a {
 	}
 }
 
-@mixin box-shadow() {
-	box-shadow: 3px 3px 7px -7px $black;
+@mixin box-shadow($blur-radius: 7px, $spread-radius: -7px) {
+	box-shadow: 3px 3px $blur-radius $spread-radius $black;
 }
 
 @mixin notification-dialog() {

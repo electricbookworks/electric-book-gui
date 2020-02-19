@@ -83,4 +83,4 @@ Here are more detailed instructions.
 
    You can then open the EBM in your browser at [http://localhost:16101/](http://localhost:16101/).
 
-For convenience, run `make dev` to start the app and watch the Sass, Typescript and dTemplates all at once. Note that this runs the processes in parallel, and you'll have to kill them manually when you're done.
+For convenience, run `make dev` to start the app and watch the Sass, Typescript and dTemplates all at once. Note that this runs the processes in parallel, and you may need to kill processes manually when you're done.
