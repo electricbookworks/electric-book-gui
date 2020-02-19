@@ -17,9 +17,10 @@
 
 		<form method="post" action="./new">
 		<div>
-			<label for="description">Description
-				<span class="pull-request-new-description-note">Provide a clear, specific note about the changes you're submitting.</span>
-			<input type="text" name="description" />
+			<!-- We use title only, as GitHub PR title. For user-friendliness, we call it a description here.-->
+			<label for="title">Description
+				<span class="pull-request-new-description-note">Provide a short, specific note about the changes you're submitting.</span>
+			<input type="text" name="title" />
 			</label>
 		</div>
 

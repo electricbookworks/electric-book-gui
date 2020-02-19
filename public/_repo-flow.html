@@ -29,7 +29,7 @@
 				<a class="btn" data-set="commit" id="repo-commit" href="/repo/{{.RepoOwner}}/{{.RepoName}}/commit">Commit</a>
 			</li>
 			<li>
-				<a class="btn" {{if not .UpstreamActions}}disabled title="There is no parent project to submit to."{{end}} href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
 			</li>
 		</ol>
 	</div>

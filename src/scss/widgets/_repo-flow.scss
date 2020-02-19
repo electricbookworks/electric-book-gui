@@ -85,7 +85,7 @@
                     height: 1.4em;
                     line-height: 1.37; // Chrome
                     @supports (-moz-appearance: none) {
-                        line-height: 1.425; // Firefox
+                        line-height: 1.35; // Firefox
                     }
                     position: absolute; // necessary for z-index stacking context
                     text-align: center;

@@ -6865,7 +6865,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
           transform: translateX(-50%); }
           @supports (-moz-appearance: none) {
             .repo-flow .repo-flow-steps ol li::before {
-              line-height: 1.425; } }
+              line-height: 1.35; } }
         .repo-flow .repo-flow-steps ol li::after {
           border-bottom: 2px solid #D9D9D9;
           bottom: -100%;
@@ -7048,7 +7048,8 @@ body.editorMaximised .repo-flow {
     .landing-page .login-actions details {
       font-size: 0.8em;
       padding: 0.5em;
-      position: absolute; }
+      position: absolute;
+      z-index: 1; }
       .landing-page .login-actions details[open] {
         box-shadow: 3px 3px 7px -7px #262626;
         background-color: #FFF8E2;
@@ -7112,9 +7113,9 @@ body.editorMaximised .repo-flow {
   .landing-page p a, .landing-page ul a, .landing-page ol a {
     text-decoration: underline; }
 
-#pull-request-new label[for="description"] {
+#pull-request-new label[for="title"] {
   margin: 1em 0; }
-  #pull-request-new label[for="description"] .pull-request-new-description-note {
+  #pull-request-new label[for="title"] .pull-request-new-description-note {
     color: #818181;
     display: block;
     font-size: 0.8em;
