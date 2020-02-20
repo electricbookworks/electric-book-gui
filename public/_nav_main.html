@@ -1,22 +1,40 @@
 <nav class="topbar">
+
 	<div class="topbar-left">
 		<a href="/" id="logo" class="logo"><img src="/img/electricbookworks.png">Electric Book Manager</a>
 	</div>
+
 	{{if .User}}
-	<div class="topbar-right">
-		<div>
-			<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank">{{.UserName}}<img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar"/></a> <a href="/logoff" class="btn">Sign out</a>
+		<div class="topbar-right">
+
+			<div class="topbar-links">
+				<a href="https://electricbookworks.github.io/electric-book-gui/" target="_blank">Docs</a>
+				<a href="https://electricbookworks.com/contact" target="_blank">Support</a>
+				<a class="username-gravatar" href="https://github.com/{{.UserName}}" target="_blank">
+					<span class="username">{{.UserName}}</span>
+					<img class="gravatar" src="{{.User.GetAvatarURL}}" alt="{{.UserName}} avatar"/>
+				</a>
+				<a href="/logoff" class="btn">Sign out</a>
+			</div>
+
 		</div>
-	</div>
+
 	{{else}}
-	<div class="topbar-right">
-		<div class="landing-page-topbar-links">
-			<a href="https://electricbookworks.com/book-hosting/">Pricing</a>
-			<a href="https://electricbookworks.com/contact/">Contact</a>
+
+		<div class="topbar-right">
+
+			<div class="topbar-links">
+				<a href="https://electricbookworks.github.io/electric-book-gui/" target="_blank">Docs</a>
+				<a href="https://electricbookworks.com/book-hosting/">Pricing</a>
+				<a href="https://electricbookworks.com/contact/">Contact</a>
+			</div>
+
 		</div>
-	</div>
+
 	{{end}}
+
 </nav>
+
 {{if .Flashes -}}
 <div id="flashes" class="flashes">
 {{range .Flashes}}

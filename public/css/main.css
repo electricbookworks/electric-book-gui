@@ -6262,11 +6262,15 @@ body {
     flex-grow: 0;
     flex-wrap: nowrap;
     justify-content: center;
-    padding: 1em; }
+    min-height: 0.5em; }
     body footer a {
       color: #262626; }
       body footer a:hover {
         color: #0d0d0d; }
+    body footer > div {
+      padding: 1em 0.5em; }
+      body footer > div:empty {
+        padding: 0; }
     body footer .freespace,
     body footer .admin-userlogin-token {
       display: none; }
@@ -6460,6 +6464,8 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     margin-right: 0.5em; }
   .topbar .topbar-center {
     font-weight: bold; }
+  .topbar .topbar-links a {
+    margin-right: 1em; }
 
 .flashes {
   background-color: #F5F5F5; }
@@ -7028,9 +7034,6 @@ body.editorMaximised .repo-flow {
   border: 0; }
   .reveal .btn {
     float: right; }
-
-.landing-page-topbar-links a {
-  margin-right: 1em; }
 
 .landing-page {
   margin: 3em auto auto auto;

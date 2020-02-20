@@ -35,7 +35,14 @@ body {
 		flex-grow: 0;
 		flex-wrap: nowrap;
 		justify-content: center;
-		padding: 1em;
+		min-height: 0.5em; // narrow band visible even when footer is empty
+		
+		& > div {
+			padding: 1em 0.5em;
+			&:empty {
+				padding: 0;
+			}
+		}
 
 		// Admin purposes only, hide from users
 		.freespace,
