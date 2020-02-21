@@ -1,7 +1,7 @@
 .landing-page {
 	margin: 3em auto auto auto;
 	max-width: 40em;
-	padding: 0.5em;
+	padding: 1.5em; // 1em extra to allow space for icons in margin
 	@media only screen and (min-width: $bp-l) {
 		max-width: 60em;
 	}

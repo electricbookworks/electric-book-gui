@@ -4,6 +4,7 @@
 	color: $color-white;
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 	justify-content: space-between;
 	padding: 0.75em;
 
@@ -22,8 +23,18 @@
 		}
 	}
 
+	.topbar-left {
+		margin-right: 1em;
+	}
+
 	.topbar-center {
 		font-weight: bold;
+		margin-right: 1em;
+	}
+
+	.topbar-right {
+		flex-grow: 1;
+		text-align: right;
 	}
 
 	.topbar-links {

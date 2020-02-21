@@ -6451,6 +6451,7 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   color: #fdfdfd;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: 0.75em; }
   .topbar img {
@@ -6462,8 +6463,14 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     border-radius: 1em;
     margin-left: 0.5em;
     margin-right: 0.5em; }
+  .topbar .topbar-left {
+    margin-right: 1em; }
   .topbar .topbar-center {
-    font-weight: bold; }
+    font-weight: bold;
+    margin-right: 1em; }
+  .topbar .topbar-right {
+    flex-grow: 1;
+    text-align: right; }
   .topbar .topbar-links a {
     margin-right: 1em; }
 
@@ -7038,7 +7045,7 @@ body.editorMaximised .repo-flow {
 .landing-page {
   margin: 3em auto auto auto;
   max-width: 40em;
-  padding: 0.5em; }
+  padding: 1.5em; }
   @media only screen and (min-width: 64em) {
     .landing-page {
       max-width: 60em; } }
