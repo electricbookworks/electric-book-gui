@@ -1,5 +1,5 @@
-- name: "restart electricbook"
+- name: restart electricbook
   include: restart.yml
 
-- name: 'restart proxy'
-  include: 'proxy-restart.yml'
+- name: restart proxy
+  include: proxy-restart.yml

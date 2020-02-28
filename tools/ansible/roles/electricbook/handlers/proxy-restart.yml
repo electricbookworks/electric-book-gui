@@ -13,5 +13,3 @@
     state=restarted
   when: >
     ansible_distribution_major_version|int < 16 and webserver=='nginx'
-
-
