@@ -47,6 +47,16 @@ deploy-production:
 	ansible-playbook -i hosts-production playbook-bookserver.yml; \
 	popd
 
+users-staging:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-staging playbook-update-users.yml; \
+	popd
+
+users-production:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-production playbook-update-users.yml; \
+	popd
+
 test:
 	GOPATH=`pwd`/src/go go test ebw/git -logtostderr 
 
