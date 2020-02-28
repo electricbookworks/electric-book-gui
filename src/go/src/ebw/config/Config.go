@@ -2,10 +2,13 @@ package config
 
 import (
 	"fmt"
+	`bufio`
+	`strings`
 	"io/ioutil"
 	"os"
 
 	"gopkg.in/yaml.v2"
+	`github.com/golang/glog`
 )
 
 type database struct {
@@ -96,11 +99,39 @@ func (c *config) Load(root string) error {
 		err = c.load(fmt.Sprintf("%s-%d.yml", root, i))
 		if nil != err {
 			if os.IsNotExist(err) {
-				return nil
+				break
 			}
 			return err
 		}
 		i++
+	}
+	return c.loadAllowedUsers(root)
+}
+
+func (c *config) loadAllowedUsers(root string) error {
+	allowedUsersFilename := root + `-users.txt`
+	defer func() {
+		glog.Infof(`Allowed users: %s`, strings.Join(c.AllowedUsers,`,`))
+	}()
+	in, err := os.Open(allowedUsersFilename)
+	if nil!=err {
+		if os.IsNotExist(err) {
+			glog.Infof(`%s does not exist`, allowedUsersFilename)
+			return nil
+		}
+		return err
+	}
+	defer in.Close()
+	scan := bufio.NewScanner(in)
+	if c.AllowedUsers == nil {
+		c.AllowedUsers = []string{}
+	}
+	for scan.Scan() {
+		line := strings.TrimSpace(scan.Text())
+		if 0==len(line) || '#'==line[0] {
+			continue
+		}
+		c.AllowedUsers = append(c.AllowedUsers, line)
 	}
 	return nil
 }
