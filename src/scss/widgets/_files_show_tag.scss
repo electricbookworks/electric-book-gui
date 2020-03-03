@@ -19,18 +19,30 @@
 		width: 1.5em;
 		&.showing {
 			display: none;
+			&::after {
+				content: "\f070";
+				font-family: "FontAwesome";
+			}
 		}
 		&.hidden {
 			display: inline-block;
+			&::after {
+				content: "\f06e";
+				font-family: "FontAwesome";
+			}
 		}
 	}
 	&:not(.showing) {
 		width: calc(100% + 2.1em); // make show button visible when closed
 	}
 	&.showing {
+		justify-content: flex-end;
+		padding: 0 0.75rem;
 		& > span {
 			&.showing {
-				display: inline-block;
+				display: flex;
+				justify-content: center;
+				padding-top: 0.1em;
 			}
 			&.hidden {
 				display: none;

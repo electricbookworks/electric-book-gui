@@ -53,6 +53,13 @@ a {
 	}
 }
 
+code {
+	border: 0;
+	border-radius: $global-radius;
+	font-family: $body-font-family-code;
+	font-size: 0.9em;
+}
+
 .logo {
 	text-decoration: none;
 	display: inline-block;
@@ -102,10 +109,9 @@ a {
 	font-size: 0.9rem;
 	list-style-type: none;
 	margin: 0;
-	position: absolute;
-	right: 0;
+	position: fixed; // ensures not cropped when inside position:relative parent
 	text-align: left;
-	top: 100%;
+	transform: translatex(-80%);
 	width: 12em;
 	z-index: 5; // stay visible above editor
 

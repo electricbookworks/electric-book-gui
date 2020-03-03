@@ -6072,6 +6072,12 @@ a {
     color: #818181;
     cursor: default; }
 
+code {
+  border: 0;
+  border-radius: 0.15em;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.9em; }
+
 .logo {
   text-decoration: none;
   display: inline-block; }
@@ -6090,6 +6096,9 @@ textarea {
 input,
 textarea {
   border: solid 1px #D9D9D9; }
+  input::placeholder,
+  textarea::placeholder {
+    color: #818181; }
 
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
 textarea {
@@ -6509,14 +6518,25 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
     width: 1.5em; }
     #files-show-tag span.showing {
       display: none; }
+      #files-show-tag span.showing::after {
+        content: "\f070";
+        font-family: "FontAwesome"; }
     #files-show-tag span.hidden {
       display: inline-block; }
+      #files-show-tag span.hidden::after {
+        content: "\f06e";
+        font-family: "FontAwesome"; }
   #files-show-tag:not(.showing) {
     width: calc(100% + 2.1em); }
-  #files-show-tag.showing > span.showing {
-    display: inline-block; }
-  #files-show-tag.showing > span.hidden {
-    display: none; }
+  #files-show-tag.showing {
+    justify-content: flex-end;
+    padding: 0 0.75rem; }
+    #files-show-tag.showing > span.showing {
+      display: flex;
+      justify-content: center;
+      padding-top: 0.1em; }
+    #files-show-tag.showing > span.hidden {
+      display: none; }
   #files-show-tag:hover span {
     background-color: #ffcc34;
     color: #262626; }
@@ -6758,14 +6778,16 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
       cursor: pointer;
       margin-right: 0.5em; }
       .file-container #all-files-editor .node .closer::after {
-        content: "\25a0";
+        content: "\f078";
+        color: #AEAEAE;
         display: block;
+        font-family: "FontAwesome";
         font-size: 0.7em;
         line-height: 0;
-        color: #AEAEAE; }
+        width: 0.75em; }
     .file-container #all-files-editor .node.closed .closer::after {
       color: #818181;
-      content: "\25a1"; }
+      content: "\f054"; }
     .file-container #all-files-editor .node.ignore {
       display: none; }
     .file-container #all-files-editor .node-dir > .name > span:nth-child(2) {
@@ -6978,10 +7000,9 @@ body.editorMaximised .repo-flow {
     font-size: 0.9rem;
     list-style-type: none;
     margin: 0;
-    position: absolute;
-    right: 0;
+    position: fixed;
     text-align: left;
-    top: 100%;
+    transform: translatex(-80%);
     width: 12em;
     z-index: 5;
     visibility: hidden; }
@@ -7278,13 +7299,16 @@ body.editorMaximised .repo-flow {
             font-size: 0.9rem;
             list-style-type: none;
             margin: 0;
-            position: absolute;
-            right: 0;
+            position: fixed;
             text-align: left;
-            top: 100%;
+            transform: translatex(-80%);
             width: 12em;
             z-index: 5;
             visibility: hidden;
+            position: absolute;
+            top: 100%;
+            transform: none;
+            right: 0;
             font-size: 0.8rem;
             left: 0;
             width: 8em; }
@@ -7457,10 +7481,9 @@ body.editorMaximised .repo-flow {
             font-size: 0.9rem;
             list-style-type: none;
             margin: 0;
-            position: absolute;
-            right: 0;
+            position: fixed;
             text-align: left;
-            top: 100%;
+            transform: translatex(-80%);
             width: 12em;
             z-index: 5;
             visibility: hidden;

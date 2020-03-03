@@ -106,18 +106,22 @@
 			margin-right: 0.5em;
 			&::after {
 				// content: "\25e6"; // ◦
-				content: "\25a0"; // ■
+				// content: "\25a0"; // ■
+				content: "\f078"; // chevron down
+				color: $wetcement;
 				display: block;
+				font-family: "FontAwesome";
 				font-size: 0.7em;
 				line-height: 0;
-				color: $wetcement;
+				width: 0.75em;
 			}
 		}
 		.node.closed .closer {
 			&::after {
 				color: $color-darkgray;
 				// content: "\2022"; // bullet
-				content: "\25a1"; // □
+				// content: "\25a1"; // □
+				content: "\f054"; // chevron right
 			}
 		}
 		.node.ignore {
