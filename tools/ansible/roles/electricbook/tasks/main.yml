@@ -54,13 +54,12 @@
   notify: "restart electricbook"
 
 - name: install-allowed-users
-  template: >
-    dest=/opt/electricbook/electricbook-users.txt
-    src=electricbook-users.txt.j2
-    mode=0755
-  become: yes
-  tags: ['allowed-users']
-  notify: "restart electricbook"
+  copy:
+    src: ../../../../../electricbook-users.txt
+    dest: /opt/electricbook
+    force: yes
+    mode: "0644"
+  notify: restart electricbook
 
 - name: configure upstart for electricbook
   when: >
