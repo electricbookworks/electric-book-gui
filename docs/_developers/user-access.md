@@ -10,7 +10,7 @@ You can restrict who can log into your EBM. This means you can have an Electric 
 ## Summary
 
 1. Save a plain-text list of users in `electricbook-users.txt` in your repo root. (Don't commit it.)
-2. To update the list on your staging or production server, run either `make users-staging` or `make users-production`.
+2. Deploying the app will update your user list. To update *only* the user list without a full deploy, run either `make users-staging` (for your staging site) or `make users-production` (for your live site).
 
 ## Detail
 
