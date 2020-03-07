@@ -9,6 +9,16 @@ import {NotifyFS} from '../FS2/NotifyFS';
 import {Styler} from './Styler';
 
 
+// Expand directories that contain changed files
+function expandChangedFilesInTree() {
+	var dirs = document.querySelectorAll('#all-files-editor .node-dir');
+	dirs.forEach(function (dir) {
+		if (dir.querySelector('.change')) {
+			dir.classList.remove('closed');
+		}
+	})
+}
+
 function addChildNode(parent: HTMLElement, el:HTMLElement):void {
 	if (false) {
 		parent.appendChild(el);
@@ -177,6 +187,11 @@ class NodeView extends NodeViewTemplate{
 
 		if (this.styler) {
 			this.styler(this.node, this.el);
+		}
+
+		// Auto expand folders with changes files in diff viewer
+		if (document.getElementById('repo-diff-file-viewer')) {
+			expandChangedFilesInTree();
 		}
 	}
 	childAdded(n:Node) : void {		

@@ -3527,6 +3527,15 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	}());
 	//# sourceMappingURL=Node.js.map
 
+	// Expand directories that contain changed files
+	function expandChangedFilesInTree() {
+	    var dirs = document.querySelectorAll('#all-files-editor .node-dir');
+	    dirs.forEach(function (dir) {
+	        if (dir.querySelector('.change')) {
+	            dir.classList.remove('closed');
+	        }
+	    });
+	}
 	function addChildNode(parent, el) {
 	    if (0 == parent.children.length) {
 	        parent.appendChild(el);
@@ -3654,6 +3663,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        if (_this.styler) {
 	            _this.styler(_this.node, _this.el);
 	        }
+	        // Auto expand folders with changes files in diff viewer
+	        if (document.getElementById('repo-diff-file-viewer')) {
+	            expandChangedFilesInTree();
+	        }
 	        return _this;
 	    }
 	    NodeView.prototype.childAdded = function (n) {
@@ -3674,7 +3687,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return NodeView;
 	}(Tree_NodeView));
-	//# sourceMappingURL=FileSystemView2.js.map
 
 	// import {Directory} from './Directory';
 	/**
@@ -5510,6 +5522,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoDiffFileViewerPage;
 	}());
+	//# sourceMappingURL=RepoDiffFileViewerPage.js.map
 
 	var PrintButton = /** @class */ (function () {
 	    function PrintButton(button) {
