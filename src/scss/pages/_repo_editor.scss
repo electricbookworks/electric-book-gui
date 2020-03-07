@@ -120,6 +120,7 @@
 				}
 			}
 			#repo-save-all {
+				display: none; // currently hidden while debugging
 				&::before {
 					content: "\f0a0";
 				}

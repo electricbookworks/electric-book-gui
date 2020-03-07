@@ -6548,7 +6548,9 @@ main .files-nav-hidden ~ .section-editor .CodeMirror-lines {
   flex-direction: row;
   justify-content: flex-start;
   align-items: baseline; }
-  .toolbar-menu > button, .toolbar-menu > div, .toolbar-menu > a {
+  .toolbar-menu > button,
+  .toolbar-menu > div,
+  .toolbar-menu > a {
     display: block;
     margin-bottom: 0.2em;
     margin-right: 0.4em; }
@@ -7350,8 +7352,10 @@ body.editorMaximised .repo-flow {
         content: "\f040"; }
       #repo-editor #file-editors .editor-actions #editor-save-button::before {
         content: "\f0c7"; }
-      #repo-editor #file-editors .editor-actions #repo-save-all::before {
-        content: "\f0a0"; }
+      #repo-editor #file-editors .editor-actions #repo-save-all {
+        display: none; }
+        #repo-editor #file-editors .editor-actions #repo-save-all::before {
+          content: "\f0a0"; }
       #repo-editor #file-editors .editor-actions #editor-undo-button::before {
         content: "\f0e2"; }
       #repo-editor #file-editors .editor-actions #editor-output-button::before {

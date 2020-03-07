@@ -9,13 +9,13 @@
 	<div class="repo-conflict-actions">
 		<div class="repo-conflict-actions-guidance">
 			<p>
-				You are merging someone else's changes (#{{.Merging.MergingPRNumber}}) with yours, and they conflict.
-				Edit <strong>Your version</strong> below to include the changes you want to keep. 'Mark resolved' for each file, then click 'Accept'.
+				You are merging someone else's changes (#{{.Merging.MergingPRNumber}}) with yours, and there are differences to resolve.
+				Edit <strong>Your version</strong> below with the changes you want to keep. Click 'Mark resolved' for each file. When you're done, click 'Merge all'.
 			</p>
 		</div>
 		<div class="toolbar-menu">
 		    <button class="btn" id="action-abort">Cancel</button>
-		    <button class="btn" id="action-commit">Accept</button>
+		    <button class="btn" id="action-commit">Merge&nbsp;all</button>
 		</div>
 	</div>
 	<div id="work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
