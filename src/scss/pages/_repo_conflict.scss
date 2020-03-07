@@ -120,7 +120,13 @@
 					position: relative;
 					ul {
 						@include dropdown-list();
+						position: absolute; // override mixin
+						top: 100%; // override mixin
+						transform: none; // override mixin
+						right: 0; // override mixin
+						font-size: 0.8rem;
 						left: 0;
+						width: 15em;
 					}
 					&:hover {
 						ul {

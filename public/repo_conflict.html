@@ -10,7 +10,7 @@
 		<div class="repo-conflict-actions-guidance">
 			<p>
 				You are merging someone else's changes (#{{.Merging.MergingPRNumber}}) with yours, and they conflict.
-				Edit your version below to include the changes you want to keep. Then click 'Accept'.
+				Edit <strong>Your version</strong> below to include the changes you want to keep. 'Mark resolved' for each file, then click 'Accept'.
 			</p>
 		</div>
 		<div class="toolbar-menu">
@@ -77,7 +77,7 @@
 					<a class="btn hide-for-image" id="merge-editor-control-save">Save</a>
 
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
-					<!-- <a class="btn" id="merge-editor-control-resolve">Mark resolved</a> -->
+					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
 
 					<a class="btn" id="merge-editor-control-delete" class="hide-for-image" disabled style="display: none;">Delete this file</a>
 					

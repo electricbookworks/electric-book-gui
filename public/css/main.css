@@ -7487,7 +7487,13 @@ body.editorMaximised .repo-flow {
             width: 12em;
             z-index: 5;
             visibility: hidden;
-            left: 0; }
+            position: absolute;
+            top: 100%;
+            transform: none;
+            right: 0;
+            font-size: 0.8rem;
+            left: 0;
+            width: 15em; }
             #repo-conflict #work #editor #editor-topbar .repo-conflict-copy-options ul:hover,
             #repo-conflict #work #editor #editor-topbar .repo-conflict-revert-options ul:hover {
               visibility: visible; }
