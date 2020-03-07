@@ -86,7 +86,7 @@ export class Node {
 	}
 
 	change(): void {
-		this.changed.dispath(this);
+		this.changed.dispatch(this);
 	}
 
 	NodeFromPath(path: string): Node|undefined {
