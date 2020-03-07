@@ -15,14 +15,22 @@
 
         <div class="header-bar">
             <h1>{{.Repo.Name}}</h1>
-            
+
             <div class="action-group">
 
-                    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">
-                        Edit text
+                {{if .UpstreamActions.CanPull}}
+                    <a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">
+                        Update
                     </a>
+                {{end}}
 
-                    {{template "_repo_detail_settings.html" .}}
+                <a class="btn
+                    {{if .UpstreamActions.CanPull}}btn-secondary{{end}}"
+                    href="/repo/{{.RepoOwner}}/{{.RepoName}}/">
+                    Edit text
+                </a>
+
+                {{template "_repo_detail_settings.html" .}}
 
             </div>
 
@@ -49,8 +57,7 @@
 
                     <div class="repo-status">
                         <p>
-                            Your project is ready for editing.
-                            <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit text.</a>
+                            Your project is safely synced to your GitHub account.
                         </p>
                     </div>
 
@@ -58,7 +65,8 @@
 
                         <div class="repo-status">
                             <p>
-                                You are managing the original project. There is no parent project to contribute to.
+                                You are managing the original project (not a copy of a parent project).
+                                <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit text.</a>
                             </p>
                         </div>
 
@@ -68,8 +76,11 @@
 
                             <div class="repo-status">
                                 <p>
-                                    Your copy of this project is behind the project you are contributing to.
-                                    <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update your copy from its parent.</a>
+                                    You need to update this project to get the latest changes from its parent <a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>.
+                                    <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.RepoName}}/merge/upstream/master">Update now.</a>
+                                </p>
+                                <p>
+                                    If you don't update, you might make changes that conflict with the parent project.
                                 </p>
                             </div>
 
@@ -79,7 +90,7 @@
 
                             <div class="repo-status">
                                 <p>
-                                    You've made changes you have not shared with the project you are contributing to (<a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>).
+                                    You've made changes you have not shared with <a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>.
                                     <a class="repo-status-action" href="/repo/{{.RepoOwner}}/{{.Repo.Name}}/pull/new">Submit these changes for review.</a>
                                 </p>
                             </div>
@@ -90,10 +101,10 @@
 
                             <div class="repo-status">
                                 <p>
-                                    Your copy and the project you are contributing to (<a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>) are in sync. Good work.
+                                    You have the latest changes from the parent project <a href="{{.Repo.Parent.HTMLURL}}" target="_blank">{{.Repo.Parent.FullName}}</a>, and any submissions you've made to it are safely synced to GitHub.
                                 </p>
                             </div>
- 
+
                         {{end}}
 
                     {{end}}
@@ -121,13 +132,13 @@
                                 {{- end}}.
                             </p>
                             <ul class="repo-status-changed-files-list" type="1">
-    
+
                                 {{range .StagedFiles}}
                                     <li class="staged-{{.StatusString}}">
                                         {{.Path}}
                                     </li>
                                 {{end}}
-                            
+
                             </ul>
                         </div>
 
@@ -190,7 +201,7 @@
                 </div>
 
             {{end}}
-            
+
         </div>
 
     </section>
@@ -215,14 +226,14 @@
                     <li class="pull-request-item">
 
                         <div class="pull-request-description">
-    
+
                             <div class="pull-request-item-user">
                                 {{if .User}}
                                     <img src="{{.User.AvatarURL}}" alt="{{.User.GetLogin}}" class="pull-request-item-user-avatar">
                                     {{.User.GetLogin}}
                                 {{end}}
                             </div>
-    
+
                             <div class="pull-request-item-date">
                                     {{.GetCreatedAt | humantime}}
                             </div>
@@ -242,7 +253,7 @@
                     </li>
                 {{end}}
 
-            </ul>        
+            </ul>
 
         </section>
     {{end}}

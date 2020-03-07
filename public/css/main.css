@@ -6169,11 +6169,12 @@ label {
   max-width: 95%;
   max-width: calc(100% - 1em); }
 
-.btn-secondary {
-  background-color: #818181;
-  border-bottom: 0.15em solid #686868; }
-  .btn-secondary:hover {
-    background: #b4b4b4; }
+.btn-secondary,
+.btn.btn-secondary {
+  background-color: #E9E9E9; }
+  .btn-secondary:hover,
+  .btn.btn-secondary:hover {
+    background: #ffcc34; }
 
 .btn-cancel,
 .btn.btn-cancel {
@@ -7795,7 +7796,7 @@ body.editorMaximised .repo-flow {
   padding: 1em;
   width: 100%; }
   #repo-detail .repo-detail-container .repo-status {
-    margin-bottom: 1em; }
+    margin-bottom: 0.5em; }
     #repo-detail .repo-detail-container .repo-status a {
       text-decoration: underline; }
     #repo-detail .repo-detail-container .repo-status > *:last-child {

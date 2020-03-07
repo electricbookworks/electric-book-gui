@@ -39,7 +39,7 @@
                 <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
 
                 <div class="repo-list-repo-details-ownership">
-                {{- if eq .Owner.GetLogin $userLogin}}My
+                {{- if eq .Owner.GetLogin $userLogin}}Your
                 {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} 
                 {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" class="repo-list-repo-details-link" target="_blank">{{.Parent.FullName}}</a>
                 {{else}}original

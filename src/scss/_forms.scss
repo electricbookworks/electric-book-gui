@@ -105,11 +105,11 @@ label {
     max-width: calc(100% - 1em);
 }
 
-.btn-secondary {
-	background-color: $color-darkgray;
-	border-bottom: 0.15em solid darken($color-darkgray, 10%);
+.btn-secondary,
+.btn.btn-secondary {
+    background-color: $color-gray;
 	&:hover {
-		background: lighten($color-darkgray, 20%);
+        background: $color-primary;
 	}
 }
 
