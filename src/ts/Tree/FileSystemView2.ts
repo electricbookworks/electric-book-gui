@@ -152,6 +152,7 @@ class NodeView extends NodeViewTemplate{
 		protected styler:(n:Node,el:HTMLElement)=>undefined|null) {
 		super();
 		this.$.name.innerText = this.node.name;
+
 		if (node.canCollapse()) {
 			this.$.close.addEventListener(`click`, (evt)=>{
 				evt.preventDefault(); evt.stopPropagation();
@@ -175,7 +176,7 @@ class NodeView extends NodeViewTemplate{
 		if (FSV.isClosed(node)) {
 			this.el.classList.add(`closed`);
 		}
-		if (this.ignoreFunction(this.node.name)) {
+		if (this.ignoreFunction(this.node.path())) {
 			this.el.classList.add(`ignore`);
 		}
 		this.node.added.add(this.childAdded, this);

@@ -176,7 +176,7 @@ export class AddNewBookDialog {
 		<h1>Add a project</h1>
 		<fieldset>
 			<label>
-				<input name="new-project-type" type="radio" value="new"/>
+				<input type="radio" value="new" name="new-project-type"/>
 				Start a new project.
 			</label>
 			<label>
@@ -184,7 +184,7 @@ export class AddNewBookDialog {
 				Contribute to an existing project.
 			</label>
 			<label>
-				<input type="radio" value="adaptation" name="new-project-type"/>
+				<input name="new-project-type" type="radio" value="adaptation"/>
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
@@ -193,16 +193,16 @@ export class AddNewBookDialog {
 	<div>
 		<h1>New project</h1>
 		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
+		<input value="new" type="hidden" name="action"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>
-			<input type="checkbox" name="private" value="private"/>
+			<input value="private" type="checkbox" name="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
 		<input type="submit" class="btn" value="New project"/>
@@ -226,7 +226,7 @@ export class AddNewBookDialog {
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="Create adaptation"/>
+		<input class="btn" value="Create adaptation" type="submit"/>
 		</form>
 	</div>
 	<div>
@@ -234,7 +234,7 @@ export class AddNewBookDialog {
 		<form method="post" action="/github/create/fork">
 		<input type="hidden" name="action" value="fork"/>
 		<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.
-		<input name="collaborate_repo" placeholder="e.g. electricbookworks/constitution" type="text"/>
+		<input type="text" name="collaborate_repo" placeholder="e.g. electricbookworks/constitution"/>
 		</label>
 		<label style="display:none;">
 			<input type="checkbox" name="private" value="private"/>
@@ -783,10 +783,10 @@ export class FoundationRevealDialog {
 		let t = FoundationRevealDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div id="new-file-dialog" data-reveal="" class="reveal">
+			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button aria-label="Close popup" type="button" data-close="" class="close-button">
+	<button class="close-button" aria-label="Close popup" type="button" data-close="">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -871,8 +871,8 @@ export class LoginTokenList {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
-		<input placeholder="name" type="text"/>
-		<input placeholder="token" type="text"/>
+		<input type="text" placeholder="name"/>
+		<input type="text" placeholder="token"/>
 		<button class="btn">Add</button>
 	</div>
 	<ul class="token-list">
@@ -1072,7 +1072,7 @@ export class RepoEditorPage_NewFileDialog {
 			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button class="btn" data-event="click">Create File</button>
+	<button data-event="click" class="btn">Create File</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1112,7 +1112,7 @@ export class RepoEditorPage_RenameFileDialog {
 		<div>Renaming <span> </span></div>
 		<label>
 			Enter the path and filename for your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Rename</button>
@@ -1212,7 +1212,7 @@ export class RepoFileViewerFile {
 		let t = RepoFileViewerFile._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="repo-file-viewer-file" title="Drop a file here to replace this one">
+			d.innerHTML = `<div title="Drop a file here to replace this one" class="repo-file-viewer-file">
 	<div class="image">
 		<img/>
 	</div>
@@ -1260,7 +1260,7 @@ export class RepoFileViewerPage {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="repo-file-viewer">
 	<div class="searchbar">
-		<input placeholder="Type to show and filter images, e.g. book/images/web" type="text"/>
+		<input type="text" placeholder="Type to show and filter images, e.g. book/images/web"/>
 	</div>
 	<div class="data">
 	</div>
@@ -1318,12 +1318,12 @@ export class RepoMergeDialog {
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input id="resolveTheir" type="radio" name="resolve" value="their"/>
+			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input name="conflicted" value="only" id="conflicted" type="checkbox"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
 	<button class="btn" data-event="click:">Do the Merge</button>
