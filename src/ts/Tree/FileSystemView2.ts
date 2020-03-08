@@ -179,9 +179,6 @@ class NodeView extends NodeViewTemplate{
 
 		// Remove the leading slash for regex text of path
 		var pathForIgnoreTest = this.node.path().replace('/', '');
-		console.log(this.node.path());
-		console.log(pathForIgnoreTest);
-
 		if (this.ignoreFunction(pathForIgnoreTest)) {
 			this.el.classList.add(`ignore`);
 		}
