@@ -6103,6 +6103,11 @@ textarea {
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
 textarea {
   box-shadow: none; }
+  [type='text']:focus, [type='password']:focus, [type='date']:focus, [type='datetime']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='week']:focus, [type='email']:focus, [type='number']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='url']:focus, [type='color']:focus,
+  textarea:focus {
+    border-color: #818181;
+    box-shadow: none;
+    transition: none; }
 
 [type="checkbox"],
 [type="radio"] {
@@ -7864,55 +7869,80 @@ body.editorMaximised .repo-flow {
     text-decoration: underline; }
 
 .repo-file-viewer {
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   justify-content: space-between; }
-  .repo-file-viewer .search {
-    flex-grow: 0; }
+  .repo-file-viewer .searchbar {
+    margin: 2em 2em 0.5em 0.5em;
+    align-items: baseline;
+    display: flex; }
+    @media only screen and (min-width: 50em) {
+      .repo-file-viewer .searchbar {
+        max-width: 50%; } }
+    .repo-file-viewer .searchbar::before {
+      color: #AEAEAE;
+      content: "\f002";
+      font-family: "FontAwesome";
+      margin-right: 0.5em; }
   .repo-file-viewer .data {
-    flex-grow: 1;
+    margin: 0 1.5em;
+    padding: 0 0.5em;
+    position: relative;
+    align-items: stretch;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    position: relative; }
-    .repo-file-viewer .data .repo-file-viewer-file {
-      max-width: 10em;
-      width: 10em; }
-    @supports (display: grid) {
-      .repo-file-viewer .data {
-        display: grid;
-        grid-template-columns: repeat(6, 15fr);
-        grid-column-gap: 2em;
-        align-items: stretch; }
-        .repo-file-viewer .data .repo-file-viewer-file {
-          max-width: inherit;
-          width: inherit; } }
+    flex-grow: 1;
+    flex-wrap: wrap; }
 
 .repo-file-viewer-file {
-  width: 100%;
-  border: 2px solid lightgray;
-  padding: 1em;
-  margin: 0.5em;
+  border: 1px solid transparent;
+  border-radius: 0.15em;
+  margin: 0 1em 1em 0;
+  max-width: 8em;
+  padding: 0.5em;
+  width: 8em;
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: stretch; }
+  justify-content: space-between; }
+  .repo-file-viewer-file:hover {
+    border: 1px dashed #AEAEAE; }
+  .repo-file-viewer-file.file-dragover {
+    background-color: #e2fff8;
+    border: 1px dashed #AEAEAE;
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing; }
   .repo-file-viewer-file .image {
-    flex-grow: 1;
+    margin-bottom: 0.5em;
     width: 100%;
+    align-items: center;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    flex-grow: 1;
     justify-content: center; }
     .repo-file-viewer-file .image img {
       width: 100%; }
   .repo-file-viewer-file .filename {
     flex-grow: 0;
-    font-size: 0.5em;
-    font-weight: bold; }
+    font-size: 0.8rem;
+    word-wrap: break-word; }
+  .repo-file-viewer-file.repo-file-drop {
+    border: 1px dashed #AEAEAE;
+    border-radius: 0.15em;
+    margin-right: 0;
+    max-width: 100%;
+    min-height: 8em;
+    text-align: center;
+    width: 100%;
+    justify-content: center; }
+    .repo-file-viewer-file.repo-file-drop .filename {
+      font-size: 1rem; }
+    .repo-file-viewer-file.repo-file-drop .image {
+      display: none; }
+      .repo-file-viewer-file.repo-file-drop .image img {
+        max-height: 2em; }
 
 #repo-diff-viewer {
   position: relative; }

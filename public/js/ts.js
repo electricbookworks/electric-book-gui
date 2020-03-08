@@ -309,7 +309,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = AddNewBookDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"new\" name=\"new-project-type\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input value=\"adaptation\" name=\"new-project-type\" type=\"radio\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button class=\"btn\" data-event=\"click:choseType\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input value=\"Create adaptation\" type=\"submit\" class=\"btn\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbookworks/constitution\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input name=\"repo_new\" placeholder=\"e.g. MobyDick\" type=\"text\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Create adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.\n\t\t<input name=\"collaborate_repo\" placeholder=\"e.g. electricbookworks/constitution\" type=\"text\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            AddNewBookDialog._template = t;
 	        }
@@ -705,7 +705,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = FoundationRevealDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"reveal\" id=\"new-file-dialog\" data-reveal=\"\">\n\t<div class=\"content\">\n\t</div>\n\t<button type=\"button\" data-close=\"\" class=\"close-button\" aria-label=\"Close popup\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
+	            d.innerHTML = "<div id=\"new-file-dialog\" data-reveal=\"\" class=\"reveal\">\n\t<div class=\"content\">\n\t</div>\n\t<button aria-label=\"Close popup\" type=\"button\" data-close=\"\" class=\"close-button\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            FoundationRevealDialog._template = t;
 	        }
@@ -772,7 +772,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = LoginTokenList._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input type=\"text\" placeholder=\"token\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
+	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input placeholder=\"name\" type=\"text\"/>\n\t\t<input placeholder=\"token\" type=\"text\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
 	            t = d.firstElementChild;
 	            LoginTokenList._template = t;
 	        }
@@ -928,7 +928,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = RepoEditorPage_NewFileDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input placeholder=\"book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path and filename for your new file.\n\t\t\t<input type=\"text\" placeholder=\"book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            RepoEditorPage_NewFileDialog._template = t;
 	        }
@@ -956,7 +956,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = RepoEditorPage_RenameFileDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the full path to your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the path and filename for your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            RepoEditorPage_RenameFileDialog._template = t;
 	        }
@@ -1039,7 +1039,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = RepoFileViewerFile._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"repo-file-viewer-file\">\n\t<div class=\"image\">\n\t\t<img/>\n\t</div>\n\t<div class=\"filename\"> </div>\n</div>\n";
+	            d.innerHTML = "<div class=\"repo-file-viewer-file\" title=\"Drop a file here to replace this one\">\n\t<div class=\"image\">\n\t\t<img/>\n\t</div>\n\t<div class=\"filename\"> </div>\n</div>\n";
 	            t = d.firstElementChild;
 	            RepoFileViewerFile._template = t;
 	        }
@@ -1076,7 +1076,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = RepoFileViewerPage._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input type=\"text\" placeholder=\"Enter search text to find images.\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input placeholder=\"Type to show and filter images, e.g. book/images/web\" type=\"text\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            RepoFileViewerPage._template = t;
 	        }
@@ -1159,7 +1159,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var t = conflict_ClosePRDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\" type=\"radio\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
 	            t = d.firstElementChild;
 	            conflict_ClosePRDialog._template = t;
 	        }
@@ -1365,7 +1365,6 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return conflict_MergeInstructions;
 	}());
-	//# sourceMappingURL=Templates.js.map
 
 	function QuerySelectorAllIterate(el, query) {
 	    var els = [];
@@ -3687,6 +3686,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return NodeView;
 	}(Tree_NodeView));
+	//# sourceMappingURL=FileSystemView2.js.map
 
 	// import {Directory} from './Directory';
 	/**
@@ -5614,8 +5614,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        _this.page = page;
 	        _this.version = 1;
 	        _this.Refresh();
-	        _this.$.filename.textContent = _this.filename ? _this.filename : "Drop a file to upload.";
+	        _this.$.filename.innerHTML = _this.filename ? _this.filename : "Drop a file here to upload it.<br>Drop a file on any image to replace it.";
 	        parent.Insert(_this.el);
+	        if (_this.IsAddButton()) {
+	            _this.el.setAttribute('title', 'Drop a file here to upload it');
+	            _this.el.classList.add('repo-file-drop');
+	        }
 	        _this.el.addEventListener('drop', function (evt) {
 	            evt.preventDefault();
 	            // Necessary so the browser doesn't just display the dropped item
@@ -5626,6 +5630,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	        _this.el.addEventListener('dragover', function (evt) {
 	            evt.preventDefault();
+	            _this.el.classList.add('file-dragover');
+	        });
+	        _this.el.addEventListener('dragleave', function (evt) {
+	            evt.preventDefault();
+	            _this.el.classList.remove('file-dragover');
 	        });
 	        _this.el.addEventListener("dragend", function (evt) {
 	            evt.preventDefault();
@@ -5705,7 +5714,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        _this.context = context;
 	        _this.add = new RepoFileViewerFile$1(_this.context, "", new DOMInsert(_this.$.data), _this);
 	        _this.inserter = new DOMInsert(function (el) {
-	            _this.$.data.insertBefore(el, _this.add.el);
+	            // Insert file after the drag-and-drop box
+	            _this.$.data.appendChild(el);
 	        });
 	        parent.appendChild(_this.el);
 	        _this.$.search.focus();
@@ -5752,7 +5762,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                p = Promise.resolve(src.Filename());
 	            }
 	            else {
-	                p = EBW.Prompt("Enter full path and filename for uploaded file.");
+	                p = EBW.Prompt("Enter the path and filename for this file to go to, e.g. book/images/web/cover.jpg");
 	            }
 	            p.then(function (s) {
 	                if ("" == s)
@@ -5810,7 +5820,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            console.log("EBW.instance already set");
 	        }
 	        if (null == EBW.instance) {
-	            console.log("Creating EWB.instance");
+	            console.log("Creating EBW.instance");
 	            EBW.instance = this;
 	            this.api = new APIWs();
 	            jQuery(document).foundation();

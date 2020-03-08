@@ -1,8 +1,13 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="manage"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-file-viewer">
 </main>
+
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoFileViewerPage">
 </script>
 <script type="text/hidden" id="staged-files-data">
@@ -11,5 +16,6 @@
 <script type="text/hidden" id="merging-info">
 {{/*- .Merging | json | raw -*/}}
 </script>
+
 {{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}
