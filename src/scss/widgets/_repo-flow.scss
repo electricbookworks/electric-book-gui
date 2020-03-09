@@ -82,11 +82,8 @@
                     content: "\2022";
                     display: block;
                     font-size: 2.5em;
-                    height: 1.4em;
-                    line-height: 1.37; // Chrome
-                    @supports (-moz-appearance: none) {
-                        line-height: 1.35; // Firefox
-                    }
+                    height: 60px; // absolute values improve consistency across browsers
+                    line-height: 61px;  // absolute values improve consistency across browsers; 1px for half border width
                     position: absolute; // necessary for z-index stacking context
                     text-align: center;
                     bottom: -200%;
