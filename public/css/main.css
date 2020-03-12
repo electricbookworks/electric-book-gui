@@ -8132,11 +8132,14 @@ body.repo-diff-patch-page {
     #repo-diff-patch .d2h-file-wrapper .d2h-code-linenumber {
       border: 0;
       font-size: 0.7em;
+      position: initial;
       width: 5em; }
       #repo-diff-patch .d2h-file-wrapper .d2h-code-linenumber .line-num1 {
         width: auto; }
       #repo-diff-patch .d2h-file-wrapper .d2h-code-linenumber .line-num2 {
         width: auto; }
+    #repo-diff-patch .d2h-file-wrapper .d2h-code-line {
+      margin-left: 40px; }
   #repo-diff-patch tbody td,
   #repo-diff-patch #repo-diff-patch tbody th {
     padding: 0; }
