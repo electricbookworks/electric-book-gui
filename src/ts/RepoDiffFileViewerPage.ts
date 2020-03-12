@@ -37,6 +37,7 @@ export class RepoDiffFileViewerPage {
 			let src = 
 				`/repo/${this.context.RepoOwner}/${this.context.RepoName}/${diff.URL}`;
 			document.getElementById(`diff-view`).src = src;
+			document.getElementById(`diff-view`).classList.add('file-loaded');
 		});
 	}
 }

@@ -1,0 +1,29 @@
+.jekyll-progress {
+    @include terminal-typography();
+	margin: 2em auto;
+    max-width: 60em;
+    padding: 1em;
+}
+
+.terminal {
+    @include terminal-typography();
+
+    h1, p, ul, ol {
+        @include terminal-typography();
+    }
+    
+    .out {}
+
+    .err {
+        background-color: $color-warning;
+        font-weight: bold;
+    }
+}
+
+.error {
+	background-color: $color-warning;
+	font-weight: bold;
+}
+.restart {
+	margin: 1em 0;
+}

@@ -282,60 +282,18 @@ var _jekyllInProcess = template.Must(template.New(``).Parse(`<!doctype HTML>
   		<meta http-equiv="refresh" content="3">
   	{{end -}}
 		<title>Jekyll building in progress...</title>
-<style type="text/css">
-.terminal {
-	font-family: monospace;
-	font-size: 0.8em;
-	background-color: #333;
-	color: #fff;
-	padding: 1em;
-}
-.terminal .out {}
-.terminal .err {
-	background-color: #833;
-	font-weight: bold;
-}
-main {
-	max-width: 60em;
-	margin: 1em auto;
-}
-.error {
-	background-color: #933;
-	color: white;
-	font-weight: bold;
-	font-family: monospace;
-	padding: 1em;
-}
-.restart {
-	margin: 1em 0;
-	text-align: right;
-}
-.button {
-	font-family: monospace;
-	font-weight: bold;
-	background-color: #999;
-	color: white;
-	padding: 0.6em 1em;
-	box-sizing: border-box;
-	display: inline-block;
-	transition: background-color 0.3s;
-	text-decoration: none;
-}
-.button:hover {
-	background-color: #6b6;
-}
-</style>
+		<link href="https://fonts.googleapis.com/css?family=Karla:400,700|IBM+Plex+Mono:400,400i,700,700i&display=swap&subset=latin-ext" rel="stylesheet">
+		<link rel="stylesheet" href="/css/main.css">
 	</head>
-	<body>
+	<body class="jekyll-progress" style="background-color: #262626;">
 		<main>
 		{{if .Error}}
 			<h1>Error starting Jekyll</h1>
 			<div class="error">{{.Error}}</div>
-			<div class="restart"><a class="button" href="{{.RestartPath}}">Try again</a></div>
+			<div class="restart"><a class="btn" href="{{.RestartPath}}">Try again</a></div>
 		{{else}}
-			<h1>Building in progress... autoreloading...</h1>
+			<h1 style="font-family: 'IBM Plex Mono', monospace;">Building in progress …</h1>
 		{{end}}
-			<p>process output:</p>
 			<div class="terminal">
 {{range .Lines}}
 <div class="{{.Level}}">{{.Line}}</div>

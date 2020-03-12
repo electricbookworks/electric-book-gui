@@ -8,7 +8,9 @@ export class BoundFilename extends Template {
 		}
 		editorElement.addEventListener('BoundFileChanged', (evt:CustomEvent)=>{
 			this.$.filename.innerText = evt.detail;
-			this.$.a.href = `https://github.com/${this.repoOwner}/${this.repoName}/commits/master/${evt.detail}`;
+
+			// Not currently used. Adds a link to GitHub.
+			// this.$.a.href = `https://github.com/${this.repoOwner}/${this.repoName}/commits/master/${evt.detail}`;
 		});
 		this.parent.appendChild(this.el);
 		console.log(`BoundFilename: `, this, this.el);

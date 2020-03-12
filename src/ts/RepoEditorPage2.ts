@@ -55,7 +55,7 @@ export class RepoEditorPage {
 		let readCacheFS = new ReadCacheFS(SHA1(`cache` + repoKey), wdFS);
 		let memFS = new MemFS(SHA1(`mem`+ repoKey), readCacheFS);
 		this.FS = new NotifyFS(memFS);
-		this.Root = new Node(null, ``, NodeType.DIR, null);	
+		this.Root = new Node(null, ``, NodeType.DIR, null);
 
 		this.editor = undefined;
 		this.editor = new RepoFileEditorCM(
@@ -67,10 +67,10 @@ export class RepoEditorPage {
 			this.FS
 		);
 
-		new FileSystemConnector(this.context, 
-			filesListElement, 
-			this.editor, 
-			this.FS, 
+		new FileSystemConnector(this.context,
+			filesListElement,
+			this.editor,
+			this.FS,
 			this.proseIgnoreFunction,
 			filesJson,
 			this.Root,
@@ -88,13 +88,37 @@ export class RepoEditorPage {
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
-				document.getElementById(`new-editor-files-nav`)
-				.style.width = showing ? "20%":"0px";
-				document.getElementById(`repo-file-actions`)
-				.style.visibility = showing ? `visible` : `hidden`;
 
-				let f = document.getElementById(`page-footer`);
-				f.style.display = showing ? 'flex' : 'none';
+				// Toggle body class
+				document.body.classList.toggle('editorMaximised');
+
+				// Set width of nav
+				document.getElementById(`repo-editor-files-nav`)
+					.style.width = showing ? "20%":"0px";
+				let newEditorFilesNavClasses = document
+					.getElementById(`repo-editor-files-nav`).classList;
+				newEditorFilesNavClasses.toggle('files-nav-hidden');
+
+				// Show/hide container (avoids leaving scrollbar visible)
+				document.getElementById(`all-files-editor-container`).style.display = showing ? "block" : "none";
+
+				// Hide repo actions
+				document.getElementById(`repo-file-actions`)
+					.style.visibility = showing ? `visible` : `hidden`;
+
+				// Move filename to repo flow
+				let filename = document.querySelector(`.file-title`);
+				let filenameParent = document.querySelector(`.repo-flow-repo-name`);
+				filenameParent.appendChild(filename);
+
+				// Remove slashes from start and end of filename
+				let filenameText = filename.querySelector('.bound-filename-text');
+				let newFilenameText = filenameText.innerHTML.replace(/^\/|\/$/g, '');
+				filenameText.innerHTML = newFilenameText;
+
+				// Hide footer
+				document.getElementById(`page-footer`)
+					.style.display = showing ? 'flex' : 'none';
 			});
 
 
@@ -111,7 +135,7 @@ export class RepoEditorPage {
 		document.getElementById(`repo-jekyll`).addEventListener(`click`, evt=>{
 			evt.preventDefault(); evt.stopPropagation();
 			let l = document.location;
-			let jekyllUrl = `${l.protocol}//${l.host}/jekyll-restart/` + 
+			let jekyllUrl = `${l.protocol}//${l.host}/jekyll-restart/` +
 				`${this.context.RepoOwner}/${this.context.RepoName}/`;
 			console.log(`URL = ${jekyllUrl}`);
 			window.open(jekyllUrl, `${this.context.RepoOwner}-${this.context.RepoName}-jekyll`);
@@ -144,7 +168,7 @@ export class RepoEditorPage {
 				return new Promise<boolean>(0==states.length);
 			});
 	}
-	SyncFiles() : Promise {			
+	SyncFiles() : Promise {
 		return Promise.all(this.Root.files().map( (p:string)=>this.FS.FileStateAndPath(p) ))
 		.then (
 			states=>

@@ -42,7 +42,7 @@ export class FileDisplay extends Template {
 		}
 	}
 	rpcEvent(source:any, inProgress:boolean, method:string) {
-		console.log(`RPC Event for ${this.file.Path()} inProgress = ${inProgress}, method = ${method}`);
+		console.log(`RPC Event for ${this.file.Path()} inProgress = ${inProgress}, method = ${method} status = ${this.file.Status()}`);
 		let cl = this.el.classList;
 		if (inProgress) {
 			cl.add(`rpc`);

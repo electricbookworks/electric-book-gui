@@ -1,56 +1,80 @@
+@mixin file-dragover() {
+	// To work, must apply to the element and all descendants
+	background-color: $color-success-light;
+	border: 1px dashed $wetcement;
+	cursor: grabbing;
+	cursor: -moz-grabbing;
+	cursor: -webkit-grabbing;
+}
+
 .repo-file-viewer {
+	align-items: stretch;
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
 	justify-content: space-between;
 
-	.search {
-		flex-grow: 0;
-	}
-	.data{
-		flex-grow: 1;
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		align-items: flex-start;
-		justify-content: space-between;
-		.repo-file-viewer-file {
-			max-width: 10em;
-			width: 10em;
+	.searchbar {
+		margin: 2em 2em 0.5em 0.5em;
+
+		@media only screen and (min-width: $bp-m) {
+			max-width: 50%;
 		}
 
-		@supports (display:grid) {
-			display: grid;
-			grid-template-columns: repeat(6, 15fr);	
-			grid-column-gap: 2em;
-			align-items: stretch;
-			.repo-file-viewer-file {
-				max-width: inherit;
-				width: inherit;
-			}
+		// Flex
+		align-items: baseline;
+		display: flex;
+
+		&::before {
+			color: $wetcement;
+			content: "\f002";
+			font-family: "FontAwesome";
+			margin-right: 0.5em;
 		}
+	}
+	.data{
+		margin: 0 1.5em; // align with input
+		padding: 0 0.5em;
 		position: relative;
+
+		// Flex
+		align-items: stretch;
+		display: flex;
+		flex-direction: row;
+		flex-grow: 1;
+		flex-wrap: wrap;
 	}
 }
 .repo-file-viewer-file {
-	width: 100%;
-	border: 2px solid lightgray;
+	border: 1px solid transparent; // leave space for hover border
+	border-radius: $global-radius;
+	margin: 0 1em 1em 0;
+	max-width: 8em;
+	padding: 0.5em;
+	width: 8em;
 
-	padding: 1em;
-	margin: 0.5em;
-
+	// Flex
+	align-items: stretch;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	align-items: stretch;
+
+	&:hover {
+		border: 1px dashed $wetcement;
+	}
+
+	&.file-dragover {
+		@include file-dragover();
+	}
 
 	.image {
-		flex-grow: 1;
+		margin-bottom: 0.5em;
 		width: 100%;
 
+		// Flex
+		align-items: center;
 		display: flex;
 		flex-direction: row;
-		align-items: center;
+		flex-grow: 1;
 		justify-content: center;
 
 		img {
@@ -60,7 +84,36 @@
 
 	.filename {
 		flex-grow: 0;
-		font-size: 0.5em;
-		font-weight: bold;
+		font-size: 0.8rem;
+		word-wrap : break-word; // need break on slashes
+	}
+
+	// The file-drop area
+	&.repo-file-drop {
+		border: 1px dashed $wetcement;
+		border-radius: $global-radius;
+		margin-right: 0;
+		max-width: 100%; // override inherited
+		min-height: 8em;
+		text-align: center;
+		width: 100%; // override inherited
+
+		// Flex
+		justify-content: center;
+
+		.filename {
+			font-size: 1rem;
+		}
+		.image {
+			// Hiding this image, since it affords clicking
+			// and we don't yet support click-to-browse.
+			// The image file itself is necessary for the JS to work.
+			display: none;
+
+			img {
+				max-height: 2em;
+	
+			}
+		}
 	}
 }

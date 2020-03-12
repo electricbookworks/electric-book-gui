@@ -1,27 +1,44 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- Rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="commit"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-commit" class="constrain-page center">
 	<h1>Commit changes</h1>
 	{{if .StatusList.EntryCount}}
-		<p>You have made {{.StatusList.EntryCount}} change{{if ne 1 .StatusList.EntryCount}}s{{end}}.</p>
-		<ul>
+		<p>You have changed <span class="repo-commit-number-of-changes">{{.StatusList.EntryCount}} file{{if ne 1 .StatusList.EntryCount}}s{{end}}</span>.</p>
+		<ul class="repo-commit-file-list">
 		{{range .StatusList.Statuses}}
-			<li>{{.Filename}} – {{.StatusType}}</li>
+			<li>
+				<span class="repo-commit-changed-file">{{.Filename}}</span> <span class="repo-commit-change-type">({{.StatusType}})</span>
+			</li>
 		{{end}}
 		</ul>
 
 		<form method="post" action="commit">
-			<label for="commit_message">Describe your changes
-			<textarea name="commit_message" id="commit_message" wordwrap="true">{{.CommitMessage}}</textarea>
+			<label for="commit_message">Describe your changes.
+				<div class="commit-message-label-note">
+					Be specific about what you changed. Your future self will thank you.
+				</div>
+				<textarea name="commit_message" id="commit_message" wordwrap="true">{{.CommitMessage}}</textarea>
 			</label>
-			<input type="submit" name="action" value="Commit" class="btn" />
-			<a href="." class="btn">Cancel</a>
+			<div class="repo-commit-actions">
+				<a href="." class="btn btn-cancel">Cancel</a>
+				<button class="btn" id="repo-commit-action-commit" type="submit" name="action">
+					Commit
+				</button>
+			</div>
 		</form>
 	{{else}}
-		<p>You haven't saved any changes yet, so you have no changes to commit.</p>
-		<p><a href="." class="btn">Back to {{.RepoName}}</a></p>
-
+		<div class="repo-commit-nothing-to-commit">
+			<p>
+				You haven't saved any changes yet, so you have nothing to commit.
+				<br />
+				<a href=".">Back to editing {{.RepoName}}.</a>
+			</p>
+		</div>
 	{{end}}
 </main>
 {{template "_nav_footer.html" .}}

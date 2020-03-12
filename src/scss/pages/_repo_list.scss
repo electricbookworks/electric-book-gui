@@ -1,82 +1,105 @@
-.repo-list-page {
-
+@mixin repo-box() {
+    background-color: $color-lightgray;
+    box-sizing: border-box;
+    margin-bottom: 3em;
+    padding: 1em;
+    width: 100%;
 }
-.repo-list {
-    list-style: none;
-    margin: 1em 0 3em 0;
-    // padding: 0 1em;
 
-    a.repo-title {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 0;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-        word-break: break-all;
-        text-overflow: fade;
-
-        max-width: 100%;
-        text-decoration: none;
+@mixin repo-box-button() {
+    background-color: $button-background-inverse;
+    color: $button-color-inverse;
+    font-size: 0.9em;
+    text-align: center;
+    &:hover {
+        background-color: lighten($button-background-inverse, 10%);
+        color: $button-color-inverse;
     }
+}
 
-    position:relative;
-
+.repo-list {
+    align-items: stretch;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: stretch;
+    list-style: none;
+    margin: 0 0 2em 0;
+    position:relative;
 
     .repo {
-        border-top: 1px solid $color-verylightgray;
-        box-sizing: border-box;
-        width: 100%;
-        padding: 1em 0 1em 0;
+        @include repo-box();
 
-        // border: 1px solid #999;
-        margin-bottom: 1em;
-        @supports (display:grid) {
-            margin-bottom: 0;
-        }
-        margin-right: 2%;
-
+        // Flex
+        align-items: stretch;
         display: flex;
         flex-direction: row;
-        align-items: stretch;
         justify-content: space-between;
-        // padding: 1em;
 
         .repo-details {
+
+            a.repo-title {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 0;
+                max-width: 100%;
+                overflow-wrap: break-word;
+                text-decoration: none;
+                text-overflow: fade;
+                word-wrap: break-word;
+            }
+
             p:last-child {
                 margin-bottom: 0;
+            }
+
+            .repo-list-repo-details-ownership {
+                // If no description, add space for visual consistency
+                & + .repo-list-repo-details-last-update {
+                    margin-top: 1em;
+                }
+            }
+
+            .repo-list-repo-details-link {
+                font-weight: bold;
+            }
+
+            .repo-list-repo-details-description {
+                font-size: 0.9em;
+            }
+
+            .repo-list-repo-details-last-update {
+                font-size: 0.8em;
+                color: $color-darkgray;
             }
         }
 
         .repo-manage {
-            text-align: right;
+            align-items: flex-end;
             display: flex;
             flex-direction: column;
-            align-items: flex-end;
-            justify-content: flex-start;
+            justify-content: flex-end;
+            margin-left: 1em;
+            text-align: right;
+
             & a {
-                // display: inline-block;
-                // &:
+                @include repo-box-button();
                 margin-top: 1em;
+                width: 100%;
+
                 &:first-child {
-                    margin-top: 0em;
+                    margin-top: 0;
+                }
+                &.repo-list-review-submissions {
+                    background-color: lighten($button-background-inverse, 20%);
                 }
             }
         }
 
-        .repo-add-repo {
-            // display: flex;
-            // flex-direction: row;
-            // align-items: center;
-            // justify-content: center;
-            // // background: no-repeat center url('../img/plus.svg');
-            // // background-size: 8em 8em;
-            // min-height: 10em;
+        &.repo-add-repo {
+            background-color: transparent;
+            justify-content: flex-end;
+            padding: 0;
         }
     }
-
 }

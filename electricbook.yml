@@ -34,7 +34,8 @@ error_mail:
 recover_panics: true
 # Uncomment below, and add at least your own GitHub username
 # for logging into your EBM. For deployment to a remote server,
-# include a list of allowed users per server in your hosts-* files.
+# include a list of allowed users per server in your hosts-* files,
+# and not here: values in this file will be overwritten there.
 # If this is uncommented and contains an empty value (""),
 # all users will be allowed (not recommended).
 #

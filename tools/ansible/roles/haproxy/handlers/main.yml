@@ -1,2 +1,2 @@
 - name: restart haproxy
-  include: "haproxy-restart.yml"
+  include_tasks: roles/haproxy/handlers/haproxy-restart.yml

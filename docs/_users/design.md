@@ -3,6 +3,7 @@ title: Design
 categories:
   - Electric Book Manager
 order: 7
+description: "The design of your books is created in CSS stylesheets. These are written in syntaxes called CSS or Sass."
 ---
 
 # Design books

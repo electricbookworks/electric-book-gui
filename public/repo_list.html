@@ -4,28 +4,31 @@
 {{$userLogin := .UserName}}
 <main>
 <section class="constrain-page center repo-list-page">
+
+    {{- if .Invites}}
+    <div class="invitations">
+        {{range .Invites}}
+        <div class="invite">
+            <div class="text">
+                You have been invited by
+                {{if .Inviter.Name}}{{.Inviter.Name}}{{else}}{{.Inviter.Login}}{{end}}
+                to contribute to the <a class="invitations-invite-repo-link" href="https://github.com/{{.Repo.FullName}}" target="_blank">{{.Repo.Name}}</a> project.
+            </div>
+            <div class="actions">
+                <a href="/github/invite/{{.ID}}?accept=yes" class="invitations-accept">Accept</a>
+                or
+                <a href="/github/invite/{{.ID}}?accept=no" class="invitations-decline">Decline</a>
+            </div>
+        </div>
+        {{end}}
+    </div>
+    {{end}}
+
     <div class="header-bar">
         <h1>Dashboard</h1>
         <div class="action-group">
             <a data-open="repo-new-modal" class="btn">Add a project</a>
         </div>
-    </div>
-
-    <div class="invitations">
-    <p>You have {{.Invites | len}} invitations.</p>
-    {{range .Invites}}
-    <div class="invite">
-        <div class="text">
-            <p>You have been invited by {{if .Inviter.Name}}{{.Inviter.Name}}{{else}}{{.Inviter.Login}}{{end}} to 
-               contribute to the <a href="https://github.com/{{.Repo.FullName}}">{{.Repo.Name}}</a> project.
-            </p>
-        </div>
-        <div class="actions">
-           <a href="/github/invite/{{.ID}}?accept=yes" class="btn">Accept</a>
-           <a href="/github/invite/{{.ID}}?accept=no" class="btn">Decline</a>
-        </div>
-    </div>
-    {{end}}
     </div>
 
     <ul class="repo-list">
@@ -35,38 +38,38 @@
             <div class="repo-details">
                 <h2><a class="repo-title" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">{{.Name}}</a></h2>
 
-                <div>
-                {{- if eq .Owner.GetLogin $userLogin}}My
+                <div class="repo-list-repo-details-ownership">
+                {{- if eq .Owner.GetLogin $userLogin}}Your
                 {{- else }}<a href="https://github.com/{{.Owner.Login}}" target="_blank">{{.RepoOwnerNiceName}}</a>'s{{end}} 
-                {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" target="_blank">{{.Parent.FullName}}</a>
+                {{if .GetFork}}version of <a href="https://github.com/{{.Parent.FullName}}" class="repo-list-repo-details-link" target="_blank">{{.Parent.FullName}}</a>
                 {{else}}original
                 {{- end}}
                 {{- if .Owner.Company}}
                 , from <a href="/TODO">{{.Owner.Company}}</a>
-                {{- end}}</div>
+                {{- end}}
+                </div c>
+
                 {{if .Description}}
-                <p>{{.Description}}</p>
+                <p class="repo-list-repo-details-description">{{.Description}}</p>
                 {{end}}
 
                 <!-- Grab latest commit -->
                 {{with .GetLastCommit}}
                 {{if .Committer}}
-                <p>Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
+                <p class="repo-list-repo-details-last-update">Last updated by {{.Committer}} {{.LastModified | humantime }}.</p>
                 {{end}}
                 {{end}}
             </div>
             <div class="repo-manage">
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage</a>
+              <a class="btn repo-list-edit" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=detail">Manage project</a>
               {{if .GetTotalPRs}}
-              <a class="btn" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
+              <a class="btn repo-list-review-submissions" href="/repo/{{.RepoOwner}}/{{.Name}}/update?next=/repo/{{.RepoOwner}}/{{.Name}}/detail#review">Review submissions ({{.GetTotalPRs}})</a>
               {{end}}
             </div>
         </li>
         {{- end}}{{end}}
-        <li class="repo">
-            <div class="repo-add-repo">
-                <a data-open="repo-new-modal" class="btn">Add a project</a>
-            </div>
+        <li class="repo repo-add-repo">
+            <a data-open="repo-new-modal" class="btn">Add a project</a>
         </li>
     </ul>
 

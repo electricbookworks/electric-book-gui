@@ -1,62 +1,67 @@
 // main.scss
 
+// Breakpoints
 $bp-s: 38em;
 $bp-m: 50em;
 $bp-l: 64em;
 $bp-xl: 80em;
 
+// Fonts
+$body-font-family: 'Karla', sans-serif;
+$body-font-family-code: 'IBM Plex Mono', monospace;
+@import 'font-awesome/scss/font-awesome';
+
+// Transitions
+$transition-slide-duration: 0.1s;
+
+// Colours
 @import 'colors';
+
+// Foundation variables and partials
 @import 'foundation';
 @include foundation-everything(true);
 
-// @import 'style-guide';
-//@import 'normalize';
-//@import 'h5bp';
-// @import 'forms';
-// @import 'layout';
-@import 'typography-new';
+// Custom typography and layout
 @import 'typography';
+@import 'forms';
+@import 'layout';
+@import 'codemirror';
+@import 'mergely';
 
-@import 'layout-new';
-
+// Custom widgets
 @import 'widgets/buttons';
-
-@import 'widgets/Toast';
+@import 'widgets/toast';
 @import 'widgets/nav_main';
 @import 'widgets/flashes';
 @import 'widgets/files_show_tag';
-@import 'widgets/toolbar_menu.scss';
+@import 'widgets/toolbar_menu';
 @import 'widgets/header-bar';
 @import 'widgets/printlistener_filelistdialog';
 @import 'widgets/printlistener-terminal';
 @import 'widgets/invitations';
 @import 'widgets/login_token_list';
-@import 'widgets/bound-filename';
 @import 'widgets/file_tree';
+@import 'widgets/repo-flow';
+@import 'widgets/repo-detail-settings';
+@import 'widgets/terminal';
+@import 'widgets/modals';
 
-// @import 'repositories';
-// @import 'html-checker';
-
+// Page-specific styles
 @import 'pages/landing';
-@import 'pages/new-editor';
 @import 'pages/pull_new';
 @import 'pages/pull_request_list';
 @import 'pages/pull_request_view';
+@import 'pages/repo_editor';
 @import 'pages/repo_conflict';
-@import 'pages/repo_detail';
 @import 'pages/repo_list';
+@import 'pages/repo_commit';
+@import 'pages/repo_detail';
 @import 'pages/repo_file_viewer';
 @import 'pages/repo_diff';
 @import 'pages/repo_diff_file_viewer';
 @import 'pages/repo_diff_patch';
+@import 'pages/error';
 
-// Order is important here, this must come after pages/repo_conflict
+// Order is important here,
+// this must come after pages/repo_conflict
 @import 'widgets/merge-image-editor';
-
-//@import 'typography';
-@import 'forms';
-
-a[disabled='disabled'] {
-	color: $color-darkgray;
-	cursor: default;
-}

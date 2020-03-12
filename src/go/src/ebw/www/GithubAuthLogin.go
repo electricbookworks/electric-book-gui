@@ -122,8 +122,8 @@ func githubAuth(c *Context) error {
 		}
 	}
 	glog.Infof(`Rejecting %s against list %v`, user.GetLogin(), config.Config.AllowedUsers)
-	c.FlashError(`Not Permitted`,
-		`Sorry, but `+user.GetLogin()+` is not permitted to access this system`,
+	c.FlashError(`You're not registered`,
+		`Sorry, `+user.GetLogin()+` is not a registered user. Please contact us if you think you should be.`,
 		map[string]interface{}{})
 
 	return c.Redirect(`/`)

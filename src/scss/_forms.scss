@@ -1,9 +1,29 @@
+// Override Foundation's normalize, which
+// sets sans-serif for buttons etc.
+button,
 input,
-textarea,
-.btn {
-    padding: 0.25em 0.5em;
-    font-family: 'Source Sans Pro', sans-serif;
-    border: solid 1px $color-offgray;
+optgroup,
+select,
+textarea {
+    font-family: $body-font-family;
+}
+
+input,
+textarea {
+    border: solid 1px $cement;
+    &::placeholder {
+        color: $grey;
+    }
+}
+
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+    box-shadow: none;
+
+    &:focus {
+        border-color: $color-darkgray;
+        box-shadow: none;
+        transition: none;
+    }
 }
 
 [type="checkbox"],
@@ -14,35 +34,37 @@ textarea,
 select,
 input,
 textarea {
-    margin-left: 0.5em;
+    // margin-left: 0.5em;
+}
+
+label {
+    font-size: 1rem;
 }
 
 .cta,
 .btn,
 [type="submit"] {
     background-color: $color-primary;
-	color: $color-white;
+    border-width: 0;
+	color: $color-black;
 	display: inline-block;
     text-decoration: none;
-	padding: 0.5em 1em;
-	border-radius: 0.25em;
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-    // border-bottom: 0.15em solid darken($color-primary, 10%);
+	// padding: 0.5em 1em;
+	border-radius: $global-radius;
 	&:hover {
-		background-color: lighten($color-primary, 10%);
+		// background-color: lighten($color-primary, 10%);
         // border-bottom: 0.15em solid transparent;
+        color: $color-black;
 		cursor: pointer;
 	}
     &[disabled] {
         border: none;
-        background-color: $color-offgray;
+        background-color: $button-background-disabled;
         cursor: default;
         position: relative;
         &:hover {
-            background-color: $color-offgray;
-            color: inherit;
+            background-color: $button-background-disabled;
+            color: $color-darkgray;
         }
         // top: 0.15em;    // Make sense of the 3d effect - disabled buttons are surface-flush
     }
@@ -55,17 +77,15 @@ textarea {
 
 @keyframes active {
     0% {
-        background-color: lighten($color-primary, 10%);
+        background-color: $button-background-hover;
     }
     50% {
         background-color: red;
     }
     100% {
-        background-color: lighten($color-primary, 10%);
+        background-color: $button-background-hover;
     }
 }
-
-
 
 .btn-wide,
 .input-wide,
@@ -91,25 +111,30 @@ textarea {
     max-width: calc(100% - 1em);
 }
 
-.btn-secondary {
-	background-color: $color-darkgray;
-	border-bottom: 0.15em solid darken($color-darkgray, 10%);
+.btn-secondary,
+.btn.btn-secondary {
+    background-color: $color-gray;
 	&:hover {
-		background: lighten($color-darkgray, 20%);
+        background: $color-primary;
 	}
 }
 
+.btn-cancel,
+.btn.btn-cancel {
+    background-color: $color-mediumgray;
+}
+
 .btn-alt {
-	background-color: $color-white;
-	color: $color-primary;
+	background-color: $color-black;
+	color: $color-white;
 	display: inline-block;
     text-decoration: none;
-	padding: 0.5em 1em;
-	border-radius: 0.25em;
-	border-top: 0;
-	border-right: 0;
-	border-left: 0;
-    border-bottom: 0.15em solid darken($color-white, 20%);
+	// padding: 0.5em 1em;
+	// border-radius: 0.25em;
+	// border-top: 0;
+	// border-right: 0;
+	// border-left: 0;
+    // border-bottom: 0.15em solid darken($color-white, 20%);
 	&:hover {
 		background-color: darken($color-white, 10%);
         border-bottom: 0.15em solid transparent;

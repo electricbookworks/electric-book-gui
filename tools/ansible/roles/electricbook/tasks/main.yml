@@ -43,7 +43,7 @@
     src=electricbook
     mode=0755
   become: yes 
-  notify: 'restart electricbook'
+  notify: "restart electricbook"
 
 - name: install-config
   template: >
@@ -51,7 +51,15 @@
     src=electricbook-0.yml.j2
     mode=0755
   become: yes
-  notify: 'restart electricbook'
+  notify: "restart electricbook"
+
+- name: install-allowed-users
+  copy:
+    src: ../../../../../electricbook-users.txt
+    dest: /opt/electricbook
+    force: yes
+    mode: "0644"
+  notify: restart electricbook
 
 - name: configure upstart for electricbook
   when: >

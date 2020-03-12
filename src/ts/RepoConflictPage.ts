@@ -30,6 +30,23 @@ export class RepoConflictPage {
 
 		fileListDisplay.el.addEventListener(`file-click`, (evt:CustomEvent)=> {
 			this.fileListEvent(undefined, evt.detail.file);
+			
+			// Mark editor as file loaded
+			let editorPane = document.getElementById('editor');
+			editorPane
+				.setAttribute('data-file-in-editor', evt.detail.file.path);
+
+			// Remove existing, and add new filename to repo flow
+			if (document.querySelector('.repo-flow-repo-name .file-title')) {
+				document.querySelector('.repo-flow-repo-name .file-title').remove();
+			}
+			let filename = editorPane.getAttribute('data-file-in-editor');
+			let filenameParent = document.querySelector(`.repo-flow-repo-name`);
+			filenameParent.innerHTML
+				+= '<span class="file-title">'
+				+ filename
+				+ '</span>';
+			
 		});
 
 		if (this.mergingInfo.IsPRMerge()) {
@@ -42,18 +59,38 @@ export class RepoConflictPage {
 		// items to be hidden in a PR merge or a not-pr-merge are controlled
 		// by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
 		// class
-		
+
 		this.commitDialog = new CommitMessageDialog(false);
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
 				let el = document.getElementById(`files`);
+
+				// Toggle 'showing' class
 				if (showing)
 					el.classList.add(`showing`);
 				else
-					el.classList.remove(`showing`);				
-				// el
-				// .style.width = showing ? "30em":"0px";
+					el.classList.remove(`showing`);
+
+				// Toggle body class
+				document.body.classList.toggle('editorMaximised');
+
+				// Show/hide files container (avoids leaving scrollbar visible)
+				document.getElementById(`staged-files-list`)
+					.style.display = showing ? "block" : "none";
+
+				// Hide repo actions
+				document.getElementById(`repo-file-actions`)
+					.style.visibility = showing ? `visible` : `hidden`;
+
+				// Hide repo conflict actions (avoids encouraging user
+				// to accept before resolving all file conflicts)
+				document.querySelector('.repo-conflict-actions')
+					.style.display = showing ? 'flex' : 'none';
+
+				// Hide footer
+				document.getElementById(`page-footer`)
+					.style.display = showing ? 'flex' : 'none';
 			});
 
 
@@ -83,7 +120,7 @@ export class RepoConflictPage {
 									return;
 								}
 								console.log(`Result= `, r);
-								this.context.RepoRedirect(`conflict/resolve`, 
+								this.context.RepoRedirect(`conflict/resolve`,
 									new Map([[`message`,r.Message],[`notes`,r.Notes]])
 								);
 								return;
@@ -95,23 +132,23 @@ export class RepoConflictPage {
 		document.getElementById(`action-abort`).addEventListener(`click`, (evt)=>{
 			evt.preventDefault(); evt.stopPropagation();
 			if (this.mergingInfo.IsPRMerge()) {
-				this.closePRDialog.Open(`Close PR`,
-					`You have been merging PR ${this.mergingInfo.PRNumber}.
-					Do you want to close the PR?`, 
+				this.closePRDialog.Open(`Close submission`,
+					`You have been merging submission ${this.mergingInfo.PRNumber}.
+					Do you want to reject the submission permanently?`,
 					{Close: false, CloseMessage:"", Cancelled: false})
 				.then(
 					(r:ClosePRDialogResult)=>{
 						if (r.Cancelled) {
 							return;
 						}
-						this.context.RepoRedirect(`conflict/abort`, 
+						this.context.RepoRedirect(`conflict/abort`,
 							new Map([[`message`,r.CloseMessage],
 								[`close`,r.Close]])
 						);
 						return;
 					})
 				.catch( EBW.Error );
-			} else {				
+			} else {
 				this.context.RepoRedirect(`conflict/abort`);
 			}
 		})

@@ -27,8 +27,14 @@ export class RepoFileViewerFile extends Template {
 		super();
 		this.version = 1;
 		this.Refresh();
-		this.$.filename.textContent = this.filename ? this.filename : `Drop a file to upload.`;
+		this.$.filename.innerHTML = this.filename ? this.filename : `Drop a file here to upload it.<br>Drop a file on any image to replace it.`;
+		
 		parent.Insert(this.el);
+		
+		if (this.IsAddButton()) {
+			this.el.setAttribute('title', 'Drop a file here to upload it')
+			this.el.classList.add('repo-file-drop');
+		}
 
 		this.el.addEventListener('drop', (evt)=>{
 			evt.preventDefault();	
@@ -40,6 +46,11 @@ export class RepoFileViewerFile extends Template {
 		});
 		this.el.addEventListener('dragover', (evt)=>{
 			evt.preventDefault();
+			this.el.classList.add('file-dragover');
+		});
+		this.el.addEventListener('dragleave', (evt) => {
+			evt.preventDefault();
+			this.el.classList.remove('file-dragover');
 		});
 		this.el.addEventListener(`dragend`,(evt:DragEvent)=>{
 			evt.preventDefault();

@@ -1,15 +1,16 @@
 .btn {
 	@include button-style();
 	padding: 0.4em 1em;
-	line-height: 1em;
+	line-height: 1;
 	appearance: button;
-	&.disabled {
-		background-color: lighten($color-primary, 20%);
-		border-bottom-width: 0px;
-		// top: 0.15em;
+	&.disabled,
+	&[disabled=""] {
+		background-color: $button-background-disabled;
+		color: $button-color-disabled;
+		border-bottom-width: 0;
 		&:hover {
-			background-color: inherit;
-			color: inherit;
+			background-color: $button-background-disabled;
+			color: $button-color-disabled;
 		}
 	}
 
@@ -22,29 +23,15 @@
 	}
 }
 
-.button-smallprint {
-	margin-top: 0.6em;
-    font-size: 0.8em;
-    max-width: 40em;
-}
-
-
 .action-group {
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-end;
 	align-items: baseline;
-	padding: 0.4em;
 	&>* {
 		margin-left: 1em;
 		&:first-child {
 			margin-left: 0;
 		}
-	}
-	&.primary {
-
-	}
-	&.secondary {
-
 	}
 }

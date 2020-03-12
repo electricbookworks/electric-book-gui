@@ -1,6 +1,10 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="submit"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="pull-request-view">
 	<div class="pr-topbar">Changes for review {{.PullRequest.Number}} : {{.PullRequest.Title}}</div>
 	<div class="workspace">

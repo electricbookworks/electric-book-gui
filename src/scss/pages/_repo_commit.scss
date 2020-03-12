@@ -1,0 +1,39 @@
+.repo-commit-number-of-changes {
+    font-weight: bold;
+}
+
+.repo-commit-file-list {
+    @include repo-box();
+    list-style-type: none;
+    margin-left: 0; // overrides default list styling
+
+    .repo-commit-changed-file {}
+    .repo-commit-change-type {
+        color: $color-darkgray;
+        font-size: 0.8em;
+    }
+}
+
+.commit-message-label-note {
+    color: $color-darkgray;
+    font-size: 0.8rem;
+    margin: 0 0 0.5em 0;
+}
+
+.repo-commit-actions {
+    text-align: right;
+
+    #repo-commit-action-commit {
+        &::after {
+            content: "\f05d";
+            font-family: "FontAwesome";
+            margin-left: 0.25em;
+        }
+    }
+}
+
+.repo-commit-nothing-to-commit {
+    a {
+        text-decoration: underline;
+    }
+}

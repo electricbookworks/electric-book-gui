@@ -1,51 +1,62 @@
 #repo-diff-file-viewer {
+	align-items: stretch;
+	border-top: 2em solid $color-black;
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
-	align-items: stretch;
 	flex-wrap: nowrap;
+	justify-content: space-between;
+	position: relative;
 
+	// Fill page
 	height: 100%;
 	width: 100%;
 
-	.file-container {
-		flex-grow: 1;
-		position:relative;
-		#all-files-editor {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
+	.repo-diff-file-viewer-tools {
+		position: absolute;
+		top: -1.75em;
+		left: 3em;
 
-			width: 100%;
-			max-width: 100%;
-			// max-height: 100%;		
-			// border: 2px solid red;
-			overflow: scroll;
-			// padding: 1em;
-			box-sizing: border-box;
-			margin: 0;
+		.btn {
+			background-color: $button-background-alt;
+			color: $button-color-alt;
+			font-size: 0.8rem;
+			padding: 0.3em 0.5em;
 
-			.node-file {
-				&.delete {
-					color: red;
-					text-decoration: line-through;
-				}
-				&.add {
-					color: green;
-					font-weight: bold;
-				}
-				&.change {
-					color: green;
-				}
-				&.unchanged {
-					color: #ccc;
-				}
+			&::before {
+				content: "\f060"; // arrow
+				font-family: "FontAwesome";	
+				margin-right: 0.35em;
+			}
+
+			&:hover,
+			&:active,
+			&:focus {
+				background-color: $button-background;
+				color: $button-color;
 			}
 		}
 	}
+
+	// Here we hack teh iframe layout to creat the illusion
+	// that the toolbar (word wrap, PDF) is part of the parent document,
+	// when it fact it's part of the iframe.
 	#diff-view {
+		background-color: $color-white;
+		border: none;
 		flex-grow: 3;
-		background-color: #eee;
+		margin-top: -1.9em; // magic number, aligns toolbar
+        @supports (-moz-appearance: none) {
+			margin-top: -1.96em; // magic number for Firefox, aligns toolbar
+		}
+		// Add the black toolbar by default
+		border-top: 1.9em solid $color-black;
+		@supports (-moz-appearance: none) {
+			border-top-width: 1.96em; // magic number for Firefox, aligns toolbar
+		}
+		// And hide it if a file with a diff loads
+		&[src*="/diff/"],
+		&:not([src]) {
+			border-top: none;
+		}
 	}
 }

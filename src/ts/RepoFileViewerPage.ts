@@ -53,7 +53,8 @@ export class RepoFileViewerPage extends Template implements EditFieldListener {
 		super();
 		this.add = new RepoFileViewerFile(this.context, ``, new DOMInsert(this.$.data), this);
 		this.inserter = new DOMInsert( (el:HTMLElement)=>{
-			this.$.data.insertBefore(el, this.add.el);
+			// Insert file after the drag-and-drop box
+			this.$.data.appendChild(el);
 		});
 		parent.appendChild(this.el);
 		this.$.search.focus();
@@ -97,7 +98,7 @@ export class RepoFileViewerPage extends Template implements EditFieldListener {
 			if (``!=src.Filename()) {
 				p = Promise.resolve<string>(src.Filename());
 			} else {
-				p = EBW.Prompt(`Enter full path and filename for uploaded file.`);
+				p = EBW.Prompt(`Enter the path and filename for this file to go to, e.g. book/images/web/cover.jpg`);
 			}
 			p.then(
 				(s:string)=>{

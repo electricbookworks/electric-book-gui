@@ -51,7 +51,6 @@ export namespace R {
 		};
 	export interface BoundFilename {
 		filename: HTMLSpanElement,
-		a: HTMLAnchorElement,
 		};
 	export interface CommitMessageDialog {
 		title: HTMLHeadingElement,
@@ -136,7 +135,6 @@ export namespace R {
 		};
 	export interface Tree_NodeView {
 		close: HTMLSpanElement,
-		svg: HTMLUnknownElement,
 		name: HTMLSpanElement,
 		children: HTMLDivElement,
 		};
@@ -190,36 +188,36 @@ export class AddNewBookDialog {
 				Create an adaptation of an existing project.
 			</label>
 		</fieldset>
-		<button class="btn" data-event="click:choseType">Next</button>
+		<button data-event="click:choseType" class="btn">Next</button>
 	</div>
 	<div>
 		<h1>New project</h1>
 		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="New project"/>
+		<input value="New project" type="submit" class="btn"/>
 		</form>
 	</div>
 	<div>
 		<h1>Adaptation</h1>
-		<form action="/github/create/new" method="post">
+		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
@@ -228,18 +226,18 @@ export class AddNewBookDialog {
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input type="submit" class="btn" value="New adaptation"/>
+		<input type="submit" class="btn" value="Create adaptation"/>
 		</form>
 	</div>
 	<div>
 		<h1>Contributing</h1>
 		<form method="post" action="/github/create/fork">
-		<input type="hidden" name="action" value="fork"/>
-		<label>Enter the GitHub owner and repo for the project you will contribute to.
-		<input type="text" name="collaborate_repo" placeholder="e.g. electricbooks/core"/>
+		<input name="action" value="fork" type="hidden"/>
+		<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.
+		<input type="text" name="collaborate_repo" placeholder="e.g. electricbookworks/constitution"/>
 		</label>
 		<label style="display:none;">
-			<input type="checkbox" name="private" value="private"/>
+			<input name="private" value="private" type="checkbox"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
 		<input type="submit" class="btn" value="Copy project"/>
@@ -267,7 +265,7 @@ export class AddNewBookDialog {
 			template: n.childNodes[5].childNodes[3].childNodes[7].childNodes[1] as HTMLInputElement,
 			private_adapt: n.childNodes[5].childNodes[3].childNodes[9].childNodes[1] as HTMLInputElement,
 			collaborate: n.childNodes[7] as HTMLDivElement,
-			collaborate_repo: n.childNodes[7].childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
+			collaborate_repo: n.childNodes[7].childNodes[3].childNodes[3].childNodes[3] as HTMLInputElement,
 			private_collaborate: n.childNodes[7].childNodes[3].childNodes[5].childNodes[1] as HTMLInputElement,
 		};
 		/*
@@ -386,7 +384,7 @@ export class AddNewBookDialog {
 		
 		
 		if (!this.$.collaborate_repo) {
-			console.error("Failed to resolve item collaborate_repo on path .childNodes[7].childNodes[3].childNodes[3].childNodes[1] of ", n);
+			console.error("Failed to resolve item collaborate_repo on path .childNodes[7].childNodes[3].childNodes[3].childNodes[3] of ", n);
 			debugger;
 		} else {
 			console.log("collaborate_repo resolved to ", this.$.collaborate_repo);
@@ -413,8 +411,8 @@ export class BoundFilename {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="bound-filename">
-	<span>Select a file to edit</span>
-	<a target="_github" href="#"><img src="/img/github-dark.svg"/></a>
+	<span class="bound-filename-text">Select a file to edit</span>
+	<!-- <a href="#" data-set="a" target="_github"><img src="/img/github-dark.svg" /></a> -->
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -424,7 +422,6 @@ export class BoundFilename {
 		
 		this.$ = {
 			filename: n.childNodes[1] as HTMLSpanElement,
-			a: n.childNodes[3] as HTMLAnchorElement,
 		};
 		/*
 		
@@ -434,14 +431,6 @@ export class BoundFilename {
 			debugger;
 		} else {
 			console.log("filename resolved to ", this.$.filename);
-		}
-		
-		
-		if (!this.$.a) {
-			console.error("Failed to resolve item a on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("a resolved to ", this.$.a);
 		}
 		
 		*/
@@ -461,7 +450,7 @@ export class CommitMessageDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="commitMessage">Describe your changes
-		<input type="text" name="commitMessage" id="commitMessage"/>
+		<input id="commitMessage" type="text" name="commitMessage"/>
 		</label>
 	</fieldset>
 	<button class="btn">Commit</button>
@@ -664,8 +653,8 @@ export class FileListDialog {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div>
-	<h1>Print Version</h1>
-	<p>Choose the project version you want to print:</p>
+	<h1>Choose a version</h1>
+	<p>Choose the project version you want to output:</p>
 	<ul class="file-list-dialog-list">
 	</ul>
 </div>
@@ -702,7 +691,7 @@ export class FileListDialog_Item {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
 	<li data-set="this">
-		<input type="radio" name="file-list"/>
+		<input name="file-list" type="radio"/>
 		<span/>
 	</li>
 </ul>
@@ -797,7 +786,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button data-close="" class="close-button" aria-label="Close popup" type="button">
+	<button class="close-button" aria-label="Close popup" type="button" data-close="">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -833,7 +822,7 @@ export class LoginTokenDisplay {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
-	<li class="token-display" data-set="this">
+	<li data-set="this" class="token-display">
 		<a href="">LINK</a>
 		<a href="">X</a>
 	</li>
@@ -882,7 +871,7 @@ export class LoginTokenList {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
-		<input type="text" placeholder="name"/>
+		<input placeholder="name" type="text"/>
 		<input type="text" placeholder="token"/>
 		<button class="btn">Add</button>
 	</div>
@@ -949,7 +938,7 @@ export class MergeEditor {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="merge-editor">
 	<div class="action-group">
-		<button class="btn" data-event="click:save">Save</button>
+		<button data-event="click:save" class="btn">Save</button>
 	</div>
 	<div class="merge-mergely">
 	</div>
@@ -987,9 +976,9 @@ export class PrintListenerTerminal {
 			let d = document.createElement('div');
 			d.innerHTML = `<div id="print-listener">
 	<div class="header">
-		<div class="title">Printing in progress...
+		<div class="title">Printing in progress …
 		</div>
-		<div class="close">X</div>
+		<div class="close">×</div>
 	</div>
 	<div class="terminal">
 	</div>
@@ -1079,11 +1068,11 @@ export class RepoEditorPage_NewFileDialog {
 			d.innerHTML = `<div>
 	<fieldset>
 		<label>
-			Enter the full path to your new file.
+			Enter the full path and filename for your new file.
 			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button class="btn" data-event="click">Create File</button>
+	<button data-event="click" class="btn">Create File</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1122,8 +1111,8 @@ export class RepoEditorPage_RenameFileDialog {
 	<fieldset>
 		<div>Renaming <span> </span></div>
 		<label>
-			Enter the full path to your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
+			Enter the path and filename for your new file.
+			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Rename</button>
@@ -1223,7 +1212,7 @@ export class RepoFileViewerFile {
 		let t = RepoFileViewerFile._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="repo-file-viewer-file">
+			d.innerHTML = `<div class="repo-file-viewer-file" title="Drop a file here to replace this one">
 	<div class="image">
 		<img/>
 	</div>
@@ -1271,7 +1260,7 @@ export class RepoFileViewerPage {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="repo-file-viewer">
 	<div class="searchbar">
-		<input type="text" placeholder="Enter search text to find images."/>
+		<input type="text" placeholder="Type to show and filter images, e.g. book/images/web"/>
 	</div>
 	<div class="data">
 	</div>
@@ -1321,20 +1310,20 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input type="radio" name="resolve" value="our" id="resolveOur"/>
+			<input id="resolveOur" type="radio" name="resolve" value="our"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			<input name="resolve" value="git" id="resolveGit" type="radio"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input id="resolveTheir" type="radio" name="resolve" value="their"/>
+			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input name="conflicted" value="only" id="conflicted" type="checkbox"/>
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
 			Only apply above resolution to conflicted files.
 	</label>
 	<button class="btn" data-event="click:">Do the Merge</button>
@@ -1416,13 +1405,7 @@ export class Tree_NodeView {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="node">
-	<div class="name"><span class="closer"><svg width="1em" height="1em" viewBox="0 0 100 100">
-		<rect height="96" class="grect" rx="10" ry="10" x="2" y="2" width="96"/>
-		<g transform="translate(50 50)">
-			<rect width="60" height="8" class="plusvg" x="-30" y="-4" stroke="none"/>
-			<rect x="-30" y="-4" stroke="none" width="60" height="8" class="plusvg plusvg2"/>
-		</g>
-		</svg></span><span>NAME</span></div>
+	<div class="name"><span class="closer"><!-- icon inserted by CSS --></span><span>NAME</span></div>
 	<div class="children"> </div>
 </div>
 `;
@@ -1433,7 +1416,6 @@ export class Tree_NodeView {
 		
 		this.$ = {
 			close: n.childNodes[1].childNodes[0] as HTMLSpanElement,
-			svg: n.childNodes[1].childNodes[0].childNodes[0] as HTMLUnknownElement,
 			name: n.childNodes[1].childNodes[1] as HTMLSpanElement,
 			children: n.childNodes[3] as HTMLDivElement,
 		};
@@ -1445,14 +1427,6 @@ export class Tree_NodeView {
 			debugger;
 		} else {
 			console.log("close resolved to ", this.$.close);
-		}
-		
-		
-		if (!this.$.svg) {
-			console.error("Failed to resolve item svg on path .childNodes[1].childNodes[0].childNodes[0] of ", n);
-			debugger;
-		} else {
-			console.log("svg resolved to ", this.$.svg);
 		}
 		
 		
@@ -1491,7 +1465,7 @@ export class conflict_ClosePRDialog {
 		<input id="closePR-no" value="no" data-event="change" type="radio" name="closePR"/>No
 		</label>
 		<label for="closePR-yes">
-		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes
+		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>
@@ -1681,14 +1655,14 @@ export class conflict_MergeInstructions {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div class="merge-instructions">
-	<div class="instructions-button">?</div>
+	<div class="instructions-button"> </div>
 	<div class="instructions-text">
-		<h1>Working with the merge editor</h1>
-		<p>The file being submitted is displayed in the editor on the <span class="editor-side">THEIRSIDE</span> side.</p>
-		<p>The final file you will save is displayed in the editor on the <span class="editor-side">OURSIDE</span> side.</p>
+		<h2>Working with the merge editor</h2>
+		<p>The file being submitted is on the <span class="editor-side">THEIRSIDE</span>.</p>
+		<p>The final file you will save is on the <span class="editor-side">OURSIDE</span>.</p>
 		<p>Use the small buttons to the left of lines to transfer changes between sides.</p>
-		<p>When you are satisfied with your changes, press 'Save these changes' to save your changes.</p>
-		<p>When you have resolved all the issues between all the files, press 'Resolve this merge' to resolve the conflicted state.</p>
+		<p>When you are satisfied with your changes, press 'Save' to save your changes.</p>
+		<p>When you have resolved all the issues between all the files, press 'Accept'.</p>
 	</div>
 </div>
 `;

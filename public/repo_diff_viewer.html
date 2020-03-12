@@ -1,30 +1,54 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="manage"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-diff-viewer">
-	<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates" class="top-bar">
-		<label>From</label>
-		<input type="date" id="from-date" name="from-date" value="{{.FirstCommit.Format "2006-01-02"}}"/>
-		<label>To</label>
-		<input type="date" id="to-date" name="to-date" value="{{.LastCommit.Format "2006-01-02"}}"/>
-		<button type="submit" id="diff-dates-button" class="button">Choose commits between dates</button>
-	</form>
-	<div class="explain">
-		<div>or select specific commits from the lists:</div>
+
+	<div class="repo-diff-viewer-option-bar"></div>
+	<input type="radio" id="changes-by-date" name="changes-by-date-or-commit" checked>
+	<input type="radio" id="changes-by-commit" name="changes-by-date-or-commit">
+	<label class="btn" for="changes-by-date">Changes by date</label>
+	<label class="btn" for="changes-by-commit">Changes by version history</label>
+
+	<div class="repo-diff-viewer-tab-dates" id="repo-diff-viewer-tab-dates">
+		<form method="post" action="/repo/{{.RepoOwner}}/{{.RepoName}}/diff-dates">
+			<label>See changes made between</label>
+			<input type="date" id="from-date" name="from-date" value="{{.FirstCommit.Format "2006-01-02"}}"/>
+			<label>and</label>
+			<input type="date" id="to-date" name="to-date" value="{{.LastCommit.Format "2006-01-02"}}"/>
+			<button type="submit" id="diff-dates-button" class="btn">See changes</button>
+		</form>
 	</div>
 
-	<div class="workspace">
-		<div id="commit-from" class="commit-list"> </div>
-		<div id="commit-to" class="commit-list"> </div>
+	<div class="repo-diff-viewer-tab-commits" id="repo-diff-viewer-tab-commits">
+		<div class="repo-diff-viewer-tab-commit-lists">
+			<div id="commit-from" class="commit-list">
+				<div class="repo-diff-viewer-commit-list-label">
+					See changes from this commit …
+				</div>
+			</div>
+			<div id="commit-to" class="commit-list">
+				<div class="repo-diff-viewer-commit-list-label">
+					… to this commit
+				</div>
+			</div>
+		</div>
+		<div class="repo-diff-viewer-actions">
+			<button id="diff-view" class="btn" >See changes</button>
+		</div>
 	</div>
-	<div class="footer">
-		<button id="diff-view" class="button" >View Diff</button>
-	</div>
+
 </main>
+
 <script type="text/hidden" id="ebw-context" data-repo-owner="{{.RepoOwner}}" data-repo-name="{{.RepoName}}" data-page="RepoDiffViewerPage">
 </script>
+
 <script type="text/hidden" id="commit-summaries">
 {{- .CommitSummaries | json | raw -}}
 </script>
+
 {{template "_nav_footer.html" .}}
 {{template "_footer.html" .}}

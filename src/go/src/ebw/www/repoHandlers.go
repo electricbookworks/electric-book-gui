@@ -256,7 +256,7 @@ func repoCommit(c *Context) error {
 		if nil != err {
 			return err
 		}
-		c.FlashSuccess(`Commit Succeeded`, `Your commit succeeded with ID {{.Oid}}`, map[string]interface{}{`Oid`: oid.String()})
+		c.FlashSuccess(`Committed!`, `Your changes have been committed (ID {{.Oid}})`, map[string]interface{}{`Oid`: oid.String()})
 		return c.Redirect(pathRepoDetail(r))
 	}
 
@@ -336,7 +336,7 @@ func repoView(c *Context) error {
 	repoFiles = repoFiles.Filter(``, proseConfig.IgnoreFilter())
 	c.D[`RepoFiles`] = repoFiles
 	c.D[`FilesAndHashes`] = filesAndHashes
-	return c.Render(`repo_view.html`, nil)
+	return c.Render(`repo_editor.html`, nil)
 }
 
 func repoDetails(c *Context) error {

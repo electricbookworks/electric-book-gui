@@ -20,7 +20,20 @@ export class CommitSummaryView extends Template {
 	}
 	set(cs:CommitSummary) {
 		this.commit = cs;
-		this.$.when.textContent = cs.When();
+
+		// Set human time string. Leave locale undefined,
+		// so that the user gets their default locale's format.
+		let humanDate = new Date(cs.When())
+			.toLocaleDateString(undefined, {
+				weekday: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: 'numeric'
+			});
+
+		this.$.when.textContent = humanDate;
 		this.$.message.textContent = cs.Message();
 	}
 	OID() {

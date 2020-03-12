@@ -1,0 +1,7 @@
+- name: update electricbook-users
+  copy:
+    src: ../../../../../electricbook-users.txt
+    dest: /opt/electricbook
+    force: yes
+    mode: "0644"
+  notify: restart electricbook

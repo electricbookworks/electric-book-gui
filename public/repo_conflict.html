@@ -1,26 +1,33 @@
 {{template "_header.html" .}}
 {{template "_nav_main.html" .}}
 
+<!-- This div is a rudimentary way to target repo-flow with step-specific CSS -->
+<div data-repo-flow-step="edit"></div>
+{{template "_repo-flow.html" .}}
+
 <main id="repo-conflict">
-	<div id="topbar">
-		<div><span class="merging-description">You are merging {{.Merging.MergingDescription}}.</span>
-		Changes in this update conflict with your recent edits. Balance each conflicted file, and click Okay.
+	<div class="repo-conflict-actions">
+		<div class="repo-conflict-actions-guidance">
+			<p>
+				You are merging someone else's changes (#{{.Merging.MergingPRNumber}}) with yours, and there are differences to resolve.
+				Edit <strong>Your version</strong> below with the changes you want to keep. Click 'Mark resolved' for each file. When you're done, click 'Merge all'.
+			</p>
 		</div>
 		<div class="toolbar-menu">
-		    <button class="btn" id="action-abort">Cancel this update</button>
-		    <button class="btn" id="action-commit">Okay, accept update</button>
+		    <button class="btn" id="action-abort">Cancel</button>
+		    <button class="btn" id="action-commit">Merge&nbsp;all</button>
 		</div>
 	</div>
 	<div id="work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">
 		<div id="files" class="showing">
+
 			<div id="files-show-tag" class="showing">
-				<object class="hidden" type="image/svg+xml" data="/img/file-folder-open.svg">
-					Show
-				</object>
-				<object class="showing" type="image/svg+xml" data="/img/file-folder-closed.svg">Close</object>
+				<span class="hidden" title="Show files"></span>
+				<span class="showing" title="Hide files"></span>
 			</div>
-			<div>These files are changing</div>
-			<div>
+
+			<div class="repo-conflict-files-list-message">These files are changing</div>
+			<div class="staged-files-list-container">
 				<div id="staged-files-list">
 				</div>
 			</div>
@@ -28,31 +35,50 @@
 		<div id="editor">
 			<div id="editor-topbar">
 				<div class="toolbar-menu">
-					<div class="drop-down pr-merge hide-for-image">
-						<button class="btn">Copy</button>
-						<div class="hover">
-							<a class="btn" id="merge-editor-control-copy-working">My version to incoming</a>
-							<a class="btn" id="merge-editor-control-copy-their">Incoming to my version</a>
-						</div>
+
+					<!-- hide-for-image elements do not appear when we're viewing an image -->
+					<div class="btn hide-for-image repo-conflict-copy-options">Copy
+						<ul>
+							<li>
+								<a id="merge-editor-control-copy-working">Your version to incoming</a>
+							</li>
+							<li>
+								<a id="merge-editor-control-copy-their">Incoming to your version</a>
+							</li>
+						</ul>
 					</div>
 
-					<div class="drop-down  hide-for-image">
-						<div class="btn">Revert</div>
-						<div class="hover">
-							<a class="btn pr-merge" id="merge-editor-control-revert-our">My version to my original</a>
-							<!-- <a class="btn" id="merge-editor-control-revert-git" disabled>
-							Ours to git merge result</a>-->
-							<a class="btn pr-merge" id="merge-editor-control-revert-their">Incoming to incoming original</a>
+					<div class="btn hide-for-image repo-conflict-revert-options">Revert
+						<ul>
+							<li>
+								<a class="pr-merge" id="merge-editor-control-revert-our">Your version to your original</a>
+							</li>
+							<!-- <li>
+								<a class="btn" id="merge-editor-control-revert-git" disabled>
+								Ours to git merge result</a>
+							</li>-->
+							<li>
+								<a class="pr-merge" id="merge-editor-control-revert-their">Incoming to incoming original</a>
+							</li>
 
-							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-our">To my original</a>
-							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-their">To their original</a>
-							<a class="btn not-pr-merge" id="merge-editor-control-single-revert-git">To git merge attempt</a>
-						</div>
+							<!-- not-pr-merge buttons only appear when we're not doing a PR merge -->
+							<li class="not-pr-merge">
+								<a class="not-pr-merge" id="merge-editor-control-single-revert-our">To your original</a>
+							</li>
+							<li class="not-pr-merge">
+								<a class="not-pr-merge" id="merge-editor-control-single-revert-their">To their original</a>
+							</li>
+							<li class="not-pr-merge">
+								<a class="not-pr-merge" id="merge-editor-control-single-revert-git">To git merge attempt</a>
+							</li>
+						</ul>
 					</div>
 
 					<a class="btn hide-for-image" id="merge-editor-control-save">Save</a>
+
 					<!-- We don't actually require a 'resolve', since we'll commit -am -->
 					<a class="btn" id="merge-editor-control-resolve">Mark resolved</a>
+
 					<a class="btn" id="merge-editor-control-delete" class="hide-for-image" disabled style="display: none;">Delete this file</a>
 					
 				</div>
@@ -60,7 +86,7 @@
 				</div>
 			</div>
 			<div id="editor-label-panes" class="pr-merge">
-				<div>My version</div>
+				<div>Your version</div>
 				<div>Incoming version</div>
 			</div>
 			<div id="editor-work" class="{{if .Merging.MergingPRNumber}}pr-merge{{else}}not-pr-merge{{end}}">

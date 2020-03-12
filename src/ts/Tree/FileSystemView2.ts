@@ -9,6 +9,16 @@ import {NotifyFS} from '../FS2/NotifyFS';
 import {Styler} from './Styler';
 
 
+// Expand directories that contain changed files
+function expandChangedFilesInTree() {
+	var dirs = document.querySelectorAll('#all-files-editor .node-dir');
+	dirs.forEach(function (dir) {
+		if (dir.querySelector('.change')) {
+			dir.classList.remove('closed');
+		}
+	})
+}
+
 function addChildNode(parent: HTMLElement, el:HTMLElement):void {
 	if (false) {
 		parent.appendChild(el);
@@ -58,16 +68,16 @@ function sortChildrenOnAttribute_recurse(range: Array<HTMLElement>, lt: (a:HTMLE
 	console.log(`mid = `, mid);
 	let less = newrange.filter( (el:HTMLElement)=>lt(mid, el) );
 	let more = newrange.filter( (el:HTMLElement)=>!lt(mid, el) );
-	
+
 	return sortChildrenOnAttribute_recurse(less, lt)
 		.concat([mid])
 		.concat(sortChildrenOnAttribute_recurse(more, lt));
 }
 
 /**
- * FileSystemView displays a FileSystem, with each node either a Directory or a 
+ * FileSystemView displays a FileSystem, with each node either a Directory or a
  * FileView itself.
- * When a file is clicked, an `ebw-file-clicked` event will be dispatched from the 
+ * When a file is clicked, an `ebw-file-clicked` event will be dispatched from the
  * parent element.
  */
 export class FileSystemView {
@@ -75,12 +85,12 @@ export class FileSystemView {
 	protected views: Map<string,NodeView>;
 
 	constructor(
-		protected context:Context, 
-		protected root: Node, 
+		protected context:Context,
+		protected root: Node,
 		protected parent:HTMLElement,
 		protected ignoreFunction: (name:string)=>boolean,
 		protected notifyFS: NotifyFS|null,
-		protected styler:Styler|null) 
+		protected styler:Styler|null)
 	{
 		this.views = new Map<string,NodeView>();
 		this.root.added.add(this.nodeAdded, this);
@@ -89,7 +99,7 @@ export class FileSystemView {
 		}
 	}
 
-	nodeAdded(n:Node) : void {		
+	nodeAdded(n:Node) : void {
 		new NodeView(this, n, (el:HTMLElement)=>addChildNode(this.parent, el), this.ignoreFunction, this.styler);
 	}
 
@@ -117,7 +127,7 @@ export class FileSystemView {
 	}
 
 	keyForNode(n:Node) : string {
-		return this.context.RepoOwner + ":" + this.context.RepoName + ":" + n.path() 
+		return this.context.RepoOwner + ":" + this.context.RepoName + ":" + n.path()
 			+ `.fsv.closed`;
 	}
 	isClosed(node:Node) : boolean {
@@ -130,22 +140,23 @@ export class FileSystemView {
 			window.localStorage.removeItem(key);
 		} else {
 			window.localStorage.setItem(key, `t`);
-		}		
+		}
 	}
 }
 
 class NodeView extends NodeViewTemplate{
-	constructor(protected FSV: FileSystemView, 
-		protected node: Node, 
-		protected parent: (el:HTMLElement)=>void, 
-		protected ignoreFunction: (name:string)=>boolean, 
+	constructor(protected FSV: FileSystemView,
+		protected node: Node,
+		protected parent: (el:HTMLElement)=>void,
+		protected ignoreFunction: (name:string)=>boolean,
 		protected styler:(n:Node,el:HTMLElement)=>undefined|null) {
 		super();
 		this.$.name.innerText = this.node.name;
+
 		if (node.canCollapse()) {
 			this.$.close.addEventListener(`click`, (evt)=>{
 				evt.preventDefault(); evt.stopPropagation();
-				let c = this.$.children;				
+				let c = this.$.children;
 				this.el.classList.toggle(`closed`);
 				this.FSV.setClosed(this.node, this.el.classList.contains(`closed`));
 			});
@@ -165,7 +176,10 @@ class NodeView extends NodeViewTemplate{
 		if (FSV.isClosed(node)) {
 			this.el.classList.add(`closed`);
 		}
-		if (this.ignoreFunction(this.node.name)) {
+
+		// Remove the leading slash for regex text of path
+		var pathForIgnoreTest = this.node.path().replace('/', '');
+		if (this.ignoreFunction(pathForIgnoreTest)) {
 			this.el.classList.add(`ignore`);
 		}
 		this.node.added.add(this.childAdded, this);
@@ -178,8 +192,13 @@ class NodeView extends NodeViewTemplate{
 		if (this.styler) {
 			this.styler(this.node, this.el);
 		}
+
+		// Auto expand folders with changes files in diff viewer
+		if (document.getElementById('repo-diff-file-viewer')) {
+			expandChangedFilesInTree();
+		}
 	}
-	childAdded(n:Node) : void {		
+	childAdded(n:Node) : void {
 		new NodeView(this.FSV, n, (el:HTMLElement)=>addChildNode(this.$.children, el), this.ignoreFunction, this.styler);
 	}
 

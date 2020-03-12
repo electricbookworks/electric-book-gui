@@ -1,5 +1,6 @@
 ---
 title: Adding storage
+description: "If your EBM handles many and/or large repos, you may need to move storage from the default location to separate storage."
 ---
 
 # Adding storage to an EBM

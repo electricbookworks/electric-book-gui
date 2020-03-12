@@ -3,6 +3,7 @@ title: Output books
 category:
   - Electric Book Manager
 order: 8
+description: "The EBM can currently output print PDF, screen PDF and website previews. For production ready copies, epub and app output, you will need technical assistance."
 ---
 
 # Output books

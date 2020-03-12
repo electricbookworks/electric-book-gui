@@ -4,17 +4,19 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: stretch;
-	
-	#topbar {
+
+	.repo-conflict-actions {
 		flex-grow: 0;
-		// height: 3em;
-
-		padding: 0.6em 1em 1em 1em;
-
+		padding: 1em;
 		display: flex;
-		flex: row nowrap;
+		// flex: row nowrap;
 		justify-content: space-between;
-		align-items: baseline;
+		align-items: flex-end;
+
+		.repo-conflict-actions-guidance {
+			@include notification-dialog();
+			margin: 0 1em 0 0;
+		}
 	}
 	#work {
 		flex-grow: 1;
@@ -37,35 +39,35 @@
 
 		#files {
 			flex-grow: 0;
-			width: 30em;
-			border: 1px solid $color-primary;
+			width: 20%;
+			// border: 1px solid $color-primary;
 
 			position: relative;
-			
+
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
 			align-items: stretch;
 
-			transition: width 0.3s;
+			transition: width $transition-slide-duration;
 
 			width: 0px;
 			&.showing {
-				width: 30em;
+				width: 20%;
 			}
 
-			&>div:nth-child(2) {	// titlebar
-				flex-grow: 0;
-				border-bottom: 1px solid $color-primary;
-				background-color: $color-inverse-bg;
-				color: $color-inverse-fg;
-				padding-left: 1em;
-			}
-			&>div:nth-child(3) {	
-				// container for #staged-files-list, required to 
+			// &>div:nth-child(2) {	// titlebar
+			// 	flex-grow: 0;
+			// 	border-bottom: 1px solid $color-primary;
+			// 	background-color: $color-inverse-bg;
+			// 	color: $color-inverse-fg;
+			// 	padding-left: 1em;
+			// }
+			.staged-files-list-container {
+				// container for #staged-files-list, required to
 				// allow position:relative;
 				// see #staged-files-list definitions belog
-				flex-grow: 1;				
+				flex-grow: 1;
 				position: relative;
 				padding: 0 0 0 0;
 			}
@@ -73,7 +75,7 @@
 		#editor {
 			flex-grow: 1;
 			position: relative;
-			background-color: lightgray;
+			// background-color: lightgray;
 
 			display: flex;
 			flex-direction: column;
@@ -81,36 +83,93 @@
 			align-items: stretch;
 
 			#editor-topbar {
-				flex-grow: 0;
-				// height: 3.3em;
-				padding: 0.6em 1em 0.6em 3em;
+				background-color: $color-black;
+				min-height: 2em;
+				padding: 0.25em 0.25em 0.25em 0;
+				z-index: 4; // avoid being obscured by editing panel
 
+				// Flex
+				align-items: center;
 				display: flex;
 				flex-direction: row;
+				flex-grow: 0;
 				justify-content: space-between;
-				align-items: flex-start;
+
+				// Leave space for close button when maximised.
+				// See also _repo_editor.scss.
+				.editorMaximised & {
+					padding-left: 2.25em;
+				}
+
+
+				.btn, button {
+					background-color: $button-background-alt;
+					color: $button-color-alt;
+					font-size: 0.8rem;
+					padding: 0.3em 0.5em;
+
+					&:hover {
+						background-color: $button-background;
+						color: $button-color;
+						cursor: pointer;
+					}
+				}
+
+				.repo-conflict-copy-options,
+				.repo-conflict-revert-options {
+					position: relative;
+					ul {
+						@include dropdown-list();
+						position: absolute; // override mixin
+						top: 100%; // override mixin
+						transform: none; // override mixin
+						right: 0; // override mixin
+						font-size: 0.8rem;
+						left: 0;
+						width: 15em;
+					}
+					&:hover {
+						ul {
+							visibility: visible;
+						}
+					}
+				}
 			}
+
 			#editor-label-panes {
 				display: flex;
 				flex-direction: row;
-				align-items: flex-start;
+				align-items: flex-end;
+				height: 2.5em;
 				justify-content: space-around;
+
+				// Hide until show, see below
+				visibility: hidden;
+
 				& > div {
-					color: white;
+					// color: white;
 					font-weight: bold;
 					text-align: center;
 				}
 			}
+
+			// Hide unless a file is showing
+			&[data-file-in-editor] #editor-label-panes {
+				visibility: visible;
+			}
+
 			#editor-work {
 				flex-grow: 1;
+				margin: 0 1em; // create space between mergely buttons and edges
 				position: relative;
+				z-index: 0; // place in stacking context
 
 				// display: flex;
 				// flex-direction: row;
 				// justify-content: space-between;
 				// align-items: stretch;
 
-				&.pr-merge>div:not(.merge-image-editor) {					
+				&.pr-merge>div:not(.merge-image-editor) {
 					display: flex;
 					flex-direction: row;
 					align-items: stretch;
@@ -135,23 +194,38 @@
 						bottom: 0;
 						left: 0;
 						right: 0;
-					} 
+					}
 					.CodeMirror, &.CodeMirror {
-						font-size: 1em;
-						font-family: 'Inconsolata',monospace;
 						height: 100%;
-					} 
+					}
 				}
 			}
 		}
 	}
 }
 
+.repo-conflict-files-list-message {
+	display: none; // not using this message;
+
+	@include notification-dialog();
+	font-size: 0.9rem;
+	margin: 0.5em;
+	// .showing & {
+	// 	display: block;
+	// }
+}
+
+// This list should be designed to look the same as
+// the file tree in _file_tree.scss. They have a
+// different HTML structure, so it's not currently
+// feasible to use the same Sass for both.
 #staged-files-list {
 	overflow-y: scroll;
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	font-size: 0.9rem; // rem to avoid nested files getting smaller
+	padding: 1.5em 0.5em 0.5em 0.5em;
 
 	& > ul {
 		&.pr-merge {
@@ -163,22 +237,24 @@
 		list-style: none;
 		margin: 0;
 		& > li {
+			line-height: 1.5;
 			padding-left: 1em;
 			cursor: pointer;
-			&:hover {
-				&>.path {
-					color: $color-primary;
-				}
-			}
+			// &:hover {
+			// 	&>.path {
+			// 		color: $color-primary;
+			// 	}
+			// }
 			& > .path {
 
 			}
 			& > .status {
-				font-size: 0.7em;
-				background-color: $color-lightgray;
-				border-radius: 0.2em;
-				margin-left: 1em;
-				padding: 0 0.4em;
+				// font-size: 0.7em;
+				// background-color: $color-lightgray;
+				// border-radius: 0.2em;
+				// margin-left: 1em;
+				// padding: 0 0.4em;
+				@include file-tip();
 			}
 			&.status-new {
 				&>.status {
@@ -211,53 +287,89 @@
 				}
 			}
 			&.rpc {
-				background-color: yellow;
+				& > .status {
+					background-color: $color-warning;
+
+					// Blink this since it's a temporary loading state
+					animation: blinker 1s linear infinite;
+
+					@keyframes blinker {
+						50% {
+							// opacity: 0;
+							background-color: $color-white;
+						}
+					}
+				}
 			}
-			transition: background-color 0.3s;
+			transition: background-color $transition-slide-duration;
 		}
 	}
 }
 
-.merge-instructions {
-	position: relative;
-	.instructions-button {
-		background-color: transparent;
-		color: $color-primary;
-		border: 1px solid $color-primary;
-		padding: 0.4em 1em;
-		cursor: pointer;
-		display: inline-block;
-	}
-	.instructions-text {
-		display: none;
+#merge-instructions {
+	display: flex;
+	align-items: center;
 
-		overflow-y: auto;
-		padding: 2em;
-		border: 2px solid $color-primary;
-		z-index: 100;
-		background-color: rgba(255,255,255,0.95);
-
-		position: absolute;
-		
-		top: 0em;
-		right: 3em;
-
-		width: 50em;
-		max-width: 70vw;
-
-		.editor-side {
-			font-weight: bold;
-			color: $color-primary;
-		}
-			
-	}
-	&.showing {
+	.merge-instructions {
+		align-items: center;
+		display: flex;
+		height: 1em;
+		position: relative;
+	
 		.instructions-button {
-			background-color: $color-inverse-bg;
-			color: $color-inverse-fg;
+			align-items: center;
+			background-color: $button-background;
+			border-radius: 1em;
+			color: $button-color;
+			cursor: pointer;
+			display: flex;
+			height: 1.5em;
+			justify-content: center;
+			margin: 0 0.25em 0 0;
+			padding: 0.25em;
+			width: 1.5em;
+	
+			&::after {
+				content: "?";
+				display: block;
+			}
 		}
 		.instructions-text {
-			display: inline-block;
+			display: none; // .showing will show, see below
+	
+			// Appearance
+			@include notification-dialog();
+			@include box-shadow();
+	
+			// Position
+			max-width: 20em;
+			position: absolute;
+			right: 3em;
+			top: 0em;
+			width: 80vw;
+			z-index: 100;
+	
+			h2 {
+				font-weight: bold;
+			}
+	
+			.editor-side {
+				font-weight: bold;
+			}
+	
+		}
+		&.showing {
+			.instructions-button {
+				background-color: $color-inverse-bg;
+				color: $color-inverse-fg;
+	
+				&::after {
+					content: "×";
+				}
+			}
+			.instructions-text {
+				display: inline-block;
+			}
 		}
 	}
 }

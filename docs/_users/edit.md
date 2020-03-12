@@ -3,6 +3,7 @@ title: Edit, add, and save files
 categories:
   - Electric Book Manager
 order: 4
+description: "How to edit, add and save files."
 ---
 
 # Editing, adding, and saving files
@@ -33,7 +34,7 @@ You can search for text in the file you are editing.
 If you need to add a new file (for a new chapter, for example):
 
 1. In the editor view, click ‘New file’.
-2. Enter the full path to the file. Note that these paths have very strict requirements. A valid path for a chapter in the book folder would look like this: `book/text/filename.md`. Do not use spaces in filenames. We recommend using only lowercase letters and numbers, optionally separated with hyphens. Remember to include the `.md` file extension for markdown files (the filetype for text).
+2. Enter the full path to where the file should be created. Note that these paths have very strict requirements. A valid path for a chapter in the book folder would look like this: `book/text/filename.md`. Do not use spaces in filenames. We recommend using only lowercase letters and numbers, optionally separated with hyphens. Remember to include the `.md` file extension for markdown files (the filetype for text).
 3. Click ‘Create file’. Your file will now appear at the bottom of the sidebar.
 4. Every markdown file in a book must start with two rows of three hyphens:
 

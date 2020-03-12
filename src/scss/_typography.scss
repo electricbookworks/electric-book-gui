@@ -1,5 +1,7 @@
+
+
 body {
-	font-family: 'Source Sans Pro', sans-serif;
+	font-family: $body-font-family;
 	color: $bodytext;
 }
 
@@ -12,82 +14,50 @@ h6 {
 	margin-top: 0;
 }
 
-p {
-	margin-top: 0;
-}
-
-// http://typecast.com/blog/a-more-modern-scale-for-web-typography
-
-
-@media (min-width: 43.75em) {
-  html {
-    line-height: 1.375;
-  }
-}
-
 h1 {
-  font-size: 2em;
+  font-size: 1.6em;
   font-weight: bold;
-  line-height: 1.25;
-  @media (min-width: 43.75em) {
-      font-size: 2.5em;
-      line-height: 1.125;
-  }
-  @media (min-width: 56.25em) {
-      font-size: 3em;
-      line-height: 1.05;
-  }
 }
 
 h2 {
-  font-size: 1.5em;
-  line-height: 1.15384615;
-  @media (min-width: 43.75em) {
-      // font-size: 2em;
-      // line-height: 1.25;
-  }
-  @media (min-width: 56.25em) {
-      // font-size: 2.25em;
-      // line-height: 1.25;
-  }
+  font-size: 1.4em;
 }
 
 h3 {
-  font-size: 1.375em;
-  line-height: 1.13636364;
-  @media (min-width: 43.75em) {
-      font-size: 1.5em;
-      line-height: 1.25;
-  }
-  @media (min-width: 56.25em) {
-      font-size: 1.75em;
-      line-height: 1.25;
-  }
+  font-size: 1.2em;
 }
 
 h4,
 .repo-details h3 {
-  font-size: 1.125em;
-  line-height: 1.11111111;
-  @media (min-width: 43.75em) {
-      line-height: 1.22222222;
-  }
+  font-size: 1.1em;
 }
 
-blockquote {
-  font-size: 1.25em;
-  line-height: 1.25;
-  @media (min-width: 43.75em) {
-      font-size: 1.5em;
-      line-height: 1.45833333;
-  }
+p {
+	margin-top: 0;
+	margin-bottom: 0.5em;
+}
+
+ol, ul {
+	line-height: $global-lineheight;
 }
 
 a {
-	color: $color-primary;
+	color: inherit;
 	&:hover {
+    color: inherit;
 		text-decoration: none;
 	}
+	&[disabled='disabled'] {
+		color: $button-color-disabled;
+		cursor: default;
+	}
+}
+
+code {
+	border: 0;
+	border-radius: $global-radius;
+	font-family: $body-font-family-code;
+	font-size: 0.9em;
 }
 
 .logo {
@@ -100,7 +70,82 @@ a {
 	}
 }
 
-// :focus {
-// 	outline: 0.15em dashed $color-darkgray;
-// 	outline-offset: 0.1em;
-// }
+@mixin inverse {
+	background-color: $color-inverse-bg;
+	color: $color-inverse-fg;
+	a {
+		color: $color-inverse-fg;
+		&:hover {
+			color: darken($color-inverse-fg, 10%);
+		}
+	}
+}
+
+@mixin box-shadow($blur-radius: 7px, $spread-radius: -7px) {
+	box-shadow: 3px 3px $blur-radius $spread-radius $black;
+}
+
+@mixin notification-dialog() {
+	background-color: $color-info;
+	border-radius: $global-radius;
+	padding: 1em;
+	& > * {
+		font-size: 0.9em;
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+	a {
+		text-decoration: underline;
+	}
+}
+
+// Apply to lists (ol, ul) as dropdowns
+@mixin dropdown-list() {
+	@include box-shadow();
+	background-color: $color-white;
+	display: flex;
+	flex-direction: column;
+	font-size: 0.9rem;
+	list-style-type: none;
+	margin: 0;
+	position: fixed; // ensures not cropped when inside position:relative parent
+	text-align: left;
+	transform: translatex(-80%);
+	width: 12em;
+	z-index: 5; // stay visible above editor
+
+	// Visible/invisible
+	visibility: hidden; // show with CSS or JS
+	&:hover {
+		visibility: visible;
+	}
+	li {
+		border-bottom: 1px solid $color-lightgray;
+		border-left: 1px solid $color-lightgray;
+		border-right: 1px solid $color-lightgray;
+		line-height: $global-lineheight;
+		padding: 0.25em 0.4em;
+		&:hover {
+			background-color: $color-lightgray;
+		}
+		a {
+			color: $bodytext;
+			display: block;
+		}
+		&:first-child {
+			border-radius: $global-radius $global-radius 0 0;
+			border-top: 1px solid $color-lightgray;
+		}
+		&:last-child {
+			border-radius: 0 0 $global-radius $global-radius;
+		}
+	}
+}
+
+@mixin terminal-typography() {
+    background-color: $black;
+	color: $cornsilk;
+	font-family: $body-font-family-code;
+	font-size: 0.8rem;
+}

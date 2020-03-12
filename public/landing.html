@@ -1,38 +1,74 @@
 {{template "_header.html" .}}
-
 {{template "_nav_main.html" .}}
 
-<main>
-    <article class="constrain-page center landing-page">
+<main class="landing-page">
 
-        <h1>Connect to GitHub</h1>
-
-        <p>The Electric Book Manager stores your projects in your GitHub account.</p>
-
+    <div class="login-actions">
         <a href="{{.AuthURL}}" class="btn">Sign in with GitHub</a>
 
-        <p class="button-smallprint">By clicking this button, you're telling GitHub that you grant the Electric Book Manager permission to connect to your account. If you don't have an account, you'll be prompted to create one for free. Once you've done that, you'll see your dashboard here.</p>
+        <details class="button-smallprint">
+            <summary>What's this?</summary>
+            <p>
+                If you are a registered user, this will log you in. By clicking this button, you're telling GitHub that you grant the Electric Book Manager permission to connect to your GitHub account.
+            </p>
+            <p>
+                If you don't have a GitHub account, you'll be prompted to create one for free.
+            </p>
+        </details>
+    </div>
 
-        {{if .ConfigAllowAutoLogin}}
+    <h1>Create and edit books as websites and PDFs</h1>
 
-        {{if .Users}}
-        <p>Or you can login as any of these users:
-        <ul>
-        	{{range .Users}}
-        	<li><a href="/github/token/{{.Token}}">{{.Name}}</a></li>
-        	{{end}}
-        </ul>
-        </p>
-        {{end}}
+    <ul>
+        <li class="landing-page-feature-create">
+            <strong>Create and contribute to <a href="https://electricbookworks.github.io/electric-book/">Electric Book</a> projects</strong>
+            <br>
+            Create a new book project at the click of a button, or join someone else’s project just by entering its GitHub name. Your work stays in your own copy of the project.
+        </li>
+        <li class="landing-page-feature-edit">
+            <strong>Edit your books and view them as websites and PDFs</strong>
+            <br>
+            Edit books in plain-text markdown, and output website versions, print-ready PDFs, and screen PDFs. Epub, app and Word exports are <a href="https://electricbookworks.com/contact">available from EBW</a>.
+        </li>
+        <li class="landing-page-feature-collaborate">
+            <strong>Submit and review changes with version control</strong>
+            <br>
+            When contributing to someone else’s project, submit your changes for them to review. And review others’ contributions to your projects. Accept, reject or modify those contributions line by line.
+        </li>
+        <li class="landing-page-feature-github">
+            <strong>Sync everything safely in your GitHub account</strong>
+            <br>
+            When you commit your changes to version control, everything syncs with your GitHub account. You get all the peace of mind that the world’s largest code host provides.
+        </li>
+    </ul>
 
-        <div>
-            <p>If you know what you're doing, you can configure auto-login tokens for yourself (this is a developer debug-feature, not for general use).</p>
-            <div data-instance="LoginTokenList"></div>
+    <a href="https://electricbookworks.com/contact" class="btn landing-page-request-demo">Request a demo</a>
+
+    <p><a href="https://electricbookworks.com/contact">Contact Electric Book Works</a> to sign up or find out more.</p>
+
+    {{if .ConfigAllowAutoLogin}}
+
+        <div class="landing-page-admin">
+
+            {{if .Users}}
+                <p>You are an admin, and can login as any of these users:
+                <ul>
+                    {{range .Users}}
+                    <li><a href="/github/token/{{.Token}}">{{.Name}}</a></li>
+                    {{end}}
+                </ul>
+                </p>
+            {{end}}
+
+            <div>
+                <p>If you know what you're doing, you can configure auto-login tokens for yourself (this is a developer debug-feature, not for general use).</p>
+                <div data-instance="LoginTokenList"></div>
+            </div>
+
         </div>
-        {{end}}
-    </article>
+    {{end}}
+
 </main>
 
 {{template "_nav_footer.html" .}}
-
 {{template "_footer.html" .}}

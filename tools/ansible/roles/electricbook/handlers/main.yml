@@ -1,5 +1,5 @@
-- name: "restart electricbook"
-  include: restart.yml
+- name: restart electricbook
+  include_tasks: roles/electricbook/handlers/restart.yml
 
-- name: 'restart proxy'
-  include: 'proxy-restart.yml'
+- name: restart proxy
+  include_tasks: roles/electricbook/handlers/proxy-restart.yml

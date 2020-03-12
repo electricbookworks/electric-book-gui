@@ -1,0 +1,27 @@
+#editor { // add specificity
+
+    .mergely-column {
+        border: 0;
+    }
+
+    .mergely-margin {
+        display: none;
+    }
+
+    .merge-button {
+        border-radius: $global-radius;
+        height: 2em !important; // override inline styles
+        opacity: 1 !important; // override inline styles
+        width: 1em !important; // override inline styles
+
+        // Flex
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            background-color: $button-background !important; // override inline styles
+            color: $button-color !important; // override inline styles
+        }
+    }
+}

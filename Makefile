@@ -47,8 +47,24 @@ deploy-production:
 	ansible-playbook -i hosts-production playbook-bookserver.yml; \
 	popd
 
+users-staging:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-staging playbook-update-users.yml; \
+	popd
+
+users-production:
+	pushd tools/ansible; \
+	ansible-playbook -i hosts-production playbook-update-users.yml; \
+	popd
+
 test:
 	GOPATH=`pwd`/src/go go test ebw/git -logtostderr 
+
+dev:
+	gulp watch & \
+	rollup -c --watch & \
+	dtemplate -dir src/ts -lang ts -logtostderr -out src/ts/Templates.ts -watch & \
+	bin/electricbook -logtostderr web
 
 .PHONY: all clean css gen prepare test deploy-staging deploy-production
 

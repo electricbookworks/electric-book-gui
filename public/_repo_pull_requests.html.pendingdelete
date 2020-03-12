@@ -1,6 +1,6 @@
 <section id="pull-requests" class="pull-request">
     <div class="commit-details">
-        <h2>My edits</h2>
+        <h2>Your edits</h2>
         <p>4 changes in 2 files</p>
         <ul>
             <li>Hello World (01.md)</li>

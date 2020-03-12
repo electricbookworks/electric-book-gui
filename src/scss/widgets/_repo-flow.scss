@@ -1,0 +1,228 @@
+.repo-flow {
+    align-items: flex-start;
+    background-color: $color-lightgray;
+    display: flex;
+    min-height: 7em; // children are position absolute
+    overflow: hidden; // hide line below flow steps that extends outside viewport
+    padding: 1.5em 0 0.5em 0;
+
+    .repo-flow-home {
+        color: $color-mediumgray;
+        padding: 0 1em;
+
+        .repo-flow-home-link {
+            &::before {
+                // content: "\f015"; // home
+                // content: "\f060"; // arrow-left
+                // content: "\f0c9"; // bars
+                content: "\f053"; // chevron
+                font-family: "FontAwesome";
+            }
+            &:hover,
+            &:active,
+            &:focus {
+                color: $button-background;
+            }
+        }
+    }
+
+    .repo-flow-repo-name {
+        align-self: flex-start;
+        color: $color-black;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.9em;
+        font-weight: bold;
+        max-width: 20%;
+        padding: 0 0 0.5em 0;
+        width: 20%;
+
+        .repo-flow-repo-name-owner {
+            color: $color-darkgray;
+            display: block;
+        }
+        .repo-flow-repo-name-reponame {
+            display: block;
+        }
+        .file-title {
+            color: $color-darkgray;
+            display: inline-block;
+            font-weight: normal;
+            .bound-filename {
+                display: inline;
+            }
+            &::before {
+                content: "—"; // em dash
+            }
+        }
+    }
+    // Hide filename when editor not maximised
+    body:not(.editorMaximised) & .file-title {
+        display: none;
+    }
+
+    .repo-flow-steps {
+        align-items: center;
+        display: flex;
+        min-width: 80%;
+
+        ol {
+            align-items: center;
+            display: flex;
+            justify-content: space-evenly;
+            list-style-type: none;
+            margin: 0;
+            width: 100%;
+
+            li {
+                position: relative;
+                // Dot
+                &::before {
+                    color: $color-mediumgray;
+                    content: "\2022";
+                    display: block;
+                    font-size: 2.5em;
+                    height: 60px; // absolute values improve consistency across browsers
+                    line-height: 61px;  // absolute values improve consistency across browsers; 1px for half border width
+                    position: absolute; // necessary for z-index stacking context
+                    text-align: center;
+                    bottom: -200%;
+                    z-index: 3; // dot must appear on top of line
+                    // Center horizontally
+                    left: 50%;
+                    transform: translateX(-50%);
+                }
+                // Line
+                &::after {
+                    border-bottom: 2px solid $color-mediumgray;
+                    bottom: -100%;
+                    content: "";
+                    display: block;
+                    left: 50%;
+                    position: absolute; // necessary for z-index stacking context
+                    width: 100vw; // each line overlaps the next, and overflow hidden
+                                 // on .repo-flow should prevent horizontal scroll
+                    z-index: 1; // below dot and final-step invisible line
+                }
+                // Last step has no visible line
+                &:last-child {
+                    &::after {
+                        // Same as repo-flow background, to obscure 100vw width line
+                        border-bottom-color: $color-lightgray;
+                        z-index: 2;
+                        width: 100vw // overflow hidden on .repo-flow above
+                                    // should prevent cause horiz scroll on page
+                    }
+                }
+                // Create arrow/triangle beneath buttons
+                a {
+                    position: relative;
+                    &::after {
+                        border-left: 0.5em solid transparent;
+                        border-right: 0.5em solid transparent;
+                        border-top: 0.5em solid $button-background;
+                        bottom: -0.5em;
+                        content: "";
+                        left: 50%;
+                        position: absolute;
+                        transform: translateX(-50%);
+                    }
+                    &.disabled,
+                    &[disabled] {
+                        &::after {
+                            border-top-color: $button-background-disabled;
+                        }
+                        &:hover::after,
+                        &:active::after,
+                        &:focus::after {
+                            border-top-color: $button-background-disabled;
+                        }
+                    }
+                    &:hover::after,
+                    &:active::after,
+                    &:focus::after {
+                        border-top-color:$button-background-hover;
+                    }
+                }
+
+                .repo-detail-settings {
+                    position: absolute;
+                    right: -2.5em;
+                    top: 0.33em;
+                    z-index: 3;
+                    .repo-detail-settings-action {
+                        color: $color-mediumgray;
+                        &:hover {
+                            color: $color-darkgray;
+                        }
+                    }
+                    // Avoid inheriting arrows, dots and lines
+                    // from repo-flow.scss
+                    li::before,
+                    li::after,
+                    a::after {
+                        content: normal;
+                    }
+                    // Hide unless screen is large
+                    display: none;
+                    @media only screen and (min-width: $bp-m) {
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@mixin repo-flow-step-indicator($step-number) {
+    & + .repo-flow {
+        // Make the right dots yellow
+        .repo-flow-steps ol li:nth-child(-n+#{$step-number + 1}) {
+            &::before {
+                color: $color-primary;
+            }
+        }
+        // Make the right lines yellow
+        .repo-flow-steps ol li:nth-child(-n+#{$step-number}) {
+            &::after {
+                border-bottom-color: $color-primary;
+            }
+        }
+    }
+}
+
+// Style changes per repo-flow step
+[data-repo-flow-step="manage"] {
+    @include repo-flow-step-indicator(0);
+}
+[data-repo-flow-step="edit"] {
+    @include repo-flow-step-indicator(1);
+}
+[data-repo-flow-step="commit"] {
+    @include repo-flow-step-indicator(2);
+}
+[data-repo-flow-step="submit"] {
+    @include repo-flow-step-indicator(3);
+}
+
+// Hide and adjust elements when .editorMaximised
+body.editorMaximised {
+    & > .topbar {
+        display: none;
+    }
+    .repo-flow {
+        min-height: auto;
+        padding: 0.75em 0 0.25em 0;
+        .repo-flow-repo-name-owner,
+        .repo-flow-repo-name-reponame {
+            display: none;
+        }
+        .file-title {
+            margin-top: 0.15em; // align with bars button
+            &::before {
+                content: normal;
+            }
+        }
+    }
+}

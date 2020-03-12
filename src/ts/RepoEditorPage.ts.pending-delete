@@ -64,7 +64,7 @@ export class RepoEditorPage {
 
 		new ControlTag(document.getElementById(`files-show-tag`),
 			(showing:boolean)=>{
-				document.getElementById(`new-editor-files-nav`)
+				document.getElementById(`repo-editor-files-nav`)
 				.style.width = showing ? "20%":"0px";
 				document.getElementById(`repo-file-actions`)
 				.style.visibility = showing ? `visible` : `hidden`;

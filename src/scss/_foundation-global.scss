@@ -18,7 +18,7 @@ $global-width: rem-calc(1200) !default;
 
 /// Default line height for all type. `$global-lineheight` is 24px while `$global-font-size` is 16px
 /// @type Number
-$global-lineheight: 1.5 !default;
+$global-lineheight: 1.4 !default;
 
 /// Colors set in _colors.scss
 /// Colors used for buttons, callouts, links, etc. There must always be a color called `primary`.
@@ -61,7 +61,7 @@ $body-font-color: $black !default;
 
 /// Font stack of the body.
 /// @type List
-$body-font-family: 'Source Sans Pro', sans-serif !default;
+$body-font-family: 'Karla', sans-serif !default;
 
 /// Set to `true` to enable antialiased type, using the `-webkit-font-smoothing` and `-moz-osx-font-smoothing` CSS properties.
 /// @type Boolean
@@ -85,7 +85,7 @@ $global-weight-bold: bold !default;
 
 /// Global value used for all elements that have a border radius.
 /// @type Number
-$global-radius: 0 !default;
+$global-radius: 0.15em !default;
 
 /// Sets the text direction of the CSS. Can be either `ltr` or `rtl`.
 /// @type Keyword

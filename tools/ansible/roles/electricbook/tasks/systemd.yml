@@ -3,7 +3,7 @@
     src=systemd.electricbook.conf.j2
     dest=/lib/systemd/system/electricbook.service
   become: yes
-  notify: 'restart electricbook'
+  notify: "restart electricbook"
 
 - name: enable electricbook for systemd
   become: yes
@@ -13,4 +13,4 @@
     enabled: yes
     state: started
     masked: no
-  notify: 'restart electricbook'
+  notify: "restart electricbook"

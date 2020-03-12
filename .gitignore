@@ -31,4 +31,4 @@ src/go/src/ebw/vendor/gopkg.in
 examples/merge-origin/fork
 examples/merge-origin/origin
 examples/github-tests/*-book/
-
+electricbook-users.txt

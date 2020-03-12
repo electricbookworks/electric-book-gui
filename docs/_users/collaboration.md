@@ -3,6 +3,7 @@ title: Collaborate
 categories:
   - Electric Book Manager
 order: 6
+description: "When you work with others on a project, you each work in your own copy of the project. One (or more) of your team manage the original version of the project."
 ---
 
 # Collaborating
@@ -81,7 +82,7 @@ To send your work to the parent project:
 
 To see the history of changes to your project:
 
-1. First make sure your project is up to date: on the project detail page (which you reach by clicking on the project name from the dashboard), if you see a message that says 'Your copy of this project is behind the project you are contributing to' then click the 'Update my copy from the original' button. If you don't see this message, you are ready to view your project's history.
+1. First make sure your project is up to date: on the project page, if you see a message that says 'You need to update this project' then you should click to update. This prevents you from making changes that conflict with changes in the parent project. If you don't see this message, you are ready to view your project's history.
 2. From the project detail page, click the 'View Edit History' button.
 3. You can either:
 

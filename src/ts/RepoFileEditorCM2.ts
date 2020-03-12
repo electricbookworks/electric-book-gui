@@ -78,7 +78,7 @@ class repoEditorActionBar {
 		let file=ev.File();
 		if (!file) {
 			this.deleteButton.disabled = true;
-			this.deleteButton.innerText = 'Delete';
+			this.deleteButton.innerText = 'Delete file';
 			this.saveButton.disabled = true;
 			this.undoButton.disabled = true;
 			this.renameButton.disabled = true;
@@ -89,7 +89,7 @@ class repoEditorActionBar {
 		this.undoButton.disabled = false;
 		this.renameButton.disabled = false;
 		//console.log(`repoEditorActionBar: file = `, file.FileContent() ? FileStatString(file.FileContent().Stat) : "", file );
-		this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete": "Delete";
+		this.deleteButton.innerText = (file.IsDeleted()) ? "Undelete file": "Delete file";
 	}
 }
 
@@ -272,7 +272,7 @@ export class RepoFileEditorCM extends Template {
 	setFile(file:File) {
 		if (this.file) {
 			if (this.file.Name()==file.Name()) {
-				console.log(`We're already editing ${file.Name()} - nothing to do`);
+				console.log(`We're already editing ${file.Name()} – nothing to do`);
 				// Cannot set to the file we're currently editing
 				return;
 			}
@@ -284,7 +284,7 @@ export class RepoFileEditorCM extends Template {
 		}
 		if ('undefined'==typeof file) {
 			this.file = undefined;
-			this.setText('Please select a file to edit.');
+			this.setText('Select a file to edit.');
 			this.setBoundFilenames();
 			this.Listeners.dispatch(EditorEvent.Loaded(undefined));
 			return;

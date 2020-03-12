@@ -1,6 +1,7 @@
 ---
 title: Home
 order: 0
+description: "The Electric Book Manager is a web application for editing books. Those books are created as Electric Book projects, and stored in your GitHub account."
 ---
 
 # The Electric Book Manager

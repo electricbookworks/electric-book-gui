@@ -1,5 +1,6 @@
 ---
 title: Understanding the code
+description: "How the EBM code is structured: src and public, HTML templates, Go, Sass, Typescript, DTemplate."
 ---
 
 # Understanding the code
@@ -43,6 +44,8 @@ The Typescript is compiled to JS with
 DTemplates are compiled to Typescript with
 
     dtemplate -dir src/ts -lang ts -logtostderr -out src/ts/Templates.ts -watch
+
+This compiles the HTML templates into a single Typescript file, `Templates.ts`, which you must not edit.
 
 ## Configuration
 

@@ -1,0 +1,12 @@
+// Modals
+
+// This leans heavily on Foundation .reveal-overlay
+
+.reveal {
+    @include box-shadow(10px, 0);
+    border: 0;
+
+    .btn {
+        float: right;
+    }
+}

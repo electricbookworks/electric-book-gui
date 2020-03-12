@@ -1,0 +1,36 @@
+{{$repoOwner := .RepoOwner}}
+{{$repoName := .RepoName}}
+{{$state := .ERepo.MustRepoState}}
+
+<div class="repo-flow">
+	<div class="repo-flow-home"><a href="/" title="Projects dashboard" class="repo-flow-home-link"></a></div>
+	<div class="repo-flow-repo-name">
+		<a href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">
+			<span class="repo-flow-repo-name-owner">
+				{{.RepoOwner}}/
+			</span>
+			<span class="repo-flow-repo-name-reponame">
+				{{.RepoName}}
+			</span>
+		</a>
+	</div>
+	<div class="repo-flow-steps" id="repo-file-actions">
+		<ol>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/detail">Manage</a>
+
+				{{template "_repo_detail_settings.html" .}}
+
+			</li>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/">Edit</a>
+			</li>
+			<li>
+				<a class="btn" data-set="commit" id="repo-commit" href="/repo/{{.RepoOwner}}/{{.RepoName}}/commit">Commit</a>
+			</li>
+			<li>
+				<a class="btn" href="/repo/{{.RepoOwner}}/{{.RepoName}}/pull/new">Submit for review</a>
+			</li>
+		</ol>
+	</div>
+</div>

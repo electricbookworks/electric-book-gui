@@ -15,6 +15,7 @@
     - libxml2
     - libcairo2
     - libpixman-1-0
+    - liblcms2-2
   become: yes
 
 - name: apt-1804

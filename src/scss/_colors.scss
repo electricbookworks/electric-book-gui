@@ -1,68 +1,73 @@
-$black1: #000000;
-$black2: #262626;
-$black3: #D9D9D9;
-$black4: #E9E9E9;
-$black5: #F5F5F5;
-$yellow1: #FFCC34;
-$yellow2: #FFF8E2;
-$green1: #009E7F;
+// Hex values
 
-$bodytext: $black2;
-$primary: $green1;
-$grey: $black4;
-$off-grey: $black5;
-$dark-grey: $black3;
-$white: white;
+$trueblack: #000000;
+$offblack: #262626;
+$black: $offblack;
 
-$success-light: rgb(184,213,202);
-$information: rgb(250,180,20);
-$information-light: rgb(254,228,183);
-$error: rgb(240,90,80);
-$error-light: rgb(253,217,202);
+$charcoal: #595959;
+$grey: #818181;
+$wetcement: #AEAEAE;
+$cement: #D9D9D9;
+$overcast: #E9E9E9;
+$smoke: #F5F5F5;
 
-$color-primary: $primary;	//#1779ba in Foundation original
-$color-secondary: $grey;
-$color-success: #3adb76;
-$color-warning: #ffae00;
-$color-alert: #cc4637;
-$color-info: #cc4637;
-$color-error: $color-warning;
-$color-lightgray: #e6e6e6;
-$color-mediumgray: #cacaca;
-$color-darkgray: #8a8a8a;
-$color-black: #0a0a0a;
-$color-white: #fefefe;
-$color-inverse-bg: #eee;
-$color-inverse-fg: $color-primary;
+$yellow: #ffcc34;
+$loquat: #ffd967;
+$cornsilk: #FFF8E2;
 
+$fakelime: #34ffcc;
+$seafoam: #e2fff8;
 
+$peach: #ffeae2;
+
+$truewhite: white;
+$offwhite: #fdfdfd;
+$white: $offwhite;
+
+// Main accent colours
+$bodytext: $offblack;
+$primary: $yellow;
+
+// Black through white used in Foundation
+// TODO: replace when removing Foundation
 $color-primary: $primary;
-$color-secondary: $black2;
-$color-success: #009e7f;	//rgb(184,213,202);
-$color-warning: rgb(250,180,20);
-$color-alert: rgb(240,90,80);
-$color-error: #f05a50;
-$color-info: #fab414;
+$color-secondary: $offblack;
+$color-black: $offblack;
+$color-darkgray: $grey;
+$color-mediumgray: $cement;
+$color-gray: $overcast;
+$color-lightgray: $smoke;
+$color-white: $offwhite;
 
-$color-verylightgray: #eee;
-$color-lightgray: #ddd;
-$color-mediumgray: $black4;
-$color-darkgray: #666;
-$color-black: #444;
-$color-white: white;
-$color-inverse-bg: $color-primary;
-$color-inverse-fg: $color-white;
+// Inverse colours
+$color-inverse-bg: $yellow;
+$color-inverse-fg: $offblack;
 
+// Buttons
+$button-color: $offblack;
+$button-color-alt: $offwhite;
+$button-background-alt: $charcoal;
+$button-background: $yellow;
+$button-color-inverse: $offwhite;
+$button-background-inverse: $offblack;
+$button-color-disabled: $grey;
+$button-background-disabled: $overcast;
+$button-background-hover: $loquat;
 
-$color-success-light: #b8d5ca;
-$color-info-light: #fee4b7;
-$color-error-light: #fdd9ca;
+// Dialogs
+$color-alert: $peach;
+$color-error-light: $peach;
+$color-error: $peach;
+$color-info-light: $cornsilk;
+$color-info: $cornsilk;
+$color-success-light: $seafoam;
+$color-success: $fakelime;
+$color-warning: $peach;
 
-$color-offgray: $color-mediumgray;
-
-$color-status-new: $color-info;
-$color-status-deleted: $color-warning;
-$color-status-modified: $color-lightgray;
-$color-status-resolved: $color-success;
-$color-status-error: $color-error;
-$color-status-conflict: #f8e080;
+// Status
+$color-status-new: $cornsilk;
+$color-status-deleted: $peach;
+$color-status-modified: $smoke;
+$color-status-resolved: $fakelime;
+$color-status-error: $peach;
+$color-status-conflict: $cornsilk;

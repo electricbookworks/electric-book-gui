@@ -1,0 +1,193 @@
+#repo-editor {
+	align-items: stretch;
+	display: flex;
+	flex-direction: row;
+	flex-grow: 1;
+	justify-content: space-between;
+	position: relative;
+
+	#repo-editor-files-nav {
+		align-items: stretch;
+		display: flex;
+		flex-direction: column;
+		flex-grow: 0;
+		flex-shrink: 0; // maintains same width as .repo-flow-repo-name
+		justify-content: space-between;
+		max-width: 20%;
+		position: relative;
+		transition: width $transition-slide-duration;
+		width: 20%;
+
+		.file-actions {
+			flex-grow: 0;
+		}
+
+		#repo-file-actions {
+			flex-direction: column;
+			&>div, &>a, &>button {
+				margin-left: 0;
+			}
+		}
+
+		// When hidden, push editor-actions aside
+		// to make space for this button.
+		// See also _repo_conflict.scss
+		&.files-nav-hidden + #file-editors .editor-actions {
+			padding-left: 2.25em;
+		}
+
+		// See _file_tree.scss
+	}
+
+	#file-editors {
+		align-items: stretch;
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		justify-content: space-between;
+		margin: 0;
+		max-height: 100% !important;
+		position: relative;
+
+		.editor-actions {
+			background-color: $color-black;
+			min-height: 2em;
+			padding: 0.25em 0.25em 0.25em 0;
+
+			.btn {
+				background-color: $button-background-alt;
+				color: $button-color-alt;
+				font-size: 0.8rem;
+				padding: 0.3em 0.5em;
+
+				&:hover {
+					background-color: $button-background;
+					color: $button-color;
+					cursor: pointer;
+				}
+
+				// Show submenu at output button
+				&#editor-output-button {
+					position: relative;
+
+					.editor-output-buttons {
+						@include dropdown-list();
+						position: absolute; // override mixin
+						top: 100%; // override mixin
+						transform: none; // override mixin
+						right: 0; // override mixin
+						font-size: 0.8rem;
+						left: 0;
+						width: 8em;
+					}
+					&:hover .editor-output-buttons {
+						visibility: visible;
+					}
+				}
+			}
+
+			// Icons
+			[id*="repo-"],
+			[id*="editor-"] {
+				&::before {
+					display: inline-block;
+					font-family: "FontAwesome";
+					font-style: normal;
+					font-variant: normal;
+					margin-right: 0.25em;
+					text-rendering: auto;
+					-webkit-font-smoothing: antialiased;
+				}
+			}
+			#repo-new-file {
+				&::before {
+					content: "\f016";
+				}
+			}
+			#editor-delete-button {
+				&::before {
+					content: "\f014";
+				}
+			}
+			#editor-rename-button {
+				&::before {
+					content: "\f040";
+				}
+			}
+			#editor-save-button {
+				&::before {
+					content: "\f0c7";
+				}
+			}
+			#repo-save-all {
+				display: none; // currently hidden while debugging
+				&::before {
+					content: "\f0a0";
+				}
+			}
+			#editor-undo-button {
+				&::before {
+					content: "\f0e2";
+				}
+			}
+			#editor-output-button {
+				&::before {
+					content: "\f02d";
+				}
+			}
+		}
+
+		.file-title {
+
+			span[ebw-bind="current-filename"] {
+				display: none; // hiding for now
+				font-size: 0.8em;
+			}
+
+			.bound-filename {
+				display: inline-flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-content: flex-start;
+			}
+		}
+
+		.editor {
+			flex-grow: 1;
+			position: relative;
+
+			.repo-file-editor-workspace {
+				width: 100%;
+				height: 100%;
+				.repo-file-editor {
+					.CodeMirror {
+						position: absolute;
+						top: 0;
+						bottom: 0;
+						left: 0;
+						right: 0;
+					}
+				}
+				.repo-image-editor {
+					padding: 1em;
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					height: 100%;
+					& > div {
+						width: 100%;
+						height: 100%;
+						max-width: 100%;
+						max-height: 100%;
+
+						background-repeat: no-repeat;
+						background-position: center center;
+						background-size: contain;
+					}
+				}
+			}
+		}
+	}
+}
