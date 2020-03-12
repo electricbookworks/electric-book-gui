@@ -46,6 +46,7 @@ body.repo-diff-patch-page {
 		.d2h-code-linenumber {
 			border: 0;
 			font-size: 0.7em;
+			position: initial; // default absolute fixes line numbers from scrolling
 			width: 5em;
 			.line-num1 {
 				width: auto;
@@ -53,6 +54,10 @@ body.repo-diff-patch-page {
 			.line-num2 {
 				width: auto;
 			}
+		}
+
+		.d2h-code-line {
+			margin-left: 40px;
 		}
 	}
 
