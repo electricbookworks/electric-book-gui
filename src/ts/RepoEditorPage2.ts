@@ -152,6 +152,7 @@ export class RepoEditorPage {
 			evt.preventDefault(); evt.stopPropagation();
 			let rs = document.getElementById(`repo-save-all`);
 			rs.classList.add(`active`);
+			this.editor.saveEditorFile(false);
 			this.SyncFiles().then(
 				_=>rs.classList.remove(`active`)
 			);
@@ -171,11 +172,16 @@ export class RepoEditorPage {
 	SyncFiles() : Promise {
 		return Promise.all(this.Root.files().map( (p:string)=>this.FS.FileStateAndPath(p) ))
 		.then (
-			states=>
-				Promise.all(
-					states.filter( fs=>fs.ShouldSync() )
-					.map( fs=>this.FS.Sync(fs.path) )
-				)
+			states=>{
+				let shouldSync = states.filter(fs => fs.ShouldSync());
+				
+				return Promise.all(shouldSync.map(fs=>{
+					this.FS.Sync(fs.path).then(_=>{
+						EBW.Toast(`${fs.path} saved.`);
+						return Promise.resolve(true);
+					});
+				}));
+			}
 		);
 	}
 }

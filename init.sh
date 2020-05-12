@@ -13,7 +13,7 @@ if [[ ! $(which ansible-playbook) ]]; then
 	sudo apt-add-repository --yes --update ppa:ansible/ansible
 fi
 if [[ ! $(which nodejs) ]]; then
-	curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+	curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 fi
 if [[ ! $(which yarn) ]]; then
 	curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -

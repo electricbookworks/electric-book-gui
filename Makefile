@@ -21,7 +21,7 @@ css: public/css/main.css
 
 public/css/main.css: $(SCSS)
 	scss -I 'lib/bower_components/' -I 'public/bower_components/' src/scss/main.scss public/css/main.css
-	uglifycss public/css/main.css > public/css/main.min.css 
+	/usr/bin/uglifycss public/css/main.css > public/css/main.min.css 
 
 gen:
 	GOPATH=`pwd`/src/go go generate src/go/src/ebw/api/JSONRpc.go

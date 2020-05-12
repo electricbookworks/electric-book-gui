@@ -207,7 +207,7 @@ export class RepoFileEditorCM extends Template {
 			});
 	}
 
-	saveEditorFile() {
+	saveEditorFile(showToast:boolean=true) {
 		/* @TODO Need to ensure that no file-load occurs during file-save */
 		let f = this.file;
 		let fileText = this.textEditor.getValue();
@@ -224,7 +224,7 @@ export class RepoFileEditorCM extends Template {
 				 * editors state.
 				 */
 				if (!f.exists) {
-					EBW.Toast(`${f.Name()} removed`);
+					if (showToast) EBW.Toast(`${f.Name()} removed`);
 					if (this.file.Name()==f.Name()) {				
 						// By presetting file to undefined, we ensure that
 						// setFile doesn't save the file again
@@ -233,7 +233,7 @@ export class RepoFileEditorCM extends Template {
 						this.Listeners.dispatch(EditorEvent.Loaded(undefined));
 					}
 				} else {
-					EBW.Toast(`${f.Name()} saved.`);
+					if (showToast) EBW.Toast(`${f.Name()} saved.`);
 					if (this.file.Name()==f.Name()) {
 						this.file = f;
 						this.Listeners.dispatch(EditorEvent.Changed(this.file));

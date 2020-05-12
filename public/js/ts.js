@@ -2257,8 +2257,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            }
 	        });
 	    };
-	    RepoFileEditorCM.prototype.saveEditorFile = function () {
+	    RepoFileEditorCM.prototype.saveEditorFile = function (showToast) {
 	        var _this = this;
+	        if (showToast === void 0) { showToast = true; }
 	        /* @TODO Need to ensure that no file-load occurs during file-save */
 	        var f = this.file;
 	        var fileText = this.textEditor.getValue();
@@ -2273,7 +2274,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	             * editors state.
 	             */
 	            if (!f.exists) {
-	                EBW.Toast(f.Name() + " removed");
+	                if (showToast)
+	                    EBW.Toast(f.Name() + " removed");
 	                if (_this.file.Name() == f.Name()) {
 	                    // By presetting file to undefined, we ensure that
 	                    // setFile doesn't save the file again
@@ -2283,7 +2285,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                }
 	            }
 	            else {
-	                EBW.Toast(f.Name() + " saved.");
+	                if (showToast)
+	                    EBW.Toast(f.Name() + " saved.");
 	                if (_this.file.Name() == f.Name()) {
 	                    _this.file = f;
 	                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
@@ -3827,6 +3830,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            evt.stopPropagation();
 	            var rs = document.getElementById("repo-save-all");
 	            rs.classList.add("active");
+	            _this.editor.saveEditorFile(false);
 	            _this.SyncFiles().then(function (_) { return rs.classList.remove("active"); });
 	        });
 	    }
@@ -3844,8 +3848,13 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var _this = this;
 	        return Promise.all(this.Root.files().map(function (p) { return _this.FS.FileStateAndPath(p); }))
 	            .then(function (states) {
-	            return Promise.all(states.filter(function (fs) { return fs.ShouldSync(); })
-	                .map(function (fs) { return _this.FS.Sync(fs.path); }));
+	            var shouldSync = states.filter(function (fs) { return fs.ShouldSync(); });
+	            return Promise.all(shouldSync.map(function (fs) {
+	                _this.FS.Sync(fs.path).then(function (_) {
+	                    EBW.Toast(fs.path + " saved.");
+	                    return Promise.resolve(true);
+	                });
+	            }));
 	        });
 	    };
 	    return RepoEditorPage;
