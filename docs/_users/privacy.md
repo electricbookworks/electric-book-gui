@@ -32,4 +32,4 @@ We will not create, store or analyse information about the contents of your repo
 
 We will never share any of your content or data with anyone without your explicit permission.
 
-You can [ask us](https://electricbookworks.github.io/electric-book-gui/contact/) to delete your cloned repositories and user account from our EBM servers at any time.
+You can [ask us]({{ site.baseurl }}/contact/) to delete your cloned repositories and user account from our EBM servers at any time.
