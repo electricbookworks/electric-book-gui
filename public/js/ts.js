@@ -5788,7 +5788,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    function EBW() {
 	        if (null != EBW.instance) {
 	            console.log("EBW.instance already set");
-	            debugger;
+	            // debugger;
 	        }
 	        if (null == EBW.instance) {
 	            console.log("Creating EBW.instance");

@@ -29,7 +29,7 @@ export class EBW {
 	constructor() {
 		if (null!=EBW.instance) {
 			console.log(`EBW.instance already set`);
-			debugger;
+			// debugger;
 		}
 		if (null==EBW.instance) {
 			console.log(`Creating EBW.instance`);
