@@ -244,10 +244,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // pretty unnecessary
 	    }
 	    Context.prototype.API = function () {
-	        return EBW.API();
+	        return EBW$1.API();
 	    };
 	    Context.prototype.EBW = function () {
-	        return new EBW();
+	        return new EBW$1();
 	    };
 	    Context.prototype.GetAttribute = function (key) {
 	        if (this.el) {
@@ -1597,7 +1597,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            el.addEventListener("click", function (evt) {
 	                evt.preventDefault();
 	                evt.stopPropagation();
-	                EBW.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
+	                EBW$1.Confirm("All your changes will be lost. This is non-recoverable. Continue?")
 	                    .then(function (b) {
 	                    if (b) {
 	                        document.location.href = "/repo/" + context.RepoOwner + "/" + context.RepoName + "/conflict/abort";
@@ -1606,15 +1606,15 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                });
 	            });
 	        }
-	        EBW.API().ListWatchers(context.RepoOwner, context.RepoName).then(function (_a) {
+	        EBW$1.API().ListWatchers(context.RepoOwner, context.RepoName).then(function (_a) {
 	            var watchers = _a[0];
 	            console.log("watchers = ", watchers);
 	        });
-	        EBW.API().ListWatched().then(function (_a) {
+	        EBW$1.API().ListWatched().then(function (_a) {
 	            var watched = _a[0];
 	            console.log("watched = ", watched);
 	        });
-	        EBW.API().ListCommits(context.RepoOwner, context.RepoName).then(function (_a) {
+	        EBW$1.API().ListCommits(context.RepoOwner, context.RepoName).then(function (_a) {
 	            var commits = _a[0];
 	            console.log("commits = ", commits);
 	        });
@@ -1827,10 +1827,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            this.book = "book";
 	        }
 	        if (("print" != format) && ("screen" != format)) {
-	            EBW.Error("PrintListener format parameter must be either 'print' or 'screen'");
+	            EBW$1.Error("PrintListener format parameter must be either 'print' or 'screen'");
 	            return;
 	        }
-	        EBW.API().FindFileLists(repoOwner, repoName).then(function (_a) {
+	        EBW$1.API().FindFileLists(repoOwner, repoName).then(function (_a) {
 	            var files = _a[0];
 	            // console.log(`Files directories are `, files);
 	            // debugger;
@@ -1851,14 +1851,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            if ('undefined' == typeof filedir) {
 	                return Promise.resolve([undefined]);
 	            }
-	            return EBW.API().PrintPdfEndpoint(repoOwner, repoName, book, format, filedir);
+	            return EBW$1.API().PrintPdfEndpoint(repoOwner, repoName, book, format, filedir);
 	        }).then(function (_a) {
 	            var url = _a[0];
 	            if ('undefined' == typeof url) {
 	                return;
 	            }
 	            _this.startListener(url);
-	        }).catch(EBW.Error);
+	        }).catch(EBW$1.Error);
 	    }
 	    PrintListener.prototype.startListener = function (key) {
 	        var _this = this;
@@ -1883,7 +1883,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	        sse.addEventListener("error", function (e) {
 	            var err = JSON.parse(e.data);
-	            EBW.Error(err);
+	            EBW$1.Error(err);
 	            sse.close();
 	            terminal.addError(err.log);
 	        });
@@ -1893,7 +1893,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                "//" +
 	                document.location.host +
 	                ("/www/" + _this.repoOwner + "/" + _this.repoName + "/" + data);
-	            EBW.Toast("Your PDF is ready: opening in a new window.");
+	            EBW$1.Toast("Your PDF is ready: opening in a new window.");
 	            terminal.done(url);
 	            window.open(url, _this.repoOwner + "-" + _this.repoName + "-pdf");
 	        });
@@ -1903,7 +1903,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        sse.onmessage = function (e) {
 	            _this.onmessage(e);
 	        };
-	        sse.onerror = EBW.Error;
+	        sse.onerror = EBW$1.Error;
 	    };
 	    PrintListener.prototype.onmessage = function (e) {
 	        console.log("PrintListener.onmessage: ", e);
@@ -2189,7 +2189,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    RepoFileEditorCM.prototype.undoEditorFile = function () {
 	        var _this = this;
-	        EBW.Confirm("Undo the changes you've just made to " + this.file.Name() + "?")
+	        EBW$1.Confirm("Undo the changes you've just made to " + this.file.Name() + "?")
 	            .then(function (b) {
 	            if (!b)
 	                return;
@@ -2214,7 +2214,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    RepoFileEditorCM.prototype.deleteEditorFile = function () {
 	        var _this = this;
 	        if (!this.file) {
-	            EBW.Alert("Please choose a file before using delete/undelete");
+	            EBW$1.Alert("Please choose a file before using delete/undelete");
 	            return;
 	        }
 	        // Need to check that this is a text file... no, I won't get deleteEditorFile _unless_
@@ -2236,11 +2236,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    }
 	                    return Promise.resolve();
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	                _this.Listeners.dispatch(EditorEvent.Changed(file));
 	            }
 	            else {
-	                EBW.Confirm("Are you sure you want to delete " + file.Name() + "?")
+	                EBW$1.Confirm("Are you sure you want to delete " + file.Name() + "?")
 	                    .then(function () {
 	                    return _this.FS.Remove(file.Name());
 	                })
@@ -2253,7 +2253,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                        _this.Listeners.dispatch(EditorEvent.Loaded(undefined));
 	                    }
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	            }
 	        });
 	    };
@@ -2262,6 +2262,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        if (showToast === void 0) { showToast = true; }
 	        /* @TODO Need to ensure that no file-load occurs during file-save */
 	        var f = this.file;
+	        if ("undefined" == typeof this.file) {
+	            return; // No file being edited
+	        }
 	        var fileText = this.textEditor.getValue();
 	        this.FS.Write(f.Name(), fileText)
 	            .then(function (f) {
@@ -2275,7 +2278,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	             */
 	            if (!f.exists) {
 	                if (showToast)
-	                    EBW.Toast(f.Name() + " removed");
+	                    EBW$1.Toast(f.Name() + " removed");
 	                if (_this.file.Name() == f.Name()) {
 	                    // By presetting file to undefined, we ensure that
 	                    // setFile doesn't save the file again
@@ -2286,7 +2289,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            }
 	            else {
 	                if (showToast)
-	                    EBW.Toast(f.Name() + " saved.");
+	                    EBW$1.Toast(f.Name() + " saved.");
 	                if (_this.file.Name() == f.Name()) {
 	                    _this.file = f;
 	                    _this.Listeners.dispatch(EditorEvent.Changed(_this.file));
@@ -2295,7 +2298,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        })
 	            .catch(function (err) {
 	            console.error(err);
-	            EBW.Error(err);
+	            EBW$1.Error(err);
 	        });
 	    };
 	    RepoFileEditorCM.prototype.setText = function (text) {
@@ -2371,7 +2374,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            // HAD BEEN .Changed
 	            _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
 	        })
-	            .catch(EBW.Error);
+	            .catch(EBW$1.Error);
 	    };
 	    RepoFileEditorCM.prototype.File = function () { return this.file; };
 	    RepoFileEditorCM.prototype.Rename = function (name) {
@@ -2430,7 +2433,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            "click": function (evt) {
 	                var filename = _this.$.filename.value;
 	                if (0 == filename.length) {
-	                    EBW.Alert("You need to provide a filename.");
+	                    EBW$1.Alert("You need to provide a filename.");
 	                    return;
 	                }
 	                if (filename.substr(0, 1) != '/') {
@@ -2439,7 +2442,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                _this.FS.FileState(filename)
 	                    .then(function (fs) {
 	                    if (!(fs == FileState.Absent || fs == FileState.Deleted || fs == FileState.Undefined)) {
-	                        EBW.Alert("A file named " + filename + " already exists");
+	                        EBW$1.Alert("A file named " + filename + " already exists");
 	                        return;
 	                    }
 	                    _this.FS.Write(filename, "")
@@ -2486,7 +2489,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    .then(function () {
 	                    _this.dialog.Close();
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	            },
 	            "change": function (evt) {
 	            }
@@ -2611,7 +2614,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return FSStateAndPath;
 	}());
 	/**
-	 * Base class implmentation of a File System.
+	 * Base class implementation of a File System.
 	 */
 	var FSImpl = /** @class */ (function () {
 	    function FSImpl(parent) {
@@ -2726,7 +2729,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 
 	/**
 	 * The Memory-based filesystem on this browser right now.
-	 * Not yet synced to the lower FS.
+	 * Not yet synced to the lower FS. This allows changes on the
+	 * browser that don't get stored, since one might wish to undo them,
+	 * etc.
 	 */
 	var MemFS = /** @class */ (function (_super) {
 	    tslib_1.__extends(MemFS, _super);
@@ -2821,6 +2826,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return MemFS;
 	}(FSImpl));
 
+	/**
+	 * WorkingDirFS connects directly to the Working Directory on the
+	 * server and reads/writes files from the git Working Dir. All writes
+	 * are written to the WorkingDir and staged.
+	 */
 	var WorkingDirFS = /** @class */ (function (_super) {
 	    tslib_1.__extends(WorkingDirFS, _super);
 	    function WorkingDirFS(context, parent) {
@@ -2939,7 +2949,21 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        sessionStorage.removeItem(this.cacheKey(path));
 	    };
 	    ReadCacheFS.prototype.setCache = function (f) {
-	        sessionStorage.setItem(this.cacheKey(f.Name()), f.Serialize());
+	        var data = f.Serialize();
+	        try {
+	            if (data.length <= ReadCacheFS.MaxCacheSize) {
+	                sessionStorage.setItem(this.cacheKey(f.Name()), data);
+	            }
+	            else {
+	                console.log("ReadCacheFS won't cache " + f.Name() + " : MaxCacheSize " + ReadCacheFS.MaxCacheSize + " < length = " + data.length);
+	            }
+	        }
+	        catch (e) {
+	            if ("QuotaExceededError" == e.name) ;
+	            else {
+	                EBW.Error(err);
+	            }
+	        }
 	        return Promise.resolve(f);
 	    };
 	    ReadCacheFS.prototype.getCache = function (path) {
@@ -2952,6 +2976,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    ReadCacheFS.prototype.Name = function () { return this.parent.Name(); };
 	    ReadCacheFS.prototype.Read = function (path) {
 	        var _this = this;
+	        // console.log(`ReadCacheFS::Read(${path})`);
 	        var f = this.getCache(path);
 	        if (undefined != f) {
 	            return Promise.resolve(f);
@@ -2985,6 +3010,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return this.parent.Revert(path)
 	            .then(function (f) { return _this.setCache(f); });
 	    };
+	    ReadCacheFS.MaxCacheSize = 200000;
 	    return ReadCacheFS;
 	}(FSImpl));
 
@@ -3676,7 +3702,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.ignoreFunction = ignoreFunction;
 	        this.filesJson = filesJson;
 	        this.root = root;
-	        this.api = EBW.API();
+	        this.api = EBW$1.API();
 	        this.FS.Listeners.add(this.FSEvent, this);
 	        this.View = new FileSystemView(this.context, this.root, parent, this.ignoreFunction, this.FS);
 	        parent.addEventListener("ebw-file-clicked", function (evt) {
@@ -3690,7 +3716,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                }
 	                _this.editor.setFile(f);
 	            })
-	                .catch(EBW.Error);
+	                .catch(EBW$1.Error);
 	        });
 	        this.View.prepopulate(filesAndHashes.map(function (_a) {
 	            var p = _a[0], h = _a[1];
@@ -3800,13 +3826,13 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        document.getElementById("repo-print-printer").addEventListener('click', function (evt) {
 	            evt.preventDefault();
 	            evt.stopPropagation();
-	            EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
+	            EBW$1.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
 	            new PrintListener(_this.context.RepoOwner, _this.context.RepoName, "book", "print");
 	        });
 	        document.getElementById("repo-print-screen").addEventListener("click", function (evt) {
 	            evt.preventDefault();
 	            evt.stopPropagation();
-	            EBW.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
+	            EBW$1.Toast("Creating your PDF. We'll open it in a new tab when it's ready.");
 	            new PrintListener(_this.context.RepoOwner, _this.context.RepoName, "book", "screen");
 	        });
 	        document.getElementById("repo-jekyll").addEventListener("click", function (evt) {
@@ -3851,7 +3877,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            var shouldSync = states.filter(function (fs) { return fs.ShouldSync(); });
 	            return Promise.all(shouldSync.map(function (fs) {
 	                _this.FS.Sync(fs.path).then(function (_) {
-	                    EBW.Toast(fs.path + " saved.");
+	                    EBW$1.Toast(fs.path + " saved.");
 	                    return Promise.resolve(true);
 	                });
 	            }));
@@ -4354,7 +4380,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    function MergeImageEditor(context, parent, path) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
-	        EBW.API().IsOurHeadInWd(context.RepoOwner, context.RepoName, path)
+	        EBW$1.API().IsOurHeadInWd(context.RepoOwner, context.RepoName, path)
 	            .then(function (args) {
 	            var oursInWd = args[0];
 	            _this.ours = new MergeImageEditorView(context, _this.$.ours, path, VERSION_OUR, oursInWd);
@@ -4363,7 +4389,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            _this.el.addEventListener("ImageSelected", function (evt) {
 	                if (_this.apiInFlight)
 	                    return; // can't have two api calls in flight at the same time
-	                var api = EBW.API();
+	                var api = EBW$1.API();
 	                var p;
 	                var ourVersion = evt.detail.Version == VERSION_OUR;
 	                _this.apiInFlight = true;
@@ -4380,14 +4406,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    _this.apiInFlight = false;
 	                })
 	                    .catch(function (err) {
-	                    EBW.Error(err);
+	                    EBW$1.Error(err);
 	                    console.error(err);
 	                    _this.apiInFlight = false;
 	                });
 	            });
 	        })
 	            .catch(function (err) {
-	            EBW.Error(err);
+	            EBW$1.Error(err);
 	            console.error(err);
 	        });
 	        parent.appendChild(_this.el);
@@ -4422,7 +4448,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        switch (act) {
 	            case MergeEditorAction.Save:
 	                this.SaveFile()
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	                break;
 	            case MergeEditorAction.Delete:
 	                break;
@@ -4433,9 +4459,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    return _this.file.Stage(undefined);
 	                })
 	                    .then(function () {
-	                    EBW.Toast("Resolved changes on " + _this.file.Path());
+	                    EBW$1.Toast("Resolved changes on " + _this.file.Path());
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	                break;
 	            case MergeEditorAction.RevertOur:
 	                this.RevertOur();
@@ -4500,13 +4526,13 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // Leave source undefined so that our editor updates when
 	        // changes arrive.
 	        this.file.RevertOur(undefined)
-	            .catch(EBW.Error);
+	            .catch(EBW$1.Error);
 	    };
 	    MergeEditor.prototype.RevertTheir = function () {
 	        // Leave source undefined so that our editor updates when
 	        // changes arrive.	
 	        this.file.RevertTheir(undefined)
-	            .catch(EBW.Error);
+	            .catch(EBW$1.Error);
 	    };
 	    MergeEditor.prototype.isWorkingDeleted = function () {
 	        return !this.file.WorkingFile().Exists;
@@ -4558,7 +4584,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            this.file.SetTheirContent(this, this.isTheirDeleted() ? undefined : this.getTheirText());
 	            return this.file.Save()
 	                .then(function () {
-	                EBW.Toast("Saved " + f_1.Path());
+	                EBW$1.Toast("Saved " + f_1.Path());
 	                return Promise.resolve("");
 	            });
 	        }
@@ -4863,7 +4889,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        switch (act) {
 	            case MergeEditorAction.Save:
 	                this.SaveFile()
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	                break;
 	            case MergeEditorAction.Delete:
 	                break;
@@ -4874,9 +4900,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    return _this.file.Stage(undefined);
 	                })
 	                    .then(function () {
-	                    EBW.Toast("Resolved changes on " + _this.file.Path());
+	                    EBW$1.Toast("Resolved changes on " + _this.file.Path());
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	                break;
 	            case MergeEditorAction.RevertOur:
 	                this.file.RevertOur(undefined);
@@ -4917,7 +4943,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                this.getWorkingText());
 	            return this.file.Save()
 	                .then(function () {
-	                EBW.Toast("Saved " + f_1.Path());
+	                EBW$1.Toast("Saved " + f_1.Path());
 	                return Promise.resolve("");
 	            });
 	        }
@@ -5059,7 +5085,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	        var filesEl = document.getElementById('staged-files-data');
 	        if (!filesEl) {
-	            EBW.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");
+	            EBW$1.Error("FAILED TO FIND #staged-files-data: cannot instantiate RepoConflictPage");
 	            return;
 	        }
 	        var listjs = filesEl.innerText;
@@ -5069,11 +5095,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            evt.preventDefault();
 	            evt.stopPropagation();
 	            console.log("IN action-commit CLICK LISTENER");
-	            EBW.API().IsRepoConflicted(_this.context.RepoOwner, _this.context.RepoName)
+	            EBW$1.API().IsRepoConflicted(_this.context.RepoOwner, _this.context.RepoName)
 	                .then(function (_a) {
 	                var conflicted = _a[0];
 	                if (conflicted) {
-	                    EBW.Alert("You need to resolve all file conflicts before you can resolve the merge.");
+	                    EBW$1.Alert("You need to resolve all file conflicts before you can resolve the merge.");
 	                    return Promise.resolve();
 	                }
 	                return _this.commitDialog.Open("Resolve Conflict", "The merge will be resolved.")
@@ -5086,7 +5112,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    return;
 	                });
 	            })
-	                .catch(EBW.Error);
+	                .catch(EBW$1.Error);
 	        });
 	        document.getElementById("action-abort").addEventListener("click", function (evt) {
 	            evt.preventDefault();
@@ -5101,7 +5127,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                        ["close", r.Close]]));
 	                    return;
 	                })
-	                    .catch(EBW.Error);
+	                    .catch(EBW$1.Error);
 	            }
 	            else {
 	                _this.context.RepoRedirect("conflict/abort");
@@ -5126,14 +5152,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                model.Update(_this.get())
 	                    .catch(function (err) {
 	                    console.log("Error on the save function");
-	                    EBW.Error(err);
+	                    EBW$1.Error(err);
 	                });
 	            }
 	        });
 	        AddToParent(_this.parent, _this.el);
 	        model.GetContent()
 	            .then(function (args) { return _this.mergely(args); })
-	            .catch(EBW.Error);
+	            .catch(EBW$1.Error);
 	        return _this;
 	    }
 	    MergeEditor.prototype.get = function () {
@@ -5198,10 +5224,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    PRDiffModel.prototype.GetContent = function () {
 	        console.log("calling API.PullRequestVersions(", JSON.stringify(this.prArgs), this.diff.path, ")");
-	        return EBW.API().PullRequestVersions(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteURL, this.prArgs.remoteSHA, this.diff.path);
+	        return EBW$1.API().PullRequestVersions(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteURL, this.prArgs.remoteSHA, this.diff.path);
 	    };
 	    PRDiffModel.prototype.Update = function (content) {
-	        return EBW.API().PullRequestUpdate(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteSHA, this.diff.path, content);
+	        return EBW$1.API().PullRequestUpdate(this.prArgs.repoOwner, this.prArgs.repoName, this.prArgs.remoteSHA, this.diff.path, content);
 	    };
 	    return PRDiffModel;
 	}());
@@ -5640,7 +5666,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var _this = this;
 	        console.log("LoadFiles.Search(" + s + ")");
 	        this.searchingFor = s;
-	        EBW.API()
+	        EBW$1.API()
 	            .SearchForFiles(this.context.RepoOwner, this.context.RepoName, s)
 	            .then(function (_a) {
 	            var search = _a[0], files = _a[1];
@@ -5707,12 +5733,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                p = Promise.resolve(src.Filename());
 	            }
 	            else {
-	                p = EBW.Prompt("Enter the path and filename for this file to go to, e.g. book/images/web/cover.jpg");
+	                p = EBW$1.Prompt("Enter the path and filename for this file to go to, e.g. book/images/web/cover.jpg");
 	            }
 	            p.then(function (s) {
 	                if ("" == s)
 	                    return Promise.resolve("");
-	                return EBW.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
+	                return EBW$1.API().UpdateFileBinary(_this.context.RepoOwner, _this.context.RepoName, s, window.btoa(binary))
 	                    .then(function () {
 	                    return Promise.resolve(s);
 	                });
@@ -5725,10 +5751,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    else {
 	                        new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
 	                    }
-	                    EBW.Toast("Image uploaded");
+	                    EBW$1.Toast("Image uploaded");
 	                }
 	            })
-	                .catch(EBW.Error);
+	                .catch(EBW$1.Error);
 	        });
 	        reader.readAsArrayBuffer(file);
 	    };
@@ -5758,10 +5784,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return RepoFileViewerPage;
 	}(RepoFileViewerPage));
 
-	var EBW = /** @class */ (function () {
+	var EBW$1 = /** @class */ (function () {
 	    function EBW() {
 	        if (null != EBW.instance) {
 	            console.log("EBW.instance already set");
+	            debugger;
 	        }
 	        if (null == EBW.instance) {
 	            console.log("Creating EBW.instance");
@@ -5804,9 +5831,17 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        return EBW.instance;
 	    }
+	    /**
+	     * GetInstance returns the singleton instance of EBW
+	     */
+	    EBW.GetInstance = function () {
+	        if (!EBW.instance) {
+	            EBW.instance = new EBW();
+	        }
+	        return EBW.instance;
+	    };
 	    EBW.API = function () {
-	        var ebw = new EBW();
-	        return ebw.api;
+	        return EBW.GetInstance().api;
 	    };
 	    EBW.Error = function (err) {
 	        console.error('ERROR: ', err);
@@ -5843,10 +5878,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	}());
 	document.addEventListener('DOMContentLoaded', function () {
 	    console.log("DOMContentLoaded - EBW");
-	    new EBW();
+	    new EBW$1();
 	});
 
-	exports.EBW = EBW;
+	exports.EBW = EBW$1;
 
 	return exports;
 

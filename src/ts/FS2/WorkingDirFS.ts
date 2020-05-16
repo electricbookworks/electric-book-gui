@@ -1,6 +1,11 @@
 import {File,WireFile} from './File';
 import {FS, FSImpl} from './FS';
 
+/**
+ * WorkingDirFS connects directly to the Working Directory on the
+ * server and reads/writes files from the git Working Dir. All writes
+ * are written to the WorkingDir and staged.
+ */
 export class WorkingDirFS extends FSImpl {
 	constructor(protected context:Context, parent: FS) {
 		super(parent);

@@ -3,7 +3,9 @@ import {FS, FSImpl} from './FS';
 
 /**
  * The Memory-based filesystem on this browser right now.
- * Not yet synced to the lower FS.
+ * Not yet synced to the lower FS. This allows changes on the 
+ * browser that don't get stored, since one might wish to undo them,
+ * etc.
  */
 export class MemFS extends FSImpl {
 	cache: Map<string,File>;

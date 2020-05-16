@@ -459,20 +459,22 @@ func GitCloneTo(client *Client, workingDir string, repoUsername, repoName string
 	glog.Infof(`Cloning %s to %s`, cloneUrl, filepath.Join(workingDir, repoName))
 
 	tries := 0
-cloneAgain:
-	repo, err := git2go.Clone(cloneUrl, filepath.Join(workingDir, repoName), &git2go.CloneOptions{})
-	if nil != err {
-		if strings.Contains(err.Error(), "try again later") || tries < 10 {
-			glog.Infof("Got 'try again later' - trying again in 2s")
-			time.Sleep(2 * time.Second)
-			tries++
-			goto cloneAgain // Oooh! A goto!
+	for {
+		repo, err := git2go.Clone(cloneUrl, filepath.Join(workingDir, repoName), &git2go.CloneOptions{})
+		if nil != err {
+			if strings.Contains(err.Error(), "try again later") || tries < 10 {
+				glog.Infof("Got 'try again later' - trying again in 2s")
+				time.Sleep(2 * time.Second)
+				tries++
+				continue
+			}
+			glog.Errorf("CLONE %s failed with error %s", cloneUrl, err.Error())
+			return util.Error(err)
 		}
-		glog.Errorf("CLONE %s failed with error %s", cloneUrl, err.Error())
-		return util.Error(err)
+		repo.Free()
+		break  // exit the for loop
 	}
-	repo.Free()
-
+	glog.Infof(`GitCloneTo completed`)
 	return nil
 }
 

@@ -17,9 +17,19 @@ import {RepoFileViewerPage} from './RepoFileViewerPage';
 export class EBW {
 	static instance : EBW;
 	protected api : API;
+	/**
+	 * GetInstance returns the singleton instance of EBW 
+	 */
+	static GetInstance() : EBW {
+		if (!EBW.instance) {
+			EBW.instance = new EBW();
+		}
+		return EBW.instance;		
+	}
 	constructor() {
 		if (null!=EBW.instance) {
 			console.log(`EBW.instance already set`);
+			debugger;
 		}
 		if (null==EBW.instance) {
 			console.log(`Creating EBW.instance`);
@@ -71,8 +81,7 @@ export class EBW {
 		return EBW.instance;
 	}
 	static API() : API {
-		let ebw = new EBW();
-		return ebw.api;
+		return EBW.GetInstance().api;
 	}
 	static Error(err : any) : void {
 		console.error('ERROR: ', err);

@@ -8,7 +8,7 @@ import {FileState} from './FileState';
  */
 export interface FS {
 	Name():string;
-	Parent(name:string=``):FS|null;
+	Parent(name:string):FS|null;
 
 	FileState(path:string):Promise<FileState>;
 	Read(path:string):Promise<File>;
@@ -31,7 +31,7 @@ export class FSStateAndPath {
 }
 
 /**
- * Base class implmentation of a File System.
+ * Base class implementation of a File System.
  */
 export abstract class FSImpl {
 	constructor(protected parent:FS|null) {

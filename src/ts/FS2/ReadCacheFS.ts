@@ -5,6 +5,7 @@ import {FS, FSImpl} from './FS';
 // cache. All Writes, Syncs, etc are passed transparently through. For all intents and
 // purposes - except caching - it is transparent.
 export class ReadCacheFS extends FSImpl {
+	static MaxCacheSize:number = 200000;
 	constructor(protected key:String, parent: FS) {
 		super(parent);
 	}
@@ -15,7 +16,20 @@ export class ReadCacheFS extends FSImpl {
 		sessionStorage.removeItem(this.cacheKey(path));
 	}
 	setCache(f:File) : Promise<File> {
-		sessionStorage.setItem(this.cacheKey(f.Name()), f.Serialize());
+		let data = f.Serialize();
+		try {
+			if (data.length<=ReadCacheFS.MaxCacheSize) {
+				sessionStorage.setItem(this.cacheKey(f.Name()), data);
+			} else {
+				console.log(`ReadCacheFS won't cache ${f.Name()} : MaxCacheSize ${ReadCacheFS.MaxCacheSize} < length = ${data.length}`);
+			}
+		} catch (e) {
+			if (`QuotaExceededError`==e.name) {
+				// we just ignore this error, but we don't crash on it either
+			} else {
+				EBW.Error(err);
+			}
+		}
 		return Promise.resolve<File>(f);
 	}
 	getCache(path) : File|undefined {
@@ -27,6 +41,7 @@ export class ReadCacheFS extends FSImpl {
 	}
 	Name():string { return this.parent.Name(); }
 	Read(path:string):Promise<File|undefined> {
+		// console.log(`ReadCacheFS::Read(${path})`);
 		let f = this.getCache(path);
 		if (undefined!=f) {
 			return Promise.resolve<File>(f);

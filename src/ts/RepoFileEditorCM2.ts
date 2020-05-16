@@ -210,6 +210,9 @@ export class RepoFileEditorCM extends Template {
 	saveEditorFile(showToast:boolean=true) {
 		/* @TODO Need to ensure that no file-load occurs during file-save */
 		let f = this.file;
+		if (`undefined`==typeof this.file) {
+			return;	// No file being edited
+		}
 		let fileText = this.textEditor.getValue();
 
 		this.FS.Write(f.Name(), fileText)
