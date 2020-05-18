@@ -75,7 +75,7 @@ export namespace R {
 		};
 	export interface FileListDialog_Item {
 		input: HTMLInputElement,
-		title: HTMLSpanElement,
+		title: HTMLLabelElement,
 		};
 	export interface FileTree_Dir {
 		name: HTMLDivElement,
@@ -192,10 +192,10 @@ export class AddNewBookDialog {
 	</div>
 	<div>
 		<h1>New project</h1>
-		<form action="/github/create/new" method="post">
-		<input type="hidden" name="action" value="new"/>
+		<form method="post" action="/github/create/new">
+		<input value="new" type="hidden" name="action"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
@@ -210,14 +210,14 @@ export class AddNewBookDialog {
 	</div>
 	<div>
 		<h1>Adaptation</h1>
-		<form action="/github/create/new" method="post">
+		<form method="post" action="/github/create/new">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
 		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
+		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
 		<label>Enter the series that you will be adapting.
 		<input placeholder="e.g. electricbookworks/electric-book" type="text" name="template"/>
@@ -226,13 +226,13 @@ export class AddNewBookDialog {
 			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input class="btn" value="Create adaptation" type="submit"/>
+		<input type="submit" class="btn" value="Create adaptation"/>
 		</form>
 	</div>
 	<div>
 		<h1>Contributing</h1>
 		<form method="post" action="/github/create/fork">
-		<input type="hidden" name="action" value="fork"/>
+		<input name="action" value="fork" type="hidden"/>
 		<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbookworks/constitution"/>
 		</label>
@@ -614,7 +614,7 @@ export class FSFileList_File {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
-	<li data-set="this" class="allfiles-file">
+	<li class="allfiles-file" data-set="this">
 		<div data-event="click:clickFile">NAME
 		</div>
 	</li>
@@ -653,8 +653,8 @@ export class FileListDialog {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<div>
-	<h1>Choose a version</h1>
-	<p>Choose the project version you want to output:</p>
+	<h1>Choose a book</h1>
+	<p>Choose the book you want to output to PDF.</p>
 	<ul class="file-list-dialog-list">
 	</ul>
 </div>
@@ -689,29 +689,25 @@ export class FileListDialog_Item {
 		let t = FileListDialog_Item._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<ul>
-	<li data-set="this">
+			d.innerHTML = `	<li>
 		<input type="radio" name="file-list"/>
-		<span/>
+		<label/>
 	</li>
-</ul>
 `;
-			t = d.firstElementChild.childNodes[1] as HTMLUnknownElement;
+			t = d.firstElementChild as HTMLUnknownElement;
 			FileListDialog_Item._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUnknownElement;
 		
-		n = n.childNodes[1] as HTMLLIElement;
 		this.$ = {
-			input: n as HTMLInputElement,
-			title: n as HTMLSpanElement,
+			input: n.childNodes[1] as HTMLInputElement,
+			title: n.childNodes[3] as HTMLLabelElement,
 		};
 		/*
 		
 		
-		
 		if (!this.$.input) {
-			console.error("Failed to resolve item input on path  of ", n);
+			console.error("Failed to resolve item input on path .childNodes[1] of ", n);
 			debugger;
 		} else {
 			console.log("input resolved to ", this.$.input);
@@ -719,7 +715,7 @@ export class FileListDialog_Item {
 		
 		
 		if (!this.$.title) {
-			console.error("Failed to resolve item title on path  of ", n);
+			console.error("Failed to resolve item title on path .childNodes[3] of ", n);
 			debugger;
 		} else {
 			console.log("title resolved to ", this.$.title);
@@ -786,7 +782,7 @@ export class FoundationRevealDialog {
 			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
 	<div class="content">
 	</div>
-	<button type="button" data-close="" class="close-button" aria-label="Close popup">
+	<button class="close-button" aria-label="Close popup" type="button" data-close="">
 		<span aria-hidden="true">×</span>
 	</button>
 </div>
@@ -872,7 +868,7 @@ export class LoginTokenList {
 			d.innerHTML = `<div class="login-token-list">
 	<div class="token-input">
 		<input type="text" placeholder="name"/>
-		<input placeholder="token" type="text"/>
+		<input type="text" placeholder="token"/>
 		<button class="btn">Add</button>
 	</div>
 	<ul class="token-list">
@@ -1069,10 +1065,10 @@ export class RepoEditorPage_NewFileDialog {
 	<fieldset>
 		<label>
 			Enter the full path and filename for your new file.
-			<input data-event="change" type="text" placeholder="book/text/chapter-7.md"/>
+			<input placeholder="book/text/chapter-7.md" data-event="change" type="text"/>
 		</label>
 	</fieldset>
-	<button data-event="click" class="btn">Create File</button>
+	<button class="btn" data-event="click">Create File</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1115,7 +1111,7 @@ export class RepoEditorPage_RenameFileDialog {
 			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
-	<button data-event="click" class="btn">Rename</button>
+	<button class="btn" data-event="click">Rename</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
@@ -1310,7 +1306,7 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input type="radio" name="resolve" value="our" id="resolveOur"/>
+			<input name="resolve" value="our" id="resolveOur" type="radio"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
@@ -1323,7 +1319,7 @@ export class RepoMergeDialog {
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
+		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
 			Only apply above resolution to conflicted files.
 	</label>
 	<button class="btn" data-event="click:">Do the Merge</button>
@@ -1462,10 +1458,10 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		<input data-event="change" type="radio" name="closePR" id="closePR-no" value="no"/>No
 		</label>
 		<label for="closePR-yes">
-		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
+		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
 		</label>
 		<label for="closeMessage">Close message
 		<input type="text" name="closeMessage" id="closeMessage"/>
