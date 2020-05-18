@@ -15,13 +15,13 @@
     .out {}
 
     .err {
-        background-color: $color-warning;
+        color: $color-warning;
         font-weight: bold;
     }
 }
 
 .error {
-	background-color: $color-warning;
+	color: $color-warning;
 	font-weight: bold;
 }
 .restart {
