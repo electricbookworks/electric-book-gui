@@ -38,7 +38,7 @@ session_encrypt=if9f02983ufnvjnv9e8rf9348jfjudf7
 # Default location for repos.
 # This will generally only change if you use a storage location
 # outside of your server's /opt/electricbook directory.
-git_cache=/git_cache/
+# git_cache=/opt/electricbook/git_cache/
 
 # Email error-report configuration
 # --------------------------------
