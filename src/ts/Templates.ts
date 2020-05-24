@@ -193,27 +193,27 @@ export class AddNewBookDialog {
 	<div>
 		<h1>New project</h1>
 		<form method="post" action="/github/create/new">
-		<input name="action" value="new" type="hidden"/>
+		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
-		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
+		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
 		</label>
 		<label>
-			<input type="checkbox" name="private" value="private"/>
+			<input name="private" value="private" type="checkbox"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="New project" type="submit" class="btn"/>
+		<input type="submit" class="btn" value="New project"/>
 		</form>
 	</div>
 	<div>
 		<h1>Adaptation</h1>
 		<form method="post" action="/github/create/new">
-		<input value="new" type="hidden" name="action"/>
+		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input placeholder="e.g. MobyDick" type="text" name="repo_new"/>
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
@@ -237,10 +237,10 @@ export class AddNewBookDialog {
 		<input type="text" name="collaborate_repo" placeholder="e.g. electricbookworks/constitution"/>
 		</label>
 		<label style="display:none;">
-			<input name="private" value="private" type="checkbox"/>
+			<input type="checkbox" name="private" value="private"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
-		<input value="Copy project" type="submit" class="btn"/>
+		<input type="submit" class="btn" value="Copy project"/>
 		</form>
 	</div>
 </div>
@@ -690,7 +690,7 @@ export class FileListDialog_Item {
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `	<li>
-		<input name="file-list" type="radio"/>
+		<input type="radio" name="file-list"/>
 		<label/>
 	</li>
 `;
@@ -779,7 +779,7 @@ export class FoundationRevealDialog {
 		let t = FoundationRevealDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="reveal" id="new-file-dialog" data-reveal="">
+			d.innerHTML = `<div id="new-file-dialog" data-reveal="" class="reveal">
 	<div class="content">
 	</div>
 	<button class="close-button" aria-label="Close popup" type="button" data-close="">
@@ -1065,7 +1065,7 @@ export class RepoEditorPage_NewFileDialog {
 	<fieldset>
 		<label>
 			Enter the full path and filename for your new file.
-			<input data-event="change" type="text" placeholder="book/text/chapter-7.md"/>
+			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
 		</label>
 	</fieldset>
 	<button class="btn" data-event="click">Create File</button>
@@ -1208,7 +1208,7 @@ export class RepoFileViewerFile {
 		let t = RepoFileViewerFile._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div title="Drop a file here to replace this one" class="repo-file-viewer-file">
+			d.innerHTML = `<div class="repo-file-viewer-file" title="Drop a file here to replace this one">
 	<div class="image">
 		<img/>
 	</div>
@@ -1306,20 +1306,20 @@ export class RepoMergeDialog {
 	<p>How do you want to try this merge?</p>
 	<fieldset>
 		<label for="resolveOur">
-			<input type="radio" name="resolve" value="our" id="resolveOur"/>
+			<input id="resolveOur" type="radio" name="resolve" value="our"/>
 			I will do the merge.
 		</label>
 		<label for="resolveGit">
-			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			<input id="resolveGit" type="radio" name="resolve" value="git"/>
 			Git can try to merge.
 		</label>
 		<label for="resolveTheir">
-			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
+			<input id="resolveTheir" type="radio" name="resolve" value="their"/>
 			Choose their files by preference.
 		</label>
 	</fieldset>
 	<label for="conflicted">
-		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
+		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
 			Only apply above resolution to conflicted files.
 	</label>
 	<button class="btn" data-event="click:">Do the Merge</button>
@@ -1458,16 +1458,16 @@ export class conflict_ClosePRDialog {
 	<div>Instructions</div>
 	<fieldset>
 		<label for="closePR-no">
-		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		<input name="closePR" id="closePR-no" value="no" data-event="change" type="radio"/>No
 		</label>
 		<label for="closePR-yes">
-		<input value="yes" data-event="change" type="radio" name="closePR" id="closePR-yes"/>Yes
+		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
 		</label>
 		<label for="closeMessage">Close message
-		<input name="closeMessage" id="closeMessage" type="text"/>
+		<input type="text" name="closeMessage" id="closeMessage"/>
 		</label>
 	</fieldset> 
-	<button class="btn" data-event="click:done">Done</button>
+	<button data-event="click:done" class="btn">Done</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
