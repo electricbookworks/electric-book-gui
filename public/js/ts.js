@@ -2955,7 +2955,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                sessionStorage.setItem(this.cacheKey(f.Name()), data);
 	            }
 	            else {
-	                console.log("ReadCacheFS won't cache " + f.Name() + " : MaxCacheSize " + ReadCacheFS.MaxCacheSize + " < length = " + data.length);
+	                //console.log(`ReadCacheFS won't cache ${f.Name()} : MaxCacheSize ${ReadCacheFS.MaxCacheSize} < length = ${data.length}`);
 	            }
 	        }
 	        catch (e) {
@@ -3875,6 +3875,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return Promise.all(this.Root.files().map(function (p) { return _this.FS.FileStateAndPath(p); }))
 	            .then(function (states) {
 	            var shouldSync = states.filter(function (fs) { return fs.ShouldSync(); });
+	            console.log("going to sync files: ", shouldSync);
 	            return Promise.all(shouldSync.map(function (fs) {
 	                _this.FS.Sync(fs.path).then(function (_) {
 	                    EBW$1.Toast(fs.path + " saved.");

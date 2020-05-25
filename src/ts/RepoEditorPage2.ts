@@ -174,7 +174,7 @@ export class RepoEditorPage {
 		.then (
 			states=>{
 				let shouldSync = states.filter(fs => fs.ShouldSync());
-				
+				console.log(`going to sync files: `, shouldSync);
 				return Promise.all(shouldSync.map(fs=>{
 					this.FS.Sync(fs.path).then(_=>{
 						EBW.Toast(`${fs.path} saved.`);

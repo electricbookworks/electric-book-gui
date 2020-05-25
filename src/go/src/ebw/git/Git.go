@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	`sync`
 
 	"github.com/google/go-github/github"
 	git2go "gopkg.in/libgit2/git2go.v25"
@@ -262,10 +263,15 @@ func (g *Git) Close() error {
 	return nil
 }
 
+var stageFileLock sync.Mutex
+
 // StageFile adds the named file to the index, or removes the file
 // from the index if it does not exist in the working dir. This is
 // intended as a functional equivalent of `git add [path]`
 func (g *Git) StageFile(path string) error {	
+	stageFileLock.Lock()
+	defer stageFileLock.Unlock()
+
 	path = stripSeparatorPrefix(path)
 	index, err := g.Repository.Index()
 	if nil != err {

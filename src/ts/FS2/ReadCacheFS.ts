@@ -21,7 +21,7 @@ export class ReadCacheFS extends FSImpl {
 			if (data.length<=ReadCacheFS.MaxCacheSize) {
 				sessionStorage.setItem(this.cacheKey(f.Name()), data);
 			} else {
-				console.log(`ReadCacheFS won't cache ${f.Name()} : MaxCacheSize ${ReadCacheFS.MaxCacheSize} < length = ${data.length}`);
+				//console.log(`ReadCacheFS won't cache ${f.Name()} : MaxCacheSize ${ReadCacheFS.MaxCacheSize} < length = ${data.length}`);
 			}
 		} catch (e) {
 			if (`QuotaExceededError`==e.name) {
