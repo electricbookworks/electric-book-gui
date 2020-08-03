@@ -46,7 +46,7 @@ $side-nav-color: $background-color-light;
 $dropdown-nav-color: $background-color-mid;
 $dropdown-nav-icon-color: $text-color-mid;
 $footer-background-color: $background-color-mid;
-$link-color: inherit;
+$link-color: reset;
 $color-notice: #FFF8E2;
 $color-alert: #ffeae2;
 
@@ -128,6 +128,9 @@ pre, code {
 	font-size: 0.9em;
 	padding: 0.1em 0.2em;
 	border-radius: $border-radius;
+}
+pre code {
+	padding: 0;
 }
 .highlighter-rouge {
 	margin-bottom: 1em;

@@ -12,7 +12,10 @@
 	.page-navigation-prev-next {
 		display: flex;
 		justify-content: space-between;
-	    margin: auto;
+		margin: auto;
+		a {
+			text-decoration: none
+		}
 		.previous {
 			width: 50%;
 			padding-right: 0.5em;
@@ -21,6 +24,10 @@
 			width: 50%;
 			text-align: right;
 			padding-left: 0.5em;
+		}
+		.previous-title,
+		.next-title {
+			text-decoration: underline;
 		}
 		.previous-arrow {
 			font-style: normal;
