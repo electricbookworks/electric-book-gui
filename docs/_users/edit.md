@@ -21,13 +21,28 @@ description: "How to edit, add and save files."
 
 ### Searching in files
 
-You can search for text in the file you are editing.
+You can search for and replace text in the file you are editing.
 
 1. From the editing page, open the file you would like to search in. 
 2. Click anywhere in the text of that file.
-3. Click Ctrl + F on Windows or Linux, or Cmd + F on Mac, to bring up a search bar within that file.
-4. Enter your search term and hit Enter.
-5. To do regular expression (regex) search, put your search between forward slashes. E.g. `/Americani[sz]e/` will find `Americanise` and `Americanize`. To search and replace use Ctrl + alt + F (or Cmd + alt + F if you're on Mac). [This page](https://codemirror.net/demo/search.html) explains a bit more.
+
+To search:
+
+1. Type `Ctrl + F` on Windows or Linux, or `Cmd + F` on Mac, to bring up a search bar within that file.
+2. Enter your search term and hit `Enter`. This will highlight all instances of the search term.
+3. To cycle through the results, type `Ctrl + G` or `Cmd + G`.
+4. To move backwards through the results, type `Ctrl + Shift + G` or `Cmd + Shift + G`.
+
+To search and replace:
+
+1. Type `Ctrl + Shift + F` on Windows or Linux, or `Cmd + Alt + F` on Mac.
+2. Enter the term you would like to find, and hit `Enter`.
+3. Enter the term you would like to replace it with, and hit `Enter`.
+4. A small dialogue box will appear in place of the seach box. You can cycle through all instances of the search term, and choose to replace some or all instances by clicking on the relevant option. Hitting `Enter` will select the default option "Yes".
+
+To do regular expression (regex) search
+
+5. Put your search between forward slashes. E.g. `/Americani[sz]e/` will find `Americanise` and `Americanize`. To search and replace use Ctrl + alt + F (or Cmd + alt + F if you're on Mac). [This page](https://codemirror.net/demo/search.html) explains a bit more.
 
 ## Adding new files
 
