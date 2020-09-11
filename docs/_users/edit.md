@@ -29,16 +29,16 @@ You can search for and replace text in the file you are editing.
 To search:
 
 1. Type `Ctrl + F` on Windows or Linux, or `Cmd + F` on Mac, to bring up a search bar within that file.
-2. Enter your search term and hit `Enter`. This will highlight all instances of the search time.
+2. Enter your search term and hit `Enter`. This will highlight all instances of the search term.
 3. To cycle through the results, type `Ctrl + G` or `Cmd + G`.
 4. To move backwards through the results, type `Ctrl + Shift + G` or `Cmd + Shift + G`.
 
 To search and replace:
 
 1. Type `Ctrl + Shift + F` on Windows or Linux, or `Cmd + Alt + F` on Mac.
-2. Enter the term you would like to find, and type `Enter`.
-3. Enter the term you would like to replace it with, and type `Enter`.
-4. A small dialogue box will appear in place of the seach box. You can cycle through all instances of the search term, and choose to replace some or all instances by clicking on the relevant option. Typing `Enter` will select the default option "Yes".
+2. Enter the term you would like to find, and hit `Enter`.
+3. Enter the term you would like to replace it with, and hit `Enter`.
+4. A small dialogue box will appear in place of the seach box. You can cycle through all instances of the search term, and choose to replace some or all instances by clicking on the relevant option. Hitting `Enter` will select the default option "Yes".
 
 To do regular expression (regex) search
 
