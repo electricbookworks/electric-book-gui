@@ -4,7 +4,10 @@ set -e
 cd /tmp
 rm -rf jekylltest
 source /usr/local/rvm/scripts/rvm
-gem install jekyll bundler
+
+# Note that the EB template does not support Jekyll => 3.9
+gem install jekyll --version 3.8.6
+gem install bundler
 jekyll new jekylltest
 
 # clone Electric Book Works template
