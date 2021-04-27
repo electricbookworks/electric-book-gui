@@ -15,7 +15,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/github"
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 	"github.com/juju/errors"
 	"github.com/golang/glog"
 
@@ -532,15 +532,14 @@ func (g *Git) FetchRemote(remoteName string) error {
 	defer remote.Free()
 	if err := remote.Fetch([]string{}, &git2go.FetchOptions{
 		RemoteCallbacks: git2go.RemoteCallbacks{
-			CredentialsCallback: func(remoteUrl string, username_from_url string, allowed_types git2go.CredType) (git2go.ErrorCode, *git2go.Cred) {
+			CredentialsCallback: func(remoteUrl string, username_from_url string, allowed_types git2go.CredentialType) (*git2go.Credential, error) {
 				u, err := url.Parse(remoteUrl)
 				if nil != err {
 					g.Error(err)
-					return git2go.ErrorCode(git2go.ErrAuth), nil
+					return nil, Git2GoError(git2go.ErrAuth)
 				}
 				p, _ := u.User.Password()
-				errCode, cred := git2go.NewCredUserpassPlaintext(u.User.Username(), p)
-				return git2go.ErrorCode(errCode), &cred
+				return git2go.NewCredUserpassPlaintext(u.User.Username(), p)
 			},
 		},
 	}, ``); nil != err {

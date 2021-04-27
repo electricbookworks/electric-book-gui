@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gopkg.in/ibrt/go-xerror.v2/xerror"
 
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 )
 
 func isNil(i []interface{}) bool {

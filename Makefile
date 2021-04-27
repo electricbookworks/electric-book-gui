@@ -4,7 +4,7 @@ SRC = $(shell find src/go -type f -name '*.go' -not -path "./vendor/*")
 SCSS = $(shell find src/scss -type f -name '*.scss')
 
 bin/electricbook: $(SRC)
-	GOPATH=`pwd`/src/go go build -o bin/electricbook src/go/src/ebw/electricbook.go
+	cd src/go/src/ebw; make
 
 bin/ebw: $(SRC)
 	GOPATH=`pwd`/src/go go build -o bin/ebw src/go/src/ebw/ebw.go

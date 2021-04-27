@@ -3,7 +3,7 @@ package git
 import (
 	"strings"
 
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 )
 
 func GitMergeAnalysisToString(a git2go.MergeAnalysis) string {
@@ -127,4 +127,12 @@ func (g *Git) objectToCommitAndTree(obj *git2go.Object) (*git2go.Commit, *git2go
 		return nil, nil, err
 	}
 	return commit, tree, nil
+}
+
+func Git2GoError(code git2go.ErrorCode) error {
+	return &git2go.GitError{
+		Message: `generated from ebw`,
+		Class: git2go.ErrorClassInvalid,
+		Code: code,
+	}
 }

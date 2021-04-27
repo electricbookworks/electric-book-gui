@@ -13,7 +13,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 	"golang.org/x/crypto/ssh/terminal"
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 
 	"ebw/git"
 	"ebw/util"
@@ -516,13 +516,14 @@ func BookMergeHeadsCommand() *commander.Command {
 				return err
 			}
 			defer repo.Close()
-			heads, err := repo.MergeHeads()
-			if nil != err {
-				return err
-			}
-			for _, h := range heads {
-				fmt.Println(h)
-			}
+			panic(`CMJ: MergeHeads not implemented on git2go`)
+			// heads, err := repo.MergeHeads()
+			// if nil != err {
+			// 	return err
+			// }
+			// for _, h := range heads {
+			// 	fmt.Println(h)
+			// }
 			return nil
 		})
 }

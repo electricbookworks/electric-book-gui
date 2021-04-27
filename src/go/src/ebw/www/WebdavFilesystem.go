@@ -1,6 +1,7 @@
 package www
 
 import (
+	`context`
 	"os"
 	"path/filepath"
 
@@ -25,22 +26,22 @@ func (o *OSFileSystem) resolve(name string) string {
 	return filepath.Join(o.root, name)
 }
 
-func (o *OSFileSystem) Mkdir(name string, perm os.FileMode) error {
+func (o *OSFileSystem) Mkdir(ctx context.Context, name string, perm os.FileMode) error {
 	return os.Mkdir(o.resolve(name), perm)
 }
 
-func (o *OSFileSystem) OpenFile(name string, flag int, perm os.FileMode) (webdav.File, error) {
+func (o *OSFileSystem) OpenFile(ctx context.Context, name string, flag int, perm os.FileMode) (webdav.File, error) {
 	return os.OpenFile(o.resolve(name), flag, perm)
 }
 
-func (o *OSFileSystem) RemoveAll(name string) error {
+func (o *OSFileSystem) RemoveAll(ctx context.Context, name string) error {
 	return os.RemoveAll(o.resolve(name))
 }
 
-func (o *OSFileSystem) Rename(oldName, newName string) error {
+func (o *OSFileSystem) Rename(ctx context.Context, oldName, newName string) error {
 	return os.Rename(o.resolve(oldName), o.resolve(newName))
 }
 
-func (o *OSFileSystem) Stat(name string) (os.FileInfo, error) {
+func (o *OSFileSystem) Stat(ctx context.Context, name string) (os.FileInfo, error) {
 	return os.Stat(o.resolve(name))
 }

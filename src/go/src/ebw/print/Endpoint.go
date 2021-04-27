@@ -36,6 +36,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `Failed to find endpoint for key '`+key+`'`, 404)
 		return
 	}
+	glog.Infof(`endpointHandler for %s/%s/%s`, pr.Username, pr.RepoOwner, pr.RepoName)
 	s := sse.New()
 	C := make(chan PrintMessage)
 	go func() {

@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"io/ioutil"
 
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 
 	"ebw/util"
 )

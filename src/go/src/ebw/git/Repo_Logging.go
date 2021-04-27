@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	"github.com/sirupsen/logrus"
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 )
 
 // Infof logs the format and args as an sprintf info level log message

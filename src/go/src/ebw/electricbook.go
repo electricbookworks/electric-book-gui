@@ -12,7 +12,10 @@ import (
 
 	"ebw/config"
 	// "ebw/database"
+	`ebw/environ`
+	`ebw/node`
 	"ebw/print"
+	`ebw/ruby`
 	"ebw/www"
 	"ebw/cli"
 	"ebw/util"
@@ -58,7 +61,11 @@ func main() {
 	// defer database.Close()
 
 	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand,
-		print.PrintCommand, cli.ListWatchersCommand, util.DiffCommand); nil != err {
+		print.PrintCommand, cli.ListWatchersCommand, util.DiffCommand,
+		node.InstallNvmCommand, node.InstallNodeCommand, node.RunNodeCommand,
+		node.NodeEnvCommand,
+		ruby.RubyInstallCommand, ruby.RubyEnvCommand, environ.EnvCommand,
+	); nil != err {
 		panic(err)
 	}
 }

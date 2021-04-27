@@ -31,6 +31,7 @@ func NewJekyllManager() *JekyllManager {
 	}
 }
 
+// ClearJekyll kills an existing jekyll process that might be serving the repo
 func (jm *JekyllManager) ClearJekyll(user, repoOwner, repoName string) error {
 	glog.Infof(`ClearJekyll(%s,%s,%s)`, user, repoOwner, repoName)
 	jm.lock.Lock()

@@ -1,7 +1,7 @@
 package print
 
 import (
-	// "fmt"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -9,8 +9,10 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
+	`github.com/juju/errors`
 
 	"ebw/book"
+	`ebw/environ`
 	"ebw/util"
 )
 
@@ -57,6 +59,13 @@ func FindFileLists(repoPath string) ([]string, error) {
 // PrintLocal prints the book using the localhost for printing - not as safe as printing
 // in a container, but on the other hand much easier to manage/code.
 func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan PrintMessage) (string, error) {
+	runjs, err := util.FileExists(filepath.Join(repoPath, `run.js`))
+	if nil!=err {
+		return ``, errors.Trace(err)
+	}
+	if runjs {
+		return printLocalWithRunJs(repoPath, bookName, printOrScreen, fileListDir, C)
+	}
 	glog.Infof(`PrintLocal: fileListDir = %s`, fileListDir)
 	if `` == printOrScreen {
 		printOrScreen = `print`
@@ -142,4 +151,57 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	output := `_output/` + outputName
 
 	return output, nil
+}
+
+// printLocalWithRunJs uses the run.js in the repo directory to do the 
+// printing of the book.
+func printLocalWithRunJs(repoPath, bookName, printOrScreen, fileListDir string, C chan PrintMessage) (string, error) {
+	glog.Infof(`Printing local with runjs in %s`, repoPath)
+	glog.Infof(`printOrScreen = %s`, printOrScreen)
+
+	logOut, logErr := PrintLogWriter(C, `info`), PrintLogWriter(C, `error`)
+	defer func() {
+		logOut.Close()
+		logErr.Close()
+	}()
+	cout, cerr := io.MultiWriter(os.Stdout, logOut), io.MultiWriter(os.Stderr, logErr)
+
+	fmt.Fprintln(cout, `Using run.js to print book in ` + repoPath)
+
+	env, err := environ.NewEnviron(``, nil)
+	if nil!=err {
+		return ``, errors.Trace(err)
+	}
+	npm := env.Command(`npm`,`install`)	// was `node install`
+	npm.Dir = repoPath
+	npm.Stdout, npm.Stderr = cout, cerr	
+	if err := npm.Run(); nil!=err {
+		return ``, fmt.Errorf(`npm install failed: %w`, err)
+	}
+
+	bundle := env.Command(`bundle`, `install`)
+	bundle.Stdout, bundle.Stderr = cout, cerr
+	bundle.Dir = repoPath
+	if err := bundle.Run(); nil!=err {
+		glog.Errorf(`bundle install failed: %s`, err.Error())
+		return ``, fmt.Errorf(`error running bundle install: %w`, err)
+	}
+
+	// gem := exec.Command(`gem`,`install`,`-g`)
+	// gem.Stdout, gem.Stderr = cout, cerr
+	// gem.Dir = repoPath
+	// if err := ruby.Cmd(``, gem); nil!=err {
+	// 	return ``, fmt.Errorf(`failed to set ruby env for gem install: %w`, err)
+	// }
+	// if err := gem.Run(); nil!=err {
+	// 	return ``, fmt.Errorf(`error running gem install: %w`, err)
+	// }
+
+	run := env.Command(`node`,`run.js`,`--output`,printOrScreen)
+	run.Stdout, run.Stderr = cout, cerr
+	run.Dir = repoPath
+	if err := run.Run(); nil!=err {
+		return ``, fmt.Errorf(`run failed: %w`, err)
+	}
+	return `_output/book.pdf`, nil
 }

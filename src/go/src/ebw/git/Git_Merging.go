@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/golang/glog"
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 
 	"ebw/util"
 )
@@ -455,6 +455,8 @@ func (g *Git) mergeCommits(includeHead bool) ([]*git2go.Commit, error) {
 		commits = append(commits, headCommit)
 	}
 
+	panic("MergeHeads not implemented for git2go")
+	/* @TODO CMJ: need to reactivate MergeHeads() for git2go 
 	mergeHeads, err := g.Repository.MergeHeads()
 	if nil != err {
 		return nil, g.Error(err)
@@ -470,6 +472,7 @@ func (g *Git) mergeCommits(includeHead bool) ([]*git2go.Commit, error) {
 		}
 		commits = append(commits, c)
 	}
+	*/
 	return commits, nil
 }
 

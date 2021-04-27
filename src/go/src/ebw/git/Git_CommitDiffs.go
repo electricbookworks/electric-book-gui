@@ -7,7 +7,7 @@ import (
 	"html"
 	"strings"
 
-	git2go "gopkg.in/libgit2/git2go.v25"
+	git2go "github.com/libgit2/git2go/v31"
 	"github.com/juju/errors"
 	"github.com/golang/glog"
 	"github.com/sergi/go-diff/diffmatchpatch"

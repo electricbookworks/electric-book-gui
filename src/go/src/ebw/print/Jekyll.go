@@ -11,7 +11,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
-	// "strings"
+	"strings"
 	"sync"
 	"time"
 
@@ -69,15 +69,23 @@ func (j *Jekyll) Kill() {
 }
 
 // Runs RVM in the given directory with the given commands.
-// Pipes stdout and stderr to os.Stdout and os.Stderr.
+// Pipes stdout and stderr to cout and cerr.
 func Rvm(cout, cerr io.Writer, dir string, args ...string) *exec.Cmd {
-	cargs := []string{config.Config.RubyVersion, `do`}
-	cargs = append(cargs, args...)
-	c := exec.Command(config.Config.Rvm, cargs...)
-	c.Stdout, c.Stderr = cout, cerr
-	c.Dir = dir
-	glog.Infof(`rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
-	return c
+	if "-"!=config.Config.Rvm {
+		cargs := []string{config.Config.RubyVersion, `do`}
+		cargs = append(cargs, args...)
+		c := exec.Command(config.Config.Rvm, cargs...)
+		c.Stdout, c.Stderr = cout, cerr
+		c.Dir = dir
+		glog.Infof(`rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
+		return c
+	} else {
+		c := exec.Command(args[0], args[1:]...)
+		c.Stdout, c.Stderr = cout, cerr
+		c.Dir = dir
+		glog.Infof(`dir %s: %s`, c.Dir, strings.Join(args, ` `))
+		return c
+	}
 }
 
 func (j *Jekyll) start(cout, cerr io.Writer) error {
@@ -100,16 +108,17 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
-		if err := Rvm(jout, jerr, j.RepoDir, `bundle`,`update`, `--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `update`, `--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+			glog.Infof(`bundle update --all --local --retry 5 failed: %s`, err.Error())
 			j.SetError(err)
 			util.Error(err)
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
 		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `install`,`--retry`,`5`).Run(); nil != err {
+			glog.Errorf(`Rvm failes on bundle install: %s`, err.Error())
 			j.SetError(err)
 			util.Error(err)
-
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
