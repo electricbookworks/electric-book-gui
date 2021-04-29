@@ -37,6 +37,8 @@
   submenu:
     - label: "Understanding the code"
       link: "developers/code"
+    - label: "Development setup"
+      link: "developers/setup"
     - label: "Build"
       link: "developers/build"
     - label: "Deploy"
@@ -51,6 +53,8 @@
       link: "developers/adding-storage"
     - label: "Terminology"
       link: "developers/terminology"
+    - label: "Troubleshooting"
+      link: "developers/troubleshooting"
     - label: "CLI"
       link: "developers/cli"
     - label: "Contribute to the EBM project"
