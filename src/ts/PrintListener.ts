@@ -21,7 +21,7 @@ export class PrintListener {
 		}
 		EBW.API().FindFileLists(repoOwner, repoName).then(
 			([files]:[string[]])=>{
-				// console.log(`Files directories are `, files);
+				console.log(`Files directories are `, files);
 				// debugger;
 				// files.push(files[0]);
 				if (2>files.length) {
@@ -33,6 +33,7 @@ export class PrintListener {
 							if (res.Cancelled) {
 								return Promise.resolve<string>(undefined);
 							} else {
+								console.log(`res.FileList = `, res.FileList);
 								return Promise.resolve<string>(res.FileList);
 							}
 						});

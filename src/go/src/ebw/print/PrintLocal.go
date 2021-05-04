@@ -86,15 +86,15 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	}()
 	cout, cerr := io.MultiWriter(os.Stdout, logOut), io.MultiWriter(os.Stderr, logErr)
 
-	if err := Rvm(cout, cerr, repoPath, `gem`, `install`, `bundler`).Run(); nil != err {
+	if err := RvmRun(cout, cerr, repoPath, `gem`, `install`, `bundler`); nil != err {
 		glog.Errorf(`Error %s: gem install bundler : %s`, repoPath, err.Error())
 		return ``, err
 	}
-	if err := Rvm(cout, cerr, repoPath, `bundle`,`update`,`--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+	if err := RvmRun(cout, cerr, repoPath, `bundle`,`update`,`--all`,`--local`,`--retry`,`5`); nil!=err {
 		glog.Errorf(`Error %s: bundle update --all --retry 5: %s`, repoPath, err.Error() )
 		return ``, err
 	}
-	if err := Rvm(cout, cerr, repoPath, `bundle`, `install`,`--retry`,`5`).Run(); nil != err {
+	if err := RvmRun(cout, cerr, repoPath, `bundle`, `install`,`--retry`,`5`); nil != err {
 		glog.Errorf(`Error %s: bundle install: %s`, repoPath, err.Error())
 		return ``, err
 	}
@@ -116,8 +116,8 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 	}
 	jekyllConfigArg := strings.Join(jekyllConfig, `,`)
 
-	if err := Rvm(cout, cerr, repoPath, `bundle`, `exec`, `jekyll`, `build`, `--config`,
-		jekyllConfigArg).Run(); nil != err {
+	if err := RvmRun(cout, cerr, repoPath, `bundle`, `exec`, `jekyll`, `build`, `--config`,
+		jekyllConfigArg); nil != err {
 		glog.Errorf(`Error %s: bundle exec jekyll build --config %s : %s`,
 			repoPath, jekyllConfigArg, err.Error())
 		return ``, err
@@ -157,7 +157,7 @@ func PrintLocal(repoPath, bookName, printOrScreen, fileListDir string, C chan Pr
 // printing of the book.
 func printLocalWithRunJs(repoPath, bookName, printOrScreen, fileListDir string, C chan PrintMessage) (string, error) {
 	glog.Infof(`Printing local with runjs in %s`, repoPath)
-	glog.Infof(`printOrScreen = %s`, printOrScreen)
+	glog.Infof(`printOrScreen = %s, bookName = %s, fileListDir = %s`, printOrScreen, bookName, fileListDir)
 
 	logOut, logErr := PrintLogWriter(C, `info`), PrintLogWriter(C, `error`)
 	defer func() {
@@ -172,14 +172,20 @@ func printLocalWithRunJs(repoPath, bookName, printOrScreen, fileListDir string, 
 	if nil!=err {
 		return ``, errors.Trace(err)
 	}
-	npm := env.Command(`npm`,`install`)	// was `node install`
+	npm, err := env.Command(`npm`,`install`)	// was `node install`
+	if nil!=err {
+		return ``, errors.Trace(err)
+	}
 	npm.Dir = repoPath
 	npm.Stdout, npm.Stderr = cout, cerr	
 	if err := npm.Run(); nil!=err {
 		return ``, fmt.Errorf(`npm install failed: %w`, err)
 	}
 
-	bundle := env.Command(`bundle`, `install`)
+	bundle, err := env.Command(`bundle`, `install`)
+	if nil!=err {
+		return ``, errors.Trace(err)
+	}
 	bundle.Stdout, bundle.Stderr = cout, cerr
 	bundle.Dir = repoPath
 	if err := bundle.Run(); nil!=err {
@@ -196,12 +202,23 @@ func printLocalWithRunJs(repoPath, bookName, printOrScreen, fileListDir string, 
 	// if err := gem.Run(); nil!=err {
 	// 	return ``, fmt.Errorf(`error running gem install: %w`, err)
 	// }
-
-	run := env.Command(`node`,`run.js`,`--output`,printOrScreen)
+	if `screen`==printOrScreen {
+		printOrScreen = `screen-pdf`
+	}
+	if `print`==printOrScreen {
+		printOrScreen = `print-pdf`
+	}
+	glog.Infof(`About to run %s`, strings.Join([]string{`node`,`run.js`,`-f`,printOrScreen, `-b`, filepath.Dir(fileListDir)}, ` `))
+	destFile := fmt.Sprintf(`_output/%s-%s.pdf`, filepath.Dir(fileListDir), printOrScreen)
+	os.MkdirAll(filepath.Join(repoPath, filepath.Dir(destFile)), 0755)
+	run, err := env.Command(`node`,`run.js`,`-f`,printOrScreen, `-b`, filepath.Dir(fileListDir))
+	if nil!=err {
+		return ``, errors.Trace(err)
+	}
 	run.Stdout, run.Stderr = cout, cerr
 	run.Dir = repoPath
 	if err := run.Run(); nil!=err {
 		return ``, fmt.Errorf(`run failed: %w`, err)
 	}
-	return `_output/book.pdf`, nil
+	return destFile, nil
 }

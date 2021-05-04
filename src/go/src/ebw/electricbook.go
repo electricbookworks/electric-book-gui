@@ -39,7 +39,7 @@ func main() {
 	flag.Parse()
 
 	if err = config.Config.Load(*cfg); nil != err {
-		glog.Errorf("Failed to load config files with config %s: %s", *cfg, err.Error())
+		glog.Errorf("Failed to load config files with config %s: %w", *cfg, err)
 		os.Exit(1)
 	}
 
@@ -62,7 +62,7 @@ func main() {
 
 	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand,
 		print.PrintCommand, cli.ListWatchersCommand, util.DiffCommand,
-		node.InstallNvmCommand, node.InstallNodeCommand, node.RunNodeCommand,
+		node.InstallNodeCommand, node.RunNodeCommand,
 		node.NodeEnvCommand,
 		ruby.RubyInstallCommand, ruby.RubyEnvCommand, environ.EnvCommand,
 	); nil != err {

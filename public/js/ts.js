@@ -1,5 +1,27 @@
-var EBW = (function (exports, tslib_1, TSFoundation) {
+var EBW = (function (exports, tslib, TSFoundation) {
 	'use strict';
+
+	function _interopNamespace(e) {
+		if (e && e.__esModule) return e;
+		var n = Object.create(null);
+		if (e) {
+			Object.keys(e).forEach(function (k) {
+				if (k !== 'default') {
+					var d = Object.getOwnPropertyDescriptor(e, k);
+					Object.defineProperty(n, k, d.get ? d : {
+						enumerable: true,
+						get: function () {
+							return e[k];
+						}
+					});
+				}
+			});
+		}
+		n['default'] = e;
+		return Object.freeze(n);
+	}
+
+	var TSFoundation__namespace = /*#__PURE__*/_interopNamespace(TSFoundation);
 
 	var WSState;
 	(function (WSState) {
@@ -301,12 +323,325 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return Toast;
 	}());
 
-	var AddNewBookDialog = /** @class */ (function () {
+	var BoundFilename$1 = /** @class */ (function () {
+	    function BoundFilename() {
+	        var t = BoundFilename._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div class=\"bound-filename\">\n\t<span class=\"bound-filename-text\">Select a file to edit</span>\n\t<!-- <a href=\"#\" data-set=\"a\" target=\"_github\"><img src=\"/img/github-dark.svg\" /></a> -->\n</div>\n";
+	            t = d.firstElementChild;
+	            BoundFilename._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            filename: n.childNodes[1],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.filename) {
+	            console.error("Failed to resolve item filename on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("filename resolved to ", this.$.filename);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return BoundFilename;
+	}());
+	var PrintListenerTerminal$1 = /** @class */ (function () {
+	    function PrintListenerTerminal() {
+	        var t = PrintListenerTerminal._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div id=\"print-listener\">\n\t<div class=\"header\">\n\t\t<div class=\"title\">Printing in progress \u2026\n\t\t</div>\n\t\t<div class=\"close\">\u00D7</div>\n\t</div>\n\t<div class=\"terminal\">\n\t</div>\n</div>\n";
+	            t = d.firstElementChild;
+	            PrintListenerTerminal._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            header: n.childNodes[1],
+	            title: n.childNodes[1].childNodes[1],
+	            close: n.childNodes[1].childNodes[3],
+	            terminal: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.header) {
+	            console.error("Failed to resolve item header on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("header resolved to ", this.$.header);
+	        }
+	        
+	        
+	        if (!this.$.title) {
+	            console.error("Failed to resolve item title on path .childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("title resolved to ", this.$.title);
+	        }
+	        
+	        
+	        if (!this.$.close) {
+	            console.error("Failed to resolve item close on path .childNodes[1].childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("close resolved to ", this.$.close);
+	        }
+	        
+	        
+	        if (!this.$.terminal) {
+	            console.error("Failed to resolve item terminal on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("terminal resolved to ", this.$.terminal);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return PrintListenerTerminal;
+	}());
+	var conflict_FileDisplay = /** @class */ (function () {
+	    function conflict_FileDisplay() {
+	        var t = conflict_FileDisplay._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<li class=\"file-display\">\n\t<span class=\"path\"> </span>\n\t<span class=\"status\"> </span>\n</li>\n";
+	            t = d.firstElementChild;
+	            conflict_FileDisplay._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            path: n.childNodes[1],
+	            status: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.path) {
+	            console.error("Failed to resolve item path on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("path resolved to ", this.$.path);
+	        }
+	        
+	        
+	        if (!this.$.status) {
+	            console.error("Failed to resolve item status on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("status resolved to ", this.$.status);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return conflict_FileDisplay;
+	}());
+	var CommitMessageDialog$1 = /** @class */ (function () {
+	    function CommitMessageDialog() {
+	        var t = CommitMessageDialog._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
+	            t = d.firstElementChild;
+	            CommitMessageDialog._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            title: n.childNodes[1],
+	            instructions: n.childNodes[3],
+	            message: n.childNodes[5].childNodes[1].childNodes[1],
+	            commit: n.childNodes[7],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.title) {
+	            console.error("Failed to resolve item title on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("title resolved to ", this.$.title);
+	        }
+	        
+	        
+	        if (!this.$.instructions) {
+	            console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("instructions resolved to ", this.$.instructions);
+	        }
+	        
+	        
+	        if (!this.$.message) {
+	            console.error("Failed to resolve item message on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("message resolved to ", this.$.message);
+	        }
+	        
+	        
+	        if (!this.$.commit) {
+	            console.error("Failed to resolve item commit on path .childNodes[7] of ", n);
+	            debugger;
+	        } else {
+	            console.log("commit resolved to ", this.$.commit);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return CommitMessageDialog;
+	}());
+	var RepoEditorPage_NewFileDialog$1 = /** @class */ (function () {
+	    function RepoEditorPage_NewFileDialog() {
+	        var t = RepoEditorPage_NewFileDialog._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path and filename for your new file.\n\t\t\t<input placeholder=\"book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
+	            t = d.firstElementChild;
+	            RepoEditorPage_NewFileDialog._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            filename: n.childNodes[1].childNodes[1].childNodes[1],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.filename) {
+	            console.error("Failed to resolve item filename on path .childNodes[1].childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("filename resolved to ", this.$.filename);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return RepoEditorPage_NewFileDialog;
+	}());
+	var conflict_ClosePRDialog = /** @class */ (function () {
+	    function conflict_ClosePRDialog() {
+	        var t = conflict_ClosePRDialog._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input id=\"closePR-yes\" value=\"yes\" data-event=\"change\" type=\"radio\" name=\"closePR\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button class=\"btn\" data-event=\"click:done\">Done</button>\n</div>\n";
+	            t = d.firstElementChild;
+	            conflict_ClosePRDialog._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            title: n.childNodes[1],
+	            instructions: n.childNodes[3],
+	            closePR_no: n.childNodes[5].childNodes[1].childNodes[1],
+	            closePR_yes: n.childNodes[5].childNodes[3].childNodes[1],
+	            closeMessage: n.childNodes[5].childNodes[5].childNodes[1],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.title) {
+	            console.error("Failed to resolve item title on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("title resolved to ", this.$.title);
+	        }
+	        
+	        
+	        if (!this.$.instructions) {
+	            console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("instructions resolved to ", this.$.instructions);
+	        }
+	        
+	        
+	        if (!this.$.closePR_no) {
+	            console.error("Failed to resolve item closePR_no on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("closePR_no resolved to ", this.$.closePR_no);
+	        }
+	        
+	        
+	        if (!this.$.closePR_yes) {
+	            console.error("Failed to resolve item closePR_yes on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("closePR_yes resolved to ", this.$.closePR_yes);
+	        }
+	        
+	        
+	        if (!this.$.closeMessage) {
+	            console.error("Failed to resolve item closeMessage on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("closeMessage resolved to ", this.$.closeMessage);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return conflict_ClosePRDialog;
+	}());
+	var Tree_NodeView = /** @class */ (function () {
+	    function Tree_NodeView() {
+	        var t = Tree_NodeView._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><!-- icon inserted by CSS --></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
+	            t = d.firstElementChild;
+	            Tree_NodeView._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            close: n.childNodes[1].childNodes[0],
+	            name: n.childNodes[1].childNodes[1],
+	            children: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.close) {
+	            console.error("Failed to resolve item close on path .childNodes[1].childNodes[0] of ", n);
+	            debugger;
+	        } else {
+	            console.log("close resolved to ", this.$.close);
+	        }
+	        
+	        
+	        if (!this.$.name) {
+	            console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("name resolved to ", this.$.name);
+	        }
+	        
+	        
+	        if (!this.$.children) {
+	            console.error("Failed to resolve item children on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("children resolved to ", this.$.children);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return Tree_NodeView;
+	}());
+	var AddNewBookDialog$1 = /** @class */ (function () {
 	    function AddNewBookDialog() {
 	        var t = AddNewBookDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"collaborate\" name=\"new-project-type\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input placeholder=\"e.g. electricbookworks\" type=\"text\" name=\"org_name\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"New project\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form method=\"post\" action=\"/github/create/new\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Create adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbookworks/constitution\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div>\n\t\t<h1>Add a project</h1>\n\t\t<fieldset>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"new\"/>\n\t\t\t\tStart a new project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input name=\"new-project-type\" type=\"radio\" value=\"collaborate\"/>\n\t\t\t\tContribute to an existing project.\n\t\t\t</label>\n\t\t\t<label>\n\t\t\t\t<input type=\"radio\" value=\"adaptation\" name=\"new-project-type\"/>\n\t\t\t\tCreate an adaptation of an existing project.\n\t\t\t</label>\n\t\t</fieldset>\n\t\t<button data-event=\"click:choseType\" class=\"btn\">Next</button>\n\t</div>\n\t<div>\n\t\t<h1>New project</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"new\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input name=\"repo_new\" placeholder=\"e.g. MobyDick\" type=\"text\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input type=\"text\" name=\"org_name\" placeholder=\"e.g. electricbookworks\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input class=\"btn\" value=\"New project\" type=\"submit\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Adaptation</h1>\n\t\t<form action=\"/github/create/new\" method=\"post\">\n\t\t<input name=\"action\" value=\"new\" type=\"hidden\"/>\n\t\t<label>Enter the name for your new project. Use only letters and dashes; no spaces.\n\t\t<input type=\"text\" name=\"repo_new\" placeholder=\"e.g. MobyDick\"/>\n\t\t</label>\n\t\t<label>Enter the organization this project should belong to, or leave this field\n\t\tblank if you will yourself be the owner of this project.\n\t\t<input name=\"org_name\" placeholder=\"e.g. electricbookworks\" type=\"text\"/>\n\t\t</label>\n\t\t<label>Enter the series that you will be adapting.\n\t\t<input type=\"text\" name=\"template\" placeholder=\"e.g. electricbookworks/electric-book\"/>\n\t\t</label>\n\t\t<label>\n\t\t\t<input name=\"private\" value=\"private\" type=\"checkbox\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Create adaptation\"/>\n\t\t</form>\n\t</div>\n\t<div>\n\t\t<h1>Contributing</h1>\n\t\t<form method=\"post\" action=\"/github/create/fork\">\n\t\t<input type=\"hidden\" name=\"action\" value=\"fork\"/>\n\t\t<label>Enter the GitHub project you will contribute to as <code>owner/repo</code>.\n\t\t<input type=\"text\" name=\"collaborate_repo\" placeholder=\"e.g. electricbookworks/constitution\"/>\n\t\t</label>\n\t\t<label style=\"display:none;\">\n\t\t\t<input type=\"checkbox\" name=\"private\" value=\"private\"/>\n\t\t\tMake this project private (must be supported by user's Github plan).\n\t\t</label>\n\t\t<input type=\"submit\" class=\"btn\" value=\"Copy project\"/>\n\t\t</form>\n\t</div>\n</div>\n";
 	            t = d.firstElementChild;
 	            AddNewBookDialog._template = t;
 	        }
@@ -464,90 +799,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return AddNewBookDialog;
 	}());
-	var BoundFilename = /** @class */ (function () {
-	    function BoundFilename() {
-	        var t = BoundFilename._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"bound-filename\">\n\t<span class=\"bound-filename-text\">Select a file to edit</span>\n\t<!-- <a href=\"#\" data-set=\"a\" target=\"_github\"><img src=\"/img/github-dark.svg\" /></a> -->\n</div>\n";
-	            t = d.firstElementChild;
-	            BoundFilename._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            filename: n.childNodes[1],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.filename) {
-	            console.error("Failed to resolve item filename on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("filename resolved to ", this.$.filename);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return BoundFilename;
-	}());
-	var CommitMessageDialog = /** @class */ (function () {
-	    function CommitMessageDialog() {
-	        var t = CommitMessageDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"commitMessage\">Describe your changes\n\t\t<input type=\"text\" name=\"commitMessage\" id=\"commitMessage\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\">Commit</button>\n</div>\n";
-	            t = d.firstElementChild;
-	            CommitMessageDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            title: n.childNodes[1],
-	            instructions: n.childNodes[3],
-	            message: n.childNodes[5].childNodes[1].childNodes[1],
-	            commit: n.childNodes[7],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.title) {
-	            console.error("Failed to resolve item title on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("title resolved to ", this.$.title);
-	        }
-	        
-	        
-	        if (!this.$.instructions) {
-	            console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("instructions resolved to ", this.$.instructions);
-	        }
-	        
-	        
-	        if (!this.$.message) {
-	            console.error("Failed to resolve item message on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("message resolved to ", this.$.message);
-	        }
-	        
-	        
-	        if (!this.$.commit) {
-	            console.error("Failed to resolve item commit on path .childNodes[7] of ", n);
-	            debugger;
-	        } else {
-	            console.log("commit resolved to ", this.$.commit);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return CommitMessageDialog;
-	}());
-	var CommitSummaryListView = /** @class */ (function () {
+	var CommitSummaryListView$1 = /** @class */ (function () {
 	    function CommitSummaryListView() {
 	        var t = CommitSummaryListView._template;
 	        if (!t) {
@@ -575,160 +827,58 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return CommitSummaryListView;
 	}());
-	var CommitSummaryView = /** @class */ (function () {
-	    function CommitSummaryView() {
-	        var t = CommitSummaryView._template;
+	var RepoEditorPage_RenameFileDialog$1 = /** @class */ (function () {
+	    function RepoEditorPage_RenameFileDialog() {
+	        var t = RepoEditorPage_RenameFileDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"commit-summary\">\n  <div class=\"when\"> </div>\n  <div class=\"message\"> </div>\n</div>\n";
+	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the path and filename for your new file.\n\t\t\t<input placeholder=\"/book/text/chapter-7.md\" data-event=\"change\" type=\"text\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
 	            t = d.firstElementChild;
-	            CommitSummaryView._template = t;
+	            RepoEditorPage_RenameFileDialog._template = t;
 	        }
 	        var n = t.cloneNode(true);
 	        this.$ = {
-	            when: n.childNodes[1],
-	            message: n.childNodes[3],
+	            error: n.childNodes[1],
+	            current_name: n.childNodes[3].childNodes[1].childNodes[1],
+	            filename: n.childNodes[3].childNodes[3].childNodes[1],
 	        };
 	        /*
 	        
 	        
-	        if (!this.$.when) {
-	            console.error("Failed to resolve item when on path .childNodes[1] of ", n);
+	        if (!this.$.error) {
+	            console.error("Failed to resolve item error on path .childNodes[1] of ", n);
 	            debugger;
 	        } else {
-	            console.log("when resolved to ", this.$.when);
+	            console.log("error resolved to ", this.$.error);
 	        }
 	        
 	        
-	        if (!this.$.message) {
-	            console.error("Failed to resolve item message on path .childNodes[3] of ", n);
+	        if (!this.$.current_name) {
+	            console.error("Failed to resolve item current_name on path .childNodes[3].childNodes[1].childNodes[1] of ", n);
 	            debugger;
 	        } else {
-	            console.log("message resolved to ", this.$.message);
+	            console.log("current_name resolved to ", this.$.current_name);
+	        }
+	        
+	        
+	        if (!this.$.filename) {
+	            console.error("Failed to resolve item filename on path .childNodes[3].childNodes[3].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("filename resolved to ", this.$.filename);
 	        }
 	        
 	        */
 	        this.el = n;
 	    }
-	    return CommitSummaryView;
-	}());
-	var EditorImage = /** @class */ (function () {
-	    function EditorImage() {
-	        var t = EditorImage._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div> </div>\n";
-	            t = d.firstElementChild;
-	            EditorImage._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {};
-	        /*
-	        
-	        */
-	        this.el = n;
-	    }
-	    return EditorImage;
-	}());
-	var FileListDialog = /** @class */ (function () {
-	    function FileListDialog() {
-	        var t = FileListDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Choose a book</h1>\n\t<p>Choose the book you want to output to PDF.</p>\n\t<ul class=\"file-list-dialog-list\">\n\t</ul>\n</div>\n";
-	            t = d.firstElementChild;
-	            FileListDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            list: n.childNodes[5],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.list) {
-	            console.error("Failed to resolve item list on path .childNodes[5] of ", n);
-	            debugger;
-	        } else {
-	            console.log("list resolved to ", this.$.list);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return FileListDialog;
-	}());
-	var FileListDialog_Item = /** @class */ (function () {
-	    function FileListDialog_Item() {
-	        var t = FileListDialog_Item._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "\t<li>\n\t\t<input type=\"radio\" name=\"file-list\"/>\n\t\t<label/>\n\t</li>\n";
-	            t = d.firstElementChild;
-	            FileListDialog_Item._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            input: n.childNodes[1],
-	            title: n.childNodes[3],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.input) {
-	            console.error("Failed to resolve item input on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("input resolved to ", this.$.input);
-	        }
-	        
-	        
-	        if (!this.$.title) {
-	            console.error("Failed to resolve item title on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("title resolved to ", this.$.title);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return FileListDialog_Item;
-	}());
-	var FoundationRevealDialog = /** @class */ (function () {
-	    function FoundationRevealDialog() {
-	        var t = FoundationRevealDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div id=\"new-file-dialog\" data-reveal=\"\" class=\"reveal\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
-	            t = d.firstElementChild;
-	            FoundationRevealDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            content: n.childNodes[1],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.content) {
-	            console.error("Failed to resolve item content on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("content resolved to ", this.$.content);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return FoundationRevealDialog;
+	    return RepoEditorPage_RenameFileDialog;
 	}());
 	var LoginTokenDisplay = /** @class */ (function () {
 	    function LoginTokenDisplay() {
 	        var t = LoginTokenDisplay._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<ul>\n\t<li data-set=\"this\" class=\"token-display\">\n\t\t<a href=\"\">LINK</a>\n\t\t<a href=\"\">X</a>\n\t</li>\n</ul>\n";
+	            d.innerHTML = "<ul>\n\t<li class=\"token-display\" data-set=\"this\">\n\t\t<a href=\"\">LINK</a>\n\t\t<a href=\"\">X</a>\n\t</li>\n</ul>\n";
 	            t = d.firstElementChild.childNodes[1];
 	            LoginTokenDisplay._template = t;
 	        }
@@ -762,12 +912,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return LoginTokenDisplay;
 	}());
-	var LoginTokenList = /** @class */ (function () {
+	var LoginTokenList$1 = /** @class */ (function () {
 	    function LoginTokenList() {
 	        var t = LoginTokenList._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input placeholder=\"token\" type=\"text\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
+	            d.innerHTML = "<div class=\"login-token-list\">\n\t<div class=\"token-input\">\n\t\t<input type=\"text\" placeholder=\"name\"/>\n\t\t<input type=\"text\" placeholder=\"token\"/>\n\t\t<button class=\"btn\">Add</button>\n\t</div>\n\t<ul class=\"token-list\">\n\t</ul>\n</div>\n";
 	            t = d.firstElementChild;
 	            LoginTokenList._template = t;
 	        }
@@ -817,7 +967,44 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return LoginTokenList;
 	}());
-	var MergeEditor = /** @class */ (function () {
+	var FileListDialog_Item = /** @class */ (function () {
+	    function FileListDialog_Item() {
+	        var t = FileListDialog_Item._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "\t<li>\n\t\t<input type=\"radio\" name=\"file-list\"/>\n\t\t<label/>\n\t</li>\n";
+	            t = d.firstElementChild;
+	            FileListDialog_Item._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            input: n.childNodes[1],
+	            title: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.input) {
+	            console.error("Failed to resolve item input on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("input resolved to ", this.$.input);
+	        }
+	        
+	        
+	        if (!this.$.title) {
+	            console.error("Failed to resolve item title on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("title resolved to ", this.$.title);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return FileListDialog_Item;
+	}());
+	var MergeEditor$2 = /** @class */ (function () {
 	    function MergeEditor() {
 	        var t = MergeEditor._template;
 	        if (!t) {
@@ -845,154 +1032,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return MergeEditor;
 	}());
-	var PrintListenerTerminal = /** @class */ (function () {
-	    function PrintListenerTerminal() {
-	        var t = PrintListenerTerminal._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div id=\"print-listener\">\n\t<div class=\"header\">\n\t\t<div class=\"title\">Printing in progress \u2026\n\t\t</div>\n\t\t<div class=\"close\">\u00D7</div>\n\t</div>\n\t<div class=\"terminal\">\n\t</div>\n</div>\n";
-	            t = d.firstElementChild;
-	            PrintListenerTerminal._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            header: n.childNodes[1],
-	            title: n.childNodes[1].childNodes[1],
-	            close: n.childNodes[1].childNodes[3],
-	            terminal: n.childNodes[3],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.header) {
-	            console.error("Failed to resolve item header on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("header resolved to ", this.$.header);
-	        }
-	        
-	        
-	        if (!this.$.title) {
-	            console.error("Failed to resolve item title on path .childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("title resolved to ", this.$.title);
-	        }
-	        
-	        
-	        if (!this.$.close) {
-	            console.error("Failed to resolve item close on path .childNodes[1].childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("close resolved to ", this.$.close);
-	        }
-	        
-	        
-	        if (!this.$.terminal) {
-	            console.error("Failed to resolve item terminal on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("terminal resolved to ", this.$.terminal);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return PrintListenerTerminal;
-	}());
-	var PullRequestDiffList_File = /** @class */ (function () {
-	    function PullRequestDiffList_File() {
-	        var t = PullRequestDiffList_File._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n</div>\n";
-	            t = d.firstElementChild;
-	            PullRequestDiffList_File._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {};
-	        /*
-	        
-	        */
-	        this.el = n;
-	    }
-	    return PullRequestDiffList_File;
-	}());
-	var RepoEditorPage_NewFileDialog = /** @class */ (function () {
-	    function RepoEditorPage_NewFileDialog() {
-	        var t = RepoEditorPage_NewFileDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<fieldset>\n\t\t<label>\n\t\t\tEnter the full path and filename for your new file.\n\t\t\t<input type=\"text\" placeholder=\"book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Create File</button>\n</div>\n";
-	            t = d.firstElementChild;
-	            RepoEditorPage_NewFileDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            filename: n.childNodes[1].childNodes[1].childNodes[1],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.filename) {
-	            console.error("Failed to resolve item filename on path .childNodes[1].childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("filename resolved to ", this.$.filename);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return RepoEditorPage_NewFileDialog;
-	}());
-	var RepoEditorPage_RenameFileDialog = /** @class */ (function () {
-	    function RepoEditorPage_RenameFileDialog() {
-	        var t = RepoEditorPage_RenameFileDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<div class=\"error\">\n\t</div>\n\t<fieldset>\n\t\t<div>Renaming <span> </span></div>\n\t\t<label>\n\t\t\tEnter the path and filename for your new file.\n\t\t\t<input type=\"text\" placeholder=\"/book/text/chapter-7.md\" data-event=\"change\"/>\n\t\t</label>\n\t</fieldset>\n\t<button class=\"btn\" data-event=\"click\">Rename</button>\n</div>\n";
-	            t = d.firstElementChild;
-	            RepoEditorPage_RenameFileDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            error: n.childNodes[1],
-	            current_name: n.childNodes[3].childNodes[1].childNodes[1],
-	            filename: n.childNodes[3].childNodes[3].childNodes[1],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.error) {
-	            console.error("Failed to resolve item error on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("error resolved to ", this.$.error);
-	        }
-	        
-	        
-	        if (!this.$.current_name) {
-	            console.error("Failed to resolve item current_name on path .childNodes[3].childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("current_name resolved to ", this.$.current_name);
-	        }
-	        
-	        
-	        if (!this.$.filename) {
-	            console.error("Failed to resolve item filename on path .childNodes[3].childNodes[3].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("filename resolved to ", this.$.filename);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return RepoEditorPage_RenameFileDialog;
-	}());
-	var RepoFileEditorCM = /** @class */ (function () {
+	var RepoFileEditorCM$1 = /** @class */ (function () {
 	    function RepoFileEditorCM() {
 	        var t = RepoFileEditorCM._template;
 	        if (!t) {
@@ -1029,7 +1069,25 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoFileEditorCM;
 	}());
-	var RepoFileViewerFile = /** @class */ (function () {
+	var EditorImage$1 = /** @class */ (function () {
+	    function EditorImage() {
+	        var t = EditorImage._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div> </div>\n";
+	            t = d.firstElementChild;
+	            EditorImage._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {};
+	        /*
+	        
+	        */
+	        this.el = n;
+	    }
+	    return EditorImage;
+	}());
+	var RepoFileViewerFile$1 = /** @class */ (function () {
 	    function RepoFileViewerFile() {
 	        var t = RepoFileViewerFile._template;
 	        if (!t) {
@@ -1066,244 +1124,70 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    return RepoFileViewerFile;
 	}());
-	var RepoFileViewerPage = /** @class */ (function () {
-	    function RepoFileViewerPage() {
-	        var t = RepoFileViewerPage._template;
+	var CommitSummaryView$1 = /** @class */ (function () {
+	    function CommitSummaryView() {
+	        var t = CommitSummaryView._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input type=\"text\" placeholder=\"Type to show and filter images, e.g. book/images/web\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
+	            d.innerHTML = "<div class=\"commit-summary\">\n  <div class=\"when\"> </div>\n  <div class=\"message\"> </div>\n</div>\n";
 	            t = d.firstElementChild;
-	            RepoFileViewerPage._template = t;
+	            CommitSummaryView._template = t;
 	        }
 	        var n = t.cloneNode(true);
 	        this.$ = {
-	            search: n.childNodes[1].childNodes[1],
-	            data: n.childNodes[3],
+	            when: n.childNodes[1],
+	            message: n.childNodes[3],
 	        };
 	        /*
 	        
 	        
-	        if (!this.$.search) {
-	            console.error("Failed to resolve item search on path .childNodes[1].childNodes[1] of ", n);
+	        if (!this.$.when) {
+	            console.error("Failed to resolve item when on path .childNodes[1] of ", n);
 	            debugger;
 	        } else {
-	            console.log("search resolved to ", this.$.search);
+	            console.log("when resolved to ", this.$.when);
 	        }
 	        
 	        
-	        if (!this.$.data) {
-	            console.error("Failed to resolve item data on path .childNodes[3] of ", n);
+	        if (!this.$.message) {
+	            console.error("Failed to resolve item message on path .childNodes[3] of ", n);
 	            debugger;
 	        } else {
-	            console.log("data resolved to ", this.$.data);
+	            console.log("message resolved to ", this.$.message);
 	        }
 	        
 	        */
 	        this.el = n;
 	    }
-	    return RepoFileViewerPage;
+	    return CommitSummaryView;
 	}());
-	var Tree_NodeView = /** @class */ (function () {
-	    function Tree_NodeView() {
-	        var t = Tree_NodeView._template;
+	var FoundationRevealDialog$1 = /** @class */ (function () {
+	    function FoundationRevealDialog() {
+	        var t = FoundationRevealDialog._template;
 	        if (!t) {
 	            var d = document.createElement('div');
-	            d.innerHTML = "<div class=\"node\">\n\t<div class=\"name\"><span class=\"closer\"><!-- icon inserted by CSS --></span><span>NAME</span></div>\n\t<div class=\"children\"> </div>\n</div>\n";
+	            d.innerHTML = "<div data-reveal=\"\" class=\"reveal\" id=\"new-file-dialog\">\n\t<div class=\"content\">\n\t</div>\n\t<button class=\"close-button\" aria-label=\"Close popup\" type=\"button\" data-close=\"\">\n\t\t<span aria-hidden=\"true\">\u00D7</span>\n\t</button>\n</div>\n";
 	            t = d.firstElementChild;
-	            Tree_NodeView._template = t;
+	            FoundationRevealDialog._template = t;
 	        }
 	        var n = t.cloneNode(true);
 	        this.$ = {
-	            close: n.childNodes[1].childNodes[0],
-	            name: n.childNodes[1].childNodes[1],
-	            children: n.childNodes[3],
+	            content: n.childNodes[1],
 	        };
 	        /*
 	        
 	        
-	        if (!this.$.close) {
-	            console.error("Failed to resolve item close on path .childNodes[1].childNodes[0] of ", n);
+	        if (!this.$.content) {
+	            console.error("Failed to resolve item content on path .childNodes[1] of ", n);
 	            debugger;
 	        } else {
-	            console.log("close resolved to ", this.$.close);
-	        }
-	        
-	        
-	        if (!this.$.name) {
-	            console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("name resolved to ", this.$.name);
-	        }
-	        
-	        
-	        if (!this.$.children) {
-	            console.error("Failed to resolve item children on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("children resolved to ", this.$.children);
+	            console.log("content resolved to ", this.$.content);
 	        }
 	        
 	        */
 	        this.el = n;
 	    }
-	    return Tree_NodeView;
-	}());
-	var conflict_ClosePRDialog = /** @class */ (function () {
-	    function conflict_ClosePRDialog() {
-	        var t = conflict_ClosePRDialog._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div>\n\t<h1>Title</h1>\n\t<div>Instructions</div>\n\t<fieldset>\n\t\t<label for=\"closePR-no\">\n\t\t<input name=\"closePR\" id=\"closePR-no\" value=\"no\" data-event=\"change\" type=\"radio\"/>No\n\t\t</label>\n\t\t<label for=\"closePR-yes\">\n\t\t<input type=\"radio\" name=\"closePR\" id=\"closePR-yes\" value=\"yes\" data-event=\"change\"/>Yes\n\t\t</label>\n\t\t<label for=\"closeMessage\">Close message\n\t\t<input type=\"text\" name=\"closeMessage\" id=\"closeMessage\"/>\n\t\t</label>\n\t</fieldset> \n\t<button data-event=\"click:done\" class=\"btn\">Done</button>\n</div>\n";
-	            t = d.firstElementChild;
-	            conflict_ClosePRDialog._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            title: n.childNodes[1],
-	            instructions: n.childNodes[3],
-	            closePR_no: n.childNodes[5].childNodes[1].childNodes[1],
-	            closePR_yes: n.childNodes[5].childNodes[3].childNodes[1],
-	            closeMessage: n.childNodes[5].childNodes[5].childNodes[1],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.title) {
-	            console.error("Failed to resolve item title on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("title resolved to ", this.$.title);
-	        }
-	        
-	        
-	        if (!this.$.instructions) {
-	            console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("instructions resolved to ", this.$.instructions);
-	        }
-	        
-	        
-	        if (!this.$.closePR_no) {
-	            console.error("Failed to resolve item closePR_no on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("closePR_no resolved to ", this.$.closePR_no);
-	        }
-	        
-	        
-	        if (!this.$.closePR_yes) {
-	            console.error("Failed to resolve item closePR_yes on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("closePR_yes resolved to ", this.$.closePR_yes);
-	        }
-	        
-	        
-	        if (!this.$.closeMessage) {
-	            console.error("Failed to resolve item closeMessage on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("closeMessage resolved to ", this.$.closeMessage);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return conflict_ClosePRDialog;
-	}());
-	var conflict_FileDisplay = /** @class */ (function () {
-	    function conflict_FileDisplay() {
-	        var t = conflict_FileDisplay._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<li class=\"file-display\">\n\t<span class=\"path\"> </span>\n\t<span class=\"status\"> </span>\n</li>\n";
-	            t = d.firstElementChild;
-	            conflict_FileDisplay._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            path: n.childNodes[1],
-	            status: n.childNodes[3],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.path) {
-	            console.error("Failed to resolve item path on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("path resolved to ", this.$.path);
-	        }
-	        
-	        
-	        if (!this.$.status) {
-	            console.error("Failed to resolve item status on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("status resolved to ", this.$.status);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return conflict_FileDisplay;
-	}());
-	var conflict_FileListDisplay = /** @class */ (function () {
-	    function conflict_FileListDisplay() {
-	        var t = conflict_FileListDisplay._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<ul class=\"conflict-file-list-display\">\n</ul>\n";
-	            t = d.firstElementChild;
-	            conflict_FileListDisplay._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {};
-	        /*
-	        
-	        */
-	        this.el = n;
-	    }
-	    return conflict_FileListDisplay;
-	}());
-	var conflict_MergeImageEditor = /** @class */ (function () {
-	    function conflict_MergeImageEditor() {
-	        var t = conflict_MergeImageEditor._template;
-	        if (!t) {
-	            var d = document.createElement('div');
-	            d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
-	            t = d.firstElementChild;
-	            conflict_MergeImageEditor._template = t;
-	        }
-	        var n = t.cloneNode(true);
-	        this.$ = {
-	            ours: n.childNodes[1],
-	            theirs: n.childNodes[3],
-	        };
-	        /*
-	        
-	        
-	        if (!this.$.ours) {
-	            console.error("Failed to resolve item ours on path .childNodes[1] of ", n);
-	            debugger;
-	        } else {
-	            console.log("ours resolved to ", this.$.ours);
-	        }
-	        
-	        
-	        if (!this.$.theirs) {
-	            console.error("Failed to resolve item theirs on path .childNodes[3] of ", n);
-	            debugger;
-	        } else {
-	            console.log("theirs resolved to ", this.$.theirs);
-	        }
-	        
-	        */
-	        this.el = n;
-	    }
-	    return conflict_MergeImageEditor;
+	    return FoundationRevealDialog;
 	}());
 	var conflict_MergeInstructions = /** @class */ (function () {
 	    function conflict_MergeInstructions() {
@@ -1359,6 +1243,144 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.el = n;
 	    }
 	    return conflict_MergeInstructions;
+	}());
+	var FileListDialog$1 = /** @class */ (function () {
+	    function FileListDialog() {
+	        var t = FileListDialog._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div>\n\t<h1>Choose a book</h1>\n\t<p>Choose the book you want to output to PDF.</p>\n\t<ul class=\"file-list-dialog-list\">\n\t</ul>\n</div>\n";
+	            t = d.firstElementChild;
+	            FileListDialog._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            list: n.childNodes[5],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.list) {
+	            console.error("Failed to resolve item list on path .childNodes[5] of ", n);
+	            debugger;
+	        } else {
+	            console.log("list resolved to ", this.$.list);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return FileListDialog;
+	}());
+	var conflict_MergeImageEditor = /** @class */ (function () {
+	    function conflict_MergeImageEditor() {
+	        var t = conflict_MergeImageEditor._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div id=\"merge-image-editor\" class=\"merge-image-editor\">\n\t<div>\n\t</div>\n\t<div>\n\t</div>\n</div>\n";
+	            t = d.firstElementChild;
+	            conflict_MergeImageEditor._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            ours: n.childNodes[1],
+	            theirs: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.ours) {
+	            console.error("Failed to resolve item ours on path .childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("ours resolved to ", this.$.ours);
+	        }
+	        
+	        
+	        if (!this.$.theirs) {
+	            console.error("Failed to resolve item theirs on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("theirs resolved to ", this.$.theirs);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return conflict_MergeImageEditor;
+	}());
+	var RepoFileViewerPage$1 = /** @class */ (function () {
+	    function RepoFileViewerPage() {
+	        var t = RepoFileViewerPage._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div class=\"repo-file-viewer\">\n\t<div class=\"searchbar\">\n\t\t<input type=\"text\" placeholder=\"Type to show and filter images, e.g. book/images/web\"/>\n\t</div>\n\t<div class=\"data\">\n\t</div>\n</div>\n";
+	            t = d.firstElementChild;
+	            RepoFileViewerPage._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {
+	            search: n.childNodes[1].childNodes[1],
+	            data: n.childNodes[3],
+	        };
+	        /*
+	        
+	        
+	        if (!this.$.search) {
+	            console.error("Failed to resolve item search on path .childNodes[1].childNodes[1] of ", n);
+	            debugger;
+	        } else {
+	            console.log("search resolved to ", this.$.search);
+	        }
+	        
+	        
+	        if (!this.$.data) {
+	            console.error("Failed to resolve item data on path .childNodes[3] of ", n);
+	            debugger;
+	        } else {
+	            console.log("data resolved to ", this.$.data);
+	        }
+	        
+	        */
+	        this.el = n;
+	    }
+	    return RepoFileViewerPage;
+	}());
+	var PullRequestDiffList_File$1 = /** @class */ (function () {
+	    function PullRequestDiffList_File() {
+	        var t = PullRequestDiffList_File._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<div>\n</div>\n";
+	            t = d.firstElementChild;
+	            PullRequestDiffList_File._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {};
+	        /*
+	        
+	        */
+	        this.el = n;
+	    }
+	    return PullRequestDiffList_File;
+	}());
+	var conflict_FileListDisplay = /** @class */ (function () {
+	    function conflict_FileListDisplay() {
+	        var t = conflict_FileListDisplay._template;
+	        if (!t) {
+	            var d = document.createElement('div');
+	            d.innerHTML = "<ul class=\"conflict-file-list-display\">\n</ul>\n";
+	            t = d.firstElementChild;
+	            conflict_FileListDisplay._template = t;
+	        }
+	        var n = t.cloneNode(true);
+	        this.$ = {};
+	        /*
+	        
+	        */
+	        this.el = n;
+	    }
+	    return conflict_FileListDisplay;
 	}());
 
 	function QuerySelectorAllIterate(el, query) {
@@ -1417,8 +1439,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	// and where the original of that book should be found:
 	// ie copy the ebw electricbook template, or fork an existing
 	// book.
-	var AddNewBookDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(AddNewBookDialog, _super);
+	var AddNewBookDialog = /** @class */ (function (_super) {
+	    tslib.__extends(AddNewBookDialog, _super);
 	    function AddNewBookDialog(parent) {
 	        var _this = _super.call(this) || this;
 	        Eventify(_this.el, {
@@ -1472,10 +1494,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	    };
 	    return AddNewBookDialog;
-	}(AddNewBookDialog));
+	}(AddNewBookDialog$1));
 
 	var TokenDisplay = /** @class */ (function (_super) {
-	    tslib_1.__extends(TokenDisplay, _super);
+	    tslib.__extends(TokenDisplay, _super);
 	    function TokenDisplay(parent, t, list) {
 	        var _this = _super.call(this) || this;
 	        _this.t = t;
@@ -1498,8 +1520,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return TokenDisplay;
 	}(LoginTokenDisplay));
-	var LoginTokenList$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(LoginTokenList, _super);
+	var LoginTokenList = /** @class */ (function (_super) {
+	    tslib.__extends(LoginTokenList, _super);
 	    function LoginTokenList(parent) {
 	        var _this = _super.call(this) || this;
 	        _this.GetTokens().map(function (t) {
@@ -1558,7 +1580,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	    };
 	    return LoginTokenList;
-	}(LoginTokenList));
+	}(LoginTokenList$1));
 
 	var RepoMergeDirectButton = /** @class */ (function () {
 	    function RepoMergeDirectButton(context, el) {
@@ -1651,8 +1673,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	 * signals.Signal that receives 'opened' and 'closed'
 	 * events when the respective action happens on the dialog.
 	 */
-	var FoundationRevealDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(FoundationRevealDialog, _super);
+	var FoundationRevealDialog = /** @class */ (function (_super) {
+	    tslib.__extends(FoundationRevealDialog, _super);
 	    function FoundationRevealDialog(openElement, content) {
 	        var _this = _super.call(this) || this;
 	        _this.Events = new signals.Signal();
@@ -1678,7 +1700,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // the dialog.
 	        document.body.appendChild(_this.el);
 	        // TSFoundation required because Typescript can be really stupid.
-	        TSFoundation.Reveal(_this.$el);
+	        TSFoundation__namespace.Reveal(_this.$el);
 	        return _this;
 	    }
 	    // Set the content of the dialog to the given
@@ -1694,10 +1716,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.$el.foundation('close');
 	    };
 	    return FoundationRevealDialog;
-	}(FoundationRevealDialog));
+	}(FoundationRevealDialog$1));
 
 	var FileListDialogItem = /** @class */ (function (_super) {
-	    tslib_1.__extends(FileListDialogItem, _super);
+	    tslib.__extends(FileListDialogItem, _super);
 	    function FileListDialogItem(path, dialog) {
 	        var _this = _super.call(this) || this;
 	        _this.path = path;
@@ -1718,11 +1740,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return FileListDialogItem;
 	}(FileListDialog_Item));
 
-	var FileListDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(FileListDialog, _super);
+	var FileListDialog = /** @class */ (function (_super) {
+	    tslib.__extends(FileListDialog, _super);
 	    function FileListDialog() {
 	        var _this = _super.call(this) || this;
-	        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+	        _this.dialog = new FoundationRevealDialog(undefined, _this.el);
 	        _this.dialog.Events.add(_this.dialogEvent, _this);
 	        return _this;
 	    }
@@ -1765,10 +1787,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	    };
 	    return FileListDialog;
-	}(FileListDialog));
+	}(FileListDialog$1));
 
-	var PrintListenerTerminal$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(PrintListenerTerminal, _super);
+	var PrintListenerTerminal = /** @class */ (function (_super) {
+	    tslib.__extends(PrintListenerTerminal, _super);
 	    function PrintListenerTerminal() {
 	        var _this = _super.call(this) || this;
 	        var el = document.getElementById('print-listener');
@@ -1811,18 +1833,18 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.scrollBottom();
 	    };
 	    return PrintListenerTerminal;
-	}(PrintListenerTerminal));
+	}(PrintListenerTerminal$1));
 
 	var PrintListener = /** @class */ (function () {
 	    function PrintListener(repoOwner, repoName, book, format) {
+	        var _this = this;
 	        if (book === void 0) { book = "book"; }
 	        if (format === void 0) { format = "print"; }
-	        var _this = this;
 	        this.repoOwner = repoOwner;
 	        this.repoName = repoName;
 	        this.book = book;
 	        this.format = format;
-	        this.listDialog = new FileListDialog$1();
+	        this.listDialog = new FileListDialog();
 	        if ("" == this.book) {
 	            this.book = "book";
 	        }
@@ -1832,7 +1854,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        EBW.API().FindFileLists(repoOwner, repoName).then(function (_a) {
 	            var files = _a[0];
-	            // console.log(`Files directories are `, files);
+	            console.log("Files directories are ", files);
 	            // debugger;
 	            // files.push(files[0]);
 	            if (2 > files.length) {
@@ -1844,6 +1866,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    return Promise.resolve(undefined);
 	                }
 	                else {
+	                    console.log("res.FileList = ", res.FileList);
 	                    return Promise.resolve(res.FileList);
 	                }
 	            });
@@ -1862,7 +1885,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    }
 	    PrintListener.prototype.startListener = function (key) {
 	        var _this = this;
-	        var terminal = new PrintListenerTerminal$1();
+	        var terminal = new PrintListenerTerminal();
 	        var url = document.location.protocol +
 	            "//" +
 	            document.location.host + "/print/sse/" + key;
@@ -1911,8 +1934,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return PrintListener;
 	}());
 
-	var BoundFilename$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(BoundFilename, _super);
+	var BoundFilename = /** @class */ (function (_super) {
+	    tslib.__extends(BoundFilename, _super);
 	    function BoundFilename(repoOwner, repoName, parent, editorElement) {
 	        var _this = _super.call(this) || this;
 	        _this.repoOwner = repoOwner;
@@ -1941,7 +1964,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	    };
 	    return BoundFilename;
-	}(BoundFilename));
+	}(BoundFilename$1));
 
 	var EditorCodeMirror = /** @class */ (function () {
 	    function EditorCodeMirror(parent) {
@@ -1986,7 +2009,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        var r = /\.([^\.]+)$/;
 	        var res = r.exec(filename);
 	        if (res != null && 2 == res.length) {
-	            var suffix = res[1];
+	            res[1];
 	            var modes = new Map();
 	            modes.set('md', 'markdown');
 	            modes.set('js', 'javascript');
@@ -2016,8 +2039,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    parent.appendChild(el);
 	}
 
-	var EditorImage$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(EditorImage, _super);
+	var EditorImage = /** @class */ (function (_super) {
+	    tslib.__extends(EditorImage, _super);
 	    function EditorImage(parent, repoOwner, repoName) {
 	        var _this = _super.call(this) || this;
 	        _this.parent = parent;
@@ -2033,7 +2056,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.el.style.backgroundImage = imageUrl;
 	    };
 	    return EditorImage;
-	}(EditorImage));
+	}(EditorImage$1));
 
 	/**
 	 * FileState provides information on the status of a file
@@ -2170,8 +2193,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	 * a generic editor, but in actual fact turns out to have some
 	 * dependencies upon CodeMirror, and hence isn't entirely generic.
 	 */
-	var RepoFileEditorCM$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(RepoFileEditorCM, _super);
+	var RepoFileEditorCM = /** @class */ (function (_super) {
+	    tslib.__extends(RepoFileEditorCM, _super);
 	    function RepoFileEditorCM(repoOwner, repoName, parent, callbacks, FS) {
 	        var _this = _super.call(this) || this;
 	        _this.parent = parent;
@@ -2182,9 +2205,9 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        new repoEditorActionBar(_this);
 	        _this.Listeners.dispatch(EditorEvent.Loaded());
 	        _this.textEditor = new EditorCodeMirror(_this.$.textEditor);
-	        _this.imageEditor = new EditorImage$1(_this.$.imageEditor, repoOwner, repoName);
+	        _this.imageEditor = new EditorImage(_this.$.imageEditor, repoOwner, repoName);
 	        _this.parent.appendChild(_this.el);
-	        BoundFilename$1.BindAll(repoOwner, repoName);
+	        BoundFilename.BindAll(repoOwner, repoName);
 	        return _this;
 	    }
 	    RepoFileEditorCM.prototype.undoEditorFile = function () {
@@ -2374,7 +2397,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    RepoFileEditorCM.prototype.Rename = function (name) {
 	        var _this = this;
 	        var oldfile = this.file;
-	        var newfile = this.file;
+	        this.file;
 	        return this.FS.Move(oldfile.Name(), name)
 	            .then(function (f) {
 	            return _this.FS.Sync(oldfile.Name())
@@ -2384,7 +2407,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            if (_this.file.Name() == oldfile.Name()) {
 	                _this.Listeners.dispatch(EditorEvent.Unloaded(oldfile));
 	                _this.file = f;
-	                BoundFilename$1.SetFilename(name);
+	                BoundFilename.SetFilename(name);
 	                _this.Listeners.dispatch(EditorEvent.Loaded(_this.file));
 	            }
 	            return Promise.resolve();
@@ -2395,7 +2418,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        if (this.file) {
 	            filename = this.file.Name();
 	        }
-	        BoundFilename$1.SetFilename(filename);
+	        BoundFilename.SetFilename(filename);
 	    };
 	    RepoFileEditorCM.prototype.showImageEditor = function () {
 	        this.$.textEditor.style.display = 'none';
@@ -2406,15 +2429,15 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.$.imageEditor.style.display = 'none';
 	    };
 	    return RepoFileEditorCM;
-	}(RepoFileEditorCM));
+	}(RepoFileEditorCM$1));
 
 	/**
 	 * RepoEditorPage_NewFileDialog displays a new file
 	 * dialog on the RepoPageEditor page.
 	 *
 	 */
-	var RepoEditorPage_NewFileDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(RepoEditorPage_NewFileDialog, _super);
+	var RepoEditorPage_NewFileDialog = /** @class */ (function (_super) {
+	    tslib.__extends(RepoEditorPage_NewFileDialog, _super);
 	    function RepoEditorPage_NewFileDialog(context, openElement, FS, editor) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -2449,7 +2472,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            "change": function (evt) {
 	            }
 	        });
-	        _this.dialog = new FoundationRevealDialog$1(openElement, _this.el);
+	        _this.dialog = new FoundationRevealDialog(openElement, _this.el);
 	        _this.dialog.Events.add(function (act) {
 	            switch (act) {
 	                case DialogEvents.Opened:
@@ -2463,14 +2486,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return _this;
 	    }
 	    return RepoEditorPage_NewFileDialog;
-	}(RepoEditorPage_NewFileDialog));
+	}(RepoEditorPage_NewFileDialog$1));
 
 	/**
 	 * RepoEditorPage_RenameFileDialog displays a Rename file
 	 * dialog on the RepoPageEditor page.
 	 */
-	var RepoEditorPage_RenameFileDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(RepoEditorPage_RenameFileDialog, _super);
+	var RepoEditorPage_RenameFileDialog = /** @class */ (function (_super) {
+	    tslib.__extends(RepoEditorPage_RenameFileDialog, _super);
 	    function RepoEditorPage_RenameFileDialog(context, openElement, editor) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -2488,7 +2511,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            "change": function (evt) {
 	            }
 	        });
-	        _this.dialog = new FoundationRevealDialog$1(openElement, _this.el);
+	        _this.dialog = new FoundationRevealDialog(openElement, _this.el);
 	        _this.dialog.Events.add(function (act) {
 	            switch (act) {
 	                case DialogEvents.Opened:
@@ -2503,7 +2526,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return _this;
 	    }
 	    return RepoEditorPage_RenameFileDialog;
-	}(RepoEditorPage_RenameFileDialog));
+	}(RepoEditorPage_RenameFileDialog$1));
 
 	function SHA1(input) {
 	    var sha = new jsSHA("SHA-1", "TEXT");
@@ -2511,7 +2534,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return sha.getHash("HEX");
 	}
 
-	var File = /** @class */ (function () {
+	var File$1 = /** @class */ (function () {
 	    function File(name, exists, hash, data) {
 	        if (hash === void 0) { hash = undefined; }
 	        if (data === void 0) { data = undefined; }
@@ -2536,7 +2559,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    Object.defineProperty(File.prototype, "path", {
 	        get: function () { return this.name; },
-	        enumerable: true,
+	        enumerable: false,
 	        configurable: true
 	    });
 	    File.prototype.Exists = function () {
@@ -2726,7 +2749,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	 * Not yet synced to the lower FS.
 	 */
 	var MemFS = /** @class */ (function (_super) {
-	    tslib_1.__extends(MemFS, _super);
+	    tslib.__extends(MemFS, _super);
 	    function MemFS(key, parent) {
 	        var _this = _super.call(this, parent) || this;
 	        _this.key = key;
@@ -2771,7 +2794,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	    };
 	    MemFS.prototype.Write = function (path, data) {
-	        var f = new File(path, true, undefined, data);
+	        var f = new File$1(path, true, undefined, data);
 	        this.setCache(f);
 	        return this.setState(f);
 	    };
@@ -2819,7 +2842,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	}(FSImpl));
 
 	var WorkingDirFS = /** @class */ (function (_super) {
-	    tslib_1.__extends(WorkingDirFS, _super);
+	    tslib.__extends(WorkingDirFS, _super);
 	    function WorkingDirFS(context, parent) {
 	        var _this = _super.call(this, parent) || this;
 	        _this.context = context;
@@ -2832,7 +2855,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            .ReadFileData(this.context.RepoOwner, this.context.RepoName, "our-wd", path)
 	            .then(function (_a) {
 	            var w = _a[0];
-	            var f = File.FromWireFile(w);
+	            var f = File$1.FromWireFile(w);
 	            return _this.setState(f);
 	        });
 	    };
@@ -2841,14 +2864,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return this.context.API()
 	            .WriteAndStageFile(this.context.RepoOwner, this.context.RepoName, path, data).then(function (_a) {
 	            var w = _a[0];
-	            return _this.setState(File.FromWireFile(w));
+	            return _this.setState(File$1.FromWireFile(w));
 	        });
 	    };
 	    WorkingDirFS.prototype.Remove = function (path) {
 	        var _this = this;
 	        return this.context.API()
 	            .RemoveAndStageFile(this.context.RepoOwner, this.context.RepoName, path)
-	            .then(function () { return _this.setState(new File(path, false)); });
+	            .then(function () { return _this.setState(new File$1(path, false)); });
 	    };
 	    WorkingDirFS.prototype.Sync = function (path) {
 	        var _this = this;
@@ -2862,7 +2885,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            .RevertFile(this.context.RepoOwner, this.context.RepoName, path)
 	            .then(function (_a) {
 	            var w = _a[0];
-	            return setState(File.FromWireFile(w));
+	            return setState(File$1.FromWireFile(w));
 	        });
 	    };
 	    return WorkingDirFS;
@@ -2873,7 +2896,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	 * a path.
 	 */
 	var NotifyFS = /** @class */ (function (_super) {
-	    tslib_1.__extends(NotifyFS, _super);
+	    tslib.__extends(NotifyFS, _super);
 	    function NotifyFS(parent) {
 	        var _this = _super.call(this, parent) || this;
 	        _this.parent = parent;
@@ -2923,7 +2946,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	// cache. All Writes, Syncs, etc are passed transparently through. For all intents and
 	// purposes - except caching - it is transparent.
 	var ReadCacheFS = /** @class */ (function (_super) {
-	    tslib_1.__extends(ReadCacheFS, _super);
+	    tslib.__extends(ReadCacheFS, _super);
 	    function ReadCacheFS(key, parent) {
 	        var _this = _super.call(this, parent) || this;
 	        _this.key = key;
@@ -2944,7 +2967,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        if (null == js) {
 	            return undefined;
 	        }
-	        return File.Deserialize(js);
+	        return File$1.Deserialize(js);
 	    };
 	    ReadCacheFS.prototype.Name = function () { return this.parent.Name(); };
 	    ReadCacheFS.prototype.Read = function (path) {
@@ -3583,7 +3606,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return FileSystemView;
 	}());
 	var NodeView = /** @class */ (function (_super) {
-	    tslib_1.__extends(NodeView, _super);
+	    tslib.__extends(NodeView, _super);
 	    function NodeView(FSV, node, parent, ignoreFunction, styler) {
 	        var _this = _super.call(this) || this;
 	        _this.FSV = FSV;
@@ -3596,7 +3619,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            _this.$.close.addEventListener("click", function (evt) {
 	                evt.preventDefault();
 	                evt.stopPropagation();
-	                var c = _this.$.children;
+	                _this.$.children;
 	                _this.el.classList.toggle("closed");
 	                _this.FSV.setClosed(_this.node, _this.el.classList.contains("closed"));
 	            });
@@ -3690,7 +3713,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                .catch(EBW.Error);
 	        });
 	        this.View.prepopulate(filesAndHashes.map(function (_a) {
-	            var p = _a[0], h = _a[1];
+	            var p = _a[0]; _a[1];
 	            return p;
 	        }));
 	        this.editor.Listeners.add(this.EditorEvent, this);
@@ -3760,14 +3783,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.FS = new NotifyFS(memFS);
 	        this.Root = new Node(null, "", NodeType.DIR, null);
 	        this.editor = undefined;
-	        this.editor = new RepoFileEditorCM$1(context.RepoOwner, context.RepoName, document.getElementById('editor'), {
+	        this.editor = new RepoFileEditorCM(context.RepoOwner, context.RepoName, document.getElementById('editor'), {
 	            Rename: function () {
 	                return;
 	            }
 	        }, this.FS);
 	        new FileSystemConnector(this.context, filesListElement, this.editor, this.FS, this.proseIgnoreFunction, filesJson, this.Root, filesAndHashes);
-	        new RepoEditorPage_NewFileDialog$1(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
-	        new RepoEditorPage_RenameFileDialog$1(this.context, document.getElementById("editor-rename-button"), this.editor);
+	        new RepoEditorPage_NewFileDialog(this.context, document.getElementById('repo-new-file'), this.FS, this.editor);
+	        new RepoEditorPage_RenameFileDialog(this.context, document.getElementById("editor-rename-button"), this.editor);
 	        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
 	            // Toggle body class
 	            document.body.classList.toggle('editorMaximised');
@@ -3885,7 +3908,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	// All communication with the conflicted file occurs through this single
 	// class, which will coordinate any other internal-classes that it might need,
 	// like the file status.
-	var File$1 = /** @class */ (function () {
+	var File = /** @class */ (function () {
 	    function File(context, path, status) {
 	        this.context = context;
 	        this.path = path;
@@ -3949,7 +3972,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return this.context.API()
 	            .MergedFileGit(this.context.RepoOwner, this.context.RepoName, this.path)
 	            .then(function (_a) {
-	            var automerged = _a[0], text = _a[1];
+	            _a[0]; var text = _a[1];
 	            var gitFile = new FileContent(true, text);
 	            _this.cache.set("git", gitFile);
 	            _this.ListenRPC.dispatch(source, false, "FetchGit");
@@ -4087,7 +4110,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // I expect js to be an array of {Path:string, Status:string}
 	        for (var _i = 0, js_1 = js; _i < js_1.length; _i++) {
 	            var j = js_1[_i];
-	            var f = new File$1(this.context, j.Path, j.Status);
+	            var f = new File(this.context, j.Path, j.Status);
 	            this.files.push(f);
 	            this.Listen.dispatch(FileListEvent.FileNew, f);
 	        }
@@ -4100,7 +4123,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    FileDisplayEvent[FileDisplayEvent["FileClick"] = 0] = "FileClick";
 	})(FileDisplayEvent || (FileDisplayEvent = {}));
 	var FileDisplay = /** @class */ (function (_super) {
-	    tslib_1.__extends(FileDisplay, _super);
+	    tslib.__extends(FileDisplay, _super);
 	    function FileDisplay(context, parent, file, mergingInfo) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -4151,7 +4174,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    FileListDisplayEvent[FileListDisplayEvent["FileClick"] = 0] = "FileClick";
 	})(FileListDisplayEvent || (FileListDisplayEvent = {}));
 	var FileListDisplay = /** @class */ (function (_super) {
-	    tslib_1.__extends(FileListDisplay, _super);
+	    tslib.__extends(FileListDisplay, _super);
 	    function FileListDisplay(context, parent, fileList, mergingInfo) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -4341,7 +4364,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	 * the one they wish to keep as the merge result.
 	 */
 	var MergeImageEditor = /** @class */ (function (_super) {
-	    tslib_1.__extends(MergeImageEditor, _super);
+	    tslib.__extends(MergeImageEditor, _super);
 	    function MergeImageEditor(context, parent, path) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -4365,7 +4388,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                    p = api.SaveTheirHeadToWd(context.RepoOwner, context.RepoName, path);
 	                }
 	                p.then(function () {
-	                    var ours = evt.detail.V;
+	                    evt.detail.V;
 	                    _this.ours.select(ourVersion);
 	                    _this.theirs.select(!ourVersion);
 	                    _this.apiInFlight = false;
@@ -4542,7 +4565,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        if (this.file) {
 	            var f_1 = this.file;
-	            var w = this.getWorkingText();
+	            this.getWorkingText();
 	            // We pass ourselves as the source, so that we don't update
 	            // our editor when the change event arrives
 	            this.file.SetWorkingContent(this, this.isWorkingDeleted() ? undefined : this.getWorkingText());
@@ -4606,7 +4629,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // sends its signals that the content has changed.
 	        // However, because we configure ourselves as the source,
 	        // if we were listening, it shouldn't be a problem...
-	        var p = file.FetchContent(this)
+	        file.FetchContent(this)
 	            .then(function () {
 	            return Promise.all([file.WorkingFile(), file.TheirFile()]);
 	        })
@@ -4670,7 +4693,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	}());
 
 	var MergeInstructions = /** @class */ (function (_super) {
-	    tslib_1.__extends(MergeInstructions, _super);
+	    tslib.__extends(MergeInstructions, _super);
 	    function MergeInstructions(parent, editor) {
 	        var _this = _super.call(this) || this;
 	        if (!parent) {
@@ -4689,12 +4712,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return MergeInstructions;
 	}(conflict_MergeInstructions));
 
-	var CommitMessageDialog$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(CommitMessageDialog, _super);
+	var CommitMessageDialog = /** @class */ (function (_super) {
+	    tslib.__extends(CommitMessageDialog, _super);
 	    function CommitMessageDialog(clearOnOpen) {
 	        var _this = _super.call(this) || this;
 	        _this.clearOnOpen = clearOnOpen;
-	        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+	        _this.dialog = new FoundationRevealDialog(undefined, _this.el);
 	        _this.dialog.Events.add(_this.dialogEvent, _this);
 	        _this.$.commit.addEventListener("click", function (evt) {
 	            evt.stopPropagation();
@@ -4737,10 +4760,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        });
 	    };
 	    return CommitMessageDialog;
-	}(CommitMessageDialog));
+	}(CommitMessageDialog$1));
 
 	var ClosePRDialog = /** @class */ (function (_super) {
-	    tslib_1.__extends(ClosePRDialog, _super);
+	    tslib.__extends(ClosePRDialog, _super);
 	    function ClosePRDialog(clearOnOpen) {
 	        var _this = _super.call(this) || this;
 	        // firstOpen is set false after the first time the dialog is opened.
@@ -4748,7 +4771,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // or to go with the user's settings if this is not the first usage.
 	        _this.firstOpen = true;
 	        _this.clearOnOpen = clearOnOpen;
-	        _this.dialog = new FoundationRevealDialog$1(undefined, _this.el);
+	        _this.dialog = new FoundationRevealDialog(undefined, _this.el);
 	        _this.dialog.Events.add(_this.dialogEvent, _this);
 	        Eventify(_this.el, {
 	            "change": function (evt) {
@@ -4901,7 +4924,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        if (this.file) {
 	            var f_1 = this.file;
-	            var w = this.getWorkingText();
+	            this.getWorkingText();
 	            // We pass ourselves as the source, so that we don't update
 	            // our editor when the change event arrives
 	            this.file.SetWorkingContent(this, this.isWorkingDeleted() ? undefined :
@@ -4965,7 +4988,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // sends its signals that the content has changed.
 	        // However, because we configure ourselves as the source,
 	        // if we were listening, it shouldn't be a problem...
-	        var p = file.FetchContent(this)
+	        file.FetchContent(this)
 	            .then(function () {
 	            return Promise.all([file.WorkingFile(), file.TheirFile()]);
 	        })
@@ -5024,7 +5047,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        // items to be hidden in a PR merge or a not-pr-merge are controlled
 	        // by CSS visibility based on whether they have a .pr-merge or .not-pr-merge
 	        // class
-	        this.commitDialog = new CommitMessageDialog$1(false);
+	        this.commitDialog = new CommitMessageDialog(false);
 	        new ControlTag(document.getElementById("files-show-tag"), function (showing) {
 	            var el = document.getElementById("files");
 	            // Toggle 'showing' class
@@ -5105,8 +5128,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return RepoConflictPage;
 	}());
 
-	var MergeEditor$2 = /** @class */ (function (_super) {
-	    tslib_1.__extends(MergeEditor, _super);
+	var MergeEditor = /** @class */ (function (_super) {
+	    tslib.__extends(MergeEditor, _super);
 	    function MergeEditor(parent, model) {
 	        var _this = _super.call(this) || this;
 	        _this.parent = parent;
@@ -5133,7 +5156,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    MergeEditor.prototype.mergely = function (_a) {
 	        var _this = this;
-	        var local = _a[0], remote = _a[1], diff = _a[2];
+	        var local = _a[0], remote = _a[1]; _a[2];
 	        this.$.mergely.textContent = "";
 	        this.mergelyDiv = document.createElement("div");
 	        this.$.mergely.appendChild(this.mergelyDiv);
@@ -5169,7 +5192,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        console.log('right hand cm = ', right);
 	    };
 	    return MergeEditor;
-	}(MergeEditor));
+	}(MergeEditor$2));
 
 	var PRDiffModel = /** @class */ (function () {
 	    function PRDiffModel(diff, prArgs) {
@@ -5197,8 +5220,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return PRDiffModel;
 	}());
 
-	var PullRequestDiffList_File$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(PullRequestDiffList_File, _super);
+	var PullRequestDiffList_File = /** @class */ (function (_super) {
+	    tslib.__extends(PullRequestDiffList_File, _super);
 	    function PullRequestDiffList_File(parent, diff, callback) {
 	        var _this = _super.call(this) || this;
 	        _this.parent = parent;
@@ -5212,7 +5235,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return _this;
 	    }
 	    return PullRequestDiffList_File;
-	}(PullRequestDiffList_File));
+	}(PullRequestDiffList_File$1));
 
 	var PullRequestMergePage = /** @class */ (function () {
 	    function PullRequestMergePage(diffs, prArgs, filesParent, mergelyParent) {
@@ -5229,14 +5252,14 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            var d = diffs_1[_i];
 	            var diff = new PRDiffModel(d, prArgs);
 	            this.files.push(diff);
-	            new PullRequestDiffList_File$1(this.filesParent, diff, function (d) {
+	            new PullRequestDiffList_File(this.filesParent, diff, function (d) {
 	                _this.viewDiff(d);
 	            });
 	        }
 	    }
 	    PullRequestMergePage.prototype.viewDiff = function (diff) {
 	        this.mergelyParent.textContent = '';
-	        new MergeEditor$2(this.mergelyParent, diff);
+	        new MergeEditor(this.mergelyParent, diff);
 	    };
 	    PullRequestMergePage.instantiate = function () {
 	        var pr = document.getElementById('pr-merge-page');
@@ -5286,8 +5309,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return CommitSummaryList;
 	}());
 
-	var CommitSummaryView$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(CommitSummaryView, _super);
+	var CommitSummaryView = /** @class */ (function (_super) {
+	    tslib.__extends(CommitSummaryView, _super);
 	    function CommitSummaryView(parent) {
 	        var _this = _super.call(this) || this;
 	        parent.appendChild(_this.el);
@@ -5326,10 +5349,10 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        console.log("toggled selected state on ", this.el);
 	    };
 	    return CommitSummaryView;
-	}(CommitSummaryView));
+	}(CommitSummaryView$1));
 
-	var CommitSummaryListView$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(CommitSummaryListView, _super);
+	var CommitSummaryListView = /** @class */ (function (_super) {
+	    tslib.__extends(CommitSummaryListView, _super);
 	    function CommitSummaryListView(parent, list) {
 	        var _this = _super.call(this) || this;
 	        parent.appendChild(_this.el);
@@ -5346,11 +5369,11 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return _this;
 	    }
 	    CommitSummaryListView.prototype.addCommit = function (c) {
-	        var csv = new CommitSummaryView$1(this.$.summaries);
+	        var csv = new CommitSummaryView(this.$.summaries);
 	        csv.set(c);
 	    };
 	    return CommitSummaryListView;
-	}(CommitSummaryListView));
+	}(CommitSummaryListView$1));
 
 	var RepoDiffDatesForm = /** @class */ (function () {
 	    function RepoDiffDatesForm(context) {
@@ -5400,8 +5423,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        this.context = context;
 	        var commits = JSON.parse(document.getElementById('commit-summaries').innerText);
 	        var summaries = new CommitSummaryList();
-	        var fromList = new CommitSummaryListView$1(document.getElementById("commit-from"), summaries);
-	        var toList = new CommitSummaryListView$1(document.getElementById("commit-to"), summaries);
+	        var fromList = new CommitSummaryListView(document.getElementById("commit-from"), summaries);
+	        var toList = new CommitSummaryListView(document.getElementById("commit-to"), summaries);
 	        commits.forEach(function (c) {
 	            summaries.add(new CommitSummary(c.When, c.OID, c.Message));
 	        });
@@ -5542,8 +5565,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    return DOMInsert;
 	}());
 
-	var RepoFileViewerFile$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(RepoFileViewerFile, _super);
+	var RepoFileViewerFile = /** @class */ (function (_super) {
+	    tslib.__extends(RepoFileViewerFile, _super);
 	    function RepoFileViewerFile(context, filename, parent, page) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
@@ -5604,7 +5627,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        return "" == this.filename;
 	    };
 	    return RepoFileViewerFile;
-	}(RepoFileViewerFile));
+	}(RepoFileViewerFile$1));
 
 	var EditField = /** @class */ (function () {
 	    function EditField(el, page) {
@@ -5643,12 +5666,12 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	    };
 	    return LoadFiles;
 	}());
-	var RepoFileViewerPage$1 = /** @class */ (function (_super) {
-	    tslib_1.__extends(RepoFileViewerPage, _super);
+	var RepoFileViewerPage = /** @class */ (function (_super) {
+	    tslib.__extends(RepoFileViewerPage, _super);
 	    function RepoFileViewerPage(context, parent) {
 	        var _this = _super.call(this) || this;
 	        _this.context = context;
-	        _this.add = new RepoFileViewerFile$1(_this.context, "", new DOMInsert(_this.$.data), _this);
+	        _this.add = new RepoFileViewerFile(_this.context, "", new DOMInsert(_this.$.data), _this);
 	        _this.inserter = new DOMInsert(function (el) {
 	            // Insert file after the drag-and-drop box
 	            _this.$.data.appendChild(el);
@@ -5675,7 +5698,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	        for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
 	            var f = files_1[_i];
-	            new RepoFileViewerFile$1(this.context, f, this.inserter, this);
+	            new RepoFileViewerFile(this.context, f, this.inserter, this);
 	        }
 	    };
 	    RepoFileViewerPage.prototype._uploadFile = function (src, file) {
@@ -5714,7 +5737,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                        src.Refresh();
 	                    }
 	                    else {
-	                        new RepoFileViewerFile$1(_this.context, s, _this.inserter, _this);
+	                        new RepoFileViewerFile(_this.context, s, _this.inserter, _this);
 	                    }
 	                    EBW.Toast("Image uploaded");
 	                }
@@ -5747,7 +5770,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	        }
 	    };
 	    return RepoFileViewerPage;
-	}(RepoFileViewerPage));
+	}(RepoFileViewerPage$1));
 
 	var EBW = /** @class */ (function () {
 	    function EBW() {
@@ -5759,7 +5782,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            EBW.instance = this;
 	            this.api = new APIWs();
 	            jQuery(document).foundation();
-	            LoginTokenList$1.init();
+	            LoginTokenList.init();
 	            var el = document.getElementById("ebw-context");
 	            var context = void 0;
 	            if (el) {
@@ -5778,7 +5801,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	                        new RepoDiffFileViewerPage(context, document.getElementById("all-files-editor"), window.pageData);
 	                        break;
 	                    case 'RepoFileViewerPage':
-	                        new RepoFileViewerPage$1(context, document.getElementById("repo-file-viewer"));
+	                        new RepoFileViewerPage(context, document.getElementById("repo-file-viewer"));
 	                        break;
 	                    case 'RepoEditorPage':
 	                        new RepoEditorPage(context, document.querySelector("[data-instance='AllFilesList']"), window.repoEditorData.files, window.repoEditorData.ignoreFilter, window.repoEditorData.filesAndHashes);
@@ -5790,7 +5813,7 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	            }
 	            /* TODO: This should actually use a Router
 	               to determine what content we have. */
-	            AddNewBookDialog$1.instantiate();
+	            AddNewBookDialog.instantiate();
 	            PullRequestMergePage.instantiate();
 	        }
 	        return EBW.instance;
@@ -5838,6 +5861,8 @@ var EBW = (function (exports, tslib_1, TSFoundation) {
 	});
 
 	exports.EBW = EBW;
+
+	Object.defineProperty(exports, '__esModule', { value: true });
 
 	return exports;
 

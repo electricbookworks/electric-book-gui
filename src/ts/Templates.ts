@@ -1,36 +1,78 @@
 // dtemplate generated - do not edit
 export namespace EL {
-	export type AddNewBookDialog =	HTMLUnknownElement;
 	export type BoundFilename =	HTMLUnknownElement;
+	export type PrintListenerTerminal =	HTMLUnknownElement;
+	export type conflict_FileDisplay =	HTMLUnknownElement;
+	export type RepoMergeDialog =	HTMLUnknownElement;
 	export type CommitMessageDialog =	HTMLUnknownElement;
+	export type RepoEditorPage_NewFileDialog =	HTMLUnknownElement;
+	export type conflict_ClosePRDialog =	HTMLUnknownElement;
+	export type Tree_NodeView =	HTMLUnknownElement;
+	export type AddNewBookDialog =	HTMLUnknownElement;
 	export type CommitSummaryListView =	HTMLUnknownElement;
-	export type CommitSummaryView =	HTMLUnknownElement;
-	export type EditorImage =	HTMLUnknownElement;
-	export type FSFileList_File =	HTMLUnknownElement;
-	export type FileListDialog =	HTMLUnknownElement;
-	export type FileListDialog_Item =	HTMLUnknownElement;
-	export type FileTree_Dir =	HTMLUnknownElement;
-	export type FoundationRevealDialog =	HTMLUnknownElement;
+	export type RepoEditorPage_RenameFileDialog =	HTMLUnknownElement;
 	export type LoginTokenDisplay =	HTMLUnknownElement;
 	export type LoginTokenList =	HTMLUnknownElement;
+	export type FileListDialog_Item =	HTMLUnknownElement;
+	export type FileTree_Dir =	HTMLUnknownElement;
 	export type MergeEditor =	HTMLUnknownElement;
-	export type PrintListenerTerminal =	HTMLUnknownElement;
-	export type PullRequestDiffList_File =	HTMLUnknownElement;
-	export type RepoEditorPage_NewFileDialog =	HTMLUnknownElement;
-	export type RepoEditorPage_RenameFileDialog =	HTMLUnknownElement;
 	export type RepoFileEditorCM =	HTMLUnknownElement;
+	export type EditorImage =	HTMLUnknownElement;
+	export type FSFileList_File =	HTMLUnknownElement;
 	export type RepoFileViewerFile =	HTMLUnknownElement;
-	export type RepoFileViewerPage =	HTMLUnknownElement;
-	export type RepoMergeDialog =	HTMLUnknownElement;
-	export type Tree_NodeView =	HTMLUnknownElement;
-	export type conflict_ClosePRDialog =	HTMLUnknownElement;
-	export type conflict_FileDisplay =	HTMLUnknownElement;
-	export type conflict_FileListDisplay =	HTMLUnknownElement;
-	export type conflict_MergeImageEditor =	HTMLUnknownElement;
+	export type CommitSummaryView =	HTMLUnknownElement;
+	export type FoundationRevealDialog =	HTMLUnknownElement;
 	export type conflict_MergeInstructions =	HTMLUnknownElement;
+	export type FileListDialog =	HTMLUnknownElement;
+	export type conflict_MergeImageEditor =	HTMLUnknownElement;
+	export type RepoFileViewerPage =	HTMLUnknownElement;
+	export type PullRequestDiffList_File =	HTMLUnknownElement;
+	export type conflict_FileListDisplay =	HTMLUnknownElement;
 	
 }
 export namespace R {
+	export interface BoundFilename {
+		filename: HTMLSpanElement,
+		};
+	export interface PrintListenerTerminal {
+		header: HTMLDivElement,
+		title: HTMLDivElement,
+		close: HTMLDivElement,
+		terminal: HTMLDivElement,
+		};
+	export interface conflict_FileDisplay {
+		path: HTMLSpanElement,
+		status: HTMLSpanElement,
+		};
+	export interface RepoMergeDialog {
+		title: HTMLHeadingElement,
+		resolveOur: HTMLInputElement,
+		resolveGit: HTMLInputElement,
+		resolveTheir: HTMLInputElement,
+		conflicted: HTMLInputElement,
+		mergeButton: HTMLButtonElement,
+		};
+	export interface CommitMessageDialog {
+		title: HTMLHeadingElement,
+		instructions: HTMLDivElement,
+		message: HTMLInputElement,
+		commit: HTMLButtonElement,
+		};
+	export interface RepoEditorPage_NewFileDialog {
+		filename: HTMLInputElement,
+		};
+	export interface conflict_ClosePRDialog {
+		title: HTMLHeadingElement,
+		instructions: HTMLDivElement,
+		closePR_no: HTMLInputElement,
+		closePR_yes: HTMLInputElement,
+		closeMessage: HTMLInputElement,
+		};
+	export interface Tree_NodeView {
+		close: HTMLSpanElement,
+		name: HTMLSpanElement,
+		children: HTMLDivElement,
+		};
 	export interface AddNewBookDialog {
 		chooseType: HTMLDivElement,
 		newBookRadio: HTMLInputElement,
@@ -49,40 +91,13 @@ export namespace R {
 		collaborate_repo: HTMLInputElement,
 		private_collaborate: HTMLInputElement,
 		};
-	export interface BoundFilename {
-		filename: HTMLSpanElement,
-		};
-	export interface CommitMessageDialog {
-		title: HTMLHeadingElement,
-		instructions: HTMLDivElement,
-		message: HTMLInputElement,
-		commit: HTMLButtonElement,
-		};
 	export interface CommitSummaryListView {
 		summaries: HTMLDivElement,
 		};
-	export interface CommitSummaryView {
-		when: HTMLDivElement,
-		message: HTMLDivElement,
-		};
-	export interface EditorImage {
-		};
-	export interface FSFileList_File {
-		name: HTMLDivElement,
-		};
-	export interface FileListDialog {
-		list: HTMLUListElement,
-		};
-	export interface FileListDialog_Item {
-		input: HTMLInputElement,
-		title: HTMLLabelElement,
-		};
-	export interface FileTree_Dir {
-		name: HTMLDivElement,
-		elements: HTMLDivElement,
-		};
-	export interface FoundationRevealDialog {
-		content: HTMLDivElement,
+	export interface RepoEditorPage_RenameFileDialog {
+		error: HTMLDivElement,
+		current_name: HTMLSpanElement,
+		filename: HTMLInputElement,
 		};
 	export interface LoginTokenDisplay {
 		link: HTMLAnchorElement,
@@ -94,66 +109,36 @@ export namespace R {
 		add: HTMLButtonElement,
 		list: HTMLUListElement,
 		};
+	export interface FileListDialog_Item {
+		input: HTMLInputElement,
+		title: HTMLLabelElement,
+		};
+	export interface FileTree_Dir {
+		name: HTMLDivElement,
+		elements: HTMLDivElement,
+		};
 	export interface MergeEditor {
 		mergely: HTMLDivElement,
-		};
-	export interface PrintListenerTerminal {
-		header: HTMLDivElement,
-		title: HTMLDivElement,
-		close: HTMLDivElement,
-		terminal: HTMLDivElement,
-		};
-	export interface PullRequestDiffList_File {
-		};
-	export interface RepoEditorPage_NewFileDialog {
-		filename: HTMLInputElement,
-		};
-	export interface RepoEditorPage_RenameFileDialog {
-		error: HTMLDivElement,
-		current_name: HTMLSpanElement,
-		filename: HTMLInputElement,
 		};
 	export interface RepoFileEditorCM {
 		textEditor: HTMLDivElement,
 		imageEditor: HTMLDivElement,
 		};
+	export interface EditorImage {
+		};
+	export interface FSFileList_File {
+		name: HTMLDivElement,
+		};
 	export interface RepoFileViewerFile {
 		img: HTMLImageElement,
 		filename: HTMLDivElement,
 		};
-	export interface RepoFileViewerPage {
-		search: HTMLInputElement,
-		data: HTMLDivElement,
+	export interface CommitSummaryView {
+		when: HTMLDivElement,
+		message: HTMLDivElement,
 		};
-	export interface RepoMergeDialog {
-		title: HTMLHeadingElement,
-		resolveOur: HTMLInputElement,
-		resolveGit: HTMLInputElement,
-		resolveTheir: HTMLInputElement,
-		conflicted: HTMLInputElement,
-		mergeButton: HTMLButtonElement,
-		};
-	export interface Tree_NodeView {
-		close: HTMLSpanElement,
-		name: HTMLSpanElement,
-		children: HTMLDivElement,
-		};
-	export interface conflict_ClosePRDialog {
-		title: HTMLHeadingElement,
-		instructions: HTMLDivElement,
-		closePR_no: HTMLInputElement,
-		closePR_yes: HTMLInputElement,
-		closeMessage: HTMLInputElement,
-		};
-	export interface conflict_FileDisplay {
-		path: HTMLSpanElement,
-		status: HTMLSpanElement,
-		};
-	export interface conflict_FileListDisplay {
-		};
-	export interface conflict_MergeImageEditor {
-		ours: HTMLDivElement,
-		theirs: HTMLDivElement,
+	export interface FoundationRevealDialog {
+		content: HTMLDivElement,
 		};
 	export interface conflict_MergeInstructions {
 		show: HTMLDivElement,
@@ -161,8 +146,512 @@ export namespace R {
 		theirSide: HTMLSpanElement,
 		ourSide: HTMLSpanElement,
 		};
+	export interface FileListDialog {
+		list: HTMLUListElement,
+		};
+	export interface conflict_MergeImageEditor {
+		ours: HTMLDivElement,
+		theirs: HTMLDivElement,
+		};
+	export interface RepoFileViewerPage {
+		search: HTMLInputElement,
+		data: HTMLDivElement,
+		};
+	export interface PullRequestDiffList_File {
+		};
+	export interface conflict_FileListDisplay {
+		};
 	
 }	// end namespace R
+export class BoundFilename {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.BoundFilename;
+	constructor() {
+		let t = BoundFilename._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="bound-filename">
+	<span class="bound-filename-text">Select a file to edit</span>
+	<!-- <a href="#" data-set="a" target="_github"><img src="/img/github-dark.svg" /></a> -->
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			BoundFilename._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			filename: n.childNodes[1] as HTMLSpanElement,
+		};
+		/*
+		
+		
+		if (!this.$.filename) {
+			console.error("Failed to resolve item filename on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("filename resolved to ", this.$.filename);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class PrintListenerTerminal {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.PrintListenerTerminal;
+	constructor() {
+		let t = PrintListenerTerminal._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div id="print-listener">
+	<div class="header">
+		<div class="title">Printing in progress …
+		</div>
+		<div class="close">×</div>
+	</div>
+	<div class="terminal">
+	</div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			PrintListenerTerminal._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			header: n.childNodes[1] as HTMLDivElement,
+			title: n.childNodes[1].childNodes[1] as HTMLDivElement,
+			close: n.childNodes[1].childNodes[3] as HTMLDivElement,
+			terminal: n.childNodes[3] as HTMLDivElement,
+		};
+		/*
+		
+		
+		if (!this.$.header) {
+			console.error("Failed to resolve item header on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("header resolved to ", this.$.header);
+		}
+		
+		
+		if (!this.$.title) {
+			console.error("Failed to resolve item title on path .childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("title resolved to ", this.$.title);
+		}
+		
+		
+		if (!this.$.close) {
+			console.error("Failed to resolve item close on path .childNodes[1].childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("close resolved to ", this.$.close);
+		}
+		
+		
+		if (!this.$.terminal) {
+			console.error("Failed to resolve item terminal on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("terminal resolved to ", this.$.terminal);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class conflict_FileDisplay {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.conflict_FileDisplay;
+	constructor() {
+		let t = conflict_FileDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<li class="file-display">
+	<span class="path"> </span>
+	<span class="status"> </span>
+</li>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			conflict_FileDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			path: n.childNodes[1] as HTMLSpanElement,
+			status: n.childNodes[3] as HTMLSpanElement,
+		};
+		/*
+		
+		
+		if (!this.$.path) {
+			console.error("Failed to resolve item path on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("path resolved to ", this.$.path);
+		}
+		
+		
+		if (!this.$.status) {
+			console.error("Failed to resolve item status on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("status resolved to ", this.$.status);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class RepoMergeDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.RepoMergeDialog;
+	constructor() {
+		let t = RepoMergeDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+	<h1>Updating a Repo</h1>
+	<p>How do you want to try this merge?</p>
+	<fieldset>
+		<label for="resolveOur">
+			<input name="resolve" value="our" id="resolveOur" type="radio"/>
+			I will do the merge.
+		</label>
+		<label for="resolveGit">
+			<input type="radio" name="resolve" value="git" id="resolveGit"/>
+			Git can try to merge.
+		</label>
+		<label for="resolveTheir">
+			<input type="radio" name="resolve" value="their" id="resolveTheir"/>
+			Choose their files by preference.
+		</label>
+	</fieldset>
+	<label for="conflicted">
+		<input type="checkbox" name="conflicted" value="only" id="conflicted"/>
+			Only apply above resolution to conflicted files.
+	</label>
+	<button data-event="click:" class="btn">Do the Merge</button>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			RepoMergeDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			title: n.childNodes[1] as HTMLHeadingElement,
+			resolveOur: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
+			resolveGit: n.childNodes[5].childNodes[3].childNodes[1] as HTMLInputElement,
+			resolveTheir: n.childNodes[5].childNodes[5].childNodes[1] as HTMLInputElement,
+			conflicted: n.childNodes[7].childNodes[1] as HTMLInputElement,
+			mergeButton: n.childNodes[9] as HTMLButtonElement,
+		};
+		/*
+		
+		
+		if (!this.$.title) {
+			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("title resolved to ", this.$.title);
+		}
+		
+		
+		if (!this.$.resolveOur) {
+			console.error("Failed to resolve item resolveOur on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("resolveOur resolved to ", this.$.resolveOur);
+		}
+		
+		
+		if (!this.$.resolveGit) {
+			console.error("Failed to resolve item resolveGit on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("resolveGit resolved to ", this.$.resolveGit);
+		}
+		
+		
+		if (!this.$.resolveTheir) {
+			console.error("Failed to resolve item resolveTheir on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("resolveTheir resolved to ", this.$.resolveTheir);
+		}
+		
+		
+		if (!this.$.conflicted) {
+			console.error("Failed to resolve item conflicted on path .childNodes[7].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("conflicted resolved to ", this.$.conflicted);
+		}
+		
+		
+		if (!this.$.mergeButton) {
+			console.error("Failed to resolve item mergeButton on path .childNodes[9] of ", n);
+			debugger;
+		} else {
+			console.log("mergeButton resolved to ", this.$.mergeButton);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class CommitMessageDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.CommitMessageDialog;
+	constructor() {
+		let t = CommitMessageDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+	<h1>Title</h1>
+	<div>Instructions</div>
+	<fieldset>
+		<label for="commitMessage">Describe your changes
+		<input type="text" name="commitMessage" id="commitMessage"/>
+		</label>
+	</fieldset>
+	<button class="btn">Commit</button>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			CommitMessageDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			title: n.childNodes[1] as HTMLHeadingElement,
+			instructions: n.childNodes[3] as HTMLDivElement,
+			message: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
+			commit: n.childNodes[7] as HTMLButtonElement,
+		};
+		/*
+		
+		
+		if (!this.$.title) {
+			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("title resolved to ", this.$.title);
+		}
+		
+		
+		if (!this.$.instructions) {
+			console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("instructions resolved to ", this.$.instructions);
+		}
+		
+		
+		if (!this.$.message) {
+			console.error("Failed to resolve item message on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("message resolved to ", this.$.message);
+		}
+		
+		
+		if (!this.$.commit) {
+			console.error("Failed to resolve item commit on path .childNodes[7] of ", n);
+			debugger;
+		} else {
+			console.log("commit resolved to ", this.$.commit);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class RepoEditorPage_NewFileDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.RepoEditorPage_NewFileDialog;
+	constructor() {
+		let t = RepoEditorPage_NewFileDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+	<fieldset>
+		<label>
+			Enter the full path and filename for your new file.
+			<input placeholder="book/text/chapter-7.md" data-event="change" type="text"/>
+		</label>
+	</fieldset>
+	<button class="btn" data-event="click">Create File</button>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			RepoEditorPage_NewFileDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			filename: n.childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
+		};
+		/*
+		
+		
+		if (!this.$.filename) {
+			console.error("Failed to resolve item filename on path .childNodes[1].childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("filename resolved to ", this.$.filename);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class conflict_ClosePRDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.conflict_ClosePRDialog;
+	constructor() {
+		let t = conflict_ClosePRDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+	<h1>Title</h1>
+	<div>Instructions</div>
+	<fieldset>
+		<label for="closePR-no">
+		<input type="radio" name="closePR" id="closePR-no" value="no" data-event="change"/>No
+		</label>
+		<label for="closePR-yes">
+		<input id="closePR-yes" value="yes" data-event="change" type="radio" name="closePR"/>Yes
+		</label>
+		<label for="closeMessage">Close message
+		<input type="text" name="closeMessage" id="closeMessage"/>
+		</label>
+	</fieldset> 
+	<button class="btn" data-event="click:done">Done</button>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			conflict_ClosePRDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			title: n.childNodes[1] as HTMLHeadingElement,
+			instructions: n.childNodes[3] as HTMLDivElement,
+			closePR_no: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
+			closePR_yes: n.childNodes[5].childNodes[3].childNodes[1] as HTMLInputElement,
+			closeMessage: n.childNodes[5].childNodes[5].childNodes[1] as HTMLInputElement,
+		};
+		/*
+		
+		
+		if (!this.$.title) {
+			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("title resolved to ", this.$.title);
+		}
+		
+		
+		if (!this.$.instructions) {
+			console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("instructions resolved to ", this.$.instructions);
+		}
+		
+		
+		if (!this.$.closePR_no) {
+			console.error("Failed to resolve item closePR_no on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("closePR_no resolved to ", this.$.closePR_no);
+		}
+		
+		
+		if (!this.$.closePR_yes) {
+			console.error("Failed to resolve item closePR_yes on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("closePR_yes resolved to ", this.$.closePR_yes);
+		}
+		
+		
+		if (!this.$.closeMessage) {
+			console.error("Failed to resolve item closeMessage on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("closeMessage resolved to ", this.$.closeMessage);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class Tree_NodeView {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.Tree_NodeView;
+	constructor() {
+		let t = Tree_NodeView._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="node">
+	<div class="name"><span class="closer"><!-- icon inserted by CSS --></span><span>NAME</span></div>
+	<div class="children"> </div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			Tree_NodeView._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			close: n.childNodes[1].childNodes[0] as HTMLSpanElement,
+			name: n.childNodes[1].childNodes[1] as HTMLSpanElement,
+			children: n.childNodes[3] as HTMLDivElement,
+		};
+		/*
+		
+		
+		if (!this.$.close) {
+			console.error("Failed to resolve item close on path .childNodes[1].childNodes[0] of ", n);
+			debugger;
+		} else {
+			console.log("close resolved to ", this.$.close);
+		}
+		
+		
+		if (!this.$.name) {
+			console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("name resolved to ", this.$.name);
+		}
+		
+		
+		if (!this.$.children) {
+			console.error("Failed to resolve item children on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("children resolved to ", this.$.children);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
 export class AddNewBookDialog {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
@@ -180,7 +669,7 @@ export class AddNewBookDialog {
 				Start a new project.
 			</label>
 			<label>
-				<input type="radio" value="collaborate" name="new-project-type"/>
+				<input name="new-project-type" type="radio" value="collaborate"/>
 				Contribute to an existing project.
 			</label>
 			<label>
@@ -192,38 +681,38 @@ export class AddNewBookDialog {
 	</div>
 	<div>
 		<h1>New project</h1>
-		<form method="post" action="/github/create/new">
+		<form action="/github/create/new" method="post">
 		<input type="hidden" name="action" value="new"/>
 		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
-		</label>
-		<label>Enter the organization this project should belong to, or leave this field
-		blank if you will yourself be the owner of this project.
-		<input placeholder="e.g. electricbookworks" type="text" name="org_name"/>
-		</label>
-		<label>
-			<input name="private" value="private" type="checkbox"/>
-			Make this project private (must be supported by user's Github plan).
-		</label>
-		<input type="submit" class="btn" value="New project"/>
-		</form>
-	</div>
-	<div>
-		<h1>Adaptation</h1>
-		<form method="post" action="/github/create/new">
-		<input type="hidden" name="action" value="new"/>
-		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
-		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		<input name="repo_new" placeholder="e.g. MobyDick" type="text"/>
 		</label>
 		<label>Enter the organization this project should belong to, or leave this field
 		blank if you will yourself be the owner of this project.
 		<input type="text" name="org_name" placeholder="e.g. electricbookworks"/>
 		</label>
+		<label>
+			<input type="checkbox" name="private" value="private"/>
+			Make this project private (must be supported by user's Github plan).
+		</label>
+		<input class="btn" value="New project" type="submit"/>
+		</form>
+	</div>
+	<div>
+		<h1>Adaptation</h1>
+		<form action="/github/create/new" method="post">
+		<input name="action" value="new" type="hidden"/>
+		<label>Enter the name for your new project. Use only letters and dashes; no spaces.
+		<input type="text" name="repo_new" placeholder="e.g. MobyDick"/>
+		</label>
+		<label>Enter the organization this project should belong to, or leave this field
+		blank if you will yourself be the owner of this project.
+		<input name="org_name" placeholder="e.g. electricbookworks" type="text"/>
+		</label>
 		<label>Enter the series that you will be adapting.
 		<input type="text" name="template" placeholder="e.g. electricbookworks/electric-book"/>
 		</label>
 		<label>
-			<input type="checkbox" name="private" value="private"/>
+			<input name="private" value="private" type="checkbox"/>
 			Make this project private (must be supported by user's Github plan).
 		</label>
 		<input type="submit" class="btn" value="Create adaptation"/>
@@ -402,109 +891,6 @@ export class AddNewBookDialog {
 		this.el = n;
 	}
 }
-export class BoundFilename {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.BoundFilename;
-	constructor() {
-		let t = BoundFilename._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div class="bound-filename">
-	<span class="bound-filename-text">Select a file to edit</span>
-	<!-- <a href="#" data-set="a" target="_github"><img src="/img/github-dark.svg" /></a> -->
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			BoundFilename._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			filename: n.childNodes[1] as HTMLSpanElement,
-		};
-		/*
-		
-		
-		if (!this.$.filename) {
-			console.error("Failed to resolve item filename on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("filename resolved to ", this.$.filename);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class CommitMessageDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.CommitMessageDialog;
-	constructor() {
-		let t = CommitMessageDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<h1>Title</h1>
-	<div>Instructions</div>
-	<fieldset>
-		<label for="commitMessage">Describe your changes
-		<input type="text" name="commitMessage" id="commitMessage"/>
-		</label>
-	</fieldset>
-	<button class="btn">Commit</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			CommitMessageDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			title: n.childNodes[1] as HTMLHeadingElement,
-			instructions: n.childNodes[3] as HTMLDivElement,
-			message: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
-			commit: n.childNodes[7] as HTMLButtonElement,
-		};
-		/*
-		
-		
-		if (!this.$.title) {
-			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("title resolved to ", this.$.title);
-		}
-		
-		
-		if (!this.$.instructions) {
-			console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("instructions resolved to ", this.$.instructions);
-		}
-		
-		
-		if (!this.$.message) {
-			console.error("Failed to resolve item message on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("message resolved to ", this.$.message);
-		}
-		
-		
-		if (!this.$.commit) {
-			console.error("Failed to resolve item commit on path .childNodes[7] of ", n);
-			debugger;
-		} else {
-			console.log("commit resolved to ", this.$.commit);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
 export class CommitSummaryListView {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
@@ -538,140 +924,173 @@ export class CommitSummaryListView {
 		this.el = n;
 	}
 }
-export class CommitSummaryView {
+export class RepoEditorPage_RenameFileDialog {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
-	public $ : R.CommitSummaryView;
+	public $ : R.RepoEditorPage_RenameFileDialog;
 	constructor() {
-		let t = CommitSummaryView._template;
+		let t = RepoEditorPage_RenameFileDialog._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="commit-summary">
-  <div class="when"> </div>
-  <div class="message"> </div>
+			d.innerHTML = `<div>
+	<div class="error">
+	</div>
+	<fieldset>
+		<div>Renaming <span> </span></div>
+		<label>
+			Enter the path and filename for your new file.
+			<input placeholder="/book/text/chapter-7.md" data-event="change" type="text"/>
+		</label>
+	</fieldset>
+	<button class="btn" data-event="click">Rename</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
-			CommitSummaryView._template = t;
+			RepoEditorPage_RenameFileDialog._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUnknownElement;
 		
 		this.$ = {
-			when: n.childNodes[1] as HTMLDivElement,
-			message: n.childNodes[3] as HTMLDivElement,
+			error: n.childNodes[1] as HTMLDivElement,
+			current_name: n.childNodes[3].childNodes[1].childNodes[1] as HTMLSpanElement,
+			filename: n.childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
 		};
 		/*
 		
 		
-		if (!this.$.when) {
-			console.error("Failed to resolve item when on path .childNodes[1] of ", n);
+		if (!this.$.error) {
+			console.error("Failed to resolve item error on path .childNodes[1] of ", n);
 			debugger;
 		} else {
-			console.log("when resolved to ", this.$.when);
+			console.log("error resolved to ", this.$.error);
 		}
 		
 		
-		if (!this.$.message) {
-			console.error("Failed to resolve item message on path .childNodes[3] of ", n);
+		if (!this.$.current_name) {
+			console.error("Failed to resolve item current_name on path .childNodes[3].childNodes[1].childNodes[1] of ", n);
 			debugger;
 		} else {
-			console.log("message resolved to ", this.$.message);
+			console.log("current_name resolved to ", this.$.current_name);
+		}
+		
+		
+		if (!this.$.filename) {
+			console.error("Failed to resolve item filename on path .childNodes[3].childNodes[3].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("filename resolved to ", this.$.filename);
 		}
 		
 		*/
 		this.el = n;
 	}
 }
-export class EditorImage {
+export class LoginTokenDisplay {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
-	public $ : R.EditorImage;
+	public $ : R.LoginTokenDisplay;
 	constructor() {
-		let t = EditorImage._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div> </div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			EditorImage._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-		};
-		/*
-		
-		*/
-		this.el = n;
-	}
-}
-export class FSFileList_File {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.FSFileList_File;
-	constructor() {
-		let t = FSFileList_File._template;
+		let t = LoginTokenDisplay._template;
 		if (! t ) {
 			let d = document.createElement('div');
 			d.innerHTML = `<ul>
-	<li data-set="this" class="allfiles-file">
-		<div data-event="click:clickFile">NAME
-		</div>
+	<li class="token-display" data-set="this">
+		<a href="">LINK</a>
+		<a href="">X</a>
 	</li>
 </ul>
 `;
 			t = d.firstElementChild.childNodes[1] as HTMLUnknownElement;
-			FSFileList_File._template = t;
+			LoginTokenDisplay._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUnknownElement;
 		
 		n = n.childNodes[1] as HTMLLIElement;
 		this.$ = {
-			name: n as HTMLDivElement,
+			link: n as HTMLAnchorElement,
+			delete: n as HTMLAnchorElement,
 		};
 		/*
 		
 		
 		
-		if (!this.$.name) {
-			console.error("Failed to resolve item name on path  of ", n);
+		if (!this.$.link) {
+			console.error("Failed to resolve item link on path  of ", n);
 			debugger;
 		} else {
-			console.log("name resolved to ", this.$.name);
+			console.log("link resolved to ", this.$.link);
+		}
+		
+		
+		if (!this.$.delete) {
+			console.error("Failed to resolve item delete on path  of ", n);
+			debugger;
+		} else {
+			console.log("delete resolved to ", this.$.delete);
 		}
 		
 		*/
 		this.el = n;
 	}
 }
-export class FileListDialog {
+export class LoginTokenList {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
-	public $ : R.FileListDialog;
+	public $ : R.LoginTokenList;
 	constructor() {
-		let t = FileListDialog._template;
+		let t = LoginTokenList._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<h1>Choose a book</h1>
-	<p>Choose the book you want to output to PDF.</p>
-	<ul class="file-list-dialog-list">
+			d.innerHTML = `<div class="login-token-list">
+	<div class="token-input">
+		<input type="text" placeholder="name"/>
+		<input type="text" placeholder="token"/>
+		<button class="btn">Add</button>
+	</div>
+	<ul class="token-list">
 	</ul>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
-			FileListDialog._template = t;
+			LoginTokenList._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUnknownElement;
 		
 		this.$ = {
-			list: n.childNodes[5] as HTMLUListElement,
+			name: n.childNodes[1].childNodes[1] as HTMLInputElement,
+			token: n.childNodes[1].childNodes[3] as HTMLInputElement,
+			add: n.childNodes[1].childNodes[5] as HTMLButtonElement,
+			list: n.childNodes[3] as HTMLUListElement,
 		};
 		/*
 		
 		
+		if (!this.$.name) {
+			console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("name resolved to ", this.$.name);
+		}
+		
+		
+		if (!this.$.token) {
+			console.error("Failed to resolve item token on path .childNodes[1].childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("token resolved to ", this.$.token);
+		}
+		
+		
+		if (!this.$.add) {
+			console.error("Failed to resolve item add on path .childNodes[1].childNodes[5] of ", n);
+			debugger;
+		} else {
+			console.log("add resolved to ", this.$.add);
+		}
+		
+		
 		if (!this.$.list) {
-			console.error("Failed to resolve item list on path .childNodes[5] of ", n);
+			console.error("Failed to resolve item list on path .childNodes[3] of ", n);
 			debugger;
 		} else {
 			console.log("list resolved to ", this.$.list);
@@ -771,159 +1190,6 @@ export class FileTree_Dir {
 		this.el = n;
 	}
 }
-export class FoundationRevealDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.FoundationRevealDialog;
-	constructor() {
-		let t = FoundationRevealDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div id="new-file-dialog" data-reveal="" class="reveal">
-	<div class="content">
-	</div>
-	<button class="close-button" aria-label="Close popup" type="button" data-close="">
-		<span aria-hidden="true">×</span>
-	</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			FoundationRevealDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			content: n.childNodes[1] as HTMLDivElement,
-		};
-		/*
-		
-		
-		if (!this.$.content) {
-			console.error("Failed to resolve item content on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("content resolved to ", this.$.content);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class LoginTokenDisplay {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.LoginTokenDisplay;
-	constructor() {
-		let t = LoginTokenDisplay._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<ul>
-	<li data-set="this" class="token-display">
-		<a href="">LINK</a>
-		<a href="">X</a>
-	</li>
-</ul>
-`;
-			t = d.firstElementChild.childNodes[1] as HTMLUnknownElement;
-			LoginTokenDisplay._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		n = n.childNodes[1] as HTMLLIElement;
-		this.$ = {
-			link: n as HTMLAnchorElement,
-			delete: n as HTMLAnchorElement,
-		};
-		/*
-		
-		
-		
-		if (!this.$.link) {
-			console.error("Failed to resolve item link on path  of ", n);
-			debugger;
-		} else {
-			console.log("link resolved to ", this.$.link);
-		}
-		
-		
-		if (!this.$.delete) {
-			console.error("Failed to resolve item delete on path  of ", n);
-			debugger;
-		} else {
-			console.log("delete resolved to ", this.$.delete);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class LoginTokenList {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.LoginTokenList;
-	constructor() {
-		let t = LoginTokenList._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div class="login-token-list">
-	<div class="token-input">
-		<input type="text" placeholder="name"/>
-		<input placeholder="token" type="text"/>
-		<button class="btn">Add</button>
-	</div>
-	<ul class="token-list">
-	</ul>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			LoginTokenList._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			name: n.childNodes[1].childNodes[1] as HTMLInputElement,
-			token: n.childNodes[1].childNodes[3] as HTMLInputElement,
-			add: n.childNodes[1].childNodes[5] as HTMLButtonElement,
-			list: n.childNodes[3] as HTMLUListElement,
-		};
-		/*
-		
-		
-		if (!this.$.name) {
-			console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("name resolved to ", this.$.name);
-		}
-		
-		
-		if (!this.$.token) {
-			console.error("Failed to resolve item token on path .childNodes[1].childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("token resolved to ", this.$.token);
-		}
-		
-		
-		if (!this.$.add) {
-			console.error("Failed to resolve item add on path .childNodes[1].childNodes[5] of ", n);
-			debugger;
-		} else {
-			console.log("add resolved to ", this.$.add);
-		}
-		
-		
-		if (!this.$.list) {
-			console.error("Failed to resolve item list on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("list resolved to ", this.$.list);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
 export class MergeEditor {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
@@ -956,198 +1222,6 @@ export class MergeEditor {
 			debugger;
 		} else {
 			console.log("mergely resolved to ", this.$.mergely);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class PrintListenerTerminal {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.PrintListenerTerminal;
-	constructor() {
-		let t = PrintListenerTerminal._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div id="print-listener">
-	<div class="header">
-		<div class="title">Printing in progress …
-		</div>
-		<div class="close">×</div>
-	</div>
-	<div class="terminal">
-	</div>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			PrintListenerTerminal._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			header: n.childNodes[1] as HTMLDivElement,
-			title: n.childNodes[1].childNodes[1] as HTMLDivElement,
-			close: n.childNodes[1].childNodes[3] as HTMLDivElement,
-			terminal: n.childNodes[3] as HTMLDivElement,
-		};
-		/*
-		
-		
-		if (!this.$.header) {
-			console.error("Failed to resolve item header on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("header resolved to ", this.$.header);
-		}
-		
-		
-		if (!this.$.title) {
-			console.error("Failed to resolve item title on path .childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("title resolved to ", this.$.title);
-		}
-		
-		
-		if (!this.$.close) {
-			console.error("Failed to resolve item close on path .childNodes[1].childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("close resolved to ", this.$.close);
-		}
-		
-		
-		if (!this.$.terminal) {
-			console.error("Failed to resolve item terminal on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("terminal resolved to ", this.$.terminal);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class PullRequestDiffList_File {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.PullRequestDiffList_File;
-	constructor() {
-		let t = PullRequestDiffList_File._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			PullRequestDiffList_File._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-		};
-		/*
-		
-		*/
-		this.el = n;
-	}
-}
-export class RepoEditorPage_NewFileDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.RepoEditorPage_NewFileDialog;
-	constructor() {
-		let t = RepoEditorPage_NewFileDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<fieldset>
-		<label>
-			Enter the full path and filename for your new file.
-			<input type="text" placeholder="book/text/chapter-7.md" data-event="change"/>
-		</label>
-	</fieldset>
-	<button class="btn" data-event="click">Create File</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			RepoEditorPage_NewFileDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			filename: n.childNodes[1].childNodes[1].childNodes[1] as HTMLInputElement,
-		};
-		/*
-		
-		
-		if (!this.$.filename) {
-			console.error("Failed to resolve item filename on path .childNodes[1].childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("filename resolved to ", this.$.filename);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class RepoEditorPage_RenameFileDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.RepoEditorPage_RenameFileDialog;
-	constructor() {
-		let t = RepoEditorPage_RenameFileDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<div class="error">
-	</div>
-	<fieldset>
-		<div>Renaming <span> </span></div>
-		<label>
-			Enter the path and filename for your new file.
-			<input type="text" placeholder="/book/text/chapter-7.md" data-event="change"/>
-		</label>
-	</fieldset>
-	<button class="btn" data-event="click">Rename</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			RepoEditorPage_RenameFileDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			error: n.childNodes[1] as HTMLDivElement,
-			current_name: n.childNodes[3].childNodes[1].childNodes[1] as HTMLSpanElement,
-			filename: n.childNodes[3].childNodes[3].childNodes[1] as HTMLInputElement,
-		};
-		/*
-		
-		
-		if (!this.$.error) {
-			console.error("Failed to resolve item error on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("error resolved to ", this.$.error);
-		}
-		
-		
-		if (!this.$.current_name) {
-			console.error("Failed to resolve item current_name on path .childNodes[3].childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("current_name resolved to ", this.$.current_name);
-		}
-		
-		
-		if (!this.$.filename) {
-			console.error("Failed to resolve item filename on path .childNodes[3].childNodes[3].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("filename resolved to ", this.$.filename);
 		}
 		
 		*/
@@ -1200,6 +1274,68 @@ export class RepoFileEditorCM {
 		this.el = n;
 	}
 }
+export class EditorImage {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.EditorImage;
+	constructor() {
+		let t = EditorImage._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div> </div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			EditorImage._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+		};
+		/*
+		
+		*/
+		this.el = n;
+	}
+}
+export class FSFileList_File {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.FSFileList_File;
+	constructor() {
+		let t = FSFileList_File._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul>
+	<li class="allfiles-file" data-set="this">
+		<div data-event="click:clickFile">NAME
+		</div>
+	</li>
+</ul>
+`;
+			t = d.firstElementChild.childNodes[1] as HTMLUnknownElement;
+			FSFileList_File._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		n = n.childNodes[1] as HTMLLIElement;
+		this.$ = {
+			name: n as HTMLDivElement,
+		};
+		/*
+		
+		
+		
+		if (!this.$.name) {
+			console.error("Failed to resolve item name on path  of ", n);
+			debugger;
+		} else {
+			console.log("name resolved to ", this.$.name);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
 export class RepoFileViewerFile {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
@@ -1246,396 +1382,82 @@ export class RepoFileViewerFile {
 		this.el = n;
 	}
 }
-export class RepoFileViewerPage {
+export class CommitSummaryView {
 	protected static _template : HTMLUnknownElement;
 	public el : HTMLUnknownElement;
-	public $ : R.RepoFileViewerPage;
+	public $ : R.CommitSummaryView;
 	constructor() {
-		let t = RepoFileViewerPage._template;
+		let t = CommitSummaryView._template;
 		if (! t ) {
 			let d = document.createElement('div');
-			d.innerHTML = `<div class="repo-file-viewer">
-	<div class="searchbar">
-		<input type="text" placeholder="Type to show and filter images, e.g. book/images/web"/>
+			d.innerHTML = `<div class="commit-summary">
+  <div class="when"> </div>
+  <div class="message"> </div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			CommitSummaryView._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			when: n.childNodes[1] as HTMLDivElement,
+			message: n.childNodes[3] as HTMLDivElement,
+		};
+		/*
+		
+		
+		if (!this.$.when) {
+			console.error("Failed to resolve item when on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("when resolved to ", this.$.when);
+		}
+		
+		
+		if (!this.$.message) {
+			console.error("Failed to resolve item message on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("message resolved to ", this.$.message);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class FoundationRevealDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.FoundationRevealDialog;
+	constructor() {
+		let t = FoundationRevealDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div data-reveal="" class="reveal" id="new-file-dialog">
+	<div class="content">
 	</div>
-	<div class="data">
-	</div>
+	<button class="close-button" aria-label="Close popup" type="button" data-close="">
+		<span aria-hidden="true">×</span>
+	</button>
 </div>
 `;
 			t = d.firstElementChild as HTMLUnknownElement;
-			RepoFileViewerPage._template = t;
+			FoundationRevealDialog._template = t;
 		}
 		let n = t.cloneNode(true) as HTMLUnknownElement;
 		
 		this.$ = {
-			search: n.childNodes[1].childNodes[1] as HTMLInputElement,
-			data: n.childNodes[3] as HTMLDivElement,
+			content: n.childNodes[1] as HTMLDivElement,
 		};
 		/*
 		
 		
-		if (!this.$.search) {
-			console.error("Failed to resolve item search on path .childNodes[1].childNodes[1] of ", n);
+		if (!this.$.content) {
+			console.error("Failed to resolve item content on path .childNodes[1] of ", n);
 			debugger;
 		} else {
-			console.log("search resolved to ", this.$.search);
-		}
-		
-		
-		if (!this.$.data) {
-			console.error("Failed to resolve item data on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("data resolved to ", this.$.data);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class RepoMergeDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.RepoMergeDialog;
-	constructor() {
-		let t = RepoMergeDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<h1>Updating a Repo</h1>
-	<p>How do you want to try this merge?</p>
-	<fieldset>
-		<label for="resolveOur">
-			<input id="resolveOur" type="radio" name="resolve" value="our"/>
-			I will do the merge.
-		</label>
-		<label for="resolveGit">
-			<input id="resolveGit" type="radio" name="resolve" value="git"/>
-			Git can try to merge.
-		</label>
-		<label for="resolveTheir">
-			<input id="resolveTheir" type="radio" name="resolve" value="their"/>
-			Choose their files by preference.
-		</label>
-	</fieldset>
-	<label for="conflicted">
-		<input id="conflicted" type="checkbox" name="conflicted" value="only"/>
-			Only apply above resolution to conflicted files.
-	</label>
-	<button class="btn" data-event="click:">Do the Merge</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			RepoMergeDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			title: n.childNodes[1] as HTMLHeadingElement,
-			resolveOur: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
-			resolveGit: n.childNodes[5].childNodes[3].childNodes[1] as HTMLInputElement,
-			resolveTheir: n.childNodes[5].childNodes[5].childNodes[1] as HTMLInputElement,
-			conflicted: n.childNodes[7].childNodes[1] as HTMLInputElement,
-			mergeButton: n.childNodes[9] as HTMLButtonElement,
-		};
-		/*
-		
-		
-		if (!this.$.title) {
-			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("title resolved to ", this.$.title);
-		}
-		
-		
-		if (!this.$.resolveOur) {
-			console.error("Failed to resolve item resolveOur on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("resolveOur resolved to ", this.$.resolveOur);
-		}
-		
-		
-		if (!this.$.resolveGit) {
-			console.error("Failed to resolve item resolveGit on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("resolveGit resolved to ", this.$.resolveGit);
-		}
-		
-		
-		if (!this.$.resolveTheir) {
-			console.error("Failed to resolve item resolveTheir on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("resolveTheir resolved to ", this.$.resolveTheir);
-		}
-		
-		
-		if (!this.$.conflicted) {
-			console.error("Failed to resolve item conflicted on path .childNodes[7].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("conflicted resolved to ", this.$.conflicted);
-		}
-		
-		
-		if (!this.$.mergeButton) {
-			console.error("Failed to resolve item mergeButton on path .childNodes[9] of ", n);
-			debugger;
-		} else {
-			console.log("mergeButton resolved to ", this.$.mergeButton);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class Tree_NodeView {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.Tree_NodeView;
-	constructor() {
-		let t = Tree_NodeView._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div class="node">
-	<div class="name"><span class="closer"><!-- icon inserted by CSS --></span><span>NAME</span></div>
-	<div class="children"> </div>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			Tree_NodeView._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			close: n.childNodes[1].childNodes[0] as HTMLSpanElement,
-			name: n.childNodes[1].childNodes[1] as HTMLSpanElement,
-			children: n.childNodes[3] as HTMLDivElement,
-		};
-		/*
-		
-		
-		if (!this.$.close) {
-			console.error("Failed to resolve item close on path .childNodes[1].childNodes[0] of ", n);
-			debugger;
-		} else {
-			console.log("close resolved to ", this.$.close);
-		}
-		
-		
-		if (!this.$.name) {
-			console.error("Failed to resolve item name on path .childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("name resolved to ", this.$.name);
-		}
-		
-		
-		if (!this.$.children) {
-			console.error("Failed to resolve item children on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("children resolved to ", this.$.children);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class conflict_ClosePRDialog {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.conflict_ClosePRDialog;
-	constructor() {
-		let t = conflict_ClosePRDialog._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div>
-	<h1>Title</h1>
-	<div>Instructions</div>
-	<fieldset>
-		<label for="closePR-no">
-		<input name="closePR" id="closePR-no" value="no" data-event="change" type="radio"/>No
-		</label>
-		<label for="closePR-yes">
-		<input type="radio" name="closePR" id="closePR-yes" value="yes" data-event="change"/>Yes
-		</label>
-		<label for="closeMessage">Close message
-		<input type="text" name="closeMessage" id="closeMessage"/>
-		</label>
-	</fieldset> 
-	<button data-event="click:done" class="btn">Done</button>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			conflict_ClosePRDialog._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			title: n.childNodes[1] as HTMLHeadingElement,
-			instructions: n.childNodes[3] as HTMLDivElement,
-			closePR_no: n.childNodes[5].childNodes[1].childNodes[1] as HTMLInputElement,
-			closePR_yes: n.childNodes[5].childNodes[3].childNodes[1] as HTMLInputElement,
-			closeMessage: n.childNodes[5].childNodes[5].childNodes[1] as HTMLInputElement,
-		};
-		/*
-		
-		
-		if (!this.$.title) {
-			console.error("Failed to resolve item title on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("title resolved to ", this.$.title);
-		}
-		
-		
-		if (!this.$.instructions) {
-			console.error("Failed to resolve item instructions on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("instructions resolved to ", this.$.instructions);
-		}
-		
-		
-		if (!this.$.closePR_no) {
-			console.error("Failed to resolve item closePR_no on path .childNodes[5].childNodes[1].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("closePR_no resolved to ", this.$.closePR_no);
-		}
-		
-		
-		if (!this.$.closePR_yes) {
-			console.error("Failed to resolve item closePR_yes on path .childNodes[5].childNodes[3].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("closePR_yes resolved to ", this.$.closePR_yes);
-		}
-		
-		
-		if (!this.$.closeMessage) {
-			console.error("Failed to resolve item closeMessage on path .childNodes[5].childNodes[5].childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("closeMessage resolved to ", this.$.closeMessage);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class conflict_FileDisplay {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.conflict_FileDisplay;
-	constructor() {
-		let t = conflict_FileDisplay._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<li class="file-display">
-	<span class="path"> </span>
-	<span class="status"> </span>
-</li>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			conflict_FileDisplay._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			path: n.childNodes[1] as HTMLSpanElement,
-			status: n.childNodes[3] as HTMLSpanElement,
-		};
-		/*
-		
-		
-		if (!this.$.path) {
-			console.error("Failed to resolve item path on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("path resolved to ", this.$.path);
-		}
-		
-		
-		if (!this.$.status) {
-			console.error("Failed to resolve item status on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("status resolved to ", this.$.status);
-		}
-		
-		*/
-		this.el = n;
-	}
-}
-export class conflict_FileListDisplay {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.conflict_FileListDisplay;
-	constructor() {
-		let t = conflict_FileListDisplay._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<ul class="conflict-file-list-display">
-</ul>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			conflict_FileListDisplay._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-		};
-		/*
-		
-		*/
-		this.el = n;
-	}
-}
-export class conflict_MergeImageEditor {
-	protected static _template : HTMLUnknownElement;
-	public el : HTMLUnknownElement;
-	public $ : R.conflict_MergeImageEditor;
-	constructor() {
-		let t = conflict_MergeImageEditor._template;
-		if (! t ) {
-			let d = document.createElement('div');
-			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor">
-	<div>
-	</div>
-	<div>
-	</div>
-</div>
-`;
-			t = d.firstElementChild as HTMLUnknownElement;
-			conflict_MergeImageEditor._template = t;
-		}
-		let n = t.cloneNode(true) as HTMLUnknownElement;
-		
-		this.$ = {
-			ours: n.childNodes[1] as HTMLDivElement,
-			theirs: n.childNodes[3] as HTMLDivElement,
-		};
-		/*
-		
-		
-		if (!this.$.ours) {
-			console.error("Failed to resolve item ours on path .childNodes[1] of ", n);
-			debugger;
-		} else {
-			console.log("ours resolved to ", this.$.ours);
-		}
-		
-		
-		if (!this.$.theirs) {
-			console.error("Failed to resolve item theirs on path .childNodes[3] of ", n);
-			debugger;
-		} else {
-			console.log("theirs resolved to ", this.$.theirs);
+			console.log("content resolved to ", this.$.content);
 		}
 		
 		*/
@@ -1706,6 +1528,184 @@ export class conflict_MergeInstructions {
 		} else {
 			console.log("ourSide resolved to ", this.$.ourSide);
 		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class FileListDialog {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.FileListDialog;
+	constructor() {
+		let t = FileListDialog._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+	<h1>Choose a book</h1>
+	<p>Choose the book you want to output to PDF.</p>
+	<ul class="file-list-dialog-list">
+	</ul>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			FileListDialog._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			list: n.childNodes[5] as HTMLUListElement,
+		};
+		/*
+		
+		
+		if (!this.$.list) {
+			console.error("Failed to resolve item list on path .childNodes[5] of ", n);
+			debugger;
+		} else {
+			console.log("list resolved to ", this.$.list);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class conflict_MergeImageEditor {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.conflict_MergeImageEditor;
+	constructor() {
+		let t = conflict_MergeImageEditor._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div id="merge-image-editor" class="merge-image-editor">
+	<div>
+	</div>
+	<div>
+	</div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			conflict_MergeImageEditor._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			ours: n.childNodes[1] as HTMLDivElement,
+			theirs: n.childNodes[3] as HTMLDivElement,
+		};
+		/*
+		
+		
+		if (!this.$.ours) {
+			console.error("Failed to resolve item ours on path .childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("ours resolved to ", this.$.ours);
+		}
+		
+		
+		if (!this.$.theirs) {
+			console.error("Failed to resolve item theirs on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("theirs resolved to ", this.$.theirs);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class RepoFileViewerPage {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.RepoFileViewerPage;
+	constructor() {
+		let t = RepoFileViewerPage._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div class="repo-file-viewer">
+	<div class="searchbar">
+		<input type="text" placeholder="Type to show and filter images, e.g. book/images/web"/>
+	</div>
+	<div class="data">
+	</div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			RepoFileViewerPage._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+			search: n.childNodes[1].childNodes[1] as HTMLInputElement,
+			data: n.childNodes[3] as HTMLDivElement,
+		};
+		/*
+		
+		
+		if (!this.$.search) {
+			console.error("Failed to resolve item search on path .childNodes[1].childNodes[1] of ", n);
+			debugger;
+		} else {
+			console.log("search resolved to ", this.$.search);
+		}
+		
+		
+		if (!this.$.data) {
+			console.error("Failed to resolve item data on path .childNodes[3] of ", n);
+			debugger;
+		} else {
+			console.log("data resolved to ", this.$.data);
+		}
+		
+		*/
+		this.el = n;
+	}
+}
+export class PullRequestDiffList_File {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.PullRequestDiffList_File;
+	constructor() {
+		let t = PullRequestDiffList_File._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<div>
+</div>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			PullRequestDiffList_File._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+		};
+		/*
+		
+		*/
+		this.el = n;
+	}
+}
+export class conflict_FileListDisplay {
+	protected static _template : HTMLUnknownElement;
+	public el : HTMLUnknownElement;
+	public $ : R.conflict_FileListDisplay;
+	constructor() {
+		let t = conflict_FileListDisplay._template;
+		if (! t ) {
+			let d = document.createElement('div');
+			d.innerHTML = `<ul class="conflict-file-list-display">
+</ul>
+`;
+			t = d.firstElementChild as HTMLUnknownElement;
+			conflict_FileListDisplay._template = t;
+		}
+		let n = t.cloneNode(true) as HTMLUnknownElement;
+		
+		this.$ = {
+		};
+		/*
 		
 		*/
 		this.el = n;

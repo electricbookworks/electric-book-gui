@@ -94,6 +94,7 @@ func endpointHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// pdfPath, err := PrintInContainer(repoDir, pr.Book, C)
+		glog.Infof(`about to call PrintLocal book=%s, printOrScreen=%s`, pr.Book, pr.PrintOrScreen)
 		pdfPath, err := PrintLocal(repoDir, pr.Book, pr.PrintOrScreen, pr.FileList, C)
 		if nil != err {
 			C <- PrintMessage{Event: `error`, Data: err.Error()}

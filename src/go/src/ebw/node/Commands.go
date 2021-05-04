@@ -9,17 +9,6 @@ import (
 	"github.com/craigmj/commander"
 )
 
-func InstallNvmCommand() *commander.Command {
-	fs := flag.NewFlagSet(`install-nvm`, flag.ExitOnError)
-	dir := fs.String(`dir`,`.`,`Directory to install nvm`)
-	return commander.NewCommand(
-		`install-nvm`,
-		`Installs Node Version Manager`,
-		fs,
-		func([]string) error {
-			return InstallNvm(*dir)
-		})
-}
 func InstallNodeCommand() *commander.Command {
 	fs := flag.NewFlagSet(`install-node`, flag.ExitOnError)
 	dir := fs.String(`dir`,`.`,`Directory to install node`)

@@ -2,7 +2,6 @@ package node
 
 import (
 	`fmt`
-	`net/http`
 	`strings`
 	`os`
 	`os/exec`
@@ -11,6 +10,10 @@ import (
 	`github.com/golang/glog`
 	`github.com/juju/errors`
 )
+
+func Version() string {
+	return `14.16.0`
+}
 
 func fileExists(f string) (bool, error) {
 	_, err := os.Stat(f)
@@ -21,26 +24,6 @@ func fileExists(f string) (bool, error) {
 		return false, nil
 	}
 	return false, errors.Trace(err)
-}
-
-func InstallNvm(todir string) error {
-	nvmExists, err := fileExists(filepath.Join(todir, `nvm`, `nvm.sh`))
-	if nil!=err || nvmExists {
-		return err
-	}
-	os.MkdirAll(todir, 0755)
-	script, err := http.Get(`https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh`)
-	if nil!=err {
-		return fmt.Errorf(`Failed to download nvm install script: %w`, err)
-	}	
-	defer script.Body.Close()	
-
-	bash := exec.Command(`/bin/bash`)
-	bash.Stdin = script.Body
-	bash.Stderr, bash.Stdout = os.Stderr, os.Stdout
-	bash.Env = []string{`XDG_CONFIG_HOME=`+todir}
-
-	return errors.Trace(bash.Run())
 }
 
 func InstallNode(todir string) error {
@@ -55,7 +38,7 @@ func InstallNode(todir string) error {
 	bash.Dir = tdir
 	bash.Stdout, bash.Stderr = os.Stdout, os.Stderr
 	bash.Stdin = strings.NewReader(`
-curl https://nodejs.org/dist/v14.16.0/node-v14.16.0-linux-x64.tar.xz | tar -xJ
+curl https://nodejs.org/dist/v` + Version() + `/node-v` + Version() + `-linux-x64.tar.xz | tar -xJ
 `)
 	if err := bash.Run(); nil!=err {
 		return errors.Trace(err)
@@ -64,7 +47,7 @@ curl https://nodejs.org/dist/v14.16.0/node-v14.16.0-linux-x64.tar.xz | tar -xJ
 }
 
 func Command(indir, nodeCmd string, args ...string) *exec.Cmd {
-	npath, err := filepath.Abs(`./node-v14.16.0-linux-x64/bin/`)
+	npath, err := filepath.Abs(`./node-v` + Version() + `-linux-x64/bin/`)
 	if nil!=err {
 		panic(err)
 	}
@@ -75,7 +58,7 @@ func Command(indir, nodeCmd string, args ...string) *exec.Cmd {
 }
 
 func Path() string {
-	npath, err := filepath.Abs(`./node-v14.16.0-linux-x64/bin/`)
+	npath, err := filepath.Abs(`./node-v` + Version() + `-linux-x64/bin/`)
 	if nil!=err {
 		panic(err)
 	}

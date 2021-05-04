@@ -16,8 +16,10 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+	`github.com/juju/errors`
 
 	"ebw/config"
+	`ebw/environ`
 	"ebw/util"
 )
 
@@ -68,9 +70,19 @@ func (j *Jekyll) Kill() {
 	j.KILL <- true
 }
 
+// RvmRun creates an executable for running Ruby in the given dir and returns 
+// the error value.
+func RvmRun(cout, cerr io.Writer, dir string, args ...string) error {
+	c, err := Rvm(cout, cerr, dir, args...)
+	if nil!=err {
+		return err
+	}
+	return c.Run()
+}
+
 // Runs RVM in the given directory with the given commands.
 // Pipes stdout and stderr to cout and cerr.
-func Rvm(cout, cerr io.Writer, dir string, args ...string) *exec.Cmd {
+func Rvm(cout, cerr io.Writer, dir string, args ...string) (*exec.Cmd, error) {
 	if "-"!=config.Config.Rvm {
 		cargs := []string{config.Config.RubyVersion, `do`}
 		cargs = append(cargs, args...)
@@ -78,13 +90,16 @@ func Rvm(cout, cerr io.Writer, dir string, args ...string) *exec.Cmd {
 		c.Stdout, c.Stderr = cout, cerr
 		c.Dir = dir
 		glog.Infof(`rvm %s: %s %v`, dir, config.Config.Rvm, cargs)
-		return c
+		return c, nil
 	} else {
-		c := exec.Command(args[0], args[1:]...)
+		c, err := environ.Command(args[0], args[1:]...)
+		if nil!=err {
+			return nil, errors.Trace(err)
+		}
 		c.Stdout, c.Stderr = cout, cerr
 		c.Dir = dir
-		glog.Infof(`dir %s: %s`, c.Dir, strings.Join(args, ` `))
-		return c
+		glog.Infof(`dir %s: %s %s`, c.Dir, c.Path, strings.Join(c.Args, ` `))
+		return c, nil
 	}
 }
 
@@ -102,27 +117,28 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			j.output.Out.Close()
 			j.output.Err.Close()
 		}()
-		if err := Rvm(jout, jerr, j.RepoDir, `gem`, `install`, `bundler`).Run(); nil != err {
+		if err := RvmRun(jout, jerr, j.RepoDir, `gem`, `install`, `bundler`); nil != err {
 			j.SetError(err)
 			util.Error(err)
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
-		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `update`, `--all`,`--local`,`--retry`,`5`).Run(); nil!=err {
+		if err := RvmRun(jout, jerr, j.RepoDir, `bundle`, `update`, `--all`,`--local`,`--retry`,`5`); nil!=err {
 			glog.Infof(`bundle update --all --local --retry 5 failed: %s`, err.Error())
 			j.SetError(err)
 			util.Error(err)
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
-		if err := Rvm(jout, jerr, j.RepoDir, `bundle`, `install`,`--retry`,`5`).Run(); nil != err {
+		if err := RvmRun(jout, jerr, j.RepoDir, `bundle`, `install`,`--retry`,`5`); nil != err {
 			glog.Errorf(`Rvm failes on bundle install: %s`, err.Error())
 			j.SetError(err)
 			util.Error(err)
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
-		j.cmd = Rvm(jout, jerr,
+		var err error
+		j.cmd, err = Rvm(jout, jerr,
 			j.RepoDir,
 			`bundle`,
 			`exec`,
@@ -138,6 +154,12 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			`--watch`,
 		// `--verbose`,
 		)
+		if nil!=err {
+			j.SetError(err)
+			util.Error(err)
+			fmt.Fprintln(jerr, err.Error())
+			return
+		}
 		inR, _, err := os.Pipe()
 		if nil != err {
 			j.SetError(err)
