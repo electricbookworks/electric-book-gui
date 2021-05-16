@@ -1,6 +1,6 @@
 - name: Install required packages git, vim, libgit2-dev
   apt:
-    name: [ git, vim, libgit2-dev, lxc-dev, sendmail ]
+    name: [ git, vim, libgit2-dev, libgit2-28, lxc-dev, sendmail ]
     state: present
   become: yes
 
@@ -8,9 +8,9 @@
   user: >
     name=electricbook
     shell=/bin/bash
-    groups='rvm,'
+    
   become: yes
-
+  # groups='rvm,'
 - name: install
   tags: ['bin','public']
   git: 
@@ -54,6 +54,8 @@
   notify: "restart electricbook"
 
 - name: install-allowed-users
+  become: yes
+  become_method: sudo
   copy:
     src: ../../../../../electricbook-users.txt
     dest: /opt/electricbook
@@ -80,4 +82,19 @@
 - include: nginx.yml
   when: >
     'nginx'==webserver
+
+
+- name: install-libgit2
+  become: yes
+  script: install-libgit2.sh
+  # when: >
+  #   ansible_distribution_major_version|int < 20
+
+- name: install-electricbook-ruby-and-node
+  become: yes
+  become_method: sudo
+  command:
+    chdir: /opt/electricbook
+    cmd: "/opt/electricbook/bin/electricbook {{item}}"
+  with_items: ['install-ruby','install-node']
 

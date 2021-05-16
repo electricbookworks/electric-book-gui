@@ -1,6 +1,8 @@
 github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/craigmj/commander v0.0.0-20151001103802-774928a9a0f2 h1:zCgQ8jcARXXV2Q5miZsVPPGx3WTBLZ99DR+gnyYr3V0=
 github.com/craigmj/commander v0.0.0-20151001103802-774928a9a0f2/go.mod h1:oQ3mDG5IHofvAS6+Y2OjMYRBJBinCE8tyAgQuR+U60k=
+github.com/craigmj/git2go/v31 v31.4.15 h1:a5NqidKN+B1uh8mki4BPS+X+zjQ5eVQ3y/YdrAfuYzk=
+github.com/craigmj/git2go/v31 v31.4.15/go.mod h1:KBtV/VGr0Cua7hX8TLS8g2GFkhXOO3YsfEFLS1VyyOg=
 github.com/craigmj/gogo v0.0.0-20160429104150-977e57e661dd/go.mod h1:6P2fV8c72ktDqJmNLQRg5WOi7AZQYKE2JB9bdM+j5No=
 github.com/craigmj/golly v0.0.0-20161022142733-3e19b6123fb3/go.mod h1:h6ZI0p55XlmaOvZ9cSkKnMY69L9q83zzvSpJjMHEY6Y=
 github.com/go-sql-driver/mysql v1.2.1-0.20161116070742-665b83488b90 h1:0ml7U7vgPAsShwUmuxPmzSsEB+4whIl0kLdCORh5wnY=

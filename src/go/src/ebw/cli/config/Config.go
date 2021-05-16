@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/golang/glog"
-	git2go "github.com/libgit2/git2go/v31"
+	git2go "github.com/craigmj/git2go/v31"
 	"gopkg.in/yaml.v2"
 
 	"ebw/util"

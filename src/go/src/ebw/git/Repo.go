@@ -12,7 +12,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/google/go-github/github"
 	"github.com/sirupsen/logrus"
-	git2go "github.com/libgit2/git2go/v31"
+	git2go "github.com/craigmj/git2go/v31"
 
 	"ebw/util"
 )
@@ -745,29 +745,29 @@ func (r *Repo) FileCat(path string, version FileVersion) (bool, []byte, error) {
 // same as the version of the file in the HEAD of the branch we're merging with.
 // If the file does not exist, (nil,nil) is returned.
 func (r *Repo) fileTheir(path string) (*git2go.Oid, error) {
-	panic("r.MergeHeads() not implemented")
-	// mergeHeads, err := r.MergeHeads()
-	// if nil != err {
-	// 	return nil, r.Error(err)
-	// }
-	// if 1 != len(mergeHeads) {
-	// 	return nil, r.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
-	// }
-	// tree, err := r.treeForCommit(mergeHeads[0])
-	// if nil != err {
-	// 	return nil, r.Error(err)
-	// }
-	// if nil == tree {
-	// 	return nil, r.Error(fmt.Errorf(`Failed to find treeForCommit(mergeHeads[0]))`))
-	// }
-	// te, err := tree.EntryByPath(path)
-	// if nil != err {
-	// 	if git2go.IsErrorCode(err, git2go.ErrNotFound) {
-	// 		return nil, nil
-	// 	}
-	// 	return nil, r.Error(err)
-	// }
-	// return te.Id, nil
+	// panic("r.MergeHeads() not implemented")
+	mergeHeads, err := r.MergeHeads()
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	if 1 != len(mergeHeads) {
+		return nil, r.Error(fmt.Errorf(`Expected 1 MERGE_HEAD, but got %d`, len(mergeHeads)))
+	}
+	tree, err := r.treeForCommit(mergeHeads[0])
+	if nil != err {
+		return nil, r.Error(err)
+	}
+	if nil == tree {
+		return nil, r.Error(fmt.Errorf(`Failed to find treeForCommit(mergeHeads[0]))`))
+	}
+	te, err := tree.EntryByPath(path)
+	if nil != err {
+		if git2go.IsErrorCode(err, git2go.ErrNotFound) {
+			return nil, nil
+		}
+		return nil, r.Error(err)
+	}
+	return te.Id, nil
 }
 
 // fileOur returns the 'our' version of the file at the given path. This is the

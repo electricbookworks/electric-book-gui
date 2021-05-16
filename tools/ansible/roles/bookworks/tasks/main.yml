@@ -18,8 +18,19 @@
     - liblcms2-2
   become: yes
 
+- name: install bookworks prereqs for 20.04
+  apt: 
+    state: present
+    force: yes
+    name:
+    - libgomp1
+  become: yes
+  when: >
+    ansible_distribution_major_version|int > 18  
+
 - name: apt-1804
-  when: ansible_distribution_version == "18.04"
+  when: >
+    ansible_distribution_major_version|int > 18  
   become: yes
   apt:
     state: present
@@ -44,6 +55,8 @@
     rvm1_rubies: ['ruby-2.4.0']
     rvm1_user: "root"
     rvm1_install_path: /usr/local/rvm
+  when: >
+    ansible_distribution_major_version|int < 20
 
 #- name: rvm
 #  become: yes
@@ -72,6 +85,8 @@
 - name: bookworks-test-install
   become: yes
   script: install-first-run.sh
+  when: >
+    ansible_distribution_major_version|int < 20
 
 - name: "install prereqs for phantomjs"
   apt:

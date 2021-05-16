@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	git2go "github.com/libgit2/git2go/v31"
+	git2go "github.com/craigmj/git2go/v31"
 )
 
 type MergeResolution int

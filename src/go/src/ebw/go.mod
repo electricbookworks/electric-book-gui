@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/beorn7/perks v0.0.0-20160804104726-4c0e84591b9a
 	github.com/craigmj/commander v0.0.0-20151001103802-774928a9a0f2
+	github.com/craigmj/git2go/v31 v31.4.15 // indirect
 	github.com/craigmj/gogo v0.0.0-20160429104150-977e57e661dd
 	github.com/craigmj/golly v0.0.0-20161022142733-3e19b6123fb3
 	github.com/go-sql-driver/mysql v1.2.1-0.20161116070742-665b83488b90

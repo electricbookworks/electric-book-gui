@@ -9,7 +9,7 @@ import (
 
 	// "github.com/golang/glog"
 	"gopkg.in/yaml.v2"
-	git2go "github.com/libgit2/git2go/v31"
+	git2go "github.com/craigmj/git2go/v31"
 
 	"ebw/util"
 )

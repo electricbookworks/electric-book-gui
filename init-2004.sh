@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-echo 'ruby and rvm installation now done by golang - do not use this'
+echo 'ruby installation now done by golang - do not use this'
 exit 1
 echo 'installing ruby and rvm'
 sudo apt-get install software-properties-common

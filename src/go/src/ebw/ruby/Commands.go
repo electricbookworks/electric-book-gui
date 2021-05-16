@@ -7,7 +7,7 @@ import (
 )
 
 func RubyInstallCommand() *commander.Command {
-	return commander.NewCommand(`ruby-install`,
+	return commander.NewCommand(`install-ruby`,
 		`Installs ruby to destination dir`,
 		nil,
 		func(args []string) error {
