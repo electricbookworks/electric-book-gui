@@ -123,6 +123,13 @@ func (j *Jekyll) start(cout, cerr io.Writer) error {
 			fmt.Fprintln(jerr, err.Error())
 			return
 		}
+		if err := RvmRun(jout, jerr, j.RepoDir, `bundle`,`update`,`--bundler`); nil!=err {
+			glog.Infof(`bundle update --bundler failed: %s`, err.Error())
+			j.SetError(err)
+			util.Error(err)
+			fmt.Fprintln(jerr, err.Error())
+			return
+		}
 		if err := RvmRun(jout, jerr, j.RepoDir, `bundle`, `update`, `--all`,`--local`,`--retry`,`5`); nil!=err {
 			glog.Infof(`bundle update --all --local --retry 5 failed: %s`, err.Error())
 			j.SetError(err)
