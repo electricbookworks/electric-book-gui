@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
-sudo apt install -y cmake curl pkg-config lxc-common lxc-dev
+sudo apt install -y cmake curl pkg-config lxc-common lxc-dev libssl-dev
 # pushd will take us to user/local for installing libgit2
 ./install-golang.sh
+. /etc/profile
 pushd /usr/local
 LIBGITVER=1.1.0
 if [[ ! -d libgit2-$LIBGITVER ]]; then

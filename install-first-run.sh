@@ -1,5 +1,10 @@
 #!/bin/bash
 set -e
+if [[ $(lsb_release -sr) == '20.04' ]]; then
+  echo "install-first-run.sh not required on 20.04 branch"
+  exit 0
+fi
+
 # boilerplate test jekyll site
 cd /tmp
 rm -rf jekylltest
