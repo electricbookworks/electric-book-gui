@@ -2,7 +2,7 @@ github:
   client: {{github_client}}
   secret: {{github_secret}}
 git_cache: "{{git_cache}}"
-server: "http://{{fqdn}}"
+server: "http{{https}}://{{fqdn}}"
 bind: ":{{bind}}"
 session_auth: "{{session_auth}}"
 session_encrypt: "{{session_encrypt}}"
@@ -18,3 +18,5 @@ allowed_users:
 {% for user in allowed_users %}
   - {{ user }}
 {% endfor %}
+rvm: "-"
+ruby_version: "2.7.2"

@@ -12,12 +12,14 @@ import (
 func InstallNodeCommand() *commander.Command {
 	fs := flag.NewFlagSet(`install-node`, flag.ExitOnError)
 	dir := fs.String(`dir`,`.`,`Directory to install node`)
+	owner := fs.String(`owner`,``,`Owner of the installed node directory`)
+	group := fs.String(`group`,``,`Group owner of the installed node directory`)
 	return commander.NewCommand(
 		`install-node`,
 		`Installs Node`,
 		fs,
 		func([]string) error {
-			return InstallNode(*dir)
+			return InstallNode(*dir, *owner, *group)
 		})
 }
 

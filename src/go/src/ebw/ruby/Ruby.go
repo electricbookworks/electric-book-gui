@@ -9,6 +9,9 @@ import (
 	`path/filepath`
 
 	`github.com/juju/errors`
+	`github.com/golang/glog`
+
+	`ebw/util`
 )
 
 func download(srcUrl, destFile string) error {
@@ -45,13 +48,22 @@ func Destdir(destdir string) (string, error) {
 	return destdir, nil
 }
 
-func Install(destdir string) error {
+func Install(destdir string, owner, group string) error {
 	rubyVer := Version()
 	rubyVerMajor := VersionMajor()
 	destdir, err := Destdir(destdir)
 	if nil!=err {
 		return err
 	}
+	glog.Infof(`Checking for ruby %s`, filepath.Join(destdir, `bin`,`ruby`))
+	exists, err := util.FileExists(filepath.Join(destdir, `bin`,`ruby`))
+	if nil!=err {
+		return errors.Trace(err)
+	}
+	if exists {
+		return  util.SetOwner(destdir, owner, group)
+	}
+	glog.Infof(`Installing ruby to %s`, destdir)
 
 	if err := exec.Command(`sudo`,`/usr/bin/apt`,`install`,`-y`,`libssl-dev`,`curl`).Run(); nil!=err {
 		return errors.Trace(err)
@@ -91,7 +103,8 @@ func Install(destdir string) error {
 	if err := make.Run(); nil!=err {
 		return errors.Trace(err)
 	}
-	return nil
+	os.MkdirAll(filepath.Join(destdir, `gems`),0755)
+	return util.SetOwner(destdir, owner, group)
 }
 
 func Path(destdir string) string {
@@ -132,6 +145,8 @@ func Env(destdir string, env map[string]string) (map[string]string, error) {
 		`RUBYPATH`: filepath.Join(destdir, `bin`),	
 		`RUBYSHELL`:``,	//Specifies shell for spawned processes. If not set, SHELL or COMSPEC are checked.
 		`PATH`: fmt.Sprintf("%s%c%s", filepath.Join(destdir, `bin`), os.PathListSeparator, path),
+		`GEM_HOME`: filepath.Join(destdir, `gems`),
+		`GEM_PATH`: filepath.Join(destdir, `gems`),
 	} {
 		env[k] = v
 	}

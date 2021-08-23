@@ -4,8 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-
+	"os/user"
+	`strconv`
 	"crypto/sha1"
+	`path/filepath`
+
+	`github.com/juju/errors`
+
 )
 
 // FileExists checks for the existence of the given file.
@@ -58,4 +63,39 @@ func WorkingDir(d string) string {
 		panic(err)
 	}
 	return wd
+}
+
+func SetOwner(dir string, owner, group string) error {
+	u, err := user.Lookup(owner)
+	if nil!=err {
+		return fmt.Errorf(`Failed to find user %s: %w`, owner, err)
+	}
+	grp, err := user.LookupGroup(group)
+	if nil!=err {
+		return fmt.Errorf(`Failed to lookup group %s: %w`, group, err)
+	}
+	uid, err := strconv.Atoi(u.Uid)
+	if nil!=err {
+		return errors.Trace(err)
+	}
+	gid, err := strconv.Atoi(grp.Gid)
+	if nil!=err {
+		return errors.Trace(err)
+	}
+
+	fmt.Printf("chown -R %s:%s %s\n", owner, group, dir)
+
+	return errors.Trace(filepath.Walk(dir, func(fn string, fi os.FileInfo, err error) error {
+		if nil!=err {
+			return err
+		}
+		if `..`==fn {
+			return nil
+		}
+		file := fn
+		if err := os.Chown(file, uid, gid); nil!=err {
+			return fmt.Errorf(`Failed setting chown on %s: %w`, file, err)
+		}
+		return nil
+	}))
 }

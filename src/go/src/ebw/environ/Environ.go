@@ -29,7 +29,7 @@ func NewEnviron(rbdir string, env map[string]string) (*Environ, error) {
 			// LANG seems to be the only Environment variable I need to sassc compilation to work
 			k,v := kv[0], kv[1]
 			if //strings.HasPrefix(k,`LC_`) || 
-				`LANG`==k {
+				`LANG`==k || `HOME`==k || `USER`==k {
 				env[k] = v
 				glog.Infof(`ENV %s = %s`, k,v)
 			}

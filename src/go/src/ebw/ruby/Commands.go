@@ -2,19 +2,23 @@ package ruby
 
 import (
 	`fmt`
+	`flag`
 
 	`github.com/craigmj/commander`
 )
 
 func RubyInstallCommand() *commander.Command {
+	fs := flag.NewFlagSet(`install-ruby`, flag.ExitOnError)
+	owner := fs.String(`owner`,``,`Owner of ruby directory`)
+	group := fs.String(`group`,``,`Group owner of ruby directory`)
 	return commander.NewCommand(`install-ruby`,
 		`Installs ruby to destination dir`,
-		nil,
+		fs,
 		func(args []string) error {
 			if 0==len(args) {
 				args = []string{``}
-			}			
-			return Install(args[0])
+			}
+			return Install(args[0], *owner, *group)
 		})
 }
 

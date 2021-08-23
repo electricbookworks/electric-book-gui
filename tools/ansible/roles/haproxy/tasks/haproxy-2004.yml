@@ -1,0 +1,45 @@
+- name: install-haproxy-script
+  become: yes
+  script: "install-haproxy.sh {{email}} {{fqdn}}"
+- name: configure-haproxy
+  template: >
+    src=haproxy-2004.cfg.j2
+    dest=/etc/haproxy/haproxy.cfg
+  become: yes
+  become_method: sudo
+  notify: "restart haproxy"
+
+- name: haproxy-plugins
+  become: yes
+  file:
+    dest: /etc/haproxy/plugins
+    state: directory
+
+- name: cert-renewal-script
+  become: yes
+  tags: certbot
+  template:
+    src: cert-renewal-haproxy.sh
+    dest: /etc/haproxy/plugins/cert-renewal-haproxy.sh
+    mode: 0755
+
+- name: haproxy-certs
+  become: yes
+  tags: ['certbot','certbot-renew']
+  copy:
+    src: ../../../../haproxy-certs/bin/haproxy-certs
+    dest: /usr/bin/haproxy-certs
+    mode: 0755
+
+- name: cron-haproxy-certs
+  become: yes
+  cron:
+    hour: "0"
+    minute: "0"
+    month: "*"
+    day: "*"
+    weekday: "0"
+    name: haproxy-certs
+    job: /usr/bin/haproxy-certs update
+    state: present
+  tags: ['certbot', 'certbot-renew']

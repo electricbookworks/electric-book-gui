@@ -1,0 +1,104 @@
+- name: install-add-apt-repo
+  become: yes
+  apt:
+    name: software-properties-common
+    state: present
+
+- name: install-certbot-repo
+  become: yes
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+    state: present
+    update_cache: yes
+
+- name: install-certbot
+  become: yes
+  apt:
+    name: certbot
+    state: present
+
+- name: create-haproxy-lua-dir
+  become: yes
+  file: >
+    name=/etc/haproxy/{{item}}
+    state=directory
+    mode=0755
+  with_items: ['plugins','web']
+
+- name: fetch-haproxy-lua
+  become: yes
+  git:
+    repo: "https://github.com/janeczku/haproxy-acme-validation-plugin.git"
+    clone: yes
+    dest: "/etc/haproxy/plugins"
+    force: yes
+
+- name: copy-haproxy-lua-script
+  become: yes
+  copy:
+    dest: /etc/haproxy/letsencrypt.lua
+    remote_src: yes
+    src: /etc/haproxy/plugins/acme-http01-webroot.lua
+
+- name: stop-haproxy-systemd
+  become: yes
+  systemd: >
+    service=haproxy
+    state=stopped
+  when: >
+    ansible_distribution_major_version|int >= 16
+
+- name: stop-haproxy-upstart
+  become: yes
+  service: >
+    name=haproxy
+    state=stopped
+  when: >
+    ansible_distribution_major_version|int < 16
+
+- name: get-certificate
+  become: yes
+  command: >
+    certbot certonly --standalone -d {{fqdn}} --renew-by-default --agree-tos --email {{email}}
+
+- name: merge-certificate
+  become: yes
+  shell: >
+    cat /etc/letsencrypt/live/{{fqdn}}/privkey.pem /etc/letsencrypt/live/{{fqdn}}/fullchain.pem > /etc/letsencrypt/live/{{fqdn}}/haproxy.pem
+
+- name: configure-haproxy
+  template: >
+    src=haproxy.cfg.j2
+    dest=/etc/haproxy/haproxy.cfg
+  become: yes
+  become_method: sudo
+  notify: "restart haproxy"
+
+- name: cert-renewal-script
+  become: yes
+  tags: certbot
+  template:
+    src: cert-renewal-haproxy.sh
+    dest: /etc/haproxy/plugins/cert-renewal-haproxy.sh
+    mode: 0755
+
+- name: haproxy-certs
+  become: yes
+  tags: ['certbot','certbot-renew']
+  copy:
+    src: ../../../../haproxy-certs/bin/haproxy-certs
+    dest: /usr/bin/haproxy-certs
+    mode: 0755
+
+- name: cron-haproxy-certs
+  become: yes
+  cron:
+    hour: 0
+    minute: 0
+    month: "*"
+    day: "*"
+    weekday: 0
+    name: haproxy-certs
+    job: /usr/bin/haproxy-certs update
+    state: present
+  tags: ['certbot', 'certbot-renew']

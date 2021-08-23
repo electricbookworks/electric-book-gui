@@ -95,6 +95,6 @@
   become_method: sudo
   command:
     chdir: /opt/electricbook
-    cmd: "/opt/electricbook/bin/electricbook {{item}}"
+    cmd: "/opt/electricbook/bin/electricbook {{item}} --owner electricbook --group electricbook"
   with_items: ['install-ruby','install-node']
 

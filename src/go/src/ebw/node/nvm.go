@@ -9,6 +9,8 @@ import (
 
 	`github.com/golang/glog`
 	`github.com/juju/errors`
+
+	`ebw/util`
 )
 
 func Version() string {
@@ -26,13 +28,17 @@ func fileExists(f string) (bool, error) {
 	return false, errors.Trace(err)
 }
 
-func InstallNode(todir string) error {
-	exists, err := fileExists(filepath.Join(todir, `bin`, `node`))
-	if nil!=err || exists {
-		return err
-	}
+func InstallNode(todir string, user, group string) error {
 	tdir := filepath.Base(todir)
 	os.MkdirAll(tdir, 0755)
+	nodeDir := filepath.Join(tdir, `node-v` + Version() + `-linux-x64`)
+	exists, err := fileExists(filepath.Join(todir, `bin`, `node`))
+	if nil!=err {
+		return errors.Trace(err)
+	}
+	if exists {
+		return util.SetOwner(nodeDir, user, group)
+	}
 
 	bash := exec.Command(`/bin/bash`)
 	bash.Dir = tdir
@@ -43,7 +49,7 @@ curl https://nodejs.org/dist/v` + Version() + `/node-v` + Version() + `-linux-x6
 	if err := bash.Run(); nil!=err {
 		return errors.Trace(err)
 	}
-	return nil
+	return util.SetOwner(nodeDir, user, group)
 }
 
 func Command(indir, nodeCmd string, args ...string) *exec.Cmd {
