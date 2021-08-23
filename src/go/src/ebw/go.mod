@@ -42,4 +42,5 @@ require (
 	gopkg.in/libgit2/git2go.v25 v25.1.0
 	gopkg.in/lxc/go-lxc.v2 v2.0.0-20210205143421-c4b883be4881
 	gopkg.in/yaml.v2 v2.0.0-20160928153709-a5b47d31c556
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )

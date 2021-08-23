@@ -9,6 +9,7 @@ import (
 	"github.com/craigmj/commander"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang/glog"
+	jerrors `github.com/juju/errors`
 
 	"ebw/config"
 	// "ebw/database"
@@ -31,6 +32,15 @@ func VersionCommand() *commander.Command {
 		})
 }
 
+func doError(err error) {
+	if nil==err {
+		return
+	}
+	glog.Error(err)
+	fmt.Fprintln(os.Stderr, jerrors.ErrorStack(err))
+	os.Exit(1)
+}
+
 func main() {
 	var err error
 	cfg := flag.String("cfg", "electricbook", "Root path for configuration files")
@@ -40,25 +50,15 @@ func main() {
 
 	if err = config.Config.Load(*cfg); nil != err {
 		glog.Errorf("Failed to load config files with config %s: %w", *cfg, err)
-		os.Exit(1)
+		doError(err)
 	}
 
-	// if err = database.Open(config.Config.Database.Connect); nil != err {
-	// 	glog.Errorf("Failed to connect to database: %s", err.Error())
-	// 	os.Exit(1)
-	// }
-	// if "" != *rollback {
-	// 	if err := database.Rollback(*rollback); nil != err {
-	// 		glog.Errorf("Rollback failed: %s", err)
-	// 		os.Exit(1)
-	// 	}
-	// 	os.Exit(0)
-	// }
-	// if err = database.Migrate(); nil != err {
-	// 	glog.Errorf("Migration failed: %s", err)
-	// 	os.Exit(1)
-	// }
-	// defer database.Close()
+	// Determine whether we are correctly configured, or whether we need to run configuration
+	if !config.Config.IsCorrectlyConfigured() {
+		doError(config.Config.Configure())
+		fmt.Println(`Please restart for configuration changes to be effected`)
+		os.Exit(0)
+	}
 
 	if err := commander.Execute(flag.Args(), VersionCommand, www.WebCommand,
 		print.PrintCommand, cli.ListWatchersCommand, util.DiffCommand,
@@ -66,6 +66,6 @@ func main() {
 		node.NodeEnvCommand,
 		ruby.RubyInstallCommand, ruby.RubyEnvCommand, environ.EnvCommand,
 	); nil != err {
-		panic(err)
+		doError(err)
 	}
 }

@@ -1,14 +1,16 @@
 package config
 
 import (
+	"bufio"
+	"ebw/util"
 	"fmt"
-	`bufio`
-	`strings`
 	"io/ioutil"
 	"os"
+	"strings"
 
-	"gopkg.in/yaml.v2"
-	`github.com/golang/glog`
+	"github.com/golang/glog"
+	jerrors "github.com/juju/errors"
+	"gopkg.in/yaml.v3"
 )
 
 type database struct {
@@ -73,6 +75,8 @@ type config struct {
 	ErrorMail      errorMailer `yaml:"error_mail"`
 	AllowAutoLogin bool        `yaml:"allow_auto_login"`
 	RecoverPanics  bool        `yaml:"recover_panics"`
+
+	fileroot string `yaml:"-"`
 }
 
 func (c config) String() string {
@@ -105,11 +109,12 @@ func (c *config) Load(root string) error {
 		}
 		i++
 	}
-	return c.loadAllowedUsers(root)
+	c.fileroot = root
+	return c.loadAllowedUsers()
 }
 
-func (c *config) loadAllowedUsers(root string) error {
-	allowedUsersFilename := root + `-users.txt`
+func (c *config) loadAllowedUsers() error {
+	allowedUsersFilename := c.fileroot + `-users.txt`
 	defer func() {
 		glog.Infof(`Allowed users: %s`, strings.Join(c.AllowedUsers,`,`))
 	}()
@@ -142,4 +147,103 @@ func (c *config) load(f string) error {
 		return err
 	}
 	return yaml.Unmarshal(raw, c)
+}
+
+func (c *config) IsCorrectlyConfigured() bool {
+	return `your-client-id-string-here`!=c.Github.Client
+}
+
+func readString(msg string, def string) (string, error) {
+	for {
+		fmt.Print(msg)
+		if ``!=def {
+			fmt.Printf(` (default %s)`, def)
+		}
+		fmt.Print(`? `)
+		in, err := bufio.NewReader(os.Stdin).ReadString('\n')
+		if nil!=err {
+			return ``, err
+		}
+		in = strings.TrimSpace(in)
+		if ``!=in {
+			return in, nil
+		}
+		if ``!=def {
+			return def, nil
+		}
+	}
+}
+
+func (c *config) Configure() error {
+	var err error
+	var configFilename string
+	idx := 0
+	for {
+		configFilename = fmt.Sprintf("%s-%d.yml", c.fileroot, idx)
+		_, err = os.Stat(configFilename)
+		if nil==err {
+			idx++
+			continue
+		}
+		if os.IsNotExist(err) {
+			break
+		}
+		return jerrors.Trace(err)
+	}
+	var configurable = struct {
+		SessionAuth string `yaml:"session_auth"`
+		SessionEncrypt string `yaml:"session_encrypt"`
+		AllowedUsers []string `yaml:"allowed_users"`
+		Github github `yaml:"github"`
+	} {
+		SessionAuth: util.RandomString(64),
+		SessionEncrypt: util.RandomString(32),
+	}
+
+	fmt.Print(`
+===============================================
+CONFIGURING ELECTRIC BOOK MANAGER
+
+Looks like this is the first time you're running EBM. We need to configure.
+`)
+	localServer, err := readString(`Where is your server running`, `localhost:16101`)
+	if nil!=err {
+		return err
+	}
+	githubUsername, err := readString(`What is your Github username`,``)
+	if nil!=err {
+		return err
+	}
+	fmt.Println(`
+------------------------------------------------------------
+1. Please go to https://github.com/settings/applications/new
+
+2. Give the application a name (ElectricBookManager).
+
+3. Set 
+
+   Homepage URL : http://` + localServer + `
+   Authorization callback URL: http://` + localServer + `/github/auth
+
+4. Click 'Register Application'
+
+5. On the next page, you will see the Client ID value.
+`)
+	configurable.Github.Client, err = readString(`   Enter the Client ID value`,``)
+	if nil!=err {
+		return err
+	}
+	fmt.Println(`
+6. Press 'Generate a new client secret'.
+`)
+	configurable.Github.Secret, err = readString(`   Enter the Client Secret`,``)	
+
+	configurable.AllowedUsers = []string{ githubUsername }
+	out, err := os.Create(configFilename)
+	if nil!=err {
+		return jerrors.Trace(err)
+	}
+	defer out.Close()
+
+	return jerrors.Trace(yaml.NewEncoder(out).Encode(configurable))
 }

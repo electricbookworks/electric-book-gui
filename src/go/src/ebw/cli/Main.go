@@ -12,21 +12,23 @@ import (
 	"ebw/git"
 )
 
+func doError(err error) {
+	if nil==err {
+		return
+	}
+	glog.Error(err)
+	os.Exit(1)
+}
+
 func Main() {
 	configFile := flag.String("config", "", "Location of configuration file (default is $HOME/.ebw.yml)")
 	user := flag.String("u", "", "Set the default user to this user (based on alias in config file)")
 
 	flag.Parse()
 
-	if err := config.ReadConfigFile(*configFile); nil != err {
-		glog.Error(err)
-		os.Exit(1)
-	}
+	doError(config.ReadConfigFile(*configFile))
 	if "" != *user {
-		if err := config.Config.SetUser(*user); nil != err {
-			glog.Error(err)
-			os.Exit(1)
-		}
+		doError(config.Config.SetUser(*user))
 	} else {
 		rootDir, err := git.GitFindRepoRootDirectory(``)
 		if nil == err {
@@ -35,8 +37,7 @@ func Main() {
 				if err := config.Config.SetUser(repoUser); nil != err {
 					fmt.Printf("Since we're in a repo directory, we're trying to set the user to the repo user: %s.\nThis failed.\nUse -u flag to force a particular user.\n",
 						repoUser)
-					glog.Error(err)
-					os.Exit(1)
+					doError(err)
 				}
 			}
 		}
@@ -50,7 +51,6 @@ func Main() {
 		WhichUserCommand,
 		GitCommands,
 	); nil != err {
-		glog.Error(err)
-		os.Exit(1)
+		doError(err)
 	}
 }
